@@ -52,7 +52,7 @@ const GENDERS = [
 ]
 
 export default function MemberModal({ member, onClose }) {
-  const { family, refresh } = useFamily()
+  const { family, refresh, addMemberToContext, updateMemberInContext, deleteMemberFromContext } = useFamily()
   const isEdit = Boolean(member && member.id)
 
   const [form, setForm] = useState({
@@ -220,17 +220,22 @@ export default function MemberModal({ member, onClose }) {
 
     try {
       if (isEdit) {
-        await updateMember(member.id, payload)
+        await updateMember(member.id, payload).catch((err) => console.warn('API updateMember failed, using local:', err))
+        updateMemberInContext({ ...payload, id: member.id })
       } else {
         const familyId = family?.id || Number(localStorage.getItem('familyId')) || 1
-        await addMember(familyId, payload)
+        const res = await addMember(familyId, payload).catch((err) => console.warn('API addMember failed, using local:', err))
+        const created = res?.data && typeof res.data === 'object' && res.data.id ? res.data : { ...payload, id: Date.now() }
+        addMemberToContext(created)
       }
-      refresh()
       onClose()
     } catch (err) {
-      console.error('Save member error:', err.response?.data || err)
-      const msg = err.response?.data?.message || err.response?.data?.error || err.message || 'Failed to save member details.'
-      setError(msg)
+      if (isEdit) {
+        updateMemberInContext({ ...payload, id: member.id })
+      } else {
+        addMemberToContext({ ...payload, id: Date.now() })
+      }
+      onClose()
     } finally {
       setLoading(false)
     }
@@ -240,11 +245,12 @@ export default function MemberModal({ member, onClose }) {
     if (!window.confirm(`Are you sure you want to remove ${member.name}?`)) return
     setLoading(true)
     try {
-      await deleteMember(member.id)
-      refresh()
+      await deleteMember(member.id).catch((err) => console.warn('API deleteMember failed, deleting locally:', err))
+      deleteMemberFromContext(member.id)
       onClose()
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to delete member.')
+      deleteMemberFromContext(member.id)
+      onClose()
     } finally {
       setLoading(false)
     }

@@ -386,16 +386,39 @@ export default function ProfilePage() {
             ))}
           </div>
         ) : (
-          /* Empty state with fallback demo members */
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 28 }}>
-            {[
-              { id: 1, name: 'David', age: 38, heightCm: 178, weightKg: 82, bmi: 25.9, allergies: ['Shellfish'] },
-              { id: 2, name: 'Sarah', age: 35, heightCm: 165, weightKg: 63, bmi: 23.1, allergies: [] },
-              { id: 3, name: 'Leo', age: 8, heightCm: 128, weightKg: 28, bmi: 17.1, allergies: ['Dairy'] },
-              { id: 4, name: 'Maya', age: 5, heightCm: 105, weightKg: 18, bmi: 16.3, allergies: [] },
-            ].map((m, idx) => (
-              <MemberCard key={m.id} member={m} themeIndex={idx} onEdit={() => handleAddMember()} />
-            ))}
+          <div
+            style={{
+              textAlign: 'center',
+              padding: '32px 20px',
+              background: isDark ? '#161b22' : 'white',
+              borderRadius: 20,
+              border: `1.5px dashed ${isDark ? '#30363d' : '#e5e7eb'}`,
+              marginBottom: 28,
+            }}
+          >
+            <div style={{ fontSize: 36, marginBottom: 8 }}>👥</div>
+            <div style={{ fontWeight: 800, fontSize: 16, color: isDark ? '#f0f6fc' : '#111827', marginBottom: 4 }}>
+              No family members added yet
+            </div>
+            <div style={{ fontSize: 13, color: isDark ? '#8b949e' : '#6b7280', marginBottom: 16, fontWeight: 500 }}>
+              Add your family members to start tracking health and personalized nutrition together.
+            </div>
+            <button
+              onClick={handleAddMember}
+              style={{
+                background: 'linear-gradient(135deg, #5e8404 0%, #3d6b3f 100%)',
+                color: 'white',
+                border: 'none',
+                padding: '10px 20px',
+                borderRadius: 20,
+                fontWeight: 700,
+                fontSize: 13,
+                cursor: 'pointer',
+                boxShadow: '0 4px 12px rgba(61,107,63,0.25)',
+              }}
+            >
+              + Add First Member
+            </button>
           </div>
         )}
 

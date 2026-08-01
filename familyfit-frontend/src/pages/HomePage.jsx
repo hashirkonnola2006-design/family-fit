@@ -98,27 +98,8 @@ export default function HomePage() {
   const meals = plan?.meals || []
   const familyName = family?.name || user?.familyName || 'Healthy Family'
 
-  // Fallback demo members if family members not loaded yet
-  const memberList = family?.members?.length > 0 ? family.members : [
-    {
-      id: 1,
-      name: 'David',
-      age: 38,
-      heightCm: 178,
-      weightKg: 82,
-      bmi: 25.9,
-      allergies: ['Soy', 'Peanuts/Tree Nuts', 'Milk/Dairy', 'Eggs'],
-    },
-    {
-      id: 2,
-      name: 'Sarah',
-      age: 35,
-      heightCm: 165,
-      weightKg: 63,
-      bmi: 23.1,
-      allergies: [],
-    },
-  ]
+  // Family members list
+  const memberList = family?.members || []
 
   const initial = (familyName[0] || 'T').toUpperCase()
 
@@ -455,198 +436,150 @@ export default function HomePage() {
 
         {/* Horizontal Scroll Row of Detailed Member Cards matching screenshot */}
         <div style={{ display: 'flex', gap: 16, overflowX: 'auto', paddingBottom: 10, scrollbarWidth: 'none' }}>
-          {memberList.map((m, idx) => {
-            const theme = MEMBER_THEMES[idx % MEMBER_THEMES.length]
-            const bmi = m.bmi || (m.weightKg && m.heightCm ? (m.weightKg / Math.pow(m.heightCm / 100, 2)).toFixed(1) : 24.5)
-            const allergyList = Array.isArray(m.allergies) ? m.allergies : []
-            const allergyCount = allergyList.length
+          {memberList.length > 0 ? (
+            memberList.map((m, idx) => {
+              const theme = MEMBER_THEMES[idx % MEMBER_THEMES.length]
+              const bmi = m.bmi || (m.weightKg && m.heightCm ? (m.weightKg / Math.pow(m.heightCm / 100, 2)).toFixed(1) : 24.5)
+              const allergyList = Array.isArray(m.allergies) ? m.allergies : []
+              const allergyCount = allergyList.length
 
-            return (
-              <div
-                key={m.id || idx}
-                onClick={() => {
-                  setActiveMember(m)
-                  navigate('/profile')
-                }}
-                style={{
-                  minWidth: 310,
-                  maxWidth: 320,
-                  background: 'white',
-                  borderRadius: 24,
-                  padding: '20px',
-                  boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
-                  border: `1px solid ${theme.boxBorder}`,
-                  flexShrink: 0,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 16,
-                  transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                }}
-              >
-                {/* Member Header Row */}
-                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    {/* Circle Avatar Initial */}
-                    <div
-                      style={{
-                        width: 48,
-                        height: 48,
-                        borderRadius: '50%',
-                        background: theme.avatarBg,
-                        color: 'white',
-                        fontWeight: 800,
-                        fontSize: 20,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
-                      }}
-                    >
-                      {m.name?.[0]?.toUpperCase() || 'M'}
-                    </div>
-
-                    <div>
-                      <div style={{ fontSize: 18, fontWeight: 800, color: '#111827', lineHeight: 1.2 }}>
-                        {m.name}
-                      </div>
-                      <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2, fontWeight: 500 }}>
-                        {m.age} years • {m.heightCm || 170} cm
-                      </div>
-
-                      {/* Status Badge */}
+              return (
+                <div
+                  key={m.id || idx}
+                  onClick={() => {
+                    setActiveMember(m)
+                    navigate('/profile')
+                  }}
+                  style={{
+                    minWidth: 310,
+                    maxWidth: 320,
+                    background: isDark ? '#141c2e' : 'white',
+                    borderRadius: 24,
+                    padding: '20px',
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
+                    border: `1px solid ${isDark ? '#24324a' : theme.boxBorder}`,
+                    flexShrink: 0,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 16,
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                  }}
+                >
+                  {/* Member Header Row */}
+                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                       <div
                         style={{
-                          display: 'inline-flex',
+                          width: 48,
+                          height: 48,
+                          borderRadius: '50%',
+                          background: theme.avatarBg,
+                          color: 'white',
+                          fontWeight: 800,
+                          fontSize: 20,
+                          display: 'flex',
                           alignItems: 'center',
-                          gap: 4,
-                          background: theme.badgeBg,
-                          color: theme.badgeText,
-                          fontSize: 11,
-                          fontWeight: 700,
-                          padding: '3px 10px',
-                          borderRadius: 12,
-                          marginTop: 6,
+                          justifyContent: 'center',
+                          flexShrink: 0,
                         }}
                       >
-                        <span>{theme.badgeIcon}</span> {theme.status}
+                        {m.name?.[0]?.toUpperCase() || 'M'}
+                      </div>
+
+                      <div>
+                        <div style={{ fontSize: 18, fontWeight: 800, color: isDark ? '#f8fafc' : '#111827', lineHeight: 1.2 }}>
+                          {m.name}
+                        </div>
+                        <div style={{ fontSize: 12, color: isDark ? '#94a3b8' : '#6b7280', marginTop: 2, fontWeight: 500 }}>
+                          {m.age} years • {m.heightCm || 170} cm
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Character Illustration & Chevron */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                     <div
                       style={{
                         width: 54,
                         height: 54,
                         borderRadius: '50%',
                         overflow: 'hidden',
-                        background: '#f9fafb',
+                        background: isDark ? '#1e293b' : '#f9fafb',
                       }}
                     >
-                      <img
-                        src={theme.imgUrl}
-                        alt={m.name}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      />
+                      <img src={theme.imgUrl} alt={m.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     </div>
-                    <span style={{ fontSize: 18, color: '#9ca3af', fontWeight: 700 }}>&rsaquo;</span>
+                  </div>
+
+                  {/* 3 Metric Columns */}
+                  <div
+                    style={{
+                      background: isDark ? '#1e293b' : theme.boxBg,
+                      borderRadius: 16,
+                      padding: '12px 14px',
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(3, 1fr)',
+                      textAlign: 'center',
+                      gap: 8,
+                    }}
+                  >
+                    <div>
+                      <div style={{ fontSize: 10, fontWeight: 700, color: isDark ? '#94a3b8' : '#6b7280' }}>WEIGHT</div>
+                      <div style={{ fontSize: 15, fontWeight: 800, color: isDark ? '#f8fafc' : '#111827', marginTop: 2 }}>{m.weightKg || '—'} kg</div>
+                    </div>
+                    <div style={{ borderLeft: `1px solid ${isDark ? '#334155' : theme.boxBorder}`, borderRight: `1px solid ${isDark ? '#334155' : theme.boxBorder}` }}>
+                      <div style={{ fontSize: 10, fontWeight: 700, color: isDark ? '#94a3b8' : '#6b7280' }}>BMI</div>
+                      <div style={{ fontSize: 15, fontWeight: 800, color: isDark ? '#f8fafc' : '#111827', marginTop: 2 }}>{bmi}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 10, fontWeight: 700, color: isDark ? '#94a3b8' : '#6b7280' }}>ALLERGIES</div>
+                      <div style={{ fontSize: 14, fontWeight: 800, color: allergyCount > 0 ? theme.allergiesColor : (isDark ? '#34d399' : '#16a34a'), marginTop: 2 }}>
+                        {allergyCount > 0 ? `${allergyCount} Listed` : 'None'}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Action button */}
+                  <div
+                    style={{
+                      background: isDark ? 'rgba(16,185,129,0.15)' : theme.btnBg,
+                      color: isDark ? '#34d399' : theme.btnColor,
+                      fontSize: 12,
+                      fontWeight: 700,
+                      padding: '10px 14px',
+                      borderRadius: 14,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <span>View Health Profile</span>
+                    <span>&rsaquo;</span>
                   </div>
                 </div>
-
-                {/* 3 Metric Columns Inner Box */}
-                <div
-                  style={{
-                    background: theme.boxBg,
-                    borderRadius: 16,
-                    padding: '12px 14px',
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(3, 1fr)',
-                    textAlign: 'center',
-                    gap: 8,
-                  }}
-                >
-                  {/* WEIGHT */}
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, color: theme.allergiesColor, fontSize: 12, marginBottom: 4 }}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                      </svg>
-                    </div>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: '#6b7280', letterSpacing: '0.5px' }}>WEIGHT</div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: '#111827', marginTop: 2 }}>
-                      {m.weightKg || 70} kg
-                    </div>
-                  </div>
-
-                  {/* BMI */}
-                  <div style={{ borderLeft: '1px solid rgba(0,0,0,0.06)', borderRight: '1px solid rgba(0,0,0,0.06)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, color: '#16a34a', fontSize: 12, marginBottom: 4 }}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-                        <polyline points="17 6 23 6 23 12" />
-                      </svg>
-                    </div>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: '#6b7280', letterSpacing: '0.5px' }}>BMI</div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: '#111827', marginTop: 2 }}>
-                      {bmi}
-                    </div>
-                  </div>
-
-                  {/* ALLERGIES */}
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, color: allergyCount > 0 ? '#ea580c' : '#7e22ce', fontSize: 12, marginBottom: 4 }}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                      </svg>
-                    </div>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: '#6b7280', letterSpacing: '0.5px' }}>ALLERGIES</div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: '#111827', marginTop: 2 }}>
-                      {allergyCount > 0 ? allergyCount : 'None'}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Allergies Summary List */}
-                <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: '#6b7280', letterSpacing: '0.5px', marginBottom: 4 }}>
-                    ALLERGIES
-                  </div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: allergyCount > 0 ? theme.allergiesColor : '#6b7280', lineHeight: 1.3 }}>
-                    {allergyCount > 0 ? allergyList.join(', ') : 'None reported'}
-                  </div>
-                </div>
-
-                {/* Bottom Action Button: View Diet Plan */}
-                <button
-                  style={{
-                    background: theme.btnBg,
-                    color: theme.btnColor,
-                    border: 'none',
-                    borderRadius: 14,
-                    padding: '12px 16px',
-                    fontWeight: 700,
-                    fontSize: 14,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    cursor: 'pointer',
-                    width: '100%',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M12 21a9 9 0 0 0 9-9H3a9 9 0 0 0 9 9z" />
-                      <path d="M12 3v9" />
-                    </svg>
-                    <span>View Diet Plan</span>
-                  </div>
-                  <span style={{ fontSize: 16, fontWeight: 800 }}>&rsaquo;</span>
-                </button>
+              )
+            })
+          ) : (
+            <div
+              onClick={() => navigate('/profile')}
+              style={{
+                width: '100%',
+                background: isDark ? '#141c2e' : 'white',
+                borderRadius: 20,
+                padding: '24px 20px',
+                textAlign: 'center',
+                border: `1.5px dashed ${isDark ? '#24324a' : '#e5e7eb'}`,
+                cursor: 'pointer',
+              }}
+            >
+              <div style={{ fontSize: 32, marginBottom: 6 }}>👨‍👩‍👧‍👦</div>
+              <div style={{ fontWeight: 800, fontSize: 15, color: isDark ? '#f8fafc' : '#111827', marginBottom: 2 }}>
+                No family members added yet
               </div>
-            )
-          })}
+              <div style={{ fontSize: 13, color: isDark ? '#94a3b8' : '#6b7280', fontWeight: 500 }}>
+                Tap here to add your family members in Profile
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
