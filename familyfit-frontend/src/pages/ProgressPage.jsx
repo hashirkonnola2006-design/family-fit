@@ -113,8 +113,10 @@ export default function ProgressPage() {
     async function load() {
       try {
         if (activeMember?.id) {
-          const { data } = await getHealthScore(activeMember.id)
-          setHealthScore(data)
+          const res = await getHealthScore(activeMember.id).catch(() => ({ data: null }))
+          if (res?.data && typeof res.data === 'object' && res.data.score) {
+            setHealthScore(res.data)
+          }
         }
       } catch (e) {
         console.error(e)

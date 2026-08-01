@@ -17,44 +17,112 @@ const FILTER_TAGS = [
 
 const ACCENT_COLORS = ['#5e8404', '#ff5e14', '#2563eb', '#d97706']
 
+const DEMO_RECIPES = [
+  {
+    id: 1,
+    name: 'Grilled Chicken Quinoa Bowl',
+    kcal: 520,
+    prepTimeMinutes: 25,
+    imageUrl: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=80',
+    tags: ['High-Protein', 'Lunch'],
+    matchBadgeText: '100% Family Match',
+    favorited: true,
+  },
+  {
+    id: 2,
+    name: 'Herb-Baked Salmon with Vegetables',
+    kcal: 480,
+    prepTimeMinutes: 30,
+    imageUrl: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=800&q=80',
+    tags: ['Dinner', 'Gluten-Free'],
+    matchBadgeText: 'Suitable for 3 Members',
+    favorited: false,
+  },
+  {
+    id: 3,
+    name: 'Smashed Avocado Egg Toast',
+    kcal: 290,
+    prepTimeMinutes: 10,
+    imageUrl: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=800&q=80',
+    tags: ['Breakfast', 'Quick'],
+    matchBadgeText: 'Great for Parents',
+    favorited: false,
+  },
+  {
+    id: 4,
+    name: 'Overnight Oats with Berries',
+    kcal: 350,
+    prepTimeMinutes: 5,
+    imageUrl: 'https://images.unsplash.com/photo-1517673400267-0251440c45dc?w=800&q=80',
+    tags: ['Breakfast', 'High-Fibre'],
+    matchBadgeText: 'Kids Favorite',
+    favorited: true,
+  },
+  {
+    id: 5,
+    name: 'Red Lentil & Vegetable Soup',
+    kcal: 320,
+    prepTimeMinutes: 35,
+    imageUrl: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&q=80',
+    tags: ['Dinner', 'Vegan'],
+    matchBadgeText: 'Heart Healthy',
+    favorited: false,
+  },
+  {
+    id: 6,
+    name: '2-Ingredient Banana Pancakes',
+    kcal: 220,
+    prepTimeMinutes: 10,
+    imageUrl: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&q=80',
+    tags: ['Breakfast', 'Kids'],
+    matchBadgeText: '100% Kids Match',
+    favorited: false,
+  },
+]
+
 export default function RecipesPage() {
   const { user } = useAuth()
   const { family } = useFamily()
   const { isDark } = useTheme()
   const navigate = useNavigate()
-  const [recipes, setRecipes]         = useState([])
+  const [recipes, setRecipes]         = useState(DEMO_RECIPES)
   const [recommended, setRecommended] = useState([])
   const [search, setSearch]           = useState('')
   const [activeTag, setActiveTag]     = useState('All')
-  const [loading, setLoading]         = useState(true)
+  const [loading, setLoading]         = useState(false)
 
   useEffect(() => {
     async function load() {
       try {
         const familyId = family?.id || 1
         if (activeTag === 'Recommended') {
-          const { data } = await getRecommendedRecipes(familyId)
-          setRecipes(data)
+          const res = await getRecommendedRecipes(familyId).catch(() => ({ data: null }))
+          if (Array.isArray(res?.data) && res.data.length > 0) {
+            setRecipes(res.data)
+          }
         } else {
           const [allRes, recRes] = await Promise.all([
             getAllRecipes({
               search: search || undefined,
               tag: activeTag !== 'All' ? activeTag : undefined,
-            }),
-            getRecommendedRecipes(familyId),
+            }).catch(() => ({ data: null })),
+            getRecommendedRecipes(familyId).catch(() => ({ data: null })),
           ])
-          setRecipes(allRes.data)
-          setRecommended(recRes.data)
+          if (Array.isArray(allRes?.data) && allRes.data.length > 0) {
+            setRecipes(allRes.data)
+          }
+          if (Array.isArray(recRes?.data) && recRes.data.length > 0) {
+            setRecommended(recRes.data)
+          }
         }
       } catch (e) {
         console.error(e)
-      } finally {
-        setLoading(false)
       }
     }
     load()
   }, [search, activeTag, family])
 
+  const recipeList = Array.isArray(recipes) && recipes.length > 0 ? recipes : DEMO_RECIPES
   const familyName = family?.name || user?.familyName || 'Healthy Family'
   const initial = (familyName[0] || 'T').toUpperCase()
 
@@ -275,18 +343,18 @@ export default function RecipesPage() {
 
           {loading ? (
             <div className="spinner" />
-          ) : recipes.length === 0 ? (
+          ) : recipeList.length === 0 ? (
             <div className="error-state">
               <p>No recipes found for "{activeTag}"</p>
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-              {recipes.map((recipe, i) => (
+              {recipeList.map((r, i) => (
                 <RecipeCard
-                  key={recipe.id}
-                  recipe={recipe}
+                  key={r.id}
+                  recipe={r}
                   accentColor={ACCENT_COLORS[i % ACCENT_COLORS.length]}
-                  onClick={() => navigate(`/recipes/${recipe.id}`)}
+                  onClick={() => navigate(`/recipes/${r.id}`)}
                 />
               ))}
             </div>

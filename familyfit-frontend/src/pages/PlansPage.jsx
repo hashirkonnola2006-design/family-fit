@@ -21,37 +21,76 @@ const PLAN_THEMES = [
   { accentColor: '#d97706', tagBg: '#fef3c7', tagColor: '#b45309' },
 ]
 
+const DEMO_PLANS = [
+  {
+    id: 1,
+    name: 'Vitality & Growth Plan',
+    description: 'Perfectly balanced nutrients for active adults and growing kids. Rich in protein, whole grains, and colourful vegetables.',
+    tags: ['family', 'balanced', 'recommended'],
+    imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80',
+  },
+  {
+    id: 2,
+    name: 'Lean & Clean Plan',
+    description: 'Lower-calorie, high-satiety meals designed for gradual healthy weight loss without deprivation.',
+    tags: ['weight-loss', 'low-carb', 'high-protein'],
+    imageUrl: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&q=80',
+  },
+  {
+    id: 3,
+    name: 'Blood Sugar Balance Plan',
+    description: 'Low-GI meals that help stabilise blood glucose while still being delicious and family-friendly.',
+    tags: ['diabetes', 'low-gi', 'balanced'],
+    imageUrl: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=800&q=80',
+  },
+  {
+    id: 4,
+    name: 'Happy Kids Plan',
+    description: 'Fun, nutritious meals designed for little ones aged 4-12. Hidden veggies, colourful plates, no fuss.',
+    tags: ['kids', 'fun', 'colourful'],
+    imageUrl: 'https://images.unsplash.com/photo-1564802270019-c50fa2d5c945?w=800&q=80',
+  },
+]
+
 export default function PlansPage() {
   const { user } = useAuth()
   const { family } = useFamily()
   const { isDark } = useTheme()
-  const [plans, setPlans]           = useState([])
-  const [recommended, setRecommended] = useState([])
+  const [plans, setPlans]           = useState(DEMO_PLANS)
+  const [recommended, setRecommended] = useState([DEMO_PLANS[0]])
   const [search, setSearch]         = useState('')
   const [activeTag, setActiveTag]   = useState('All Plans')
-  const [loading, setLoading]       = useState(true)
+  const [loading, setLoading]       = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
     async function load() {
       try {
-        const [allRes, recRes] = await Promise.all([getAllPlans(), getRecommended()])
-        setPlans(allRes.data)
-        setRecommended(recRes.data)
+        const [allRes, recRes] = await Promise.all([
+          getAllPlans().catch(() => ({ data: null })),
+          getRecommended().catch(() => ({ data: null })),
+        ])
+        if (Array.isArray(allRes?.data) && allRes.data.length > 0) {
+          setPlans(allRes.data)
+        }
+        if (Array.isArray(recRes?.data) && recRes.data.length > 0) {
+          setRecommended(recRes.data)
+        }
       } catch (e) {
         console.error(e)
-      } finally {
-        setLoading(false)
       }
     }
     load()
   }, [])
 
-  const filtered = activeTag === 'All Plans'
-    ? plans
-    : plans.filter(p => p.tags?.some(t => t.toLowerCase().includes(activeTag.toLowerCase())))
+  const planList = Array.isArray(plans) && plans.length > 0 ? plans : DEMO_PLANS
+  const recList = Array.isArray(recommended) && recommended.length > 0 ? recommended : [planList[0]]
 
-  const topPick = recommended[0] || plans[0]
+  const filtered = activeTag === 'All Plans'
+    ? planList
+    : planList.filter(p => p.tags?.some(t => t.toLowerCase().includes(activeTag.toLowerCase())))
+
+  const topPick = recList[0] || planList[0]
   const familyName = family?.name || user?.familyName || 'Healthy Family'
   const initial = (familyName[0] || 'T').toUpperCase()
 

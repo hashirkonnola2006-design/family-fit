@@ -5,13 +5,47 @@ import { useFamily } from '../context/FamilyContext'
 import { useTheme } from '../context/ThemeContext'
 import BottomNav from '../components/BottomNav'
 
+const DEMO_RECIPE = {
+  id: 1,
+  name: 'Grilled Chicken Quinoa Bowl',
+  description: 'A protein-packed bowl with grilled chicken, fluffy quinoa, roasted vegetables, and a lemon-tahini drizzle.',
+  kcal: 520,
+  proteinG: 42,
+  carbsG: 45,
+  fatG: 12,
+  prepTimeMinutes: 25,
+  imageUrl: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=80',
+  tags: ['High-Protein', 'Gluten-Free', 'Lunch'],
+  whyItsGood: 'Rich in lean protein and low-GI quinoa, providing sustained energy while supporting blood sugar and muscle recovery.',
+  ingredients: [
+    { name: 'Chicken Breast', quantity: '200', unit: 'g' },
+    { name: 'Quinoa', quantity: '80', unit: 'g' },
+    { name: 'Cherry Tomatoes', quantity: '100', unit: 'g' },
+    { name: 'Cucumber', quantity: '1', unit: 'medium' },
+    { name: 'Tahini', quantity: '2', unit: 'tbsp' },
+    { name: 'Lemon Juice', quantity: '1', unit: 'tbsp' },
+  ],
+  steps: [
+    'Season chicken breast with salt, pepper, and garlic powder.',
+    'Grill chicken for 6-7 min per side until cooked through. Rest for 5 min, then slice.',
+    'Cook quinoa: rinse, then simmer in 1.5x water for 15 min. Fluff with a fork.',
+    'Halve cherry tomatoes and dice cucumber.',
+    'Whisk tahini with lemon juice, 2 tbsp water, and a pinch of salt.',
+    'Assemble bowl with quinoa base, sliced chicken, vegetables, and tahini drizzle.',
+  ],
+  suitabilityByMember: [
+    { memberId: 1, memberName: 'David', isSuitable: true, suitabilityNote: 'High protein fits muscle goal' },
+    { memberId: 2, memberName: 'Sarah', isSuitable: true, suitabilityNote: 'Balanced macros for maintenance' },
+  ],
+}
+
 export default function RecipeDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { family } = useFamily()
   const { isDark } = useTheme()
-  const [recipe, setRecipe] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [recipe, setRecipe] = useState(DEMO_RECIPE)
+  const [loading, setLoading] = useState(false)
   const [checkedIngredients, setCheckedIngredients] = useState({})
   const [toastMessage, setToastMessage] = useState('')
 
@@ -19,12 +53,12 @@ export default function RecipeDetailPage() {
     async function load() {
       try {
         const familyId = family?.id || 1
-        const { data } = await getRecipeDetail(id, familyId)
-        setRecipe(data)
+        const res = await getRecipeDetail(id, familyId).catch(() => ({ data: null }))
+        if (res?.data && typeof res.data === 'object' && res.data.name) {
+          setRecipe(res.data)
+        }
       } catch (e) {
         console.error(e)
-      } finally {
-        setLoading(false)
       }
     }
     load()

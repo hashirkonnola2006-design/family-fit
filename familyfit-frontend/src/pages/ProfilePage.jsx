@@ -202,11 +202,15 @@ export default function ProfilePage() {
     async function load() {
       try {
         const [notifRes, aiRes] = await Promise.all([
-          getNotificationPreferences(familyId),
-          getAiPreferences(familyId),
+          getNotificationPreferences(familyId).catch(() => ({ data: null })),
+          getAiPreferences(familyId).catch(() => ({ data: null })),
         ])
-        setNotifPrefs(notifRes.data)
-        setAiPrefs(aiRes.data)
+        if (notifRes?.data && typeof notifRes.data === 'object' && notifRes.data.mealRemindersEnabled !== undefined) {
+          setNotifPrefs(notifRes.data)
+        }
+        if (aiRes?.data && typeof aiRes.data === 'object' && aiRes.data.smartInsightsEnabled !== undefined) {
+          setAiPrefs(aiRes.data)
+        }
       } catch (e) { console.error(e) }
     }
     load()

@@ -15,21 +15,29 @@ client.interceptors.request.use((config) => {
   return config
 })
 
-// Response interceptor: handle 401 → try refresh
+// Response interceptor: handle HTML rewrites & 401 refresh
 client.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // If Vercel returned index.html for API route rewrite
+    if (typeof response.data === 'string' && response.data.trim().startsWith('<!DOCTYPE html')) {
+      return Promise.reject(new Error('API Endpoint unavailable (HTML fallback response)'))
+    }
+    return response
+  },
   async (error) => {
     const original = error.config
     const status = error.response?.status
-    if ((status === 401 || status === 403) && !original._retry) {
+    if ((status === 401 || status === 403) && original && !original._retry) {
       original._retry = true
       const refreshToken = localStorage.getItem('refreshToken')
       if (refreshToken) {
         try {
           const { data } = await axios.post('/api/auth/refresh', { refreshToken })
-          localStorage.setItem('accessToken', data.accessToken)
-          original.headers.Authorization = `Bearer ${data.accessToken}`
-          return client(original)
+          if (data?.accessToken) {
+            localStorage.setItem('accessToken', data.accessToken)
+            original.headers.Authorization = `Bearer ${data.accessToken}`
+            return client(original)
+          }
         } catch {
           localStorage.removeItem('accessToken')
           localStorage.removeItem('refreshToken')
