@@ -2,85 +2,89 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav'
 import MemberAvatar from '../components/MemberAvatar'
-import NutritionRing from '../components/NutritionRing'
 import { useFamily } from '../context/FamilyContext'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
-import { getRecommended } from '../api/plans'
-import { getTodayLog } from '../api/nutrition'
+import { RECIPE_DATABASE } from '../data/recipeDatabase'
 
 const MEMBER_THEMES = [
   {
     avatarBg: '#ea580c',
-    badgeBg: '#e8f5e9',
-    badgeText: '#2e7d32',
-    badgeIcon: '✔',
-    status: 'Healthy',
     boxBg: '#fff8f3',
     boxBorder: '#ffe8d6',
     allergiesColor: '#c2410c',
     btnBg: '#ffedd5',
     btnColor: '#c2410c',
-    imgUrl: 'https://cdn-icons-png.flaticon.com/512/4140/4140048.png',
   },
   {
     avatarBg: '#8b5cf6',
-    badgeBg: '#f3e8ff',
-    badgeText: '#7e22ce',
-    badgeIcon: '⭐',
-    status: 'Excellent',
     boxBg: '#faf5ff',
     boxBorder: '#efe6fa',
     allergiesColor: '#4b5563',
     btnBg: '#f3e8ff',
     btnColor: '#7e22ce',
-    imgUrl: 'https://cdn-icons-png.flaticon.com/512/4140/4140047.png',
   },
   {
     avatarBg: '#0d9488',
-    badgeBg: '#ccfbf1',
-    badgeText: '#0f766e',
-    badgeIcon: '✔',
-    status: 'Healthy',
     boxBg: '#f0fdfa',
     boxBorder: '#ccfbf1',
     allergiesColor: '#0f766e',
     btnBg: '#ccfbf1',
     btnColor: '#0f766e',
-    imgUrl: 'https://cdn-icons-png.flaticon.com/512/4140/4140061.png',
   },
   {
     avatarBg: '#2563eb',
-    badgeBg: '#dbeafe',
-    badgeText: '#1e40af',
-    badgeIcon: '⭐',
-    status: 'Excellent',
-    boxBg: '#eff6ff',
+    boxBg: '#dbeafe',
     boxBorder: '#dbeafe',
     allergiesColor: '#1e40af',
     btnBg: '#dbeafe',
     btnColor: '#1e40af',
-    imgUrl: 'https://cdn-icons-png.flaticon.com/512/4140/4140051.png',
   },
 ]
 
-const ALLERGEN_TIPS = {
-  'Milk/Dairy': 'Check for milk powder, whey, butter, ghee, or curd in packaged snacks & gravies.',
-  'Eggs': 'Check for egg powder in baked goods, egg noodles, mayonnaise, and batters.',
-  'Peanuts/Tree Nuts': 'Check for peanut oil, nut pastes, or cross-contamination labels in snacks.',
-  'Seafood/Fish': 'Check for fish sauce, shrimp paste (belacan), dried fish, or shellfish extract.',
-  'Soy': 'Check for soy lecithin, soy sauce, tofu, or edamame in Asian marinades & broths.',
-  'Wheat/Gluten': 'Check for maida, semolina, or wheat flour in fried coatings, parottas & gravies.',
+function getMemberHealthTag(m) {
+  if (!m) return 'No restrictions'
+  const allergies = Array.isArray(m.allergies) ? m.allergies.filter((a) => a && a !== 'None') : []
+  if (allergies.length > 0) {
+    return `${m.name} — ${allergies[0]} Allergy`
+  }
+  const conditions = Array.isArray(m.healthConditions) ? m.healthConditions.filter((c) => c && c !== 'None') : []
+  if (conditions.length > 0) {
+    return `${m.name} — ${conditions[0]}`
+  }
+  if (m.fitnessGoal) {
+    const goalMap = {
+      WEIGHT_LOSS: 'Weight Loss',
+      WEIGHT_GAIN: 'Weight Gain',
+      MUSCLE_GAIN: 'Muscle Gain',
+      MANAGE_CONDITION: 'Manage Condition',
+      MAINTAIN_WEIGHT: 'Maintain Weight',
+    }
+    const g = goalMap[m.fitnessGoal] || m.fitnessGoal
+    if (g && g !== 'Maintain Weight') return `${m.name} — ${g}`
+  }
+  return `${m.name} — No restrictions`
+}
+
+function getRecipeMatchTag(recipe, members) {
+  if (!members || members.length === 0) return '💡 Family Pick'
+  const firstMatchingMember = members.find((m) => {
+    const allergies = m.allergies || []
+    const recipeAllergies = recipe.allergies || []
+    return !allergies.some((a) => recipeAllergies.includes(a))
+  })
+  if (firstMatchingMember) {
+    return `Matches: ${firstMatchingMember.name}`
+  }
+  return 'Matches: Family Pick'
 }
 
 export default function HomePage() {
   const { user } = useAuth()
-  const { family, activeMember, setActiveMember, loading: familyLoading } = useFamily()
+  const { family, setActiveMember } = useFamily()
   const { isDark } = useTheme()
-  const [plan, setPlan]                 = useState(null)
-  const [todayLog, setTodayLog]         = useState(null)
-  const [search, setSearch]             = useState('')
-  const [expandedTipKey, setExpandedTipKey] = useState(null)
+  const [search, setSearch] = useState('')
+  const [savedRecipeIds, setSavedRecipeIds] = useState([])
   const navigate = useNavigate()
 
   const greeting = () => {
@@ -90,43 +94,37 @@ export default function HomePage() {
     return 'Good evening,'
   }
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const [planRes, logRes] = await Promise.all([
-          getRecommended().catch(() => ({ data: [] })),
-          activeMember?.id ? getTodayLog(activeMember.id).catch(() => ({ data: null })) : Promise.resolve({ data: null }),
-        ])
-        setPlan(planRes?.data?.[0] || null)
-        setTodayLog(logRes?.data || null)
-      } catch (e) {
-        console.error(e)
-      }
-    }
-    load()
-  }, [activeMember])
-
-  const meals = plan?.meals || []
+  const memberList = family?.members || []
   const familyName = user?.familyName || family?.name || (user?.email ? user.email.split('@')[0] : 'Family')
 
-  // Family members list
-  const memberList = family?.members || []
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('familyfit_saved_recipes')
+      if (saved) {
+        setSavedRecipeIds(JSON.parse(saved))
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }, [])
 
-  // Dynamic nutrition summary metrics
-  const consumedKcal = todayLog?.calories || 0
-  const goalKcal     = todayLog?.calorieGoal || 2000
-  const carbsGrams   = todayLog?.carbsGrams || 0
-  const carbsGoal    = todayLog?.carbsGoal || 250
-  const proteinGrams = todayLog?.proteinGrams || 0
-  const proteinGoal  = todayLog?.proteinGoal || 120
-  const fatGrams     = todayLog?.fatGrams || 0
-  const fatGoal      = todayLog?.fatGoal || 70
+  const toggleSaveRecipe = (recipeId) => {
+    const idStr = String(recipeId)
+    let updated = []
+    if (savedRecipeIds.includes(idStr)) {
+      updated = savedRecipeIds.filter((i) => i !== idStr)
+    } else {
+      updated = [...savedRecipeIds, idStr]
+    }
+    setSavedRecipeIds(updated)
+    localStorage.setItem('familyfit_saved_recipes', JSON.stringify(updated))
+  }
 
-  const carbsPercent   = carbsGoal > 0 ? Math.min(Math.round((carbsGrams / carbsGoal) * 100), 100) : 0
-  const proteinPercent = proteinGoal > 0 ? Math.min(Math.round((proteinGrams / proteinGoal) * 100), 100) : 0
-  const fatPercent     = fatGoal > 0 ? Math.min(Math.round((fatGrams / fatGoal) * 100), 100) : 0
+  const recommendedRecipes = search
+    ? RECIPE_DATABASE.filter((r) => r.name.toLowerCase().includes(search.toLowerCase())).slice(0, 6)
+    : RECIPE_DATABASE.slice(0, 6)
 
-  const initial = (familyName[0] || 'F').toUpperCase()
+  const initial = user?.name ? user.name[0].toUpperCase() : 'F'
 
   return (
     <div
@@ -134,121 +132,81 @@ export default function HomePage() {
         maxWidth: 480,
         margin: '0 auto',
         minHeight: '100vh',
-        background: isDark ? '#0a0f1d' : '#fcfaf7',
+        background: isDark ? '#0a0f1d' : '#fcfaf5',
         paddingBottom: 'calc(110px + env(safe-area-inset-bottom, 0px))',
         fontFamily: "'Inter', sans-serif",
         color: isDark ? '#f8fafc' : '#1a1a1a',
         position: 'relative',
-        boxShadow: '0 0 40px rgba(0,0,0,0.06)',
         boxSizing: 'border-box',
       }}
     >
-      {/* ── 1. HERO HEADER ─────────────────────────────────────────────────── */}
       <div
         style={{
-          position: 'relative',
-          width: '100%',
-          minHeight: 320,
-          backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.85) 30%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0.1)), url('https://images.unsplash.com/photo-1540420773420-3366772f4999?w=1000&q=85')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center right',
-          borderRadius: '0 0 36px 36px',
-          padding: 'max(28px, env(safe-area-inset-top, 28px)) 24px 35px 24px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          boxSizing: 'border-box',
+          background: isDark
+            ? 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)'
+            : 'linear-gradient(135deg, #2e4a19 0%, #1c300f 100%)',
+          color: 'white',
+          padding: '24px 20px 38px 20px',
+          borderRadius: '0 0 32px 32px',
+          boxShadow: '0 12px 32px rgba(46,74,25,0.25)',
         }}
       >
-        {/* Top bar */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8ce600" strokeWidth="2.5">
-              <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.1 2 7 0 6-4.5 11-10 11z" />
-              <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
-            </svg>
-            <span style={{ fontSize: 22, fontWeight: 800, color: 'white', letterSpacing: '-0.3px' }}>
-              Family Fit
-            </span>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ fontSize: 20 }}>🌿</span>
+            <span style={{ fontSize: 17, fontWeight: 900, letterSpacing: '-0.3px', color: '#8ce600' }}>Family Fit</span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <button
-              onClick={() => navigate('/notifications')}
-              style={{
-                position: 'relative',
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                background: 'rgba(255,255,255,0.92)',
-                border: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-              }}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2c3e2d" strokeWidth="2">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-              </svg>
-              <span style={{ position: 'absolute', top: 9, right: 9, width: 7, height: 7, borderRadius: '50%', background: '#ff4d4d' }} />
-            </button>
-
-            <div
-              onClick={() => navigate('/profile')}
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                background: '#689f00',
-                color: 'white',
-                fontWeight: 800,
-                fontSize: 16,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                border: '2px solid rgba(255,255,255,0.6)',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-              }}
-            >
-              {initial}
-            </div>
+          <div
+            onClick={() => navigate('/profile')}
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: '50%',
+              background: '#689f00',
+              color: 'white',
+              fontWeight: 800,
+              fontSize: 16,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              border: '2px solid rgba(255,255,255,0.6)',
+            }}
+          >
+            {initial}
           </div>
         </div>
 
-        {/* Hero Greeting Text */}
         <div style={{ marginBottom: 10 }}>
-          <h1 style={{ fontSize: 34, fontWeight: 800, color: 'white', lineHeight: 1.15, margin: 0, letterSpacing: '-0.5px' }}>
+          <h1 style={{ fontSize: 32, fontWeight: 800, color: 'white', lineHeight: 1.15, margin: 0, letterSpacing: '-0.5px' }}>
             {greeting()}<br />
             <span style={{ color: '#8ce600', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
               {familyName}!
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8ce600" strokeWidth="2.5">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8ce600" strokeWidth="2.5">
                 <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.1 2 7 0 6-4.5 11-10 11z" />
               </svg>
             </span>
           </h1>
-          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.85)', marginTop: 8, fontWeight: 400, margin: '8px 0 0' }}>
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)', marginTop: 6, fontWeight: 400, margin: '6px 0 0' }}>
             Eat well today, live better together.
           </p>
         </div>
       </div>
 
-      {/* ── 2. SEARCH BAR & FLOATING ORANGE FILTER BUTTON ────────────────── */}
-      <div style={{ padding: '0 20px', marginTop: -26, position: 'relative', zIndex: 10 }}>
+      <div style={{ padding: '0 20px', marginTop: -24, position: 'relative', zIndex: 10 }}>
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
           <div
             style={{
               flex: 1,
-              background: 'white',
+              background: isDark ? '#1e293b' : 'white',
               borderRadius: 30,
               padding: '12px 18px',
               display: 'flex',
               alignItems: 'center',
               gap: 12,
               boxShadow: '0 8px 24px rgba(0,0,0,0.06)',
+              border: isDark ? '1px solid #334155' : 'none',
             }}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2.2">
@@ -256,10 +214,17 @@ export default function HomePage() {
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
             <input
-              placeholder="Search meals, plans, recipes..."
+              placeholder="Search meals, recipes..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              style={{ border: 'none', outline: 'none', width: '100%', fontSize: 14, color: '#374151', background: 'transparent' }}
+              style={{
+                border: 'none',
+                outline: 'none',
+                width: '100%',
+                fontSize: 14,
+                color: isDark ? '#f8fafc' : '#374151',
+                background: 'transparent',
+              }}
             />
           </div>
 
@@ -290,233 +255,170 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── 3. TODAY'S PLAN (GREEN CARD) ─────────────────────────────────── */}
-      <div style={{ padding: '0 20px', marginTop: 20 }}>
-        <div
-          style={{
-            background: 'linear-gradient(145deg, #70a100 0%, #517900 100%)',
-            borderRadius: 28,
-            padding: '22px 20px 20px',
-            color: 'white',
-            boxShadow: '0 10px 25px rgba(81, 121, 0, 0.22)',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-            <h2 style={{ fontSize: 21, fontWeight: 800, margin: 0 }}>Today's Plan</h2>
-            <button
-              onClick={() => navigate('/recipes')}
-              style={{ background: 'none', border: 'none', color: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}
-            >
-              View recipes &rsaquo;
-            </button>
+      <div style={{ padding: '0 20px', marginTop: 24 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+          <div>
+            <h2 style={{ fontSize: 19, fontWeight: 900, margin: 0, color: isDark ? '#f8fafc' : '#111827' }}>
+              Family Health Snapshot
+            </h2>
+            <p style={{ fontSize: 12, color: isDark ? '#94a3b8' : '#6b7280', margin: '2px 0 0', fontWeight: 500 }}>
+              Personalized health tags & diet profiles at a glance
+            </p>
           </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, opacity: 0.9, marginBottom: 16 }}>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-              <line x1="16" y1="2" x2="16" y2="6" />
-              <line x1="8" y1="2" x2="8" y2="6" />
-              <line x1="3" y1="10" x2="21" y2="10" />
-            </svg>
-            {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-          </div>
-
-          {meals.length > 0 ? (
-            <div
-              onClick={() => navigate('/recipes')}
-              style={{
-                background: 'white',
-                borderRadius: 20,
-                padding: '18px 16px',
-                color: '#1a1a1a',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 16,
-                boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
-                cursor: 'pointer',
-              }}
-            >
-              <div
-                style={{
-                  width: 50,
-                  height: 50,
-                  borderRadius: 16,
-                  background: '#f1f8e4',
-                  border: '1px solid #d6ebae',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                }}
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5e8404" strokeWidth="2">
-                  <path d="M18 2v20" />
-                  <path d="M15 2h6" />
-                  <path d="M6 2v7a3 3 0 0 0 6 0V2" />
-                  <path d="M9 9v13" />
-                </svg>
-              </div>
-
-              <div>
-                <div style={{ fontSize: 15, fontWeight: 800, color: '#111827', marginBottom: 2 }}>
-                  {meals.length} Meal{meals.length === 1 ? '' : 's'} Planned Today
-                </div>
-                <div style={{ fontSize: 13, color: '#6b7280', fontWeight: 500 }}>
-                  Tap to view recipes & ingredients
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div
-              onClick={() => navigate('/recipes')}
-              style={{
-                background: 'rgba(255,255,255,0.95)',
-                borderRadius: 20,
-                padding: '18px 16px',
-                color: '#1a1a1a',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                cursor: 'pointer',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                <span style={{ fontSize: 26 }}>🍽️</span>
-                <div>
-                  <div style={{ fontSize: 14, fontWeight: 800, color: '#111827' }}>
-                    No meals planned yet
-                  </div>
-                  <div style={{ fontSize: 12, color: '#4b5563', marginTop: 2, fontWeight: 500 }}>
-                    Tap to explore recipes and plan your first meal
-                  </div>
-                </div>
-              </div>
-
-              <span
-                style={{
-                  background: 'linear-gradient(135deg, #ff5e14 0%, #e04800 100%)',
-                  color: 'white',
-                  fontSize: 12,
-                  fontWeight: 800,
-                  padding: '8px 14px',
-                  borderRadius: 14,
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                Plan Meal &rsaquo;
-              </span>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* ── 4. DAILY NUTRITION SUMMARY ──────────────────────────────────── */}
-      <div style={{ padding: '0 20px', marginTop: 24, overflow: 'visible' }}>
-        <div
-          style={{
-            background: 'white',
-            borderRadius: 28,
-            padding: '24px 22px',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
-            overflow: 'visible',
-          }}
-        >
-          <div
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4, cursor: 'pointer' }}
-            onClick={() => navigate('/progress')}
-          >
-            <h3 style={{ fontSize: 19, fontWeight: 800, margin: 0, color: '#111827' }}>
-              Daily Nutrition Summary
-            </h3>
-            <span style={{ fontSize: 13, color: '#3d7a12', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 2 }}>
-              View all &rsaquo;
-            </span>
-          </div>
-
-          <div style={{ fontSize: 13, color: '#6b7280', fontWeight: 500, marginBottom: 20 }}>
-            Goal: {goalKcal.toLocaleString()} kcal
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <NutritionRing consumed={consumedKcal} goal={goalKcal} size={145} strokeWidth={14} />
-
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 14 }}>
-              {/* Carbs */}
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, fontWeight: 700, marginBottom: 5 }}>
-                  <span style={{ color: '#111827' }}>Carbs</span>
-                  <span style={{ color: '#6b7280', fontWeight: 500 }}>{carbsGrams}g / {carbsGoal}g</span>
-                  <span style={{ color: '#6b7280', fontWeight: 500 }}>{carbsPercent}%</span>
-                </div>
-                <div style={{ height: 8, borderRadius: 4, background: '#f3f4f6', overflow: 'hidden' }}>
-                  <div style={{ width: `${carbsPercent}%`, height: '100%', background: '#5e8404', borderRadius: 4 }} />
-                </div>
-              </div>
-
-              {/* Protein */}
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, fontWeight: 700, marginBottom: 5 }}>
-                  <span style={{ color: '#111827' }}>Protein</span>
-                  <span style={{ color: '#6b7280', fontWeight: 500 }}>{proteinGrams}g / {proteinGoal}g</span>
-                  <span style={{ color: '#6b7280', fontWeight: 500 }}>{proteinPercent}%</span>
-                </div>
-                <div style={{ height: 8, borderRadius: 4, background: '#f3f4f6', overflow: 'hidden' }}>
-                  <div style={{ width: `${proteinPercent}%`, height: '100%', background: '#5e8404', borderRadius: 4 }} />
-                </div>
-              </div>
-
-              {/* Fats */}
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, fontWeight: 700, marginBottom: 5 }}>
-                  <span style={{ color: '#111827' }}>Fats</span>
-                  <span style={{ color: '#6b7280', fontWeight: 500 }}>{fatGrams}g / {fatGoal}g</span>
-                  <span style={{ color: '#6b7280', fontWeight: 500 }}>{fatPercent}%</span>
-                </div>
-                <div style={{ height: 8, borderRadius: 4, background: '#f3f4f6', overflow: 'hidden' }}>
-                  <div style={{ width: `${fatPercent}%`, height: '100%', background: '#ff5e14', borderRadius: 4 }} />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {!todayLog && (
-            <div
-              style={{
-                marginTop: 16,
-                padding: '10px 14px',
-                background: '#fcfaf7',
-                borderRadius: 14,
-                border: '1px border #f0ede8',
-                fontSize: 12,
-                color: '#6b7280',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <span>💡 Log your meals to automatically track daily macros.</span>
-              <button
-                onClick={() => navigate('/recipes')}
-                style={{ background: 'none', border: 'none', color: '#5e8404', fontWeight: 700, cursor: 'pointer', fontSize: 12 }}
-              >
-                Log Meal &rsaquo;
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* ── 5. FOR YOUR FAMILY ───────────────────────────────────────────── */}
-      <div style={{ padding: '0 20px', marginTop: 28 }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-          <h3 style={{ fontSize: 20, fontWeight: 800, margin: 0, color: '#111827' }}>For Your Family</h3>
           <button
             onClick={() => navigate('/profile')}
             style={{
               background: 'none',
               border: 'none',
-              color: '#3d7a12',
-              fontSize: 14,
+              color: '#5e8404',
+              fontSize: 13,
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+            }}
+          >
+            View profiles &rsaquo;
+          </button>
+        </div>
+
+        {memberList.length > 0 ? (
+          <div style={{ display: 'flex', gap: 12, overflowX: 'auto', paddingBottom: 6, scrollbarWidth: 'none' }}>
+            {memberList.map((m, idx) => {
+              const tag = getMemberHealthTag(m)
+              const allergyCount = (m.allergies || []).filter((a) => a !== 'None').length
+              const hasWarning = allergyCount > 0 || (m.healthConditions || []).filter((c) => c !== 'None').length > 0
+
+              return (
+                <div
+                  key={m.id || idx}
+                  onClick={() => {
+                    setActiveMember(m)
+                    navigate('/profile')
+                  }}
+                  style={{
+                    minWidth: 170,
+                    maxWidth: 210,
+                    background: isDark ? '#161b22' : 'white',
+                    borderRadius: 20,
+                    padding: '16px',
+                    boxShadow: '0 4px 16px rgba(0,0,0,0.04)',
+                    border: `1.5px solid ${isDark ? '#21262d' : '#f0f0f0'}`,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 10,
+                    flexShrink: 0,
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <MemberAvatar member={m} size={38} />
+                    <div>
+                      <div style={{ fontSize: 15, fontWeight: 800, color: isDark ? '#f8fafc' : '#111827', lineHeight: 1.2 }}>
+                        {m.name}
+                      </div>
+                      <div style={{ fontSize: 11, color: isDark ? '#94a3b8' : '#6b7280', fontWeight: 500, marginTop: 2 }}>
+                        {m.role || 'Member'}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    style={{
+                      background: hasWarning
+                        ? (isDark ? 'rgba(239,68,68,0.15)' : '#fff1f2')
+                        : (isDark ? 'rgba(140,230,0,0.12)' : '#f4fce8'),
+                      color: hasWarning
+                        ? (isDark ? '#fca5a5' : '#b91c1c')
+                        : (isDark ? '#8ce600' : '#3d6b3f'),
+                      border: `1px solid ${
+                        hasWarning
+                          ? (isDark ? '#4c1d24' : '#fecaca')
+                          : (isDark ? 'rgba(140,230,0,0.25)' : '#d6ebae')
+                      }`,
+                      borderRadius: 12,
+                      padding: '6px 10px',
+                      fontSize: 11,
+                      fontWeight: 700,
+                      lineHeight: 1.3,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 6,
+                    }}
+                  >
+                    <span>{hasWarning ? '⚠️' : '💚'}</span>
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{tag}</span>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        ) : (
+          <div
+            onClick={() => navigate('/onboarding')}
+            style={{
+              background: isDark ? '#161b22' : 'white',
+              borderRadius: 24,
+              padding: '24px 20px',
+              textAlign: 'center',
+              border: `1.5px dashed ${isDark ? '#30363d' : '#e5e7eb'}`,
+              cursor: 'pointer',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 8,
+            }}
+          >
+            <div style={{ fontSize: 36, marginBottom: 2 }}>👨‍👩‍👧‍👦</div>
+            <div style={{ fontWeight: 800, fontSize: 16, color: isDark ? '#f8fafc' : '#111827' }}>
+              Add your family to see personalized health info here
+            </div>
+            <div style={{ fontSize: 13, color: isDark ? '#94a3b8' : '#6b7280', fontWeight: 500, marginBottom: 6 }}>
+              Set up family profiles to tailor meal recommendations and health tags for everyone.
+            </div>
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                navigate('/onboarding')
+              }}
+              style={{
+                background: 'linear-gradient(135deg, #ff5e14 0%, #e04800 100%)',
+                color: 'white',
+                border: 'none',
+                padding: '10px 20px',
+                borderRadius: 16,
+                fontWeight: 800,
+                fontSize: 13,
+                cursor: 'pointer',
+                boxShadow: '0 4px 14px rgba(224, 72, 0, 0.3)',
+              }}
+            >
+              + Add Family Member
+            </button>
+          </div>
+        )}
+      </div>
+
+      <div style={{ padding: '0 20px', marginTop: 28 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+          <div>
+            <h2 style={{ fontSize: 19, fontWeight: 900, margin: 0, color: isDark ? '#f8fafc' : '#111827' }}>
+              Recommended For Your Family
+            </h2>
+            <p style={{ fontSize: 12, color: isDark ? '#94a3b8' : '#6b7280', margin: '2px 0 0', fontWeight: 500 }}>
+              {memberList.length === 0
+                ? 'Add your family for personalized picks'
+                : 'Curated dishes based on your family\'s dietary preferences'}
+            </p>
+          </div>
+          <button
+            onClick={() => navigate('/recipes')}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: '#5e8404',
+              fontSize: 13,
               fontWeight: 700,
               cursor: 'pointer',
               display: 'flex',
@@ -528,13 +430,120 @@ export default function HomePage() {
           </button>
         </div>
 
-        {/* Horizontal Scroll Row of Detailed Member Cards matching screenshot */}
-        <div style={{ display: 'flex', gap: 16, overflowX: 'auto', paddingBottom: 10, scrollbarWidth: 'none' }}>
-          {memberList.length > 0 ? (
-            memberList.map((m, idx) => {
+        <div style={{ display: 'flex', gap: 14, overflowX: 'auto', paddingBottom: 10, scrollbarWidth: 'none' }}>
+          {recommendedRecipes.map((recipe) => {
+            const matchTag = getRecipeMatchTag(recipe, memberList)
+            const isSaved = savedRecipeIds.includes(String(recipe.id))
+
+            return (
+              <div
+                key={recipe.id}
+                onClick={() => navigate(`/recipes/${recipe.id}`)}
+                style={{
+                  minWidth: 220,
+                  maxWidth: 240,
+                  background: isDark ? '#161b22' : 'white',
+                  borderRadius: 20,
+                  overflow: 'hidden',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.04)',
+                  border: `1px solid ${isDark ? '#21262d' : '#f0f0f0'}`,
+                  cursor: 'pointer',
+                  flexShrink: 0,
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                <div style={{ position: 'relative', width: '100%', height: 130 }}>
+                  <img
+                    src={recipe.imageUrl}
+                    alt={recipe.name}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      toggleSaveRecipe(recipe.id)
+                    }}
+                    style={{
+                      position: 'absolute',
+                      top: 10,
+                      right: 10,
+                      width: 32,
+                      height: 32,
+                      borderRadius: '50%',
+                      background: 'rgba(255,255,255,0.9)',
+                      border: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: 16,
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                    }}
+                  >
+                    {isSaved ? '❤️' : '🤍'}
+                  </button>
+                  <div
+                    style={{
+                      position: 'absolute',
+                      bottom: 8,
+                      left: 8,
+                      background: 'rgba(0,0,0,0.65)',
+                      color: 'white',
+                      padding: '3px 8px',
+                      borderRadius: 8,
+                      fontSize: 10,
+                      fontWeight: 700,
+                      backdropFilter: 'blur(4px)',
+                    }}
+                  >
+                    {matchTag}
+                  </div>
+                </div>
+
+                <div style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: isDark ? '#f8fafc' : '#111827', lineHeight: 1.3 }}>
+                    {recipe.name}
+                  </div>
+                  <div style={{ fontSize: 12, color: isDark ? '#94a3b8' : '#6b7280', fontWeight: 500 }}>
+                    ⏱️ {recipe.prepTimeMinutes || 20} mins • 🔥 {recipe.kcal || 350} kcal
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {memberList.length > 0 && (
+        <div style={{ padding: '0 20px', marginTop: 28 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+            <h3 style={{ fontSize: 19, fontWeight: 900, margin: 0, color: isDark ? '#f8fafc' : '#111827' }}>
+              Family Profiles
+            </h3>
+            <button
+              onClick={() => navigate('/profile')}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#5e8404',
+                fontSize: 13,
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2,
+              }}
+            >
+              Manage &rsaquo;
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', gap: 14, overflowX: 'auto', paddingBottom: 10, scrollbarWidth: 'none' }}>
+            {memberList.map((m, idx) => {
               const theme = MEMBER_THEMES[idx % MEMBER_THEMES.length]
               const bmi = m.bmi || (m.weightKg && m.heightCm ? (m.weightKg / Math.pow(m.heightCm / 100, 2)).toFixed(1) : 24.5)
-              const allergyList = Array.isArray(m.allergies) ? m.allergies : []
+              const allergyList = Array.isArray(m.allergies) ? m.allergies.filter((a) => a !== 'None') : []
               const allergyCount = allergyList.length
 
               return (
@@ -545,131 +554,66 @@ export default function HomePage() {
                     navigate('/profile')
                   }}
                   style={{
-                    minWidth: 310,
-                    maxWidth: 320,
+                    minWidth: 280,
+                    maxWidth: 300,
                     background: isDark ? '#141c2e' : 'white',
-                    borderRadius: 24,
-                    padding: '20px',
+                    borderRadius: 22,
+                    padding: '18px',
                     boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
                     border: `1px solid ${isDark ? '#24324a' : theme.boxBorder}`,
                     flexShrink: 0,
                     cursor: 'pointer',
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: 16,
-                    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                    gap: 14,
                   }}
                 >
-                  {/* Member Header Row */}
-                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                      <MemberAvatar member={m} size={48} />
-
-                      <div>
-                        <div style={{ fontSize: 18, fontWeight: 800, color: isDark ? '#f8fafc' : '#111827', lineHeight: 1.2 }}>
-                          {m.name}
-                        </div>
-                        <div style={{ fontSize: 12, color: isDark ? '#94a3b8' : '#6b7280', marginTop: 2, fontWeight: 500 }}>
-                          {m.age} years • {m.heightCm || 170} cm
-                        </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <MemberAvatar member={m} size={44} />
+                    <div>
+                      <div style={{ fontSize: 17, fontWeight: 800, color: isDark ? '#f8fafc' : '#111827' }}>
+                        {m.name}
+                      </div>
+                      <div style={{ fontSize: 12, color: isDark ? '#94a3b8' : '#6b7280', marginTop: 2 }}>
+                        {m.age} yrs • {m.heightCm || 170} cm
                       </div>
                     </div>
                   </div>
 
-                  {/* 3 Metric Columns */}
                   <div
                     style={{
                       background: isDark ? '#1e293b' : theme.boxBg,
-                      borderRadius: 16,
-                      padding: '12px 14px',
+                      borderRadius: 14,
+                      padding: '10px 12px',
                       display: 'grid',
                       gridTemplateColumns: 'repeat(3, 1fr)',
                       textAlign: 'center',
-                      gap: 8,
+                      gap: 6,
                     }}
                   >
                     <div>
                       <div style={{ fontSize: 10, fontWeight: 700, color: isDark ? '#94a3b8' : '#6b7280' }}>WEIGHT</div>
-                      <div style={{ fontSize: 15, fontWeight: 800, color: isDark ? '#f8fafc' : '#111827', marginTop: 2 }}>{m.weightKg || '—'} kg</div>
+                      <div style={{ fontSize: 14, fontWeight: 800, color: isDark ? '#f8fafc' : '#111827', marginTop: 2 }}>{m.weightKg || '—'} kg</div>
                     </div>
                     <div style={{ borderLeft: `1px solid ${isDark ? '#334155' : theme.boxBorder}`, borderRight: `1px solid ${isDark ? '#334155' : theme.boxBorder}` }}>
                       <div style={{ fontSize: 10, fontWeight: 700, color: isDark ? '#94a3b8' : '#6b7280' }}>BMI</div>
-                      <div style={{ fontSize: 15, fontWeight: 800, color: isDark ? '#f8fafc' : '#111827', marginTop: 2 }}>{bmi}</div>
+                      <div style={{ fontSize: 14, fontWeight: 800, color: isDark ? '#f8fafc' : '#111827', marginTop: 2 }}>{bmi}</div>
                     </div>
                     <div>
                       <div style={{ fontSize: 10, fontWeight: 700, color: isDark ? '#94a3b8' : '#6b7280' }}>ALLERGIES</div>
-                      <div style={{ fontSize: 14, fontWeight: 800, color: allergyCount > 0 ? theme.allergiesColor : (isDark ? '#34d399' : '#16a34a'), marginTop: 2 }}>
+                      <div style={{ fontSize: 13, fontWeight: 800, color: allergyCount > 0 ? theme.allergiesColor : (isDark ? '#34d399' : '#16a34a'), marginTop: 2 }}>
                         {allergyCount > 0 ? `${allergyCount} Listed` : 'None'}
                       </div>
                     </div>
                   </div>
-
-                  {/* Action button */}
-                  <div
-                    style={{
-                      background: isDark ? 'rgba(16,185,129,0.15)' : theme.btnBg,
-                      color: isDark ? '#34d399' : theme.btnColor,
-                      fontSize: 12,
-                      fontWeight: 700,
-                      padding: '10px 14px',
-                      borderRadius: 14,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <span>View Health Profile</span>
-                    <span>&rsaquo;</span>
-                  </div>
                 </div>
               )
-            })
-          ) : (
-            <div
-              onClick={() => navigate('/onboarding')}
-              style={{
-                width: '100%',
-                background: isDark ? '#141c2e' : 'white',
-                borderRadius: 24,
-                padding: '24px 20px',
-                textAlign: 'center',
-                border: `1.5px dashed ${isDark ? '#24324a' : '#e5e7eb'}`,
-                cursor: 'pointer',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: 8,
-              }}
-            >
-              <div style={{ fontSize: 36, marginBottom: 2 }}>👨‍👩‍👧‍👦</div>
-              <div style={{ fontWeight: 800, fontSize: 16, color: isDark ? '#f8fafc' : '#111827' }}>
-                No family members added yet
-              </div>
-              <div style={{ fontSize: 13, color: isDark ? '#94a3b8' : '#6b7280', fontWeight: 500, marginBottom: 6 }}>
-                Add your family members to personalize meal plans and health warnings.
-              </div>
-              <button
-                onClick={(e) => { e.stopPropagation(); navigate('/onboarding') }}
-                style={{
-                  background: 'linear-gradient(135deg, #ff5e14 0%, #e04800 100%)',
-                  color: 'white',
-                  border: 'none',
-                  padding: '10px 20px',
-                  borderRadius: 16,
-                  fontWeight: 800,
-                  fontSize: 13,
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 14px rgba(224, 72, 0, 0.3)',
-                }}
-              >
-                + Add Family Member
-              </button>
-            </div>
-          )}
+            })}
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* ── 7. FIXED BOTTOM NAVIGATION BAR ──────────────────────────────── */}
+      {/* ── 6. FIXED BOTTOM NAVIGATION BAR ── */}
       <BottomNav />
     </div>
   )
