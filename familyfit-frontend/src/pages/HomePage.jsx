@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav'
+import MemberAvatar from '../components/MemberAvatar'
 import NutritionRing from '../components/NutritionRing'
 import { useFamily } from '../context/FamilyContext'
 import { useAuth } from '../context/AuthContext'
@@ -63,13 +64,23 @@ const MEMBER_THEMES = [
   },
 ]
 
+const ALLERGEN_TIPS = {
+  'Milk/Dairy': 'Check for milk powder, whey, butter, ghee, or curd in packaged snacks & gravies.',
+  'Eggs': 'Check for egg powder in baked goods, egg noodles, mayonnaise, and batters.',
+  'Peanuts/Tree Nuts': 'Check for peanut oil, nut pastes, or cross-contamination labels in snacks.',
+  'Seafood/Fish': 'Check for fish sauce, shrimp paste (belacan), dried fish, or shellfish extract.',
+  'Soy': 'Check for soy lecithin, soy sauce, tofu, or edamame in Asian marinades & broths.',
+  'Wheat/Gluten': 'Check for maida, semolina, or wheat flour in fried coatings, parottas & gravies.',
+}
+
 export default function HomePage() {
   const { user } = useAuth()
   const { family, activeMember, setActiveMember, loading: familyLoading } = useFamily()
   const { isDark } = useTheme()
-  const [plan, setPlan]         = useState(null)
-  const [todayLog, setTodayLog] = useState(null)
-  const [search, setSearch]     = useState('')
+  const [plan, setPlan]                 = useState(null)
+  const [todayLog, setTodayLog]         = useState(null)
+  const [search, setSearch]             = useState('')
+  const [expandedTipKey, setExpandedTipKey] = useState(null)
   const navigate = useNavigate()
 
   const greeting = () => {
@@ -412,7 +423,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── 5. FOR YOUR FAMILY (EXACT SCREENSHOT REDESIGN) ───────────────── */}
+      {/* ── 5. FOR YOUR FAMILY ───────────────────────────────────────────── */}
       <div style={{ padding: '0 20px', marginTop: 28 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <h3 style={{ fontSize: 20, fontWeight: 800, margin: 0, color: '#111827' }}>For Your Family</h3>
@@ -469,23 +480,7 @@ export default function HomePage() {
                   {/* Member Header Row */}
                   <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                      <div
-                        style={{
-                          width: 48,
-                          height: 48,
-                          borderRadius: '50%',
-                          background: theme.avatarBg,
-                          color: 'white',
-                          fontWeight: 800,
-                          fontSize: 20,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          flexShrink: 0,
-                        }}
-                      >
-                        {m.name?.[0]?.toUpperCase() || 'M'}
-                      </div>
+                      <MemberAvatar member={m} size={48} />
 
                       <div>
                         <div style={{ fontSize: 18, fontWeight: 800, color: isDark ? '#f8fafc' : '#111827', lineHeight: 1.2 }}>
@@ -495,18 +490,6 @@ export default function HomePage() {
                           {m.age} years • {m.heightCm || 170} cm
                         </div>
                       </div>
-                    </div>
-
-                    <div
-                      style={{
-                        width: 54,
-                        height: 54,
-                        borderRadius: '50%',
-                        overflow: 'hidden',
-                        background: isDark ? '#1e293b' : '#f9fafb',
-                      }}
-                    >
-                      <img src={theme.imgUrl} alt={m.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     </div>
                   </div>
 
@@ -583,7 +566,166 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── 6. FIXED BOTTOM NAVIGATION BAR ──────────────────────────────── */}
+      {/* ── 6. THINGS TO AVOID (ALLERGY & HEALTH CONFLICT WARNINGS) ─────── */}
+      {memberList.some((m) => Array.isArray(m.allergies) && m.allergies.length > 0) && (
+        <div style={{ padding: '0 20px', marginTop: 28 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+            <div>
+              <h3 style={{ fontSize: 20, fontWeight: 800, margin: 0, color: isDark ? '#f8fafc' : '#111827' }}>
+                ⚠️ Things to Avoid
+              </h3>
+              <p style={{ fontSize: 12, color: isDark ? '#94a3b8' : '#6b7280', margin: '2px 0 0', fontWeight: 500 }}>
+                Severe health & allergy warnings for your family members
+              </p>
+            </div>
+            <button
+              onClick={() => navigate('/profile')}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#dc2626',
+                fontSize: 13,
+                fontWeight: 700,
+                cursor: 'pointer',
+                flexShrink: 0,
+              }}
+            >
+              Manage &rsaquo;
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            {memberList
+              .filter((m) => Array.isArray(m.allergies) && m.allergies.length > 0)
+              .map((m) => {
+                const allergyList = m.allergies || []
+                const totalAllergies = allergyList.length
+                const displayedAllergies = allergyList.slice(0, 3)
+                const extraCount = totalAllergies - displayedAllergies.length
+
+                return (
+                  <div
+                    key={m.id || m.name}
+                    style={{
+                      background: isDark ? '#211215' : '#fff1f2',
+                      borderRadius: 24,
+                      padding: '18px 20px',
+                      border: `1.5px solid ${isDark ? '#4c1d24' : '#fecaca'}`,
+                      borderLeft: '5px solid #ef4444',
+                      boxShadow: isDark ? '0 4px 20px rgba(0,0,0,0.3)' : '0 4px 16px rgba(239,68,68,0.06)',
+                    }}
+                  >
+                    {/* Header: Avatar, Name, Count */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <MemberAvatar member={m} size={40} />
+                        <div>
+                          <div style={{ fontSize: 16, fontWeight: 800, color: isDark ? '#fecaca' : '#991b1b' }}>
+                            {m.name}
+                          </div>
+                          <div style={{ fontSize: 11, color: isDark ? '#fca5a5' : '#b91c1c', fontWeight: 600 }}>
+                            ⚠️ {totalAllergies} allerg{totalAllergies === 1 ? 'y' : 'ies'} listed
+                          </div>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => navigate('/profile')}
+                        style={{
+                          background: isDark ? '#37181c' : '#fee2e2',
+                          color: '#dc2626',
+                          border: 'none',
+                          padding: '6px 12px',
+                          borderRadius: 12,
+                          fontSize: 11,
+                          fontWeight: 800,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        Profile &rsaquo;
+                      </button>
+                    </div>
+
+                    {/* Interactive Allergen Tags */}
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                      {displayedAllergies.map((allergen) => {
+                        const tagKey = `${m.id || m.name}-${allergen}`
+                        const isExpanded = expandedTipKey === tagKey
+                        const tipText = ALLERGEN_TIPS[allergen] || 'Check packaged ingredient labels carefully before serving.'
+
+                        return (
+                          <div key={allergen} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                            <button
+                              type="button"
+                              onClick={() => setExpandedTipKey(isExpanded ? null : tagKey)}
+                              style={{
+                                background: isDark ? '#451a1d' : '#fecaca',
+                                color: isDark ? '#fca5a5' : '#991b1b',
+                                border: 'none',
+                                padding: '6px 12px',
+                                borderRadius: 14,
+                                fontSize: 12,
+                                fontWeight: 800,
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 6,
+                              }}
+                            >
+                              <span>⛔ {allergen}</span>
+                              <span style={{ fontSize: 10, opacity: 0.8 }}>{isExpanded ? '▲' : 'ℹ️'}</span>
+                            </button>
+
+                            {isExpanded && (
+                              <div
+                                style={{
+                                  background: isDark ? '#2d1417' : '#ffffff',
+                                  color: isDark ? '#fca5a5' : '#7f1d1d',
+                                  padding: '8px 12px',
+                                  borderRadius: 12,
+                                  fontSize: 11,
+                                  fontWeight: 600,
+                                  lineHeight: 1.4,
+                                  border: `1px solid ${isDark ? '#4c1d24' : '#fca5a5'}`,
+                                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                                  marginTop: 2,
+                                  maxWidth: 280,
+                                }}
+                              >
+                                💡 <strong>Hidden Sources:</strong> {tipText}
+                              </div>
+                            )}
+                          </div>
+                        )
+                      })}
+
+                      {/* +X more link */}
+                      {extraCount > 0 && (
+                        <button
+                          onClick={() => navigate('/profile')}
+                          style={{
+                            background: 'transparent',
+                            color: isDark ? '#fca5a5' : '#b91c1c',
+                            border: `1px dashed ${isDark ? '#fca5a5' : '#f87171'}`,
+                            padding: '6px 12px',
+                            borderRadius: 14,
+                            fontSize: 12,
+                            fontWeight: 800,
+                            cursor: 'pointer',
+                          }}
+                        >
+                          +{extraCount} more — View Health Profile &rsaquo;
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+          </div>
+        </div>
+      )}
+
+      {/* ── 7. FIXED BOTTOM NAVIGATION BAR ──────────────────────────────── */}
       <BottomNav />
     </div>
   )
