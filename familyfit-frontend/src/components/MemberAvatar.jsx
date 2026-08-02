@@ -1,6 +1,6 @@
 /**
  * MemberAvatar Component
- * Uses the exact demographic profile photos for family members:
+ * Uses the exact demographic profile photos for family members strictly based on AGE:
  * - CHILD (<13 yrs)
  * - TEENAGER (13-19 yrs)
  * - ADULT (20-59 yrs)
@@ -12,23 +12,26 @@ export function getDemographicCategory(member) {
   if (!member) return { ageCategory: 'ADULT', gender: 'FEMALE' }
 
   const gender = (member.gender || 'FEMALE').toUpperCase()
-  const age = Number(member.age) || 30
-  const role = (member.role || '').toUpperCase()
+  const age = Number(member.age)
 
   let ageCategory = 'ADULT'
 
-  if (age >= 60 || role.includes('GRAND') || role.includes('ELDER')) {
-    ageCategory = 'ELDER'
-  } else if (age >= 13 && age <= 19) {
-    ageCategory = 'TEENAGER'
-  } else if (age < 13 || role.includes('CHILD') || role.includes('KID') || role.includes('BABY')) {
-    if (age >= 13 && age <= 19) {
+  if (!isNaN(age) && age > 0) {
+    if (age >= 60) {
+      ageCategory = 'ELDER'
+    } else if (age >= 20) {
+      ageCategory = 'ADULT'
+    } else if (age >= 13) {
       ageCategory = 'TEENAGER'
     } else {
       ageCategory = 'CHILD'
     }
   } else {
-    ageCategory = 'ADULT'
+    // Fallback if age is unassigned or NaN
+    const role = (member.role || '').toUpperCase()
+    if (role.includes('GRAND') || role.includes('ELDER')) ageCategory = 'ELDER'
+    else if (role.includes('CHILD') || role.includes('KID') || role.includes('BABY')) ageCategory = 'CHILD'
+    else ageCategory = 'ADULT'
   }
 
   return { ageCategory, gender }
