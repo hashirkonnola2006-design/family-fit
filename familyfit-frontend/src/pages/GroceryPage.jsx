@@ -559,7 +559,7 @@ export default function GroceryPage() {
         </div>
       </div>
 
-      {/* ── 4. EDIT TARGET BUDGET MODAL (SHAPES RECOMMENDATIONS) ── */}
+      {/* ── 4. EDIT TARGET BUDGET MODAL (STABLE INPUT & BACKDROP) ── */}
       {showBudgetModal && (
         <div
           style={{
@@ -573,10 +573,8 @@ export default function GroceryPage() {
             justifyContent: 'center',
             padding: 16,
           }}
-          onClick={() => setShowBudgetModal(false)}
         >
           <div
-            onClick={(e) => e.stopPropagation()}
             style={{
               width: '100%',
               maxWidth: 400,
@@ -591,6 +589,7 @@ export default function GroceryPage() {
                 Set Recommendation Budget (₹)
               </h3>
               <button
+                type="button"
                 onClick={() => setShowBudgetModal(false)}
                 style={{ background: 'none', border: 'none', fontSize: 18, color: '#9ca3af', cursor: 'pointer' }}
               >
@@ -605,8 +604,8 @@ export default function GroceryPage() {
                 </label>
                 <input
                   type="number"
-                  step="50"
-                  min="10"
+                  step="1"
+                  min="1"
                   value={tempBudget}
                   onChange={(e) => setTempBudget(e.target.value)}
                   required
