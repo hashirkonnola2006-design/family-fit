@@ -177,6 +177,15 @@ function getPersonalizedMemberTips(member) {
   return tips
 }
 
+const ALLERGEN_TIPS = {
+  'Milk/Dairy': 'Check for milk powder, whey, butter, ghee, or curd in packaged snacks & gravies.',
+  'Eggs': 'Check for egg powder in baked goods, egg noodles, mayonnaise, and batters.',
+  'Peanuts/Tree Nuts': 'Check for peanut oil, nut pastes, or cross-contamination labels in snacks.',
+  'Seafood/Fish': 'Check for fish sauce, shrimp paste (belacan), dried fish, or shellfish extract.',
+  'Soy': 'Check for soy lecithin, soy sauce, tofu, or edamame in Asian marinades & broths.',
+  'Wheat/Gluten': 'Check for maida, semolina, or wheat flour in fried coatings, parottas & gravies.',
+}
+
 export default function TipsPage() {
   const { user } = useAuth()
   const { family } = useFamily()
@@ -186,6 +195,7 @@ export default function TipsPage() {
   const members = family?.members || []
   const [selectedMemberId, setSelectedMemberId] = useState('ALL')
   const [refreshSeed, setRefreshSeed] = useState(0)
+  const [expandedTipKey, setExpandedTipKey] = useState(null)
 
   const activeMember = selectedMemberId === 'ALL'
     ? null
@@ -268,7 +278,155 @@ export default function TipsPage() {
 
       <div style={{ padding: '20px 20px 0 20px' }}>
 
-        {/* ── 2. FAMILY MEMBER SELECTOR ── */}
+        {/* ── 2. THINGS TO AVOID (ALLERGY & HEALTH WARNINGS) ── */}
+        {(() => {
+          const avoidanceMembers = members.filter((m) => {
+            const hasAllergies = Array.isArray(m.allergies) && m.allergies.length > 0
+            if (!hasAllergies) return false
+            if (selectedMemberId === 'ALL') return true
+            return String(m.id) === String(selectedMemberId)
+          })
+
+          if (avoidanceMembers.length === 0) return null
+
+          return (
+            <div style={{ marginBottom: 24 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+                <div>
+                  <h3 style={{ fontSize: 18, fontWeight: 900, margin: 0, color: isDark ? '#f8fafc' : '#111827' }}>
+                    ⚠️ Things to Avoid
+                  </h3>
+                  <p style={{ fontSize: 12, color: isDark ? '#94a3b8' : '#6b7280', margin: '2px 0 0', fontWeight: 500 }}>
+                    Severe health & allergy warnings for your family
+                  </p>
+                </div>
+                <button
+                  onClick={() => navigate('/profile')}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#dc2626',
+                    fontSize: 13,
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    flexShrink: 0,
+                  }}
+                >
+                  Manage &rsaquo;
+                </button>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {avoidanceMembers.map((m) => {
+                  const allergyList = m.allergies || []
+                  const totalAllergies = allergyList.length
+                  const displayedAllergies = allergyList.slice(0, 3)
+
+                  return (
+                    <div
+                      key={m.id || m.name}
+                      style={{
+                        background: isDark ? '#211215' : '#fff1f2',
+                        borderRadius: 20,
+                        padding: '16px 18px',
+                        border: `1.5px solid ${isDark ? '#4c1d24' : '#fecaca'}`,
+                        borderLeft: '5px solid #ef4444',
+                        boxShadow: isDark ? '0 4px 20px rgba(0,0,0,0.3)' : '0 4px 16px rgba(239,68,68,0.06)',
+                      }}
+                    >
+                      {/* Header: Avatar, Name, Count */}
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          <MemberAvatar name={m.name} size={36} />
+                          <div>
+                            <div style={{ fontSize: 15, fontWeight: 800, color: isDark ? '#fecaca' : '#991b1b' }}>
+                              {m.name}
+                            </div>
+                            <div style={{ fontSize: 11, color: isDark ? '#fca5a5' : '#b91c1c', fontWeight: 600 }}>
+                              ⚠️ {totalAllergies} allerg{totalAllergies === 1 ? 'y' : 'ies'} listed
+                            </div>
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => navigate('/profile')}
+                          style={{
+                            background: isDark ? '#37181c' : '#fee2e2',
+                            color: '#dc2626',
+                            border: 'none',
+                            padding: '6px 12px',
+                            borderRadius: 12,
+                            fontSize: 11,
+                            fontWeight: 800,
+                            cursor: 'pointer',
+                          }}
+                        >
+                          Profile &rsaquo;
+                        </button>
+                      </div>
+
+                      {/* Interactive Allergen Tags */}
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                        {displayedAllergies.map((allergen) => {
+                          const tagKey = `${m.id || m.name}-${allergen}`
+                          const isExpanded = expandedTipKey === tagKey
+                          const tipText = ALLERGEN_TIPS[allergen] || 'Check packaged ingredient labels carefully before serving.'
+
+                          return (
+                            <div key={allergen} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                              <button
+                                type="button"
+                                onClick={() => setExpandedTipKey(isExpanded ? null : tagKey)}
+                                style={{
+                                  background: isDark ? '#451a1d' : '#fecaca',
+                                  color: isDark ? '#fca5a5' : '#991b1b',
+                                  border: 'none',
+                                  padding: '6px 12px',
+                                  borderRadius: 14,
+                                  fontSize: 12,
+                                  fontWeight: 800,
+                                  cursor: 'pointer',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: 6,
+                                }}
+                              >
+                                <span>⛔ {allergen}</span>
+                                <span style={{ fontSize: 10, opacity: 0.8 }}>{isExpanded ? '▲' : 'ℹ️'}</span>
+                              </button>
+
+                              {isExpanded && (
+                                <div
+                                  style={{
+                                    background: isDark ? '#2d1417' : '#ffffff',
+                                    color: isDark ? '#fca5a5' : '#7f1d1d',
+                                    padding: '8px 12px',
+                                    borderRadius: 12,
+                                    fontSize: 11,
+                                    fontWeight: 600,
+                                    lineHeight: 1.4,
+                                    border: `1px solid ${isDark ? '#4c1d24' : '#fca5a5'}`,
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                                    marginTop: 2,
+                                    maxWidth: 280,
+                                  }}
+                                >
+                                  💡 <strong>Hidden Sources:</strong> {tipText}
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )
+        })()}
+
+        {/* ── 3. FAMILY MEMBER SELECTOR ── */}
         {members.length > 0 && (
           <div style={{ marginBottom: 20 }}>
             <div style={{ fontSize: 12, fontWeight: 800, color: isDark ? '#94a3b8' : '#6b7280', letterSpacing: '0.5px', marginBottom: 10 }}>
