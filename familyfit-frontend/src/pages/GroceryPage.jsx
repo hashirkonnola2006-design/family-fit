@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav'
 import { useFamily } from '../context/FamilyContext'
-import { useGrocery } from '../context/GroceryContext'
+import { useGrocery, RAW_INGREDIENT_CATALOG } from '../context/GroceryContext'
 import { useTheme } from '../context/ThemeContext'
 
 const CATEGORIES = ['Produce', 'Protein', 'Dairy', 'Pantry', 'Bakery', 'Other']
@@ -18,6 +18,72 @@ const CATEGORY_ICONS = {
 
 const BUDGET_PRESETS = [25, 50, 75, 100, 150, 200]
 
+/**
+ * Evaluates whether a grocery item is suitable for a specific family member based on:
+ * 1. Stored allergies (hard exclusion if conflicting)
+ * 2. Food dislikes (exclusion if matching)
+ * 3. Health goals (highlight as 'Great for [Name]' if aligned)
+ */
+function evaluateItemSuitability(item, member) {
+  if (!member) return { isSuitable: true, isStrongMatch: false, warningText: null }
+
+  const memberAllergies = Array.isArray(member.allergies) ? member.allergies : []
+  const itemAllergies = Array.isArray(item.allergies) ? item.allergies : []
+  const lowName = ((item.name || '') + ' ' + (item.whyBuy || '')).toLowerCase()
+
+  // 1. Check Allergy Conflicts
+  const allergenMatch = memberAllergies.find((allergen) => {
+    if (itemAllergies.includes(allergen)) return true
+    if (allergen === 'Milk/Dairy' && (lowName.includes('milk') || lowName.includes('cheese') || lowName.includes('yogurt') || lowName.includes('whey'))) return true
+    if (allergen === 'Eggs' && lowName.includes('egg')) return true
+    if (allergen === 'Peanuts/Tree Nuts' && (lowName.includes('nut') || lowName.includes('almond') || lowName.includes('peanut'))) return true
+    if (allergen === 'Seafood/Fish' && (lowName.includes('salmon') || lowName.includes('fish') || lowName.includes('tuna') || lowName.includes('seafood'))) return true
+    if (allergen === 'Soy' && (lowName.includes('tofu') || lowName.includes('soy'))) return true
+    if (allergen === 'Wheat/Gluten' && (lowName.includes('wheat') || lowName.includes('bread'))) return true
+    return false
+  })
+
+  if (allergenMatch) {
+    return {
+      isSuitable: false,
+      isStrongMatch: false,
+      warningText: `⚠️ Not suitable for ${member.name} (${allergenMatch})`,
+    }
+  }
+
+  // 2. Check Dislikes
+  const dislikes = Array.isArray(member.dislikes) ? member.dislikes : []
+  const dislikeMatch = dislikes.find((d) => d.trim() && lowName.includes(d.toLowerCase()))
+  if (dislikeMatch) {
+    return {
+      isSuitable: false,
+      isStrongMatch: false,
+      warningText: `⚠️ Not suitable for ${member.name} (Dislikes ${dislikeMatch})`,
+    }
+  }
+
+  // 3. Goal Alignment & Highlighting
+  const goal = (member.fitnessGoal || '').toUpperCase()
+  const diet = (member.dietPreference || '').toUpperCase()
+  let isStrongMatch = false
+
+  if ((goal.includes('MUSCLE') || goal.includes('BULK') || diet.includes('HIGH_PROTEIN')) && (item.category === 'Protein' || lowName.includes('protein') || lowName.includes('egg') || lowName.includes('salmon') || lowName.includes('chicken') || lowName.includes('turkey'))) {
+    isStrongMatch = true
+  } else if ((goal.includes('LOSS') || goal.includes('WEIGHT')) && (lowName.includes('lean') || lowName.includes('spinach') || lowName.includes('cauliflower') || lowName.includes('avocado') || lowName.includes('turkey'))) {
+    isStrongMatch = true
+  } else if ((goal.includes('MANAGE') || goal.includes('DIABETES') || diet.includes('LOW_GI')) && (lowName.includes('quinoa') || lowName.includes('lentil') || lowName.includes('chia') || lowName.includes('oat') || lowName.includes('spinach'))) {
+    isStrongMatch = true
+  } else if (member.role === 'CHILD' && (lowName.includes('banana') || lowName.includes('strawberr') || lowName.includes('milk') || lowName.includes('oat') || lowName.includes('pancake'))) {
+    isStrongMatch = true
+  }
+
+  return {
+    isSuitable: true,
+    isStrongMatch,
+    warningText: null,
+  }
+}
+
 export default function GroceryPage() {
   const { family } = useFamily()
   const { isDark } = useTheme()
@@ -30,6 +96,7 @@ export default function GroceryPage() {
     togglePantry,
     removeItem,
     addCustomItem,
+    addCatalogItemToGrocery,
   } = useGrocery()
 
   const navigate = useNavigate()
@@ -38,6 +105,8 @@ export default function GroceryPage() {
   const [selectedMemberId, setSelectedMemberId] = useState('ALL')
   const [showAddModal, setShowAddModal]         = useState(false)
   const [showBudgetModal, setShowBudgetModal]   = useState(false)
+  const [showCatalog, setShowCatalog]           = useState(false)
+  const [catalogCategory, setCatalogCategory]   = useState('All')
   const [toast, setToast]                       = useState('')
 
   // Add Item form state
@@ -55,29 +124,19 @@ export default function GroceryPage() {
     setTimeout(() => setToast(''), 3000)
   }
 
-  // Helper to determine if an item is suited for a given member
-  const isItemForMember = (item, member) => {
-    if (!member) return true
-    const memberIds = item.memberIds || []
-    // 1. Direct ID match (string or number)
-    if (memberIds.some((id) => String(id) === String(member.id))) return true
-    // 2. Name match in whyBuy
-    if (item.whyBuy && item.whyBuy.toLowerCase().includes(member.name.toLowerCase())) return true
-    // 3. Great for member match
-    if (item.greatForMemberId && String(item.greatForMemberId) === String(member.id)) return true
-    // 4. Fallback if item's memberIds are legacy demo IDs (1, 2, 3) not present in current family
-    const currentMemberIdSet = new Set(members.map((m) => String(m.id)))
-    const hasValidCurrentId = memberIds.some((id) => currentMemberIdSet.has(String(id)))
-    if (!hasValidCurrentId) return true
-    return false
-  }
+  const selectedMember = selectedMemberId === 'ALL'
+    ? null
+    : members.find((m) => String(m.id) === String(selectedMemberId))
 
-  // Filter items by selected member
+  // FILTERING LOGIC:
+  // - "All Members" view: Show full grocery list
+  // - Per-member view: Show ONLY items that are GOOD/SUITABLE for that specific member
   const filteredItems = selectedMemberId === 'ALL'
     ? groceryItems
-    : groceryItems.filter((i) => {
-        const selectedMember = members.find((m) => String(m.id) === String(selectedMemberId))
-        return isItemForMember(i, selectedMember)
+    : groceryItems.filter((item) => {
+        if (!selectedMember) return true
+        const evalRes = evaluateItemSuitability(item, selectedMember)
+        return evalRes.isSuitable
       })
 
   // Calculate budget statistics (excluding items marked as Pantry / Have It)
@@ -85,21 +144,6 @@ export default function GroceryPage() {
   const runningTotal = nonPantryItems.reduce((acc, curr) => acc + (Number(curr.price) || 0), 0)
   const budgetRatio = budget > 0 ? Math.min(runningTotal / budget, 1.2) : 0
   const isOverBudget = runningTotal > budget
-
-  // Allergy conflict check
-  const allergyConflicts = []
-  groceryItems.forEach((item) => {
-    if (Array.isArray(item.allergies) && item.allergies.length > 0) {
-      members.forEach((m) => {
-        if (Array.isArray(m.allergies)) {
-          const match = m.allergies.find((a) => item.allergies.includes(a))
-          if (match) {
-            allergyConflicts.push({ itemName: item.name, memberName: m.name, allergy: match })
-          }
-        }
-      })
-    }
-  })
 
   const handleAddSubmit = (e) => {
     e.preventDefault()
@@ -109,7 +153,6 @@ export default function GroceryPage() {
       price: parseFloat(newItemPrice) || 3.50,
       category: newItemCategory,
       whyBuy: newItemReason.trim() || 'Family nutrition choice',
-      memberIds: selectedMemberId !== 'ALL' ? [Number(selectedMemberId)] : members.map((m) => m.id),
       allergies: newItemAllergy ? [newItemAllergy] : [],
     })
     setNewItemName('')
@@ -122,7 +165,6 @@ export default function GroceryPage() {
 
   const handlePeriodChange = (period) => {
     setBudgetPeriod(period)
-    // Optional smart default recommendation when changing periods
     if (period === 'Daily' && budget > 50) setBudget(25)
     else if (period === 'Weekly' && (budget < 30 || budget > 120)) setBudget(75)
     else if (period === '2-Week' && budget < 60) setBudget(120)
@@ -135,6 +177,17 @@ export default function GroceryPage() {
     setShowBudgetModal(false)
     showToastMsg('Target budget updated! 💰')
   }
+
+  const handleAddCatalogItem = (catItem) => {
+    addCatalogItemToGrocery(catItem)
+    showToastMsg(`Added "${catItem.name}" to Grocery list! 🛒`)
+  }
+
+  // Filter raw catalog items by selected catalog category
+  const filteredCatalog = RAW_INGREDIENT_CATALOG.filter((catItem) => {
+    if (catalogCategory === 'All') return true
+    return catItem.category === catalogCategory
+  })
 
   const familyName = family?.name || 'Healthy Family'
   const initial = (familyName[0] || 'F').toUpperCase()
@@ -230,26 +283,49 @@ export default function GroceryPage() {
             </p>
           </div>
 
-          {/* + Add Item button */}
-          <button
-            onClick={() => setShowAddModal(true)}
-            style={{
-              background: 'linear-gradient(135deg, #5e8404 0%, #3d6b3f 100%)',
-              color: 'white',
-              border: 'none',
-              padding: '10px 16px',
-              borderRadius: 20,
-              fontSize: 13,
-              fontWeight: 800,
-              cursor: 'pointer',
-              boxShadow: '0 4px 14px rgba(61,107,63,0.3)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-            }}
-          >
-            <span style={{ fontSize: 16 }}>+</span> Add Item
-          </button>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {/* Catalog toggle button */}
+            <button
+              onClick={() => setShowCatalog(!showCatalog)}
+              style={{
+                background: showCatalog ? '#2e5b12' : 'white',
+                color: showCatalog ? 'white' : '#2e5b12',
+                border: '1.5px solid #2e5b12',
+                padding: '10px 14px',
+                borderRadius: 20,
+                fontSize: 13,
+                fontWeight: 800,
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+              }}
+            >
+              <span>🛒</span> Catalog
+            </button>
+
+            {/* + Add Item button */}
+            <button
+              onClick={() => setShowAddModal(true)}
+              style={{
+                background: 'linear-gradient(135deg, #5e8404 0%, #3d6b3f 100%)',
+                color: 'white',
+                border: 'none',
+                padding: '10px 14px',
+                borderRadius: 20,
+                fontSize: 13,
+                fontWeight: 800,
+                cursor: 'pointer',
+                boxShadow: '0 4px 14px rgba(61,107,63,0.3)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4,
+              }}
+            >
+              <span style={{ fontSize: 16 }}>+</span> Add
+            </button>
+          </div>
         </div>
 
         {/* ── BUDGET CONTROL CARD ── */}
@@ -262,7 +338,7 @@ export default function GroceryPage() {
             boxShadow: '0 4px 16px rgba(0,0,0,0.04)',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
               <div style={{ fontSize: 11, fontWeight: 800, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                 Target Budget ({budgetPeriod})
@@ -337,7 +413,6 @@ export default function GroceryPage() {
             </span>
           </div>
 
-          {/* Progress bar line */}
           <div style={{ height: 10, borderRadius: 5, background: isDark ? '#21262d' : '#e5e7eb', overflow: 'hidden', position: 'relative' }}>
             <div
               style={{
@@ -371,7 +446,114 @@ export default function GroceryPage() {
           )}
         </div>
 
+        {/* ── 3. RAW INGREDIENTS CATALOG BROWSER SECTION (EXPANDABLE) ── */}
+        {showCatalog && (
+          <div
+            style={{
+              background: isDark ? '#161b22' : 'white',
+              borderRadius: 22,
+              padding: 18,
+              marginBottom: 24,
+              border: `2px solid ${isDark ? '#30363d' : '#d1dca7'}`,
+              boxShadow: '0 8px 24px rgba(0,0,0,0.06)',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ fontSize: 20 }}>🧺</span>
+                <h3 style={{ fontSize: 17, fontWeight: 900, margin: 0, color: isDark ? '#f0f6fc' : '#111827' }}>
+                  Raw Ingredients Catalog
+                </h3>
+              </div>
+              <button
+                onClick={() => setShowCatalog(false)}
+                style={{ background: 'none', border: 'none', color: '#9ca3af', fontSize: 16, cursor: 'pointer' }}
+              >
+                ✕
+              </button>
+            </div>
 
+            {/* Catalog Category Filter Pills */}
+            <div style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 10, scrollbarWidth: 'none', marginBottom: 12 }}>
+              {['All', 'Protein', 'Produce', 'Dairy', 'Pantry', 'Other'].map((cat) => {
+                const active = catalogCategory === cat
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setCatalogCategory(cat)}
+                    style={{
+                      border: active ? 'none' : `1px solid ${isDark ? '#30363d' : '#e5e7eb'}`,
+                      background: active ? '#2e5b12' : isDark ? '#21262d' : '#f9fafb',
+                      color: active ? 'white' : isDark ? '#8b949e' : '#4b5563',
+                      padding: '5px 12px',
+                      borderRadius: 14,
+                      fontSize: 12,
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {cat}
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* Catalog Grid */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 320, overflowY: 'auto' }}>
+              {filteredCatalog.map((catItem) => {
+                const isAlreadyInList = groceryItems.some((i) => i.name.toLowerCase() === catItem.name.toLowerCase())
+
+                return (
+                  <div
+                    key={catItem.id}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      background: isDark ? '#21262d' : '#fafcf0',
+                      padding: '10px 14px',
+                      borderRadius: 14,
+                      border: `1px solid ${isDark ? '#30363d' : '#e2f0d9'}`,
+                      gap: 10,
+                    }}
+                  >
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 14, fontWeight: 800, color: isDark ? '#f0f6fc' : '#111827' }}>
+                        {catItem.name}
+                      </div>
+                      <div style={{ fontSize: 11, color: isDark ? '#8b949e' : '#6b7280', marginTop: 2 }}>
+                        💡 {catItem.whyBuy}
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+                      <span style={{ fontSize: 14, fontWeight: 900, color: '#2e5b12' }}>
+                        ${catItem.price.toFixed(2)}
+                      </span>
+                      <button
+                        onClick={() => handleAddCatalogItem(catItem)}
+                        disabled={isAlreadyInList}
+                        style={{
+                          background: isAlreadyInList ? '#9ca3af' : 'linear-gradient(135deg, #5e8404 0%, #3d6b3f 100%)',
+                          color: 'white',
+                          border: 'none',
+                          padding: '6px 12px',
+                          borderRadius: 12,
+                          fontSize: 11,
+                          fontWeight: 800,
+                          cursor: isAlreadyInList ? 'default' : 'pointer',
+                        }}
+                      >
+                        {isAlreadyInList ? 'Added ✔' : '+ Add'}
+                      </button>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
         {/* ── 4. MEMBER AVATAR FILTER ROW ── */}
         <div style={{ marginBottom: 20 }}>
@@ -448,188 +630,211 @@ export default function GroceryPage() {
 
         {/* ── 5. CATEGORIZED GROCERY ITEMS ── */}
         <div>
-          {CATEGORIES.map((cat) => {
-            const catItems = filteredItems.filter((i) => i.category === cat)
-            if (catItems.length === 0) return null
+          {filteredItems.length === 0 ? (
+            <div
+              style={{
+                textAlign: 'center',
+                padding: '36px 20px',
+                background: isDark ? '#161b22' : 'white',
+                borderRadius: 20,
+                border: `1.5px dashed ${isDark ? '#30363d' : '#e5e7eb'}`,
+              }}
+            >
+              <div style={{ fontSize: 36, marginBottom: 8 }}>🥑</div>
+              <div style={{ fontWeight: 800, fontSize: 16, color: isDark ? '#f0f6fc' : '#111827' }}>
+                No items matching {selectedMember ? selectedMember.name : 'filter'}
+              </div>
+              <div style={{ fontSize: 12, color: '#8b949e', marginTop: 4 }}>
+                Browse raw catalog or add items suitable for {selectedMember ? selectedMember.name : 'your family'}!
+              </div>
+            </div>
+          ) : (
+            CATEGORIES.map((cat) => {
+              const catItems = filteredItems.filter((i) => i.category === cat)
+              if (catItems.length === 0) return null
 
-            return (
-              <div key={cat} style={{ marginBottom: 24 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                  <span style={{ fontSize: 20 }}>{CATEGORY_ICONS[cat] || '📦'}</span>
-                  <h3 style={{ fontSize: 17, fontWeight: 900, margin: 0, color: isDark ? '#f0f6fc' : '#111827' }}>
-                    {cat} <span style={{ fontSize: 13, color: '#8b949e', fontWeight: 600 }}>({catItems.length})</span>
-                  </h3>
-                </div>
+              return (
+                <div key={cat} style={{ marginBottom: 24 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                    <span style={{ fontSize: 20 }}>{CATEGORY_ICONS[cat] || '📦'}</span>
+                    <h3 style={{ fontSize: 17, fontWeight: 900, margin: 0, color: isDark ? '#f0f6fc' : '#111827' }}>
+                      {cat} <span style={{ fontSize: 13, color: '#8b949e', fontWeight: 600 }}>({catItems.length})</span>
+                    </h3>
+                  </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  {catItems.map((item) => {
-                    const greatMember = members.find((m) => String(m.id) === String(item.greatForMemberId))
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    {catItems.map((item) => {
+                      // Evaluate suitability against all family members for tags & warnings
+                      const unsuitableMembers = members.filter((m) => !evaluateItemSuitability(item, m).isSuitable)
+                      const suitedMembers = members.filter((m) => evaluateItemSuitability(item, m).isSuitable)
 
-                    const hasAllergyConflict = members.some(
-                      (m) => Array.isArray(m.allergies) && item.allergies && item.allergies.some((a) => m.allergies.includes(a))
-                    )
+                      // Check if strong match for any member
+                      const strongMember = members.find((m) => evaluateItemSuitability(item, m).isStrongMatch)
 
-                    const suitedMembers = members.filter((m) => isItemForMember(item, m))
-
-                    return (
-                      <div
-                        key={item.id}
-                        style={{
-                          background: isDark ? '#161b22' : 'white',
-                          borderRadius: 20,
-                          padding: '14px 16px',
-                          boxShadow: isDark ? '0 2px 10px rgba(0,0,0,0.2)' : '0 2px 10px rgba(0,0,0,0.04)',
-                          border: hasAllergyConflict
-                            ? '1.5px solid #fecaca'
-                            : item.isPantry
-                            ? `1px dashed ${isDark ? '#30363d' : '#d1d5db'}`
-                            : isDark ? '1px solid #21262d' : '1px solid #f0ede8',
-                          opacity: item.isPantry ? 0.75 : 1,
-                          transition: 'all 0.2s ease',
-                        }}
-                      >
-                        {/* Top row: Name + Price + Pantry Toggle */}
-                        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
-                          <div style={{ flex: 1 }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                              <span
-                                style={{
-                                  fontSize: 15,
-                                  fontWeight: 800,
-                                  color: isDark ? '#f0f6fc' : '#111827',
-                                  textDecoration: item.isPantry ? 'line-through' : 'none',
-                                }}
-                              >
-                                {item.name}
-                              </span>
-
-                              {/* Great For Badge */}
-                              {greatMember && (
+                      return (
+                        <div
+                          key={item.id}
+                          style={{
+                            background: isDark ? '#161b22' : 'white',
+                            borderRadius: 20,
+                            padding: '14px 16px',
+                            boxShadow: isDark ? '0 2px 10px rgba(0,0,0,0.2)' : '0 2px 10px rgba(0,0,0,0.04)',
+                            border: unsuitableMembers.length > 0
+                              ? '1.5px solid #fecaca'
+                              : item.isPantry
+                              ? `1px dashed ${isDark ? '#30363d' : '#d1d5db'}`
+                              : isDark ? '1px solid #21262d' : '1px solid #f0ede8',
+                            opacity: item.isPantry ? 0.75 : 1,
+                            transition: 'all 0.2s ease',
+                          }}
+                        >
+                          {/* Top row: Name + Price + Delete */}
+                          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
+                            <div style={{ flex: 1 }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                                 <span
                                   style={{
-                                    background: '#fce7f3',
-                                    color: '#be185d',
-                                    fontSize: 10,
+                                    fontSize: 15,
                                     fontWeight: 800,
-                                    padding: '2px 8px',
-                                    borderRadius: 10,
+                                    color: isDark ? '#f0f6fc' : '#111827',
+                                    textDecoration: item.isPantry ? 'line-through' : 'none',
                                   }}
                                 >
-                                  ❤️ Great for {greatMember.name}
+                                  {item.name}
                                 </span>
-                              )}
 
-                              {/* Allergy Conflict Badge */}
-                              {hasAllergyConflict && (
-                                <span
-                                  style={{
-                                    background: '#fee2e2',
-                                    color: '#991b1b',
-                                    fontSize: 10,
-                                    fontWeight: 800,
-                                    padding: '2px 8px',
-                                    borderRadius: 10,
-                                  }}
-                                >
-                                  ⚠️ Allergy Warning
-                                </span>
+                                {/* Great For Member Goal Badge */}
+                                {strongMember && (
+                                  <span
+                                    style={{
+                                      background: '#fce7f3',
+                                      color: '#be185d',
+                                      fontSize: 10,
+                                      fontWeight: 800,
+                                      padding: '2px 8px',
+                                      borderRadius: 10,
+                                    }}
+                                  >
+                                    ❤️ Great for {strongMember.name}
+                                  </span>
+                                )}
+
+                                {/* Inline Warning Badge for Unsuitable Members (in All View) */}
+                                {unsuitableMembers.map((m) => {
+                                  const evalRes = evaluateItemSuitability(item, m)
+                                  return (
+                                    <span
+                                      key={m.id}
+                                      style={{
+                                        background: '#fee2e2',
+                                        color: '#991b1b',
+                                        fontSize: 10,
+                                        fontWeight: 800,
+                                        padding: '2px 8px',
+                                        borderRadius: 10,
+                                      }}
+                                    >
+                                      {evalRes.warningText || `⚠️ Not suitable for ${m.name}`}
+                                    </span>
+                                  )
+                                })}
+                              </div>
+
+                              {/* "Why Buy" Reason */}
+                              {item.whyBuy && (
+                                <div style={{ fontSize: 12, color: isDark ? '#8b949e' : '#4b5563', marginTop: 4, fontWeight: 500 }}>
+                                  💡 {item.whyBuy}
+                                </div>
                               )}
                             </div>
 
-                            {/* "Why Buy" Reason */}
-                            {item.whyBuy && (
-                              <div style={{ fontSize: 12, color: isDark ? '#8b949e' : '#4b5563', marginTop: 4, fontWeight: 500 }}>
-                                💡 {item.whyBuy}
-                              </div>
-                            )}
+                            {/* Price & Delete */}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                              <span
+                                style={{
+                                  fontSize: 16,
+                                  fontWeight: 900,
+                                  color: item.isPantry ? '#9ca3af' : '#2e5b12',
+                                  textDecoration: item.isPantry ? 'line-through' : 'none',
+                                }}
+                              >
+                                ${Number(item.price).toFixed(2)}
+                              </span>
+                              <button
+                                onClick={() => removeItem(item.id)}
+                                style={{
+                                  background: 'none',
+                                  border: 'none',
+                                  color: '#9ca3af',
+                                  fontSize: 16,
+                                  cursor: 'pointer',
+                                  padding: 2,
+                                }}
+                              >
+                                ✕
+                              </button>
+                            </div>
                           </div>
 
-                          {/* Price & Delete */}
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                            <span
-                              style={{
-                                fontSize: 16,
-                                fontWeight: 900,
-                                color: item.isPantry ? '#9ca3af' : '#2e5b12',
-                                textDecoration: item.isPantry ? 'line-through' : 'none',
-                              }}
-                            >
-                              ${Number(item.price).toFixed(2)}
-                            </span>
+                          {/* Bottom Row: Member Avatars + Pantry Toggle Pill */}
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, paddingTop: 10, borderTop: isDark ? '1px solid #21262d' : '1px solid #f9fafb' }}>
+                            {/* Member Avatars */}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                              <span style={{ fontSize: 11, color: '#9ca3af', fontWeight: 600, marginRight: 4 }}>Suited for:</span>
+                              {suitedMembers.length > 0 ? (
+                                suitedMembers.map((m) => (
+                                  <div
+                                    key={m.id}
+                                    title={`${m.name} (Suitable)`}
+                                    style={{
+                                      width: 22,
+                                      height: 22,
+                                      borderRadius: '50%',
+                                      background: '#2e5b12',
+                                      color: 'white',
+                                      fontSize: 10,
+                                      fontWeight: 800,
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                    }}
+                                  >
+                                    {m.name[0]}
+                                  </div>
+                                ))
+                              ) : (
+                                <span style={{ fontSize: 11, color: '#9ca3af' }}>General Pantry</span>
+                              )}
+                            </div>
+
+                            {/* Pantry / Have It Toggle Button */}
                             <button
-                              onClick={() => removeItem(item.id)}
+                              onClick={() => togglePantry(item.id)}
                               style={{
-                                background: 'none',
-                                border: 'none',
-                                color: '#9ca3af',
-                                fontSize: 16,
+                                border: item.isPantry ? 'none' : '1px solid #d1d5db',
+                                background: item.isPantry ? '#2e5b12' : 'transparent',
+                                color: item.isPantry ? 'white' : '#6b7280',
+                                padding: '4px 10px',
+                                borderRadius: 14,
+                                fontSize: 11,
+                                fontWeight: 800,
                                 cursor: 'pointer',
-                                padding: 2,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 4,
                               }}
                             >
-                              ✕
+                              <span>{item.isPantry ? '✔ Have it (Pantry)' : 'Pantry?'}</span>
                             </button>
                           </div>
                         </div>
-
-                        {/* Bottom Row: Member Avatars + Pantry Toggle Pill */}
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, paddingTop: 10, borderTop: isDark ? '1px solid #21262d' : '1px solid #f9fafb' }}>
-                          {/* Member Avatars */}
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                            <span style={{ fontSize: 11, color: '#9ca3af', fontWeight: 600, marginRight: 4 }}>Suited for:</span>
-                            {suitedMembers.length > 0 ? (
-                              suitedMembers.map((m) => (
-                                <div
-                                  key={m.id}
-                                  title={`${m.name}`}
-                                  style={{
-                                    width: 22,
-                                    height: 22,
-                                    borderRadius: '50%',
-                                    background: '#2e5b12',
-                                    color: 'white',
-                                    fontSize: 10,
-                                    fontWeight: 800,
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                  }}
-                                >
-                                  {m.name[0]}
-                                </div>
-                              ))
-                            ) : (
-                              <span style={{ fontSize: 11, color: '#9ca3af' }}>All Family</span>
-                            )}
-                          </div>
-
-                          {/* Pantry / Have It Toggle Button */}
-                          <button
-                            onClick={() => togglePantry(item.id)}
-                            style={{
-                              border: item.isPantry ? 'none' : '1px solid #d1d5db',
-                              background: item.isPantry ? '#2e5b12' : 'transparent',
-                              color: item.isPantry ? 'white' : '#6b7280',
-                              padding: '4px 10px',
-                              borderRadius: 14,
-                              fontSize: 11,
-                              fontWeight: 800,
-                              cursor: 'pointer',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 4,
-                            }}
-                          >
-                            <span>{item.isPantry ? '✔ Have it (Pantry)' : 'Pantry?'}</span>
-                          </button>
-                        </div>
-                      </div>
-                    )
-                  })}
+                      )
+                    })}
+                  </div>
                 </div>
-              </div>
-            )
-          })}
+              )
+            })
+          )}
         </div>
       </div>
 
