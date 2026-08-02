@@ -23,34 +23,34 @@ const RECIPE_FILTER_TAGS = [
 const DEMO_PLANS = [
   {
     id: 1,
-    name: 'Vitality & Growth Plan',
-    description: 'Balanced nutrients for active adults & growing kids. Rich in protein & whole grains.',
+    name: 'Kerala Family Thali Plan',
+    description: 'Balanced Kerala nutrients with Matta rice, Parippu curry, Thoran, Fish Curry & fresh curd.',
     tags: ['family', 'balanced'],
-    imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?w=800&q=80',
     accent: '#5e8404',
   },
   {
     id: 2,
-    name: 'Lean & Clean Plan',
-    description: 'High-satiety meals for gradual healthy weight loss without deprivation.',
-    tags: ['weight-loss', 'high-protein'],
-    imageUrl: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&q=80',
+    name: 'Malabar High-Protein Plan',
+    description: 'Coastal protein diet featuring Mathi (sardine), Meen Curry, Nadan Chicken & Country Eggs.',
+    tags: ['high-protein', 'coastal'],
+    imageUrl: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&q=80',
     accent: '#ff5e14',
   },
   {
     id: 3,
-    name: 'Blood Sugar Balance Plan',
-    description: 'Low-GI meals designed to stabilise glucose levels for the whole family.',
+    name: 'Diabetes-Friendly Kerala Plan',
+    description: 'Low-GI Kerala meals with Cherupayar, Matta red rice, Avial & Kudampuli Fish Curry.',
     tags: ['diabetes', 'low-gi'],
-    imageUrl: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=800&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800&q=80',
     accent: '#2563eb',
   },
   {
     id: 4,
-    name: 'Happy Kids Plan',
-    description: 'Fun, nutritious meals with hidden veggies for little ones aged 4-12.',
-    tags: ['kids', 'colourful'],
-    imageUrl: 'https://images.unsplash.com/photo-1564802270019-c50fa2d5c945?w=800&q=80',
+    name: 'Kids Special Malabar Plan',
+    description: 'Soft Appam & Veg Stew, Puttu & Kadala, Idiyappam, and Pazham Pori banana snacks.',
+    tags: ['kids', 'traditional'],
+    imageUrl: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&q=80',
     accent: '#d97706',
   },
 ]
@@ -58,63 +58,83 @@ const DEMO_PLANS = [
 const DEMO_RECIPES = [
   {
     id: 1,
-    name: 'Grilled Chicken Quinoa Bowl',
-    kcal: 520,
-    prepTimeMinutes: 25,
-    imageUrl: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=80',
-    tags: ['High-Protein', 'Lunch', 'Weight Loss'],
+    name: 'Appam with Vegetable Coconut Stew',
+    kcal: 380,
+    prepTimeMinutes: 20,
+    imageUrl: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&q=80',
+    tags: ['Breakfast', 'Kids', 'Vegetarian'],
     matchBadgeText: '100% Family Match',
     favorited: true,
   },
   {
     id: 2,
-    name: 'Herb-Baked Salmon with Veggies',
-    kcal: 480,
-    prepTimeMinutes: 30,
-    imageUrl: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=800&q=80',
-    tags: ['Dinner', 'Gluten-Free', 'High-Protein'],
-    matchBadgeText: 'Great for Parents',
+    name: 'Puttu with Malabar Kadala Curry',
+    kcal: 420,
+    prepTimeMinutes: 25,
+    imageUrl: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800&q=80',
+    tags: ['Breakfast', 'High-Protein'],
+    matchBadgeText: 'High Protein Fuel',
     favorited: false,
   },
   {
     id: 3,
-    name: 'Smashed Avocado Egg Toast',
-    kcal: 290,
-    prepTimeMinutes: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=800&q=80',
-    tags: ['Breakfast', 'Quick'],
-    matchBadgeText: 'Low Prep Time',
-    favorited: false,
-  },
-  {
-    id: 4,
-    name: 'Overnight Oats with Berries',
-    kcal: 350,
-    prepTimeMinutes: 5,
-    imageUrl: 'https://images.unsplash.com/photo-1517673400267-0251440c45dc?w=800&q=80',
-    tags: ['Breakfast', 'Kids', 'High-Fibre'],
-    matchBadgeText: 'Kids Favorite',
+    name: 'Kerala Fish Curry (Kudampuli Meen Curry)',
+    kcal: 390,
+    prepTimeMinutes: 30,
+    imageUrl: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&q=80',
+    tags: ['Dinner', 'High-Protein', 'Diabetes'],
+    matchBadgeText: 'Omega-3 Rich',
     favorited: true,
   },
   {
-    id: 5,
-    name: 'Red Lentil & Vegetable Soup',
-    kcal: 320,
+    id: 4,
+    name: 'Nadan Chicken Roast & Matta Rice',
+    kcal: 510,
     prepTimeMinutes: 35,
-    imageUrl: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&q=80',
-    tags: ['Dinner', 'Diabetes', 'Vegan'],
-    matchBadgeText: 'Blood Sugar Friendly',
+    imageUrl: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=800&q=80',
+    tags: ['Lunch', 'High-Protein'],
+    matchBadgeText: 'Kerala Sunday Special',
+    favorited: false,
+  },
+  {
+    id: 5,
+    name: 'Kerala Avial (Coconut Yoghurt Veggies)',
+    kcal: 280,
+    prepTimeMinutes: 20,
+    imageUrl: 'https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?w=800&q=80',
+    tags: ['Dinner', 'Diabetes', 'Weight Loss'],
+    matchBadgeText: 'Low GI & Fibre',
     favorited: false,
   },
   {
     id: 6,
-    name: '2-Ingredient Banana Pancakes',
-    kcal: 220,
+    name: 'Beans & Grated Coconut Thoran',
+    kcal: 180,
+    prepTimeMinutes: 15,
+    imageUrl: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&q=80',
+    tags: ['Dinner', 'Weight Loss', 'Vegan'],
+    matchBadgeText: 'Quick Healthy Side',
+    favorited: false,
+  },
+  {
+    id: 7,
+    name: 'Kerala Parippu Curry with Pure Ghee',
+    kcal: 290,
+    prepTimeMinutes: 20,
+    imageUrl: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&q=80',
+    tags: ['Lunch', 'Kids', 'High-Protein'],
+    matchBadgeText: 'Comfort Food Classic',
+    favorited: false,
+  },
+  {
+    id: 8,
+    name: 'Pazham Pori (Nendran Banana Fritters)',
+    kcal: 210,
     prepTimeMinutes: 10,
     imageUrl: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&q=80',
     tags: ['Breakfast', 'Kids'],
-    matchBadgeText: '100% Kids Match',
-    favorited: false,
+    matchBadgeText: 'Kids Favorite Snack',
+    favorited: true,
   },
 ]
 
@@ -133,7 +153,6 @@ export default function RecipesPage() {
   const [search, setSearch]           = useState('')
   const [activeTag, setActiveTag]     = useState('All')
   const [toast, setToast]             = useState('')
-  const [loading, setLoading]         = useState(false)
 
   useEffect(() => {
     async function load() {
@@ -237,7 +256,6 @@ export default function RecipesPage() {
           borderBottom: isDark ? '1px solid #1e293b' : 'none',
         }}
       >
-        {/* Brand bar */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2e5b12" strokeWidth="2.5">
@@ -274,10 +292,10 @@ export default function RecipesPage() {
 
         {/* Title */}
         <h1 style={{ fontSize: 32, fontWeight: 900, color: '#111827', margin: '0 0 4px 0', letterSpacing: '-0.5px' }}>
-          Recipes & Plans
+          Kerala Recipes & Plans
         </h1>
         <p style={{ fontSize: 14, color: '#3d6b24', fontWeight: 600, margin: 0 }}>
-          Curated meal plans & healthy family recipes.
+          Authentic South Indian & Malabar meal plans.
         </p>
 
         {/* Search bar */}
@@ -299,7 +317,7 @@ export default function RecipesPage() {
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
             <input
-              placeholder="Search recipes, ingredients, plans..."
+              placeholder="Search Kerala recipes, fish curry, appam..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               style={{ border: 'none', outline: 'none', width: '100%', fontSize: 14, color: '#374151', background: 'transparent' }}
@@ -310,14 +328,14 @@ export default function RecipesPage() {
 
       <div style={{ padding: '20px 20px 0 20px' }}>
 
-        {/* ── 2. TOP SECTION: HORIZONTALLY SCROLLABLE CURATED PLANS ── */}
+        {/* ── 2. TOP SECTION: HORIZONTALLY SCROLLABLE KERALA PLANS ── */}
         {!search && (
           <div style={{ marginBottom: 28 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <span style={{ color: '#5e8404', fontSize: 18 }}>🌿</span>
                 <h2 style={{ fontSize: 19, fontWeight: 900, margin: 0, color: isDark ? '#f8fafc' : '#111827' }}>
-                  Curated Meal Plans
+                  Curated Kerala Plans
                 </h2>
               </div>
               <span style={{ fontSize: 12, color: '#6b7280', fontWeight: 600 }}>Scroll &rsaquo;</span>
@@ -334,7 +352,7 @@ export default function RecipesPage() {
                 scrollbarWidth: 'none',
               }}
             >
-              {plans.map((p, idx) => (
+              {plans.map((p) => (
                 <div
                   key={p.id}
                   style={{
@@ -401,7 +419,6 @@ export default function RecipesPage() {
                       </p>
                     </div>
 
-                    {/* Action Button: Auto-populate to Grocery */}
                     <button
                       onClick={(e) => handleSelectPlan(e, p)}
                       style={{
@@ -420,7 +437,6 @@ export default function RecipesPage() {
                         justifyContent: 'center',
                         gap: 6,
                         boxShadow: '0 3px 10px rgba(61,107,63,0.25)',
-                        transition: 'transform 0.15s ease',
                       }}
                     >
                       <span>🛒</span> Add Plan to Grocery
@@ -477,7 +493,7 @@ export default function RecipesPage() {
           {filteredRecipes.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '40px 20px', color: '#6b7280' }}>
               <div style={{ fontSize: 32, marginBottom: 8 }}>🥗</div>
-              <div style={{ fontWeight: 700 }}>No recipes found for "{activeTag}"</div>
+              <div style={{ fontWeight: 700 }}>No Kerala recipes found for "{activeTag}"</div>
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>

@@ -16,7 +16,7 @@ const CATEGORY_ICONS = {
   Other: '🍎',
 }
 
-const BUDGET_PRESETS = [25, 50, 75, 100, 150, 200]
+const BUDGET_PRESETS = [500, 1000, 1500, 2500, 3500, 5000]
 
 /**
  * Evaluates whether a grocery item is suitable for a specific family member based on:
@@ -34,10 +34,10 @@ function evaluateItemSuitability(item, member) {
   // 1. Check Allergy Conflicts
   const allergenMatch = memberAllergies.find((allergen) => {
     if (itemAllergies.includes(allergen)) return true
-    if (allergen === 'Milk/Dairy' && (lowName.includes('milk') || lowName.includes('cheese') || lowName.includes('yogurt') || lowName.includes('whey'))) return true
+    if (allergen === 'Milk/Dairy' && (lowName.includes('milk') || lowName.includes('thayir') || lowName.includes('curd') || lowName.includes('ghee') || lowName.includes('sambharam') || lowName.includes('cheese') || lowName.includes('yogurt'))) return true
     if (allergen === 'Eggs' && lowName.includes('egg')) return true
     if (allergen === 'Peanuts/Tree Nuts' && (lowName.includes('nut') || lowName.includes('almond') || lowName.includes('peanut'))) return true
-    if (allergen === 'Seafood/Fish' && (lowName.includes('salmon') || lowName.includes('fish') || lowName.includes('tuna') || lowName.includes('seafood'))) return true
+    if (allergen === 'Seafood/Fish' && (lowName.includes('fish') || lowName.includes('mathi') || lowName.includes('ayala') || lowName.includes('neymeen') || lowName.includes('chemmeen') || lowName.includes('prawn') || lowName.includes('seafood'))) return true
     if (allergen === 'Soy' && (lowName.includes('tofu') || lowName.includes('soy'))) return true
     if (allergen === 'Wheat/Gluten' && (lowName.includes('wheat') || lowName.includes('bread'))) return true
     return false
@@ -67,13 +67,13 @@ function evaluateItemSuitability(item, member) {
   const diet = (member.dietPreference || '').toUpperCase()
   let isStrongMatch = false
 
-  if ((goal.includes('MUSCLE') || goal.includes('BULK') || diet.includes('HIGH_PROTEIN')) && (item.category === 'Protein' || lowName.includes('protein') || lowName.includes('egg') || lowName.includes('salmon') || lowName.includes('chicken') || lowName.includes('turkey'))) {
+  if ((goal.includes('MUSCLE') || goal.includes('BULK') || diet.includes('HIGH_PROTEIN')) && (item.category === 'Protein' || lowName.includes('mathi') || lowName.includes('chicken') || lowName.includes('egg') || lowName.includes('protein') || lowName.includes('cherupayar'))) {
     isStrongMatch = true
-  } else if ((goal.includes('LOSS') || goal.includes('WEIGHT')) && (lowName.includes('lean') || lowName.includes('spinach') || lowName.includes('cauliflower') || lowName.includes('avocado') || lowName.includes('turkey'))) {
+  } else if ((goal.includes('LOSS') || goal.includes('WEIGHT')) && (lowName.includes('spinach') || lowName.includes('thoran') || lowName.includes('ash gourd') || lowName.includes('kumbalanga') || lowName.includes('avial'))) {
     isStrongMatch = true
-  } else if ((goal.includes('MANAGE') || goal.includes('DIABETES') || diet.includes('LOW_GI')) && (lowName.includes('quinoa') || lowName.includes('lentil') || lowName.includes('chia') || lowName.includes('oat') || lowName.includes('spinach'))) {
+  } else if ((goal.includes('MANAGE') || goal.includes('DIABETES') || diet.includes('LOW_GI')) && (lowName.includes('matta') || lowName.includes('cherupayar') || lowName.includes('kudampuli') || lowName.includes('lentil') || lowName.includes('spinach'))) {
     isStrongMatch = true
-  } else if (member.role === 'CHILD' && (lowName.includes('banana') || lowName.includes('strawberr') || lowName.includes('milk') || lowName.includes('oat') || lowName.includes('pancake'))) {
+  } else if (member.role === 'CHILD' && (lowName.includes('ethakka') || lowName.includes('appam') || lowName.includes('puttu') || lowName.includes('curd') || lowName.includes('pazham'))) {
     isStrongMatch = true
   }
 
@@ -150,9 +150,9 @@ export default function GroceryPage() {
     if (!newItemName.trim()) return
     addCustomItem({
       name: newItemName.trim(),
-      price: parseFloat(newItemPrice) || 3.50,
+      price: parseFloat(newItemPrice) || 120,
       category: newItemCategory,
-      whyBuy: newItemReason.trim() || 'Family nutrition choice',
+      whyBuy: newItemReason.trim() || 'Kerala family nutrition choice',
       allergies: newItemAllergy ? [newItemAllergy] : [],
     })
     setNewItemName('')
@@ -165,15 +165,15 @@ export default function GroceryPage() {
 
   const handlePeriodChange = (period) => {
     setBudgetPeriod(period)
-    if (period === 'Daily' && budget > 50) setBudget(25)
-    else if (period === 'Weekly' && (budget < 30 || budget > 120)) setBudget(75)
-    else if (period === '2-Week' && budget < 60) setBudget(120)
+    if (period === 'Daily' && budget > 1000) setBudget(300)
+    else if (period === 'Weekly' && (budget < 500 || budget > 3000)) setBudget(1500)
+    else if (period === '2-Week' && budget < 1000) setBudget(2500)
     showToastMsg(`Budget period updated to ${period}`)
   }
 
   const handleSaveBudget = (e) => {
     e.preventDefault()
-    setBudget(Math.max(1, parseFloat(tempBudget) || 50))
+    setBudget(Math.max(10, parseFloat(tempBudget) || 1500))
     setShowBudgetModal(false)
     showToastMsg('Target budget updated! 💰')
   }
@@ -279,7 +279,7 @@ export default function GroceryPage() {
               Smart Grocery
             </h1>
             <p style={{ fontSize: 13, color: '#3d6b24', fontWeight: 600, margin: 0 }}>
-              Tailored to goals, allergies & budget.
+              Tailored to Kerala dietary goals & budget.
             </p>
           </div>
 
@@ -348,7 +348,7 @@ export default function GroceryPage() {
                 style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4, cursor: 'pointer' }}
                 title="Click to edit budget"
               >
-                <span style={{ fontSize: 24, fontWeight: 900, color: '#2e5b12' }}>${budget}</span>
+                <span style={{ fontSize: 24, fontWeight: 900, color: '#2e5b12' }}>₹{budget}</span>
                 <span style={{ fontSize: 14, color: '#6b7280' }}>✏️</span>
               </div>
             </div>
@@ -397,7 +397,7 @@ export default function GroceryPage() {
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
             <span style={{ fontSize: 13, fontWeight: 700, color: isDark ? '#8b949e' : '#4b5563' }}>
-              Estimated Total: <strong style={{ color: isDark ? '#f0f6fc' : '#111827', fontSize: 16 }}>${runningTotal.toFixed(2)}</strong>
+              Estimated Total: <strong style={{ color: isDark ? '#f0f6fc' : '#111827', fontSize: 16 }}>₹{runningTotal.toFixed(2)}</strong>
             </span>
             <span
               style={{
@@ -409,7 +409,7 @@ export default function GroceryPage() {
                 borderRadius: 12,
               }}
             >
-              {isOverBudget ? `+$${(runningTotal - budget).toFixed(2)} Over` : `$${(budget - runningTotal).toFixed(2)} Remaining`}
+              {isOverBudget ? `+₹${(runningTotal - budget).toFixed(2)} Over` : `₹${(budget - runningTotal).toFixed(2)} Remaining`}
             </span>
           </div>
 
@@ -441,12 +441,12 @@ export default function GroceryPage() {
                 lineHeight: 1.45,
               }}
             >
-              💡 <strong>Cheaper Swap Suggestion:</strong> Swap Wild Salmon ($14.99) for Frozen White Fish Fillets ($8.99) to save <strong>$6.00</strong> with high protein!
+              💡 <strong>Kerala Cheaper Swap Tip:</strong> Swap Neymeen Seer Fish (₹450) for Fresh Mathi Sardines (₹180) to save <strong>₹270</strong> while maintaining high Omega-3 protein!
             </div>
           )}
         </div>
 
-        {/* ── 3. RAW INGREDIENTS CATALOG BROWSER SECTION (EXPANDABLE) ── */}
+        {/* ── 3. KERALA RAW INGREDIENTS CATALOG BROWSER ── */}
         {showCatalog && (
           <div
             style={{
@@ -462,7 +462,7 @@ export default function GroceryPage() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <span style={{ fontSize: 20 }}>🧺</span>
                 <h3 style={{ fontSize: 17, fontWeight: 900, margin: 0, color: isDark ? '#f0f6fc' : '#111827' }}>
-                  Raw Ingredients Catalog
+                  Kerala Grocery Catalog
                 </h3>
               </div>
               <button
@@ -529,7 +529,7 @@ export default function GroceryPage() {
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
                       <span style={{ fontSize: 14, fontWeight: 900, color: '#2e5b12' }}>
-                        ${catItem.price.toFixed(2)}
+                        ₹{catItem.price}
                       </span>
                       <button
                         onClick={() => handleAddCatalogItem(catItem)}
@@ -645,7 +645,7 @@ export default function GroceryPage() {
                 No items matching {selectedMember ? selectedMember.name : 'filter'}
               </div>
               <div style={{ fontSize: 12, color: '#8b949e', marginTop: 4 }}>
-                Browse raw catalog or add items suitable for {selectedMember ? selectedMember.name : 'your family'}!
+                Browse Kerala catalog or add items suitable for {selectedMember ? selectedMember.name : 'your family'}!
               </div>
             </div>
           ) : (
@@ -664,11 +664,8 @@ export default function GroceryPage() {
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                     {catItems.map((item) => {
-                      // Evaluate suitability against all family members for tags & warnings
                       const unsuitableMembers = members.filter((m) => !evaluateItemSuitability(item, m).isSuitable)
                       const suitedMembers = members.filter((m) => evaluateItemSuitability(item, m).isSuitable)
-
-                      // Check if strong match for any member
                       const strongMember = members.find((m) => evaluateItemSuitability(item, m).isStrongMatch)
 
                       return (
@@ -719,7 +716,7 @@ export default function GroceryPage() {
                                   </span>
                                 )}
 
-                                {/* Inline Warning Badge for Unsuitable Members (in All View) */}
+                                {/* Inline Warning Badge for Unsuitable Members */}
                                 {unsuitableMembers.map((m) => {
                                   const evalRes = evaluateItemSuitability(item, m)
                                   return (
@@ -758,7 +755,7 @@ export default function GroceryPage() {
                                   textDecoration: item.isPantry ? 'line-through' : 'none',
                                 }}
                               >
-                                ${Number(item.price).toFixed(2)}
+                                ₹{Number(item.price).toFixed(2)}
                               </span>
                               <button
                                 onClick={() => removeItem(item.id)}
@@ -867,7 +864,7 @@ export default function GroceryPage() {
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
               <h3 style={{ fontSize: 20, fontWeight: 900, margin: 0, color: isDark ? '#f0f6fc' : '#111827' }}>
-                Set Target Budget
+                Set Target Budget (₹)
               </h3>
               <button
                 onClick={() => setShowBudgetModal(false)}
@@ -880,12 +877,12 @@ export default function GroceryPage() {
             <form onSubmit={handleSaveBudget} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div>
                 <label style={{ fontSize: 12, fontWeight: 700, color: isDark ? '#8b949e' : '#4b5563', display: 'block', marginBottom: 6 }}>
-                  Budget Amount ($)
+                  Budget Amount (₹)
                 </label>
                 <input
                   type="number"
-                  step="1"
-                  min="1"
+                  step="50"
+                  min="10"
                   value={tempBudget}
                   onChange={(e) => setTempBudget(e.target.value)}
                   required
@@ -906,7 +903,7 @@ export default function GroceryPage() {
 
               <div>
                 <label style={{ fontSize: 12, fontWeight: 700, color: isDark ? '#8b949e' : '#4b5563', display: 'block', marginBottom: 6 }}>
-                  Quick Presets
+                  Quick Presets (INR)
                 </label>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
                   {BUDGET_PRESETS.map((amt) => (
@@ -925,7 +922,7 @@ export default function GroceryPage() {
                         cursor: 'pointer',
                       }}
                     >
-                      ${amt}
+                      ₹{amt}
                     </button>
                   ))}
                 </div>
@@ -981,7 +978,7 @@ export default function GroceryPage() {
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
               <h3 style={{ fontSize: 20, fontWeight: 900, margin: 0, color: isDark ? '#f0f6fc' : '#111827' }}>
-                Add Custom Grocery Item
+                Add Custom Kerala Item
               </h3>
               <button
                 onClick={() => setShowAddModal(false)}
@@ -998,7 +995,7 @@ export default function GroceryPage() {
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Organic Almond Milk"
+                  placeholder="e.g. Nadan Chicken / Cherupayar"
                   value={newItemName}
                   onChange={(e) => setNewItemName(e.target.value)}
                   required
@@ -1017,12 +1014,12 @@ export default function GroceryPage() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div>
                   <label style={{ fontSize: 12, fontWeight: 700, color: isDark ? '#8b949e' : '#4b5563', display: 'block', marginBottom: 4 }}>
-                    Price ($)
+                    Price (₹)
                   </label>
                   <input
                     type="number"
-                    step="0.01"
-                    placeholder="3.99"
+                    step="5"
+                    placeholder="120"
                     value={newItemPrice}
                     onChange={(e) => setNewItemPrice(e.target.value)}
                     required
@@ -1069,7 +1066,7 @@ export default function GroceryPage() {
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Dairy-free calcium alternative"
+                  placeholder="e.g. Kerala high-protein staple"
                   value={newItemReason}
                   onChange={(e) => setNewItemReason(e.target.value)}
                   style={{
