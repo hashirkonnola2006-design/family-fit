@@ -118,9 +118,14 @@ export function GroceryProvider({ children }) {
     return saved ? Number(saved) : 50.00
   })
 
-  const [budgetPeriod, setBudgetPeriod] = useState(() => {
+  const [budgetPeriod, setBudgetPeriodState] = useState(() => {
     return localStorage.getItem('familyfit_grocery_period') || '2-Week'
   })
+
+  const setBudgetPeriod = (period) => {
+    setBudgetPeriodState(period)
+    localStorage.setItem('familyfit_grocery_period', period)
+  }
 
   const [activePlan, setActivePlan] = useState(null)
 

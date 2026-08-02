@@ -16,6 +16,8 @@ const CATEGORY_ICONS = {
   Other: '🍎',
 }
 
+const BUDGET_PRESETS = [25, 50, 75, 100, 150, 200]
+
 export default function GroceryPage() {
   const { family } = useFamily()
   const { isDark } = useTheme()
@@ -25,7 +27,6 @@ export default function GroceryPage() {
     setBudget,
     budgetPeriod,
     setBudgetPeriod,
-    activePlan,
     togglePantry,
     removeItem,
     addCustomItem,
@@ -36,6 +37,7 @@ export default function GroceryPage() {
 
   const [selectedMemberId, setSelectedMemberId] = useState('ALL')
   const [showAddModal, setShowAddModal]         = useState(false)
+  const [showBudgetModal, setShowBudgetModal]   = useState(false)
   const [toast, setToast]                       = useState('')
 
   // Add Item form state
@@ -45,15 +47,38 @@ export default function GroceryPage() {
   const [newItemReason, setNewItemReason]     = useState('')
   const [newItemAllergy, setNewItemAllergy]   = useState('')
 
+  // Edit Budget state
+  const [tempBudget, setTempBudget]           = useState(budget)
+
   const showToastMsg = (msg) => {
     setToast(msg)
     setTimeout(() => setToast(''), 3000)
   }
 
+  // Helper to determine if an item is suited for a given member
+  const isItemForMember = (item, member) => {
+    if (!member) return true
+    const memberIds = item.memberIds || []
+    // 1. Direct ID match (string or number)
+    if (memberIds.some((id) => String(id) === String(member.id))) return true
+    // 2. Name match in whyBuy
+    if (item.whyBuy && item.whyBuy.toLowerCase().includes(member.name.toLowerCase())) return true
+    // 3. Great for member match
+    if (item.greatForMemberId && String(item.greatForMemberId) === String(member.id)) return true
+    // 4. Fallback if item's memberIds are legacy demo IDs (1, 2, 3) not present in current family
+    const currentMemberIdSet = new Set(members.map((m) => String(m.id)))
+    const hasValidCurrentId = memberIds.some((id) => currentMemberIdSet.has(String(id)))
+    if (!hasValidCurrentId) return true
+    return false
+  }
+
   // Filter items by selected member
   const filteredItems = selectedMemberId === 'ALL'
     ? groceryItems
-    : groceryItems.filter((i) => i.memberIds && i.memberIds.includes(Number(selectedMemberId)))
+    : groceryItems.filter((i) => {
+        const selectedMember = members.find((m) => String(m.id) === String(selectedMemberId))
+        return isItemForMember(i, selectedMember)
+      })
 
   // Calculate budget statistics (excluding items marked as Pantry / Have It)
   const nonPantryItems = groceryItems.filter((i) => !i.isPantry)
@@ -62,13 +87,6 @@ export default function GroceryPage() {
   const isOverBudget = runningTotal > budget
 
   // Allergy conflict check
-  const memberAllergiesMap = {}
-  members.forEach((m) => {
-    if (Array.isArray(m.allergies) && m.allergies.length > 0) {
-      memberAllergiesMap[m.name] = m.allergies
-    }
-  })
-
   const allergyConflicts = []
   groceryItems.forEach((item) => {
     if (Array.isArray(item.allergies) && item.allergies.length > 0) {
@@ -100,6 +118,22 @@ export default function GroceryPage() {
     setNewItemAllergy('')
     setShowAddModal(false)
     showToastMsg('Added item to Grocery list! 🛒')
+  }
+
+  const handlePeriodChange = (period) => {
+    setBudgetPeriod(period)
+    // Optional smart default recommendation when changing periods
+    if (period === 'Daily' && budget > 50) setBudget(25)
+    else if (period === 'Weekly' && (budget < 30 || budget > 120)) setBudget(75)
+    else if (period === '2-Week' && budget < 60) setBudget(120)
+    showToastMsg(`Budget period updated to ${period}`)
+  }
+
+  const handleSaveBudget = (e) => {
+    e.preventDefault()
+    setBudget(Math.max(1, parseFloat(tempBudget) || 50))
+    setShowBudgetModal(false)
+    showToastMsg('Target budget updated! 💰')
   }
 
   const familyName = family?.name || 'Healthy Family'
@@ -218,7 +252,7 @@ export default function GroceryPage() {
           </button>
         </div>
 
-        {/* ── BUDGET CONTROL BAR ── */}
+        {/* ── BUDGET CONTROL CARD ── */}
         <div
           style={{
             marginTop: 18,
@@ -226,59 +260,48 @@ export default function GroceryPage() {
             borderRadius: 20,
             padding: '14px 16px',
             boxShadow: '0 4px 16px rgba(0,0,0,0.04)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 12,
           }}
         >
-          <div>
-            <div style={{ fontSize: 11, fontWeight: 800, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-              Target Budget
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 800, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Target Budget ({budgetPeriod})
+              </div>
+              <div
+                onClick={() => { setTempBudget(budget); setShowBudgetModal(true) }}
+                style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4, cursor: 'pointer' }}
+                title="Click to edit budget"
+              >
+                <span style={{ fontSize: 24, fontWeight: 900, color: '#2e5b12' }}>${budget}</span>
+                <span style={{ fontSize: 14, color: '#6b7280' }}>✏️</span>
+              </div>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
-              <span style={{ fontSize: 20, fontWeight: 900, color: '#2e5b12' }}>$</span>
-              <input
-                type="number"
-                value={budget}
-                onChange={(e) => setBudget(Math.max(0, parseFloat(e.target.value) || 0))}
-                style={{
-                  width: 80,
-                  fontSize: 20,
-                  fontWeight: 900,
-                  color: '#111827',
-                  border: 'none',
-                  outline: 'none',
-                  background: 'transparent',
-                }}
-              />
-            </div>
-          </div>
 
-          {/* Budget Period Toggle */}
-          <div style={{ background: '#f3f4f6', borderRadius: 14, padding: 3, display: 'flex', gap: 4 }}>
-            {['Daily', '2-Week'].map((period) => {
-              const active = budgetPeriod === period
-              return (
-                <button
-                  key={period}
-                  onClick={() => setBudgetPeriod(period)}
-                  style={{
-                    border: 'none',
-                    background: active ? '#2e5b12' : 'transparent',
-                    color: active ? 'white' : '#4b5563',
-                    padding: '6px 12px',
-                    borderRadius: 11,
-                    fontSize: 12,
-                    fontWeight: 800,
-                    cursor: 'pointer',
-                    transition: 'all 0.15s ease',
-                  }}
-                >
-                  {period}
-                </button>
-              )
-            })}
+            {/* Time Period Selector: Daily, Weekly, 2-Week */}
+            <div style={{ background: '#f3f4f6', borderRadius: 14, padding: 3, display: 'flex', gap: 3 }}>
+              {['Daily', 'Weekly', '2-Week'].map((period) => {
+                const active = budgetPeriod === period
+                return (
+                  <button
+                    key={period}
+                    onClick={() => handlePeriodChange(period)}
+                    style={{
+                      border: 'none',
+                      background: active ? '#2e5b12' : 'transparent',
+                      color: active ? 'white' : '#4b5563',
+                      padding: '6px 10px',
+                      borderRadius: 11,
+                      fontSize: 11,
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                    }}
+                  >
+                    {period}
+                  </button>
+                )
+              })}
+            </div>
           </div>
         </div>
       </div>
@@ -343,7 +366,7 @@ export default function GroceryPage() {
                 lineHeight: 1.45,
               }}
             >
-              💡 <strong>Cheaper Swap Suggestion:</strong> Swap Wild Salmon ($14.99) for Frozen White Fish Fillets ($8.99) to save <strong>$6.00</strong> while maintaining 45g high protein for Sarah's goal!
+              💡 <strong>Cheaper Swap Suggestion:</strong> Swap Wild Salmon ($14.99) for Frozen White Fish Fillets ($8.99) to save <strong>$6.00</strong> with high protein!
             </div>
           )}
         </div>
@@ -468,13 +491,13 @@ export default function GroceryPage() {
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                   {catItems.map((item) => {
-                    // Check if great for a specific member
-                    const greatMember = members.find((m) => m.id === item.greatForMemberId)
+                    const greatMember = members.find((m) => String(m.id) === String(item.greatForMemberId))
 
-                    // Check allergy conflict
                     const hasAllergyConflict = members.some(
                       (m) => Array.isArray(m.allergies) && item.allergies && item.allergies.some((a) => m.allergies.includes(a))
                     )
+
+                    const suitedMembers = members.filter((m) => isItemForMember(item, m))
 
                     return (
                       <div
@@ -582,9 +605,8 @@ export default function GroceryPage() {
                           {/* Member Avatars */}
                           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                             <span style={{ fontSize: 11, color: '#9ca3af', fontWeight: 600, marginRight: 4 }}>Suited for:</span>
-                            {members
-                              .filter((m) => item.memberIds && item.memberIds.includes(m.id))
-                              .map((m) => (
+                            {suitedMembers.length > 0 ? (
+                              suitedMembers.map((m) => (
                                 <div
                                   key={m.id}
                                   title={`${m.name}`}
@@ -603,7 +625,10 @@ export default function GroceryPage() {
                                 >
                                   {m.name[0]}
                                 </div>
-                              ))}
+                              ))
+                            ) : (
+                              <span style={{ fontSize: 11, color: '#9ca3af' }}>All Family</span>
+                            )}
                           </div>
 
                           {/* Pantry / Have It Toggle Button */}
@@ -636,7 +661,122 @@ export default function GroceryPage() {
         </div>
       </div>
 
-      {/* ── 6. ADD CUSTOM ITEM MODAL ── */}
+      {/* ── 6. EDIT BUDGET MODAL ── */}
+      {showBudgetModal && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.5)',
+            backdropFilter: 'blur(4px)',
+            zIndex: 2000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 16,
+          }}
+          onClick={() => setShowBudgetModal(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: '100%',
+              maxWidth: 400,
+              background: isDark ? '#1e2530' : 'white',
+              borderRadius: 24,
+              padding: 24,
+              boxShadow: '0 8px 30px rgba(0,0,0,0.2)',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <h3 style={{ fontSize: 20, fontWeight: 900, margin: 0, color: isDark ? '#f0f6fc' : '#111827' }}>
+                Set Target Budget
+              </h3>
+              <button
+                onClick={() => setShowBudgetModal(false)}
+                style={{ background: 'none', border: 'none', fontSize: 18, color: '#9ca3af', cursor: 'pointer' }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveBudget} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 700, color: isDark ? '#8b949e' : '#4b5563', display: 'block', marginBottom: 6 }}>
+                  Budget Amount ($)
+                </label>
+                <input
+                  type="number"
+                  step="1"
+                  min="1"
+                  value={tempBudget}
+                  onChange={(e) => setTempBudget(e.target.value)}
+                  required
+                  style={{
+                    width: '100%',
+                    padding: '14px',
+                    borderRadius: 14,
+                    border: '2px solid #2e5b12',
+                    fontSize: 22,
+                    fontWeight: 900,
+                    outline: 'none',
+                    boxSizing: 'border-box',
+                    textAlign: 'center',
+                    color: '#111827',
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 700, color: isDark ? '#8b949e' : '#4b5563', display: 'block', marginBottom: 6 }}>
+                  Quick Presets
+                </label>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+                  {BUDGET_PRESETS.map((amt) => (
+                    <button
+                      key={amt}
+                      type="button"
+                      onClick={() => setTempBudget(amt)}
+                      style={{
+                        padding: '10px',
+                        borderRadius: 12,
+                        border: Number(tempBudget) === amt ? '2px solid #2e5b12' : '1px solid #e5e7eb',
+                        background: Number(tempBudget) === amt ? '#e2f0d9' : 'transparent',
+                        color: Number(tempBudget) === amt ? '#2e5b12' : '#374151',
+                        fontWeight: 800,
+                        fontSize: 14,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      ${amt}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                style={{
+                  marginTop: 8,
+                  background: 'linear-gradient(135deg, #5e8404 0%, #3d6b3f 100%)',
+                  color: 'white',
+                  border: 'none',
+                  padding: 14,
+                  borderRadius: 16,
+                  fontSize: 15,
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 14px rgba(61,107,63,0.3)',
+                }}
+              >
+                Save Budget
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── 7. ADD CUSTOM ITEM MODAL ── */}
       {showAddModal && (
         <div
           style={{
@@ -752,7 +892,7 @@ export default function GroceryPage() {
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Dairy-free calcium alternative for Maya"
+                  placeholder="e.g. Dairy-free calcium alternative"
                   value={newItemReason}
                   onChange={(e) => setNewItemReason(e.target.value)}
                   style={{
