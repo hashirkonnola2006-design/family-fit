@@ -371,35 +371,7 @@ export default function GroceryPage() {
           )}
         </div>
 
-        {/* ── 3. ALLERGY WARNING SUMMARY BANNER ── */}
-        {allergyConflicts.length > 0 && (
-          <div
-            style={{
-              background: '#fef2f2',
-              border: '1.5px solid #fecaca',
-              borderRadius: 18,
-              padding: '12px 16px',
-              marginBottom: 20,
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: 12,
-            }}
-          >
-            <span style={{ fontSize: 20 }}>⚠️</span>
-            <div>
-              <div style={{ fontSize: 13, fontWeight: 800, color: '#991b1b' }}>
-                Allergy Conflict Alert ({allergyConflicts.length})
-              </div>
-              <div style={{ fontSize: 12, color: '#b91c1c', marginTop: 2, fontWeight: 500 }}>
-                {allergyConflicts.map((c, i) => (
-                  <span key={i} style={{ display: 'block' }}>
-                    • <strong>{c.itemName}</strong> contains {c.allergy} (Conflicts with {c.memberName}'s allergy)
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
+
 
         {/* ── 4. MEMBER AVATAR FILTER ROW ── */}
         <div style={{ marginBottom: 20 }}>
