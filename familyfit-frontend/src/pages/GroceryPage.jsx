@@ -18,25 +18,26 @@ const CATEGORY_ICONS = {
 const BUDGET_PRESETS = [500, 1000, 1500, 2500, 3500, 5000]
 
 /**
- * Evaluates whether a grocery item is suitable for a specific family member based on:
- * 1. Stored allergies (hard exclusion if conflicting)
- * 2. Food dislikes (exclusion if matching)
- * 3. Health goals (highlight as 'Great for [Name]' if aligned)
+ * Independently evaluates whether a grocery item is a genuine & suitable match
+ * for a specific family member based on:
+ * 1. Hard exclusion: Allergies
+ * 2. Hard exclusion: Dislikes
+ * 3. Specific member goal & role alignment (Genuine Match)
  */
 function evaluateItemSuitability(item, member) {
-  if (!member) return { isSuitable: true, isStrongMatch: false, warningText: null }
+  if (!member) return { isSuitable: true, isStrongMatch: false, isGenuineMatch: true, warningText: null }
 
   const memberAllergies = Array.isArray(member.allergies) ? member.allergies : []
-  const itemAllergies = Array.isArray(item.allergies) ? item.allergies : []
-  const lowName = ((item.name || '') + ' ' + (item.whyBuy || '')).toLowerCase()
+  const memberDislikes = Array.isArray(member.dislikes) ? member.dislikes : []
+  const lowName = ((item.name || '') + ' ' + (item.whyBuy || '') + ' ' + (item.category || '')).toLowerCase()
 
-  // 1. Check Allergy Conflicts
+  // 1. HARD EXCLUSION: Check Allergy Conflicts
   const allergenMatch = memberAllergies.find((allergen) => {
-    if (itemAllergies.includes(allergen)) return true
-    if (allergen === 'Milk/Dairy' && (lowName.includes('milk') || lowName.includes('thayir') || lowName.includes('curd') || lowName.includes('ghee') || lowName.includes('sambharam'))) return true
-    if (allergen === 'Eggs' && lowName.includes('egg')) return true
+    if (Array.isArray(item.allergies) && item.allergies.includes(allergen)) return true
+    if (allergen === 'Milk/Dairy' && (lowName.includes('milk') || lowName.includes('thayir') || lowName.includes('curd') || lowName.includes('ghee') || lowName.includes('sambharam') || lowName.includes('cheese') || lowName.includes('yogurt'))) return true
+    if (allergen === 'Eggs' && (lowName.includes('egg') || lowName.includes('mutta'))) return true
     if (allergen === 'Peanuts/Tree Nuts' && (lowName.includes('nut') || lowName.includes('almond') || lowName.includes('peanut'))) return true
-    if (allergen === 'Seafood/Fish' && (lowName.includes('fish') || lowName.includes('mathi') || lowName.includes('ayala') || lowName.includes('neymeen') || lowName.includes('chemmeen') || lowName.includes('prawn') || lowName.includes('seafood'))) return true
+    if (allergen === 'Seafood/Fish' && (lowName.includes('fish') || lowName.includes('mathi') || lowName.includes('ayala') || lowName.includes('neymeen') || lowName.includes('chemmeen') || lowName.includes('prawn') || lowName.includes('seafood') || lowName.includes('karimeen'))) return true
     if (allergen === 'Soy' && (lowName.includes('tofu') || lowName.includes('soy'))) return true
     if (allergen === 'Wheat/Gluten' && (lowName.includes('wheat') || lowName.includes('bread'))) return true
     return false
@@ -46,39 +47,73 @@ function evaluateItemSuitability(item, member) {
     return {
       isSuitable: false,
       isStrongMatch: false,
+      isGenuineMatch: false,
       warningText: `⚠️ Not suitable for ${member.name} (${allergenMatch})`,
     }
   }
 
-  // 2. Check Dislikes
-  const dislikes = Array.isArray(member.dislikes) ? member.dislikes : []
-  const dislikeMatch = dislikes.find((d) => d.trim() && lowName.includes(d.toLowerCase()))
+  // 2. HARD EXCLUSION: Check Dislikes
+  const dislikeMatch = memberDislikes.find((d) => d.trim() && lowName.includes(d.toLowerCase()))
   if (dislikeMatch) {
     return {
       isSuitable: false,
       isStrongMatch: false,
+      isGenuineMatch: false,
       warningText: `⚠️ Not suitable for ${member.name} (Dislikes ${dislikeMatch})`,
     }
   }
 
-  // 3. Goal Alignment & Highlighting
+  // 3. MEMBER GOAL & ROLE MATCH EVALUATION
   const goal = (member.fitnessGoal || '').toUpperCase()
   const diet = (member.dietPreference || '').toUpperCase()
-  let isStrongMatch = false
+  const role = (member.role || '').toUpperCase()
 
-  if ((goal.includes('MUSCLE') || goal.includes('BULK') || diet.includes('HIGH_PROTEIN')) && (item.category === 'Protein' || lowName.includes('mathi') || lowName.includes('chicken') || lowName.includes('egg') || lowName.includes('cherupayar'))) {
-    isStrongMatch = true
-  } else if ((goal.includes('LOSS') || goal.includes('WEIGHT')) && (lowName.includes('spinach') || lowName.includes('ash gourd') || lowName.includes('kumbalanga') || lowName.includes('avial'))) {
-    isStrongMatch = true
-  } else if ((goal.includes('MANAGE') || goal.includes('DIABETES') || diet.includes('LOW_GI')) && (lowName.includes('matta') || lowName.includes('cherupayar') || lowName.includes('kudampuli') || lowName.includes('lentil'))) {
-    isStrongMatch = true
-  } else if (member.role === 'CHILD' && (lowName.includes('ethakka') || lowName.includes('appam') || lowName.includes('puttu') || lowName.includes('curd') || lowName.includes('pazham'))) {
-    isStrongMatch = true
+  let isStrongMatch = false
+  let isGenuineMatch = false
+
+  // High Protein / Muscle Gain Goal
+  if (goal.includes('MUSCLE') || goal.includes('BULK') || diet.includes('HIGH_PROTEIN')) {
+    if (item.category === 'Protein' || lowName.includes('mathi') || lowName.includes('chicken') || lowName.includes('egg') || lowName.includes('cherupayar') || lowName.includes('ayala') || lowName.includes('neymeen') || lowName.includes('chemmeen') || lowName.includes('prawn') || lowName.includes('parippu') || lowName.includes('kadala')) {
+      isStrongMatch = true
+      isGenuineMatch = true
+    }
+  }
+  // Weight Loss Goal
+  else if (goal.includes('LOSS') || goal.includes('WEIGHT')) {
+    if (item.category === 'Produce' || lowName.includes('spinach') || lowName.includes('ash gourd') || lowName.includes('kumbalanga') || lowName.includes('avial') || lowName.includes('thoran') || lowName.includes('muringakka') || lowName.includes('tapioca') || lowName.includes('chena') || lowName.includes('curry leaves') || lowName.includes('sambharam')) {
+      isStrongMatch = true
+      isGenuineMatch = true
+    }
+  }
+  // Diabetes / Blood Sugar Management Goal
+  else if (goal.includes('MANAGE') || goal.includes('DIABETES') || diet.includes('LOW_GI')) {
+    if (lowName.includes('matta') || lowName.includes('cherupayar') || lowName.includes('kudampuli') || lowName.includes('lentil') || lowName.includes('spinach') || lowName.includes('kumbalanga') || lowName.includes('avial') || lowName.includes('oat')) {
+      isStrongMatch = true
+      isGenuineMatch = true
+    }
+  }
+  // Child Role
+  else if (role === 'CHILD' || role.includes('KID')) {
+    if (lowName.includes('ethakka') || lowName.includes('appam') || lowName.includes('puttu') || lowName.includes('curd') || lowName.includes('pazham') || lowName.includes('egg') || lowName.includes('ghee')) {
+      isStrongMatch = true
+      isGenuineMatch = true
+    }
+  }
+
+  // General fallback for member without specific goals or for universal healthy staples
+  if (!goal && !diet && role !== 'CHILD') {
+    isGenuineMatch = true
+  } else if (!isGenuineMatch) {
+    // Core wholesome produce/pantry staples match universally if no allergy conflict
+    if (item.category === 'Produce' || lowName.includes('curry leaves') || lowName.includes('matta') || lowName.includes('coconut oil')) {
+      isGenuineMatch = true
+    }
   }
 
   return {
     isSuitable: true,
     isStrongMatch,
+    isGenuineMatch,
     warningText: null,
   }
 }
@@ -105,16 +140,16 @@ export default function GroceryPage() {
     ? null
     : members.find((m) => String(m.id) === String(selectedMemberId))
 
-  // FILTER RECOMMENDATIONS:
+  // STRICT FILTER RECOMMENDATIONS:
   // - "All Members" view: Show all recommendations reasoned for the family
-  // - Per-member view: Show ONLY items recommended & suitable for that specific member
+  // - Per-member view: Show ONLY items that are a GENUINE & SUITABLE match for that specific member
   const rawRecommendations = KERALA_GROCERY_DATASET
   const filteredRecommendations = selectedMemberId === 'ALL'
     ? rawRecommendations
     : rawRecommendations.filter((item) => {
         if (!selectedMember) return true
         const evalRes = evaluateItemSuitability(item, selectedMember)
-        return evalRes.isSuitable
+        return evalRes.isSuitable && evalRes.isGenuineMatch
       })
 
   const handlePeriodChange = (period) => {
@@ -372,10 +407,10 @@ export default function GroceryPage() {
             >
               <div style={{ fontSize: 36, marginBottom: 8 }}>🥑</div>
               <div style={{ fontWeight: 800, fontSize: 16, color: isDark ? '#f0f6fc' : '#111827' }}>
-                No recommendations for {selectedMember ? selectedMember.name : 'this filter'}
+                No recommendations specifically matching {selectedMember ? selectedMember.name : 'this filter'}
               </div>
               <div style={{ fontSize: 12, color: '#8b949e', marginTop: 4 }}>
-                Showing recommendations safe and suitable for your family!
+                Recommendations strictly match {selectedMember ? selectedMember.name : 'your family'}'s goals & health profile.
               </div>
             </div>
           ) : (
@@ -395,8 +430,10 @@ export default function GroceryPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                     {catItems.map((item) => {
                       const unsuitableMembers = members.filter((m) => !evaluateItemSuitability(item, m).isSuitable)
-                      const suitedMembers = members.filter((m) => evaluateItemSuitability(item, m).isSuitable)
-                      const strongMember = members.find((m) => evaluateItemSuitability(item, m).isStrongMatch)
+                      const suitedMembers = members.filter((m) => evaluateItemSuitability(item, m).isSuitable && evaluateItemSuitability(item, m).isGenuineMatch)
+                      const strongMember = selectedMember
+                        ? (evaluateItemSuitability(item, selectedMember).isStrongMatch ? selectedMember : null)
+                        : members.find((m) => evaluateItemSuitability(item, m).isStrongMatch)
 
                       return (
                         <div
@@ -436,8 +473,8 @@ export default function GroceryPage() {
                                   </span>
                                 )}
 
-                                {/* Inline Warning Badge for Unsuitable Members */}
-                                {unsuitableMembers.map((m) => {
+                                {/* Inline Warning Badge for Unsuitable Members (in All Members view) */}
+                                {selectedMemberId === 'ALL' && unsuitableMembers.map((m) => {
                                   const evalRes = evaluateItemSuitability(item, m)
                                   return (
                                     <span
@@ -473,42 +510,44 @@ export default function GroceryPage() {
                             </div>
                           </div>
 
-                          {/* Bottom Row: Member Avatars */}
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, paddingTop: 10, borderTop: isDark ? '1px solid #21262d' : '1px solid #f9fafb' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                              <span style={{ fontSize: 11, color: '#9ca3af', fontWeight: 600 }}>Suited for:</span>
-                              {suitedMembers.length > 0 ? (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                                  {suitedMembers.map((m) => (
-                                    <div
-                                      key={m.id}
-                                      title={`${m.name} (Recommended)`}
-                                      style={{
-                                        width: 22,
-                                        height: 22,
-                                        borderRadius: '50%',
-                                        background: '#2e5b12',
-                                        color: 'white',
-                                        fontSize: 10,
-                                        fontWeight: 800,
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                      }}
-                                    >
-                                      {m.name[0]}
-                                    </div>
-                                  ))}
-                                </div>
-                              ) : (
-                                <span style={{ fontSize: 11, color: '#9ca3af' }}>Whole Family</span>
-                              )}
-                            </div>
+                          {/* Bottom Row: Member Avatars (ONLY RENDERED IN 'ALL MEMBERS' VIEW) */}
+                          {selectedMemberId === 'ALL' && (
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, paddingTop: 10, borderTop: isDark ? '1px solid #21262d' : '1px solid #f9fafb' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                <span style={{ fontSize: 11, color: '#9ca3af', fontWeight: 600 }}>Suited for:</span>
+                                {suitedMembers.length > 0 ? (
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                                    {suitedMembers.map((m) => (
+                                      <div
+                                        key={m.id}
+                                        title={`${m.name} (Recommended)`}
+                                        style={{
+                                          width: 22,
+                                          height: 22,
+                                          borderRadius: '50%',
+                                          background: '#2e5b12',
+                                          color: 'white',
+                                          fontSize: 10,
+                                          fontWeight: 800,
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          justifyContent: 'center',
+                                        }}
+                                      >
+                                        {m.name[0]}
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <span style={{ fontSize: 11, color: '#9ca3af' }}>Whole Family</span>
+                                )}
+                              </div>
 
-                            <span style={{ fontSize: 11, color: '#9ca3af', fontStyle: 'italic' }}>
-                              Advisory Recommendation
-                            </span>
-                          </div>
+                              <span style={{ fontSize: 11, color: '#9ca3af', fontStyle: 'italic' }}>
+                                Advisory Recommendation
+                              </span>
+                            </div>
+                          )}
                         </div>
                       )
                     })}
