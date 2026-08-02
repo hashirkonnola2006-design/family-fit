@@ -175,7 +175,7 @@ export default function RecipeDetailPage() {
   const navigate = useNavigate()
   const { family } = useFamily()
   const { isDark } = useTheme()
-  const [recipe, setRecipe] = useState(KERALA_RECIPES[0])
+  const [recipe, setRecipe] = useState(RECIPE_DATABASE[0])
   const [loading, setLoading] = useState(false)
   const [checkedIngredients, setCheckedIngredients] = useState({})
   const [toastMessage, setToastMessage] = useState('')

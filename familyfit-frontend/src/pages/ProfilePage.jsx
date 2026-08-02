@@ -170,7 +170,7 @@ function ModalSheet({ onClose, children, title }) {
 
 // ──────────────────────────────────────────────────────────────
 export default function ProfilePage() {
-  const { logout } = useAuth()
+  const { user, logout } = useAuth()
   const { family } = useFamily()
   const { isDark, toggleTheme } = useTheme()
   const navigate = useNavigate()
