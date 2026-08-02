@@ -246,6 +246,34 @@ export default function RecipeDetailPage() {
     }
   })
 
+  const getSavedIds = () => {
+    try {
+      const saved = localStorage.getItem('familyfit_saved_recipes')
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
+  }
+
+  const isFavorited = Boolean(recipe?.favorited || (recipe && getSavedIds().includes(String(recipe.id))))
+
+  const handleToggleSaved = () => {
+    if (!recipe) return
+    const currentSaved = getSavedIds()
+    const idStr = String(recipe.id)
+    let updatedSaved = []
+    if (currentSaved.includes(idStr)) {
+      updatedSaved = currentSaved.filter((i) => i !== idStr)
+      setToastMessage(`Removed "${recipe.name}" from Saved Recipes`)
+    } else {
+      updatedSaved = [...currentSaved, idStr]
+      setToastMessage(`Saved "${recipe.name}" to your Saved Recipes! ♥️`)
+    }
+    localStorage.setItem('familyfit_saved_recipes', JSON.stringify(updatedSaved))
+    setRecipe((prev) => ({ ...prev, favorited: updatedSaved.includes(idStr) }))
+    setTimeout(() => setToastMessage(''), 3000)
+  }
+
   return (
     <div
       style={{
@@ -299,7 +327,7 @@ export default function RecipeDetailPage() {
             padding: 20,
           }}
         >
-          {/* Top Bar: Back Arrow */}
+          {/* Top Bar: Back Arrow & Heart Button */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 10 }}>
             <button
               onClick={() => navigate(-1)}
@@ -319,6 +347,27 @@ export default function RecipeDetailPage() {
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="2.5">
                 <line x1="19" y1="12" x2="5" y2="12" />
                 <polyline points="12 19 5 12 12 5" />
+              </svg>
+            </button>
+
+            <button
+              onClick={handleToggleSaved}
+              aria-label={isFavorited ? 'Remove from saved' : 'Save recipe'}
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
+                background: 'rgba(255,255,255,0.9)',
+                border: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+              }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill={isFavorited ? '#ef4444' : 'none'} stroke={isFavorited ? '#ef4444' : '#111827'} strokeWidth="2.2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z" />
               </svg>
             </button>
           </div>

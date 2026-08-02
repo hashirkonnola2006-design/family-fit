@@ -7,7 +7,7 @@ import { ThemeProvider } from './context/ThemeContext'
 import HomePage     from './pages/HomePage'
 import RecipesPage  from './pages/RecipesPage'
 import GroceryPage  from './pages/GroceryPage'
-import ProgressPage from './pages/ProgressPage'
+import TipsPage     from './pages/TipsPage'
 import ProfilePage  from './pages/ProfilePage'
 import AuthPage     from './pages/AuthPage'
 import RecipeDetailPage from './pages/RecipeDetailPage'
@@ -30,7 +30,8 @@ function AppRoutes() {
       <Route path="/recipes" element={<PrivateRoute><RecipesPage /></PrivateRoute>} />
       <Route path="/recipes/:id" element={<PrivateRoute><RecipeDetailPage /></PrivateRoute>} />
       <Route path="/grocery" element={<PrivateRoute><GroceryPage /></PrivateRoute>} />
-      <Route path="/progress" element={<PrivateRoute><ProgressPage /></PrivateRoute>} />
+      <Route path="/tips"     element={<PrivateRoute><TipsPage /></PrivateRoute>} />
+      <Route path="/progress" element={<Navigate to="/tips" replace />} />
       <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
       {/* Catch-all */}
       <Route path="*" element={<Navigate to="/" replace />} />

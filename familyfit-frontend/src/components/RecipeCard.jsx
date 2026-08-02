@@ -5,29 +5,42 @@ import { useTheme } from '../context/ThemeContext'
 /**
  * RecipeCard — dark-mode-aware recipe card.
  */
-export default function RecipeCard({ recipe: initialRecipe, onClick, accentColor }) {
+export default function RecipeCard({ recipe: initialRecipe, onClick, accentColor, onToggleSaved }) {
   const [recipe, setRecipe] = useState(initialRecipe)
-  const [toggling, setToggling] = useState(false)
   const { isDark } = useTheme()
 
   if (!recipe) return null
 
-  const handleFavorite = async (e) => {
-    e.stopPropagation()
-    if (toggling) return
-    setToggling(true)
+  const getSavedIds = () => {
     try {
-      const { data } = await toggleFavorite(recipe.id)
-      setRecipe(data)
-    } catch (err) {
-      setRecipe(r => ({ ...r, favorited: !r.favorited }))
-    } finally {
-      setToggling(false)
+      const saved = localStorage.getItem('familyfit_saved_recipes')
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
+  }
+
+  const isFavorited = Boolean(recipe.favorited || getSavedIds().includes(String(recipe.id)))
+
+  const handleFavorite = (e) => {
+    e.stopPropagation()
+    const currentSaved = getSavedIds()
+    const idStr = String(recipe.id)
+    let updatedSaved = []
+    if (currentSaved.includes(idStr)) {
+      updatedSaved = currentSaved.filter((i) => i !== idStr)
+    } else {
+      updatedSaved = [...currentSaved, idStr]
+    }
+    localStorage.setItem('familyfit_saved_recipes', JSON.stringify(updatedSaved))
+    const updatedRecipe = { ...recipe, favorited: updatedSaved.includes(idStr) }
+    setRecipe(updatedRecipe)
+    if (typeof onToggleSaved === 'function') {
+      onToggleSaved(updatedRecipe)
     }
   }
 
   const tags = recipe.tags || ['Breakfast', 'Quick']
-  const isFavorited = recipe.favorited
 
   return (
     <div

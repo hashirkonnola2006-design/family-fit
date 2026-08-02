@@ -12,6 +12,7 @@ import { RECIPE_DATABASE } from '../data/recipeDatabase'
 
 const RECIPE_FILTER_TAGS = [
   { id: 'All', label: 'All Recipes (500)', icon: '⊞' },
+  { id: 'Saved', label: 'Saved Recipes', icon: '♥️' },
   { id: 'Kerala', label: 'Kerala Specialties', icon: '🌴' },
   { id: 'South Indian', label: 'South Indian', icon: '🍛' },
   { id: 'North Indian', label: 'North Indian', icon: '🥘' },
@@ -116,8 +117,23 @@ export default function RecipesPage() {
     showToastMsg(`Added ingredients for "${plan.name}" to Grocery list! 🛒`)
   }
 
+  const getSavedIds = () => {
+    try {
+      const saved = localStorage.getItem('familyfit_saved_recipes')
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
+  }
+
   const recipeList = Array.isArray(recipes) && recipes.length > 0 ? recipes : RECIPE_DATABASE
   const filteredRecipes = recipeList.filter((r) => {
+    // 0. Saved Filter
+    if (activeTag === 'Saved') {
+      const savedIds = getSavedIds()
+      if (!r.favorited && !savedIds.includes(String(r.id))) return false
+    }
+
     // 1. Search Query Filter
     if (search.trim()) {
       const q = search.toLowerCase()
@@ -130,7 +146,7 @@ export default function RecipesPage() {
     }
 
     // 2. Active Tag Filter
-    if (activeTag === 'All') return true
+    if (activeTag === 'All' || activeTag === 'Saved') return true
     if (activeTag === 'Recommended') return r.matchBadgeText || r.favorited
     return (
       (r.cuisine || '').toLowerCase() === activeTag.toLowerCase() ||
@@ -429,9 +445,26 @@ export default function RecipesPage() {
         {/* ── 4. RECIPES 2-COLUMN GRID ── */}
         <div>
           {filteredRecipes.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '40px 20px', color: '#6b7280' }}>
-              <div style={{ fontSize: 32, marginBottom: 8 }}>🥗</div>
-              <div style={{ fontWeight: 700 }}>No recipes found for "{activeTag}"</div>
+            <div
+              style={{
+                textAlign: 'center',
+                padding: '44px 20px',
+                background: isDark ? '#161b22' : 'white',
+                borderRadius: 24,
+                border: isDark ? '1px solid #30363d' : '1.5px dashed #e5e7eb',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
+                margin: '10px 0',
+              }}
+            >
+              <div style={{ fontSize: 44, marginBottom: 8 }}>{activeTag === 'Saved' ? '♥️' : '🥗'}</div>
+              <div style={{ fontWeight: 800, fontSize: 16, color: isDark ? '#f8fafc' : '#111827', marginBottom: 6 }}>
+                {activeTag === 'Saved' ? 'No saved recipes yet' : `No recipes found for "${activeTag}"`}
+              </div>
+              <div style={{ fontSize: 13, color: isDark ? '#94a3b8' : '#6b7280', fontWeight: 500, lineHeight: 1.5, maxWidth: 300, margin: '0 auto' }}>
+                {activeTag === 'Saved'
+                  ? 'Tap the heart icon on any recipe to save it here for quick access later.'
+                  : 'Try searching for a different dish name, ingredient, or tag.'}
+              </div>
             </div>
           ) : (
             <>
