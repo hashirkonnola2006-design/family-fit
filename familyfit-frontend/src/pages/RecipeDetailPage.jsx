@@ -636,42 +636,6 @@ export default function RecipeDetailPage() {
           </div>
         </div>
 
-        {/* 7. STICKY BOTTOM BUTTON */}
-        <div
-          style={{
-            position: 'fixed',
-            bottom: 70,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '100%',
-            maxWidth: 480,
-            padding: '0 20px',
-            boxSizing: 'border-box',
-            zIndex: 990,
-          }}
-        >
-          <button
-            onClick={handleAddToPlan}
-            style={{
-              width: '100%',
-              background: 'linear-gradient(135deg, #5e8404 0%, #3d6b3f 100%)',
-              color: 'white',
-              border: 'none',
-              borderRadius: 24,
-              padding: '16px',
-              fontSize: 15,
-              fontWeight: 800,
-              cursor: 'pointer',
-              boxShadow: '0 8px 24px rgba(61,107,63,0.35)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 8,
-            }}
-          >
-            <span>+ Add to Today's Plan</span>
-          </button>
-        </div>
       </div>
 
       <BottomNav />
