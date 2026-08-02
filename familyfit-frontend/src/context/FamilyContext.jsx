@@ -4,11 +4,62 @@ import { useAuth } from './AuthContext'
 
 const FamilyContext = createContext(null)
 
+const DEFAULT_MEMBERS = [
+  {
+    id: 1,
+    name: 'Sarah',
+    role: 'PARENT',
+    gender: 'FEMALE',
+    age: 34,
+    heightCm: 165,
+    weightKg: 62,
+    activityLevel: 'MODERATELY_ACTIVE',
+    healthConditions: [],
+    allergies: ['Milk/Dairy'],
+    likes: ['Salmon', 'Quinoa', 'Avocado', 'Berries'],
+    dislikes: ['Red Meat'],
+    fitnessGoal: 'WEIGHT_LOSS',
+    dietPreference: 'NO_PREFERENCE',
+  },
+  {
+    id: 2,
+    name: 'Alex',
+    role: 'PARENT',
+    gender: 'MALE',
+    age: 36,
+    heightCm: 180,
+    weightKg: 78,
+    activityLevel: 'VERY_ACTIVE',
+    healthConditions: [],
+    allergies: [],
+    likes: ['Chicken Breast', 'Eggs', 'Oats', 'Bananas'],
+    dislikes: ['Tofu'],
+    fitnessGoal: 'MUSCLE_GAIN',
+    dietPreference: 'HIGH_PROTEIN',
+  },
+  {
+    id: 3,
+    name: 'Maya',
+    role: 'CHILD',
+    gender: 'FEMALE',
+    age: 8,
+    heightCm: 128,
+    weightKg: 26,
+    activityLevel: 'MODERATELY_ACTIVE',
+    healthConditions: ['Diabetes'],
+    allergies: ['Peanuts/Tree Nuts'],
+    likes: ['Pancakes', 'Berries', 'Greek Yogurt'],
+    dislikes: ['Broccoli'],
+    fitnessGoal: 'MANAGE_CONDITION',
+    dietPreference: 'LOW_GI',
+  },
+]
+
 export function FamilyProvider({ children }) {
   const { user } = useAuth()
   const [family, setFamily] = useState(() => {
     const saved = localStorage.getItem('familyfit_members')
-    const members = saved ? JSON.parse(saved) : []
+    const members = saved && JSON.parse(saved).length > 0 ? JSON.parse(saved) : DEFAULT_MEMBERS
     return { id: 1, name: 'My Family', members }
   })
   const [loading, setLoading] = useState(false)

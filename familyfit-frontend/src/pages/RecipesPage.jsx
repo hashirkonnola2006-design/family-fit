@@ -3,19 +3,57 @@ import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav'
 import RecipeCard from '../components/RecipeCard'
 import { getAllRecipes, getRecommendedRecipes } from '../api/recipes'
+import { getAllPlans } from '../api/plans'
 import { useAuth } from '../context/AuthContext'
 import { useFamily } from '../context/FamilyContext'
 import { useTheme } from '../context/ThemeContext'
+import { useGrocery } from '../context/GroceryContext'
 
-const FILTER_TAGS = [
-  { id: 'All', label: 'All', icon: '⊞' },
+const RECIPE_FILTER_TAGS = [
+  { id: 'All', label: 'All Recipes', icon: '⊞' },
   { id: 'Recommended', label: 'Recommended', icon: '⭐' },
+  { id: 'Weight Loss', label: 'Weight Loss', icon: '🏋️' },
+  { id: 'Diabetes', label: 'Diabetes', icon: '💧' },
+  { id: 'Kids', label: 'Kid-Friendly', icon: '🙂' },
+  { id: 'High-Protein', label: 'High-Protein', icon: '⚡' },
   { id: 'Breakfast', label: 'Breakfast', icon: '☼' },
-  { id: 'Lunch', label: 'Lunch', icon: '☕' },
   { id: 'Dinner', label: 'Dinner', icon: '🍱' },
 ]
 
-const ACCENT_COLORS = ['#5e8404', '#ff5e14', '#2563eb', '#d97706']
+const DEMO_PLANS = [
+  {
+    id: 1,
+    name: 'Vitality & Growth Plan',
+    description: 'Balanced nutrients for active adults & growing kids. Rich in protein & whole grains.',
+    tags: ['family', 'balanced'],
+    imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80',
+    accent: '#5e8404',
+  },
+  {
+    id: 2,
+    name: 'Lean & Clean Plan',
+    description: 'High-satiety meals for gradual healthy weight loss without deprivation.',
+    tags: ['weight-loss', 'high-protein'],
+    imageUrl: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&q=80',
+    accent: '#ff5e14',
+  },
+  {
+    id: 3,
+    name: 'Blood Sugar Balance Plan',
+    description: 'Low-GI meals designed to stabilise glucose levels for the whole family.',
+    tags: ['diabetes', 'low-gi'],
+    imageUrl: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=800&q=80',
+    accent: '#2563eb',
+  },
+  {
+    id: 4,
+    name: 'Happy Kids Plan',
+    description: 'Fun, nutritious meals with hidden veggies for little ones aged 4-12.',
+    tags: ['kids', 'colourful'],
+    imageUrl: 'https://images.unsplash.com/photo-1564802270019-c50fa2d5c945?w=800&q=80',
+    accent: '#d97706',
+  },
+]
 
 const DEMO_RECIPES = [
   {
@@ -24,18 +62,18 @@ const DEMO_RECIPES = [
     kcal: 520,
     prepTimeMinutes: 25,
     imageUrl: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=80',
-    tags: ['High-Protein', 'Lunch'],
+    tags: ['High-Protein', 'Lunch', 'Weight Loss'],
     matchBadgeText: '100% Family Match',
     favorited: true,
   },
   {
     id: 2,
-    name: 'Herb-Baked Salmon with Vegetables',
+    name: 'Herb-Baked Salmon with Veggies',
     kcal: 480,
     prepTimeMinutes: 30,
     imageUrl: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=800&q=80',
-    tags: ['Dinner', 'Gluten-Free'],
-    matchBadgeText: 'Suitable for 3 Members',
+    tags: ['Dinner', 'Gluten-Free', 'High-Protein'],
+    matchBadgeText: 'Great for Parents',
     favorited: false,
   },
   {
@@ -45,7 +83,7 @@ const DEMO_RECIPES = [
     prepTimeMinutes: 10,
     imageUrl: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=800&q=80',
     tags: ['Breakfast', 'Quick'],
-    matchBadgeText: 'Great for Parents',
+    matchBadgeText: 'Low Prep Time',
     favorited: false,
   },
   {
@@ -54,7 +92,7 @@ const DEMO_RECIPES = [
     kcal: 350,
     prepTimeMinutes: 5,
     imageUrl: 'https://images.unsplash.com/photo-1517673400267-0251440c45dc?w=800&q=80',
-    tags: ['Breakfast', 'High-Fibre'],
+    tags: ['Breakfast', 'Kids', 'High-Fibre'],
     matchBadgeText: 'Kids Favorite',
     favorited: true,
   },
@@ -64,8 +102,8 @@ const DEMO_RECIPES = [
     kcal: 320,
     prepTimeMinutes: 35,
     imageUrl: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&q=80',
-    tags: ['Dinner', 'Vegan'],
-    matchBadgeText: 'Heart Healthy',
+    tags: ['Dinner', 'Diabetes', 'Vegan'],
+    matchBadgeText: 'Blood Sugar Friendly',
     favorited: false,
   },
   {
@@ -80,40 +118,44 @@ const DEMO_RECIPES = [
   },
 ]
 
+const ACCENT_COLORS = ['#5e8404', '#ff5e14', '#2563eb', '#d97706']
+
 export default function RecipesPage() {
   const { user } = useAuth()
   const { family } = useFamily()
   const { isDark } = useTheme()
+  const { addItemsFromPlan } = useGrocery()
   const navigate = useNavigate()
+
+  const [plans, setPlans]             = useState(DEMO_PLANS)
   const [recipes, setRecipes]         = useState(DEMO_RECIPES)
   const [recommended, setRecommended] = useState([])
   const [search, setSearch]           = useState('')
   const [activeTag, setActiveTag]     = useState('All')
+  const [toast, setToast]             = useState('')
   const [loading, setLoading]         = useState(false)
 
   useEffect(() => {
     async function load() {
       try {
         const familyId = family?.id || 1
-        if (activeTag === 'Recommended') {
-          const res = await getRecommendedRecipes(familyId).catch(() => ({ data: null }))
-          if (Array.isArray(res?.data) && res.data.length > 0) {
-            setRecipes(res.data)
-          }
-        } else {
-          const [allRes, recRes] = await Promise.all([
-            getAllRecipes({
-              search: search || undefined,
-              tag: activeTag !== 'All' ? activeTag : undefined,
-            }).catch(() => ({ data: null })),
-            getRecommendedRecipes(familyId).catch(() => ({ data: null })),
-          ])
-          if (Array.isArray(allRes?.data) && allRes.data.length > 0) {
-            setRecipes(allRes.data)
-          }
-          if (Array.isArray(recRes?.data) && recRes.data.length > 0) {
-            setRecommended(recRes.data)
-          }
+        const [plansRes, recipesRes, recRes] = await Promise.all([
+          getAllPlans().catch(() => ({ data: null })),
+          getAllRecipes({
+            search: search || undefined,
+            tag: activeTag !== 'All' && activeTag !== 'Recommended' ? activeTag : undefined,
+          }).catch(() => ({ data: null })),
+          getRecommendedRecipes(familyId).catch(() => ({ data: null })),
+        ])
+
+        if (Array.isArray(plansRes?.data) && plansRes.data.length > 0) {
+          setPlans(plansRes.data)
+        }
+        if (Array.isArray(recipesRes?.data) && recipesRes.data.length > 0) {
+          setRecipes(recipesRes.data)
+        }
+        if (Array.isArray(recRes?.data) && recRes.data.length > 0) {
+          setRecommended(recRes.data)
         }
       } catch (e) {
         console.error(e)
@@ -122,9 +164,26 @@ export default function RecipesPage() {
     load()
   }, [search, activeTag, family])
 
+  const showToastMsg = (msg) => {
+    setToast(msg)
+    setTimeout(() => setToast(''), 3200)
+  }
+
+  const handleSelectPlan = (e, plan) => {
+    e.stopPropagation()
+    addItemsFromPlan(plan)
+    showToastMsg(`Added ingredients for "${plan.name}" to Grocery list! 🛒`)
+  }
+
   const recipeList = Array.isArray(recipes) && recipes.length > 0 ? recipes : DEMO_RECIPES
+  const filteredRecipes = recipeList.filter((r) => {
+    if (activeTag === 'All') return true
+    if (activeTag === 'Recommended') return r.matchBadgeText || r.favorited
+    return r.tags?.some((t) => t.toLowerCase().includes(activeTag.toLowerCase()))
+  })
+
   const familyName = family?.name || user?.familyName || 'Healthy Family'
-  const initial = (familyName[0] || 'T').toUpperCase()
+  const initial = (familyName[0] || 'F').toUpperCase()
 
   return (
     <div
@@ -141,7 +200,33 @@ export default function RecipesPage() {
         boxSizing: 'border-box',
       }}
     >
-      {/* ── 1. TOP BACKSPLASH HEADER ───────────────────────────────────────── */}
+      {/* Toast notification */}
+      {toast && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 20,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: '#111827',
+            color: 'white',
+            padding: '12px 22px',
+            borderRadius: 30,
+            fontSize: 13,
+            fontWeight: 700,
+            zIndex: 3000,
+            boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+            whiteSpace: 'nowrap',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+          }}
+        >
+          {toast}
+        </div>
+      )}
+
+      {/* ── 1. TOP HEADER BAR ── */}
       <div
         style={{
           background: isDark
@@ -152,8 +237,8 @@ export default function RecipesPage() {
           borderBottom: isDark ? '1px solid #1e293b' : 'none',
         }}
       >
-        {/* Brand Bar */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+        {/* Brand bar */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2e5b12" strokeWidth="2.5">
               <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.1 2 7 0 6-4.5 11-10 11z" />
@@ -164,45 +249,22 @@ export default function RecipesPage() {
             </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <button
-              onClick={() => navigate('/notifications')}
-              style={{
-                position: 'relative',
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                background: 'white',
-                border: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-              }}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="2">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-              </svg>
-              <span style={{ position: 'absolute', top: 9, right: 9, width: 7, height: 7, borderRadius: '50%', background: '#ff4d4d' }} />
-            </button>
-
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <div
               onClick={() => navigate('/profile')}
               style={{
-                width: 40,
-                height: 40,
+                width: 38,
+                height: 38,
                 borderRadius: '50%',
                 background: '#2e5b12',
                 color: 'white',
                 fontWeight: 800,
-                fontSize: 16,
+                fontSize: 15,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                boxShadow: '0 2px 8px rgba(46,91,18,0.3)',
               }}
             >
               {initial}
@@ -211,15 +273,15 @@ export default function RecipesPage() {
         </div>
 
         {/* Title */}
-        <h1 style={{ fontSize: 36, fontWeight: 900, color: '#111827', margin: '0 0 4px 0', letterSpacing: '-0.5px' }}>
-          Recipes
+        <h1 style={{ fontSize: 32, fontWeight: 900, color: '#111827', margin: '0 0 4px 0', letterSpacing: '-0.5px' }}>
+          Recipes & Plans
         </h1>
-        <p style={{ fontSize: 15, color: '#3d6b24', fontWeight: 600, margin: 0 }}>
-          Make every meal count.
+        <p style={{ fontSize: 14, color: '#3d6b24', fontWeight: 600, margin: 0 }}>
+          Curated meal plans & healthy family recipes.
         </p>
 
-        {/* ── 2. SEARCH BAR & FILTER BUTTON ───────────────────────────────── */}
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginTop: 20 }}>
+        {/* Search bar */}
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginTop: 18 }}>
           <div
             style={{
               flex: 1,
@@ -237,119 +299,189 @@ export default function RecipesPage() {
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
             <input
-              placeholder="Search recipes..."
+              placeholder="Search recipes, ingredients, plans..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               style={{ border: 'none', outline: 'none', width: '100%', fontSize: 14, color: '#374151', background: 'transparent' }}
             />
           </div>
-
-          <button
-            style={{
-              width: 46,
-              height: 46,
-              borderRadius: '50%',
-              background: '#2e4a19',
-              color: 'white',
-              border: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              boxShadow: '0 4px 14px rgba(46,74,25,0.3)',
-              flexShrink: 0,
-            }}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-            </svg>
-          </button>
-        </div>
-
-        {/* ── 3. CATEGORY FILTER PILLS ────────────────────────────────────── */}
-        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', marginTop: 16, paddingBottom: 4, scrollbarWidth: 'none' }}>
-          {FILTER_TAGS.map((t) => {
-            const active = activeTag === t.id
-            return (
-              <button
-                key={t.id}
-                onClick={() => setActiveTag(t.id)}
-                style={{
-                  border: active ? 'none' : '1px solid #d1dca7',
-                  background: active ? '#2e4a19' : '#fafcf0',
-                  color: active ? 'white' : '#2e5b12',
-                  padding: '8px 16px',
-                  borderRadius: 20,
-                  fontSize: 13,
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  transition: 'all 0.2s ease',
-                  flexShrink: 0,
-                }}
-              >
-                <span>{t.icon}</span>
-                <span>{t.label}</span>
-              </button>
-            )
-          })}
         </div>
       </div>
 
-      <div style={{ padding: '24px 20px 0 20px' }}>
+      <div style={{ padding: '20px 20px 0 20px' }}>
 
-        {/* ── 4. RECOMMENDED FOR YOUR FAMILY ───────────────────────────────── */}
-        {activeTag === 'All' && recommended.length > 0 && !search && (
+        {/* ── 2. TOP SECTION: HORIZONTALLY SCROLLABLE CURATED PLANS ── */}
+        {!search && (
           <div style={{ marginBottom: 28 }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ color: '#ff5e14', fontSize: 16 }}>✦</span>
-                <h2 style={{ fontSize: 19, fontWeight: 800, margin: 0, color: '#111827' }}>
-                  Recommended for Your Family
+                <span style={{ color: '#5e8404', fontSize: 18 }}>🌿</span>
+                <h2 style={{ fontSize: 19, fontWeight: 900, margin: 0, color: isDark ? '#f8fafc' : '#111827' }}>
+                  Curated Meal Plans
                 </h2>
               </div>
-              <button
-                onClick={() => setActiveTag('Recommended')}
-                style={{ background: 'none', border: 'none', color: '#3d6b24', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}
-              >
-                View all &rsaquo;
-              </button>
+              <span style={{ fontSize: 12, color: '#6b7280', fontWeight: 600 }}>Scroll &rsaquo;</span>
             </div>
 
-            {/* Horizontal 2-Column Cards Grid matching screenshot */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-              {recommended.slice(0, 2).map((r) => (
-                <RecipeCard key={r.id} recipe={r} onClick={() => navigate(`/recipes/${r.id}`)} />
+            {/* Horizontal Scroll Cards */}
+            <div
+              style={{
+                display: 'flex',
+                gap: 14,
+                overflowX: 'auto',
+                paddingBottom: 10,
+                scrollSnapType: 'x mandatory',
+                scrollbarWidth: 'none',
+              }}
+            >
+              {plans.map((p, idx) => (
+                <div
+                  key={p.id}
+                  style={{
+                    flexShrink: 0,
+                    width: 260,
+                    borderRadius: 22,
+                    background: isDark ? '#161b22' : 'white',
+                    boxShadow: isDark ? '0 4px 18px rgba(0,0,0,0.3)' : '0 6px 20px rgba(0,0,0,0.06)',
+                    border: isDark ? '1px solid #21262d' : '1px solid #f0ede8',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    scrollSnapAlign: 'start',
+                    position: 'relative',
+                  }}
+                >
+                  {/* Card Image Banner */}
+                  <div
+                    style={{
+                      height: 120,
+                      backgroundImage: `url('${p.imageUrl}')`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      position: 'relative',
+                      padding: 12,
+                    }}
+                  >
+                    <div
+                      style={{
+                        position: 'absolute',
+                        inset: 0,
+                        background: 'linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%)',
+                      }}
+                    />
+                    <div style={{ position: 'relative', zIndex: 2, display: 'flex', gap: 6 }}>
+                      {(p.tags || ['Balanced']).slice(0, 2).map((t) => (
+                        <span
+                          key={t}
+                          style={{
+                            background: 'rgba(255,255,255,0.92)',
+                            color: '#2e5b12',
+                            fontSize: 10,
+                            fontWeight: 800,
+                            padding: '3px 9px',
+                            borderRadius: 10,
+                            textTransform: 'capitalize',
+                          }}
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Body Content */}
+                  <div style={{ padding: 14, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <div>
+                      <h3 style={{ fontSize: 16, fontWeight: 800, margin: '0 0 4px 0', color: isDark ? '#f0f6fc' : '#111827', lineHeight: 1.25 }}>
+                        {p.name}
+                      </h3>
+                      <p style={{ fontSize: 12, color: isDark ? '#8b949e' : '#6b7280', margin: 0, lineHeight: 1.4, height: 34, overflow: 'hidden' }}>
+                        {p.description}
+                      </p>
+                    </div>
+
+                    {/* Action Button: Auto-populate to Grocery */}
+                    <button
+                      onClick={(e) => handleSelectPlan(e, p)}
+                      style={{
+                        marginTop: 12,
+                        width: '100%',
+                        background: 'linear-gradient(135deg, #5e8404 0%, #3d6b3f 100%)',
+                        color: 'white',
+                        border: 'none',
+                        padding: '9px 12px',
+                        borderRadius: 14,
+                        fontSize: 12,
+                        fontWeight: 800,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 6,
+                        boxShadow: '0 3px 10px rgba(61,107,63,0.25)',
+                        transition: 'transform 0.15s ease',
+                      }}
+                    >
+                      <span>🛒</span> Add Plan to Grocery
+                    </button>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
         )}
 
-        {/* ── 5. ALL RECIPES 2-COLUMN GRID ─────────────────────────────────── */}
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-            <h2 style={{ fontSize: 20, fontWeight: 800, margin: 0, color: '#111827' }}>
-              {activeTag === 'Recommended' ? 'All Recommended Recipes' : 'All Recipes'}
+        {/* ── 3. FILTER CHIPS FOR RECIPES ── */}
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+            <h2 style={{ fontSize: 19, fontWeight: 900, margin: 0, color: isDark ? '#f8fafc' : '#111827' }}>
+              Explore Recipes
             </h2>
-            <button
-              style={{ background: 'none', border: 'none', color: '#3d6b24', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}
-            >
-              View all &rsaquo;
-            </button>
           </div>
 
-          {loading ? (
-            <div className="spinner" />
-          ) : recipeList.length === 0 ? (
-            <div className="error-state">
-              <p>No recipes found for "{activeTag}"</p>
+          <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 6, scrollbarWidth: 'none' }}>
+            {RECIPE_FILTER_TAGS.map((t) => {
+              const active = activeTag === t.id
+              return (
+                <button
+                  key={t.id}
+                  onClick={() => setActiveTag(t.id)}
+                  style={{
+                    border: active ? 'none' : `1px solid ${isDark ? '#30363d' : '#d1dca7'}`,
+                    background: active ? '#2e4a19' : isDark ? '#161b22' : '#fafcf0',
+                    color: active ? 'white' : isDark ? '#8b949e' : '#2e5b12',
+                    padding: '8px 16px',
+                    borderRadius: 20,
+                    fontSize: 13,
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    flexShrink: 0,
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  <span>{t.icon}</span>
+                  <span>{t.label}</span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* ── 4. RECIPES 2-COLUMN GRID ── */}
+        <div>
+          {filteredRecipes.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '40px 20px', color: '#6b7280' }}>
+              <div style={{ fontSize: 32, marginBottom: 8 }}>🥗</div>
+              <div style={{ fontWeight: 700 }}>No recipes found for "{activeTag}"</div>
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-              {recipeList.map((r, i) => (
+              {filteredRecipes.map((r, i) => (
                 <RecipeCard
                   key={r.id}
                   recipe={r}
@@ -360,9 +492,9 @@ export default function RecipesPage() {
             </div>
           )}
         </div>
+
       </div>
 
-      {/* ── 6. FIXED BOTTOM NAVIGATION BAR ──────────────────────────────── */}
       <BottomNav />
     </div>
   )

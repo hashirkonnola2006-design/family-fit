@@ -1,13 +1,15 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { FamilyProvider } from './context/FamilyContext'
+import { GroceryProvider } from './context/GroceryContext'
+import { ThemeProvider } from './context/ThemeContext'
+
 import HomePage     from './pages/HomePage'
-import PlansPage    from './pages/PlansPage'
 import RecipesPage  from './pages/RecipesPage'
+import GroceryPage  from './pages/GroceryPage'
 import ProgressPage from './pages/ProgressPage'
 import ProfilePage  from './pages/ProfilePage'
 import AuthPage     from './pages/AuthPage'
-
 import RecipeDetailPage from './pages/RecipeDetailPage'
 
 /** Protected route — redirects to /auth if no JWT found */
@@ -22,9 +24,10 @@ function AppRoutes() {
     <Routes>
       <Route path="/auth" element={<AuthPage />} />
       <Route path="/"        element={<PrivateRoute><HomePage /></PrivateRoute>} />
-      <Route path="/plans"   element={<PrivateRoute><PlansPage /></PrivateRoute>} />
+      <Route path="/plans"   element={<Navigate to="/recipes" replace />} />
       <Route path="/recipes" element={<PrivateRoute><RecipesPage /></PrivateRoute>} />
       <Route path="/recipes/:id" element={<PrivateRoute><RecipeDetailPage /></PrivateRoute>} />
+      <Route path="/grocery" element={<PrivateRoute><GroceryPage /></PrivateRoute>} />
       <Route path="/progress" element={<PrivateRoute><ProgressPage /></PrivateRoute>} />
       <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
       {/* Catch-all */}
@@ -33,15 +36,15 @@ function AppRoutes() {
   )
 }
 
-import { ThemeProvider } from './context/ThemeContext'
-
 export default function App() {
   return (
     <BrowserRouter>
       <ThemeProvider>
         <AuthProvider>
           <FamilyProvider>
-            <AppRoutes />
+            <GroceryProvider>
+              <AppRoutes />
+            </GroceryProvider>
           </FamilyProvider>
         </AuthProvider>
       </ThemeProvider>

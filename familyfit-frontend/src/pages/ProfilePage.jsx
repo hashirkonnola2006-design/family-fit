@@ -190,7 +190,7 @@ export default function ProfilePage() {
     smartInsightsEnabled: true,
     aiRecipeRecommendationsEnabled: true,
   })
-  const [language, setLanguage] = useState(() => localStorage.getItem('familyfit_lang') || 'English (US)')
+
   const [supportSubject, setSupportSubject] = useState('')
   const [supportMessage, setSupportMessage] = useState('')
   const [supportSending, setSupportSending] = useState(false)
@@ -228,12 +228,7 @@ export default function ProfilePage() {
     try { await updateAiPreferences(familyId, newPrefs); showToast('AI preferences saved! 🤖') } catch (e) { console.error(e) }
   }
 
-  const handleSelectLanguage = (lang) => {
-    setLanguage(lang)
-    localStorage.setItem('familyfit_lang', lang)
-    showToast(`Language set to ${lang} 🌐`)
-    setActiveModal(null)
-  }
+
 
   const handleSupportSubmit = async (e) => {
     e.preventDefault()
@@ -451,21 +446,7 @@ export default function ProfilePage() {
             onClick={toggleTheme}
           />
 
-          {/* Language */}
-          <SettingsRow
-            icon="🌐"
-            iconBg={isDark ? '#1a2a40' : '#e0f2fe'}
-            iconColor="#0284c7"
-            label="Language"
-            subtitle="Choose your preferred language"
-            right={
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ fontSize: 13, fontWeight: 700, color: '#2e5b12' }}>{language}</span>
-                <ChevronRight />
-              </div>
-            }
-            onClick={() => setActiveModal('language')}
-          />
+
 
           {/* AI Preferences */}
           <SettingsRow
@@ -550,41 +531,7 @@ export default function ProfilePage() {
         </ModalSheet>
       )}
 
-      {/* Language Modal */}
-      {activeModal === 'language' && (
-        <ModalSheet title="Select Language" onClose={() => setActiveModal(null)}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {['English (US)', 'Spanish (Español)', 'French (Français)', 'German (Deutsch)', 'Hindi (हिंदी)'].map((lang) => {
-              const active = language === lang
-              return (
-                <div
-                  key={lang}
-                  onClick={() => handleSelectLanguage(lang)}
-                  style={{
-                    padding: '14px 16px',
-                    borderRadius: 14,
-                    background: active ? '#e2f0d9' : 'transparent',
-                    color: active ? '#2e5b12' : 'inherit',
-                    fontWeight: active ? 800 : 600,
-                    fontSize: 15,
-                    cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                    border: `1px solid ${active ? '#c8e6c9' : 'transparent'}`,
-                    transition: 'background 0.15s ease',
-                  }}
-                >
-                  <span>{lang}</span>
-                  {active && (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2e5b12" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        </ModalSheet>
-      )}
+
 
       {/* AI Preferences Modal */}
       {activeModal === 'ai' && (

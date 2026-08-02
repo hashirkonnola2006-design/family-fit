@@ -68,6 +68,8 @@ export default function MemberModal({ member, onClose }) {
     otherAllergy: '',
     dietPreference: 'NO_PREFERENCE',
     fitnessGoal: 'MAINTAIN_WEIGHT',
+    likes: '',
+    dislikes: '',
 
     // Demographic specific flags
     isPregnantOrBreastfeeding: false,
@@ -111,6 +113,8 @@ export default function MemberModal({ member, onClose }) {
         otherAllergy: otherAllergies,
         dietPreference: member.dietPreference || 'NO_PREFERENCE',
         fitnessGoal: member.fitnessGoal || 'MAINTAIN_WEIGHT',
+        likes: Array.isArray(member.likes) ? member.likes.join(', ') : (member.likes || ''),
+        dislikes: Array.isArray(member.dislikes) ? member.dislikes.join(', ') : (member.dislikes || ''),
 
         isPregnantOrBreastfeeding: Boolean(member.isPregnantOrBreastfeeding),
         hasChewingDifficulty: Boolean(member.hasChewingDifficulty),
@@ -211,6 +215,8 @@ export default function MemberModal({ member, onClose }) {
       allergies: finalAllergies,
       dietPreference: form.dietPreference,
       fitnessGoal: form.fitnessGoal,
+      likes: typeof form.likes === 'string' ? form.likes.split(',').map(s => s.trim()).filter(Boolean) : form.likes,
+      dislikes: typeof form.dislikes === 'string' ? form.dislikes.split(',').map(s => s.trim()).filter(Boolean) : form.dislikes,
 
       // Bracket specific fields
       isPregnantOrBreastfeeding: age >= 20 && age <= 40 && isFemale ? form.isPregnantOrBreastfeeding : false,
@@ -785,7 +791,7 @@ export default function MemberModal({ member, onClose }) {
               </select>
             </div>
 
-            <div className="form-group" style={{ marginBottom: 0 }}>
+            <div className="form-group">
               <label className="form-label">Fitness Goal</label>
               <select
                 className="input"
@@ -798,6 +804,28 @@ export default function MemberModal({ member, onClose }) {
                   </option>
                 ))}
               </select>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label" style={{ fontSize: 12 }}>Food Likes (comma-separated)</label>
+              <input
+                className="input"
+                type="text"
+                value={form.likes}
+                onChange={(e) => handleChange('likes', e.target.value)}
+                placeholder="e.g. Salmon, Quinoa, Avocados, Berries"
+              />
+            </div>
+
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label" style={{ fontSize: 12 }}>Food Dislikes (comma-separated)</label>
+              <input
+                className="input"
+                type="text"
+                value={form.dislikes}
+                onChange={(e) => handleChange('dislikes', e.target.value)}
+                placeholder="e.g. Mushrooms, Red Meat, Tofu"
+              />
             </div>
           </div>
 
