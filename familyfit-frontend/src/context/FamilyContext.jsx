@@ -59,7 +59,7 @@ export function FamilyProvider({ children }) {
   const { user } = useAuth()
   const [family, setFamily] = useState(() => {
     const saved = localStorage.getItem('familyfit_members')
-    const members = saved && JSON.parse(saved).length > 0 ? JSON.parse(saved) : DEFAULT_MEMBERS
+    const members = saved ? JSON.parse(saved) : []
     return { id: 1, name: 'My Family', members }
   })
   const [loading, setLoading] = useState(false)

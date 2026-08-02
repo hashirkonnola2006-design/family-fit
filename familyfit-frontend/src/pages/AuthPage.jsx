@@ -18,10 +18,13 @@ export default function AuthPage() {
     try {
       if (mode === 'login') {
         await login(form.email, form.password)
+        navigate('/')
       } else {
         await register(form.familyName, form.email, form.password)
+        // Clear old members from previous session if any
+        localStorage.removeItem('familyfit_members')
+        navigate('/onboarding')
       }
-      navigate('/')
     } catch (err) {
       console.error('Authentication failure:', err)
       const userMessage = err.message || err.response?.data?.message || 'Unable to connect. Please check your connection and try again.'

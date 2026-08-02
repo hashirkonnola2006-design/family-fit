@@ -141,10 +141,13 @@ export default function GroceryPage() {
     ? null
     : members.find((m) => String(m.id) === String(selectedMemberId))
 
+  const plannedMealsRaw = localStorage.getItem('familyfit_planned_meals')
+  const hasPlannedMeals = Boolean(plannedMealsRaw && JSON.parse(plannedMealsRaw).length > 0)
+
   // STRICT FILTER RECOMMENDATIONS:
   // - "All Members" view: Show all recommendations reasoned for the family
   // - Per-member view: Show ONLY items that are a GENUINE & SUITABLE match for that specific member
-  const rawRecommendations = KERALA_GROCERY_DATASET
+  const rawRecommendations = hasPlannedMeals ? KERALA_GROCERY_DATASET : []
   const filteredRecommendations = selectedMemberId === 'ALL'
     ? rawRecommendations
     : rawRecommendations.filter((item) => {
@@ -381,7 +384,47 @@ export default function GroceryPage() {
 
         {/* ── 3. RECOMMENDATIONS FEED (BY CATEGORY) ── */}
         <div>
-          {filteredRecommendations.length === 0 ? (
+          {!hasPlannedMeals ? (
+            <div
+              style={{
+                textAlign: 'center',
+                padding: '44px 20px',
+                background: isDark ? '#161b22' : 'white',
+                borderRadius: 24,
+                border: `1.5px dashed ${isDark ? '#30363d' : '#e5e7eb'}`,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 12,
+                boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
+              }}
+            >
+              <div style={{ fontSize: 44, marginBottom: 2 }}>🛒</div>
+              <div style={{ fontWeight: 900, fontSize: 18, color: isDark ? '#f0f6fc' : '#111827' }}>
+                No grocery items yet
+              </div>
+              <div style={{ fontSize: 13, color: isDark ? '#8b949e' : '#6b7280', fontWeight: 500, lineHeight: 1.5, maxWidth: 300 }}>
+                No meals planned yet — tap below to explore recipes and plan your first meal to auto-generate your grocery list.
+              </div>
+              <button
+                onClick={() => navigate('/recipes')}
+                style={{
+                  marginTop: 6,
+                  background: 'linear-gradient(135deg, #ff5e14 0%, #e04800 100%)',
+                  color: 'white',
+                  border: 'none',
+                  padding: '12px 24px',
+                  borderRadius: 18,
+                  fontWeight: 800,
+                  fontSize: 14,
+                  cursor: 'pointer',
+                  boxShadow: '0 6px 18px rgba(224, 72, 0, 0.3)',
+                }}
+              >
+                Plan Your First Meal &rsaquo;
+              </button>
+            </div>
+          ) : filteredRecommendations.length === 0 ? (
             <div
               style={{
                 textAlign: 'center',

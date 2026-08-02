@@ -127,10 +127,14 @@ export default function ProgressPage() {
     load()
   }, [activeMember])
 
-  const score = healthScore?.score ?? 98
-  const insight = healthScore?.insightText ?? 'Your family is thriving! Small steps today lead to a healthier, happier tomorrow.'
-  const familyName = family?.name || user?.familyName || 'Healthy Family'
-  const initial = (familyName[0] || 'T').toUpperCase()
+  const hasLogs = Boolean(healthScore && (healthScore.hasLogs || healthScore.score > 0))
+  const score = hasLogs ? healthScore.score : 0
+  const insight = hasLogs
+    ? (healthScore?.insightText || 'Your family is thriving! Small steps today lead to a healthier, happier tomorrow.')
+    : 'Log your daily meals to unlock AI-powered health scores and personalized progress insights for your family.'
+
+  const familyName = user?.familyName || family?.name || (user?.email ? user.email.split('@')[0] : 'Family')
+  const initial = (familyName[0] || 'F').toUpperCase()
 
   return (
     <div
@@ -318,286 +322,90 @@ export default function ProgressPage() {
             <span>📅</span> Monthly
           </button>
         </div>
-
-        {/* ── 5. METRIC CARDS WITH SPARK LINES & LEFT ACCENTS ─────────────── */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 24 }}>
-
-          {/* Card 1: Average Calories */}
+        {/* ── 5. METRICS & EMPTY STATE ─────────────── */}
+        {!hasLogs ? (
           <div
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
+              textAlign: 'center',
+              padding: '44px 20px',
               background: 'white',
-              borderRadius: 20,
-              padding: '14px 16px',
-              borderLeft: '5px solid #ea580c',
-              boxShadow: '0 4px 16px rgba(0,0,0,0.04)',
+              borderRadius: 24,
+              border: '1.5px dashed #e5e7eb',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 12,
+              marginBottom: 24,
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 14,
-                  background: '#ffedd5',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 20,
-                }}
-              >
-                🔥
-              </div>
-              <div>
-                <div style={{ fontSize: 11, fontWeight: 800, color: '#6b7280', letterSpacing: '0.5px' }}>
-                  AVERAGE CALORIES
-                </div>
-                <div style={{ fontSize: 20, fontWeight: 900, color: '#111827', marginTop: 2 }}>
-                  1,840 <span style={{ fontSize: 12, color: '#6b7280', fontWeight: 600 }}>kcal/day</span>
-                </div>
-              </div>
+            <div style={{ fontSize: 44, marginBottom: 2 }}>📊</div>
+            <div style={{ fontWeight: 900, fontSize: 18, color: '#111827' }}>
+              No progress tracked yet
             </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
-              <span
-                style={{
-                  background: '#dcfce7',
-                  color: '#15803d',
-                  fontSize: 11,
-                  fontWeight: 800,
-                  padding: '3px 8px',
-                  borderRadius: 10,
-                }}
-              >
-                ↑ 4.2%
-              </span>
-              <MiniSparkline color="#4ade80" />
+            <div style={{ fontSize: 13, color: '#6b7280', fontWeight: 500, lineHeight: 1.5, maxWidth: 300 }}>
+              Log your daily meals or complete a check-in to unlock health scores, nutrition trends, and smart family insights.
             </div>
-          </div>
-
-          {/* Card 2: Protein Intake */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              background: 'white',
-              borderRadius: 20,
-              padding: '14px 16px',
-              borderLeft: '5px solid #65a30d',
-              boxShadow: '0 4px 16px rgba(0,0,0,0.04)',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 14,
-                  background: '#ecfdf5',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 20,
-                }}
-              >
-                💪
-              </div>
-              <div>
-                <div style={{ fontSize: 11, fontWeight: 800, color: '#6b7280', letterSpacing: '0.5px' }}>
-                  PROTEIN INTAKE
-                </div>
-                <div style={{ fontSize: 20, fontWeight: 900, color: '#111827', marginTop: 2 }}>
-                  78 <span style={{ fontSize: 12, color: '#6b7280', fontWeight: 600 }}>g/day</span>
-                </div>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
-              <span
-                style={{
-                  background: '#dcfce7',
-                  color: '#15803d',
-                  fontSize: 11,
-                  fontWeight: 800,
-                  padding: '3px 8px',
-                  borderRadius: 10,
-                }}
-              >
-                ↑ 1.6%
-              </span>
-              <MiniSparkline color="#4ade80" />
-            </div>
-          </div>
-
-          {/* Card 3: Water Intake */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              background: 'white',
-              borderRadius: 20,
-              padding: '14px 16px',
-              borderLeft: '5px solid #0284c7',
-              boxShadow: '0 4px 16px rgba(0,0,0,0.04)',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 14,
-                  background: '#e0f2fe',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 20,
-                }}
-              >
-                💧
-              </div>
-              <div>
-                <div style={{ fontSize: 11, fontWeight: 800, color: '#6b7280', letterSpacing: '0.5px' }}>
-                  WATER INTAKE
-                </div>
-                <div style={{ fontSize: 20, fontWeight: 900, color: '#111827', marginTop: 2 }}>
-                  1.8 <span style={{ fontSize: 12, color: '#6b7280', fontWeight: 600 }}>L/day</span>
-                </div>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
-              <span
-                style={{
-                  background: '#dcfce7',
-                  color: '#15803d',
-                  fontSize: 11,
-                  fontWeight: 800,
-                  padding: '3px 8px',
-                  borderRadius: 10,
-                }}
-              >
-                ↑ 8.1%
-              </span>
-              <MiniSparkline color="#4ade80" />
-            </div>
-          </div>
-
-          {/* Card 4: Meal Log Streak */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              background: 'white',
-              borderRadius: 20,
-              padding: '14px 16px',
-              borderLeft: '5px solid #8b5cf6',
-              boxShadow: '0 4px 16px rgba(0,0,0,0.04)',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 14,
-                  background: '#f3e8ff',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 20,
-                }}
-              >
-                ⭐
-              </div>
-              <div>
-                <div style={{ fontSize: 11, fontWeight: 800, color: '#6b7280', letterSpacing: '0.5px' }}>
-                  MEAL LOG STREAK
-                </div>
-                <div style={{ fontSize: 20, fontWeight: 900, color: '#111827', marginTop: 2 }}>
-                  7 <span style={{ fontSize: 12, color: '#6b7280', fontWeight: 600 }}>days</span>
-                </div>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
-              <span
-                style={{
-                  background: '#dcfce7',
-                  color: '#15803d',
-                  fontSize: 11,
-                  fontWeight: 800,
-                  padding: '3px 8px',
-                  borderRadius: 10,
-                }}
-              >
-                ↑ 2
-              </span>
-              <MiniSparkline color="#4ade80" />
-            </div>
-          </div>
-
-        </div>
-
-        {/* ── 6. KEEP IT UP SOCIAL ACHIEVEMENT CARD ───────────────────────── */}
-        <div
-          style={{
-            background: 'linear-gradient(135deg, #f0fdf4 0%, #e6f4ce 100%)',
-            borderRadius: 24,
-            padding: '16px 20px',
-            border: '1px solid #d6ebae',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: 20,
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <div
+            <button
+              onClick={() => navigate('/recipes')}
               style={{
-                width: 46,
-                height: 46,
-                borderRadius: 16,
-                background: '#ffffff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: 24,
-                boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                marginTop: 6,
+                background: 'linear-gradient(135deg, #ff5e14 0%, #e04800 100%)',
+                color: 'white',
+                border: 'none',
+                padding: '12px 24px',
+                borderRadius: 18,
+                fontWeight: 800,
+                fontSize: 14,
+                cursor: 'pointer',
+                boxShadow: '0 6px 18px rgba(224, 72, 0, 0.3)',
               }}
             >
-              🏆
-            </div>
-            <div>
-              <div style={{ fontSize: 16, fontWeight: 800, color: '#2e5b12' }}>
-                Keep it up!
-              </div>
-              <div style={{ fontSize: 13, color: '#374151', fontWeight: 500, marginTop: 2 }}>
-                You're in the <strong style={{ color: '#2e5b12' }}>top 12%</strong> of<br />active families this week.
+              Plan Your First Meal &rsaquo;
+            </button>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 24 }}>
+            {/* Card 1: Average Calories */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                background: 'white',
+                borderRadius: 20,
+                padding: '14px 16px',
+                borderLeft: '5px solid #ea580c',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.04)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                <div
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 14,
+                    background: '#ffedd5',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 20,
+                  }}
+                >
+                  🔥
+                </div>
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: '#6b7280', letterSpacing: '0.5px' }}>
+                    AVERAGE CALORIES
+                  </div>
+                  <div style={{ fontSize: 20, fontWeight: 900, color: '#111827', marginTop: 2 }}>
+                    {healthScore?.avgCalories || 0} <span style={{ fontSize: 12, color: '#6b7280', fontWeight: 600 }}>kcal/day</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-
-          {/* Family Character Avatars */}
-          <div style={{ display: 'flex', alignItems: 'center', marginLeft: 8 }}>
-            <img
-              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80"
-              alt="Mom"
-              style={{ width: 34, height: 34, borderRadius: '50%', border: '2px solid white', objectFit: 'cover' }}
-            />
-            <img
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80"
-              alt="Dad"
-              style={{ width: 34, height: 34, borderRadius: '50%', border: '2px solid white', marginLeft: -10, objectFit: 'cover' }}
-            />
-          </div>
-        </div>
-
+        )}
       </div>
 
       {/* ── 7. FIXED BOTTOM NAVIGATION BAR ──────────────────────────────── */}

@@ -249,8 +249,8 @@ export default function ProfilePage() {
   const handleAddMember = () => { setSelectedMember(null); setShowMemberModal(true) }
 
   const members = family?.members || []
-  const familyName = family?.name || 'Healthy Family'
-  const initial = (familyName[0] || 'T').toUpperCase()
+  const familyName = user?.familyName || family?.name || (user?.email ? user.email.split('@')[0] : 'Family')
+  const initial = (familyName[0] || 'F').toUpperCase()
 
   return (
     <div

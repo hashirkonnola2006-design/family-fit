@@ -11,6 +11,7 @@ import ProgressPage from './pages/ProgressPage'
 import ProfilePage  from './pages/ProfilePage'
 import AuthPage     from './pages/AuthPage'
 import RecipeDetailPage from './pages/RecipeDetailPage'
+import OnboardingPage   from './pages/OnboardingPage'
 
 /** Protected route — redirects to /auth if no JWT found */
 function PrivateRoute({ children }) {
@@ -23,6 +24,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/auth" element={<AuthPage />} />
+      <Route path="/onboarding" element={<PrivateRoute><OnboardingPage /></PrivateRoute>} />
       <Route path="/"        element={<PrivateRoute><HomePage /></PrivateRoute>} />
       <Route path="/plans"   element={<Navigate to="/recipes" replace />} />
       <Route path="/recipes" element={<PrivateRoute><RecipesPage /></PrivateRoute>} />

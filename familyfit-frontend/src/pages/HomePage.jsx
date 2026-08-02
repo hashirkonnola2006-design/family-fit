@@ -107,12 +107,26 @@ export default function HomePage() {
   }, [activeMember])
 
   const meals = plan?.meals || []
-  const familyName = family?.name || user?.familyName || 'Healthy Family'
+  const familyName = user?.familyName || family?.name || (user?.email ? user.email.split('@')[0] : 'Family')
 
   // Family members list
   const memberList = family?.members || []
 
-  const initial = (familyName[0] || 'T').toUpperCase()
+  // Dynamic nutrition summary metrics
+  const consumedKcal = todayLog?.calories || 0
+  const goalKcal     = todayLog?.calorieGoal || 2000
+  const carbsGrams   = todayLog?.carbsGrams || 0
+  const carbsGoal    = todayLog?.carbsGoal || 250
+  const proteinGrams = todayLog?.proteinGrams || 0
+  const proteinGoal  = todayLog?.proteinGoal || 120
+  const fatGrams     = todayLog?.fatGrams || 0
+  const fatGoal      = todayLog?.fatGoal || 70
+
+  const carbsPercent   = carbsGoal > 0 ? Math.min(Math.round((carbsGrams / carbsGoal) * 100), 100) : 0
+  const proteinPercent = proteinGoal > 0 ? Math.min(Math.round((proteinGrams / proteinGoal) * 100), 100) : 0
+  const fatPercent     = fatGoal > 0 ? Math.min(Math.round((fatGrams / fatGoal) * 100), 100) : 0
+
+  const initial = (familyName[0] || 'F').toUpperCase()
 
   return (
     <div
@@ -250,7 +264,7 @@ export default function HomePage() {
           </div>
 
           <button
-            onClick={() => navigate('/plans')}
+            onClick={() => navigate('/recipes')}
             style={{
               width: 48,
               height: 48,
@@ -290,10 +304,10 @@ export default function HomePage() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
             <h2 style={{ fontSize: 21, fontWeight: 800, margin: 0 }}>Today's Plan</h2>
             <button
-              onClick={() => navigate('/plans')}
+              onClick={() => navigate('/recipes')}
               style={{ background: 'none', border: 'none', color: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}
             >
-              View full plan &rsaquo;
+              View recipes &rsaquo;
             </button>
           </div>
 
@@ -304,51 +318,95 @@ export default function HomePage() {
               <line x1="8" y1="2" x2="8" y2="6" />
               <line x1="3" y1="10" x2="21" y2="10" />
             </svg>
-            August 1, 2026
+            {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
           </div>
 
-          <div
-            style={{
-              background: 'white',
-              borderRadius: 20,
-              padding: '18px 16px',
-              color: '#1a1a1a',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 16,
-              boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
-            }}
-          >
+          {meals.length > 0 ? (
             <div
+              onClick={() => navigate('/recipes')}
               style={{
-                width: 50,
-                height: 50,
-                borderRadius: 16,
-                background: '#f1f8e4',
-                border: '1px solid #d6ebae',
+                background: 'white',
+                borderRadius: 20,
+                padding: '18px 16px',
+                color: '#1a1a1a',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
+                gap: 16,
+                boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
+                cursor: 'pointer',
               }}
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5e8404" strokeWidth="2">
-                <path d="M18 2v20" />
-                <path d="M15 2h6" />
-                <path d="M6 2v7a3 3 0 0 0 6 0V2" />
-                <path d="M9 9v13" />
-              </svg>
-            </div>
+              <div
+                style={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: 16,
+                  background: '#f1f8e4',
+                  border: '1px solid #d6ebae',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                }}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5e8404" strokeWidth="2">
+                  <path d="M18 2v20" />
+                  <path d="M15 2h6" />
+                  <path d="M6 2v7a3 3 0 0 0 6 0V2" />
+                  <path d="M9 9v13" />
+                </svg>
+              </div>
 
-            <div>
-              <div style={{ fontSize: 15, fontWeight: 800, color: '#111827', marginBottom: 2 }}>
-                {meals.length > 0 ? `${meals.length} Meals Planned Today` : '4 Meals Planned Today'}
-              </div>
-              <div style={{ fontSize: 13, color: '#6b7280', fontWeight: 500 }}>
-                Tap to view recipes & ingredients
+              <div>
+                <div style={{ fontSize: 15, fontWeight: 800, color: '#111827', marginBottom: 2 }}>
+                  {meals.length} Meal{meals.length === 1 ? '' : 's'} Planned Today
+                </div>
+                <div style={{ fontSize: 13, color: '#6b7280', fontWeight: 500 }}>
+                  Tap to view recipes & ingredients
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div
+              onClick={() => navigate('/recipes')}
+              style={{
+                background: 'rgba(255,255,255,0.95)',
+                borderRadius: 20,
+                padding: '18px 16px',
+                color: '#1a1a1a',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                cursor: 'pointer',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                <span style={{ fontSize: 26 }}>🍽️</span>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: '#111827' }}>
+                    No meals planned yet
+                  </div>
+                  <div style={{ fontSize: 12, color: '#4b5563', marginTop: 2, fontWeight: 500 }}>
+                    Tap to explore recipes and plan your first meal
+                  </div>
+                </div>
+              </div>
+
+              <span
+                style={{
+                  background: 'linear-gradient(135deg, #ff5e14 0%, #e04800 100%)',
+                  color: 'white',
+                  fontSize: 12,
+                  fontWeight: 800,
+                  padding: '8px 14px',
+                  borderRadius: 14,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                Plan Meal &rsaquo;
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -376,22 +434,22 @@ export default function HomePage() {
           </div>
 
           <div style={{ fontSize: 13, color: '#6b7280', fontWeight: 500, marginBottom: 20 }}>
-            Goal: 2,801 kcal
+            Goal: {goalKcal.toLocaleString()} kcal
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <NutritionRing consumed={2154} goal={2801} size={145} strokeWidth={14} />
+            <NutritionRing consumed={consumedKcal} goal={goalKcal} size={145} strokeWidth={14} />
 
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 14 }}>
               {/* Carbs */}
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, fontWeight: 700, marginBottom: 5 }}>
                   <span style={{ color: '#111827' }}>Carbs</span>
-                  <span style={{ color: '#6b7280', fontWeight: 500 }}>165.39g / 350g</span>
-                  <span style={{ color: '#6b7280', fontWeight: 500 }}>47%</span>
+                  <span style={{ color: '#6b7280', fontWeight: 500 }}>{carbsGrams}g / {carbsGoal}g</span>
+                  <span style={{ color: '#6b7280', fontWeight: 500 }}>{carbsPercent}%</span>
                 </div>
                 <div style={{ height: 8, borderRadius: 4, background: '#f3f4f6', overflow: 'hidden' }}>
-                  <div style={{ width: '47%', height: '100%', background: '#5e8404', borderRadius: 4 }} />
+                  <div style={{ width: `${carbsPercent}%`, height: '100%', background: '#5e8404', borderRadius: 4 }} />
                 </div>
               </div>
 
@@ -399,11 +457,11 @@ export default function HomePage() {
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, fontWeight: 700, marginBottom: 5 }}>
                   <span style={{ color: '#111827' }}>Protein</span>
-                  <span style={{ color: '#6b7280', fontWeight: 500 }}>79.90g / 140g</span>
-                  <span style={{ color: '#6b7280', fontWeight: 500 }}>57%</span>
+                  <span style={{ color: '#6b7280', fontWeight: 500 }}>{proteinGrams}g / {proteinGoal}g</span>
+                  <span style={{ color: '#6b7280', fontWeight: 500 }}>{proteinPercent}%</span>
                 </div>
                 <div style={{ height: 8, borderRadius: 4, background: '#f3f4f6', overflow: 'hidden' }}>
-                  <div style={{ width: '57%', height: '100%', background: '#5e8404', borderRadius: 4 }} />
+                  <div style={{ width: `${proteinPercent}%`, height: '100%', background: '#5e8404', borderRadius: 4 }} />
                 </div>
               </div>
 
@@ -411,15 +469,40 @@ export default function HomePage() {
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, fontWeight: 700, marginBottom: 5 }}>
                   <span style={{ color: '#111827' }}>Fats</span>
-                  <span style={{ color: '#6b7280', fontWeight: 500 }}>74.69g / 93g</span>
-                  <span style={{ color: '#6b7280', fontWeight: 500 }}>80%</span>
+                  <span style={{ color: '#6b7280', fontWeight: 500 }}>{fatGrams}g / {fatGoal}g</span>
+                  <span style={{ color: '#6b7280', fontWeight: 500 }}>{fatPercent}%</span>
                 </div>
                 <div style={{ height: 8, borderRadius: 4, background: '#f3f4f6', overflow: 'hidden' }}>
-                  <div style={{ width: '80%', height: '100%', background: '#ff5e14', borderRadius: 4 }} />
+                  <div style={{ width: `${fatPercent}%`, height: '100%', background: '#ff5e14', borderRadius: 4 }} />
                 </div>
               </div>
             </div>
           </div>
+
+          {!todayLog && (
+            <div
+              style={{
+                marginTop: 16,
+                padding: '10px 14px',
+                background: '#fcfaf7',
+                borderRadius: 14,
+                border: '1px border #f0ede8',
+                fontSize: 12,
+                color: '#6b7280',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <span>💡 Log your meals to automatically track daily macros.</span>
+              <button
+                onClick={() => navigate('/recipes')}
+                style={{ background: 'none', border: 'none', color: '#5e8404', fontWeight: 700, cursor: 'pointer', fontSize: 12 }}
+              >
+                Log Meal &rsaquo;
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -543,24 +626,44 @@ export default function HomePage() {
             })
           ) : (
             <div
-              onClick={() => navigate('/profile')}
+              onClick={() => navigate('/onboarding')}
               style={{
                 width: '100%',
                 background: isDark ? '#141c2e' : 'white',
-                borderRadius: 20,
+                borderRadius: 24,
                 padding: '24px 20px',
                 textAlign: 'center',
                 border: `1.5px dashed ${isDark ? '#24324a' : '#e5e7eb'}`,
                 cursor: 'pointer',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 8,
               }}
             >
-              <div style={{ fontSize: 32, marginBottom: 6 }}>👨‍👩‍👧‍👦</div>
-              <div style={{ fontWeight: 800, fontSize: 15, color: isDark ? '#f8fafc' : '#111827', marginBottom: 2 }}>
+              <div style={{ fontSize: 36, marginBottom: 2 }}>👨‍👩‍👧‍👦</div>
+              <div style={{ fontWeight: 800, fontSize: 16, color: isDark ? '#f8fafc' : '#111827' }}>
                 No family members added yet
               </div>
-              <div style={{ fontSize: 13, color: isDark ? '#94a3b8' : '#6b7280', fontWeight: 500 }}>
-                Tap here to add your family members in Profile
+              <div style={{ fontSize: 13, color: isDark ? '#94a3b8' : '#6b7280', fontWeight: 500, marginBottom: 6 }}>
+                Add your family members to personalize meal plans and health warnings.
               </div>
+              <button
+                onClick={(e) => { e.stopPropagation(); navigate('/onboarding') }}
+                style={{
+                  background: 'linear-gradient(135deg, #ff5e14 0%, #e04800 100%)',
+                  color: 'white',
+                  border: 'none',
+                  padding: '10px 20px',
+                  borderRadius: 16,
+                  fontWeight: 800,
+                  fontSize: 13,
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 14px rgba(224, 72, 0, 0.3)',
+                }}
+              >
+                + Add Family Member
+              </button>
             </div>
           )}
         </div>

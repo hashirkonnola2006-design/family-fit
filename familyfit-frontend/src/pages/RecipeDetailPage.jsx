@@ -5,7 +5,7 @@ import { useFamily } from '../context/FamilyContext'
 import { useTheme } from '../context/ThemeContext'
 import MemberAvatar from '../components/MemberAvatar'
 import BottomNav from '../components/BottomNav'
-import { KERALA_RECIPES } from '../data/keralaRecipesData'
+import { RECIPE_DATABASE } from '../data/recipeDatabase'
 
 /**
  * Dynamically evaluates a recipe's suitability for a specific family member using their actual profile data:
@@ -186,8 +186,8 @@ export default function RecipeDetailPage() {
     async function load() {
       try {
         const familyId = family?.id || 1
-        // 1. Check in local KERALA_RECIPES dataset first by ID
-        const localFound = KERALA_RECIPES.find((r) => String(r.id) === String(id))
+        // 1. Check in local RECIPE_DATABASE (500 recipes) dataset first by ID
+        const localFound = RECIPE_DATABASE.find((r) => String(r.id) === String(id))
         if (localFound) {
           setRecipe(localFound)
           return

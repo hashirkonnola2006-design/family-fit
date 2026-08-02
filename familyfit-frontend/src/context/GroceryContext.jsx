@@ -65,6 +65,17 @@ export function GroceryProvider({ children }) {
     localStorage.setItem('familyfit_grocery_period', period)
   }
 
+  const addItemsFromPlan = (planOrRecipe) => {
+    try {
+      const existingRaw = localStorage.getItem('familyfit_planned_meals')
+      const existing = existingRaw ? JSON.parse(existingRaw) : []
+      const updated = [...existing, { id: planOrRecipe.id || Date.now(), name: planOrRecipe.name, date: new Date().toISOString() }]
+      localStorage.setItem('familyfit_planned_meals', JSON.stringify(updated))
+    } catch (e) {
+      console.error('Failed to update planned meals:', e)
+    }
+  }
+
   return (
     <GroceryContext.Provider
       value={{
@@ -73,6 +84,7 @@ export function GroceryProvider({ children }) {
         setBudget,
         budgetPeriod,
         setBudgetPeriod,
+        addItemsFromPlan,
       }}
     >
       {children}

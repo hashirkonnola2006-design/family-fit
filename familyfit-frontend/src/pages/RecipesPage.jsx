@@ -8,17 +8,23 @@ import { useAuth } from '../context/AuthContext'
 import { useFamily } from '../context/FamilyContext'
 import { useTheme } from '../context/ThemeContext'
 import { useGrocery } from '../context/GroceryContext'
-import { KERALA_RECIPES } from '../data/keralaRecipesData'
+import { RECIPE_DATABASE } from '../data/recipeDatabase'
 
 const RECIPE_FILTER_TAGS = [
-  { id: 'All', label: 'All Recipes', icon: '⊞' },
-  { id: 'Recommended', label: 'Recommended', icon: '⭐' },
-  { id: 'Weight Loss', label: 'Weight Loss', icon: '🏋️' },
-  { id: 'Diabetes', label: 'Diabetes', icon: '💧' },
-  { id: 'Kids', label: 'Kid-Friendly', icon: '🙂' },
+  { id: 'All', label: 'All Recipes (500)', icon: '⊞' },
+  { id: 'Kerala', label: 'Kerala Specialties', icon: '🌴' },
+  { id: 'South Indian', label: 'South Indian', icon: '🍛' },
+  { id: 'North Indian', label: 'North Indian', icon: '🥘' },
+  { id: 'Asian', label: 'Asian', icon: '🥢' },
+  { id: 'Italian', label: 'Italian', icon: '🍕' },
   { id: 'High-Protein', label: 'High-Protein', icon: '⚡' },
+  { id: 'Vegetarian', label: 'Vegetarian', icon: '🥗' },
+  { id: 'Vegan', label: 'Vegan', icon: '🌱' },
+  { id: 'Low-Carb', label: 'Low-Carb', icon: '🥑' },
   { id: 'Breakfast', label: 'Breakfast', icon: '☼' },
-  { id: 'Dinner', label: 'Dinner', icon: '🍱' },
+  { id: 'Lunch', label: 'Lunch', icon: '🍱' },
+  { id: 'Dinner', label: 'Dinner', icon: '🍽️' },
+  { id: 'Kids', label: 'Kid-Friendly', icon: '🙂' },
 ]
 
 const DEMO_PLANS = [
@@ -66,9 +72,10 @@ export default function RecipesPage() {
   const navigate = useNavigate()
 
   const [plans, setPlans]             = useState(DEMO_PLANS)
-  const [recipes, setRecipes]         = useState(KERALA_RECIPES)
+  const [recipes, setRecipes]         = useState(RECIPE_DATABASE)
   const [search, setSearch]           = useState('')
   const [activeTag, setActiveTag]     = useState('All')
+  const [visibleCount, setVisibleCount] = useState(24)
   const [toast, setToast]             = useState('')
 
   useEffect(() => {
@@ -109,21 +116,27 @@ export default function RecipesPage() {
     showToastMsg(`Added ingredients for "${plan.name}" to Grocery list! 🛒`)
   }
 
-  const recipeList = Array.isArray(recipes) && recipes.length > 0 ? recipes : KERALA_RECIPES
+  const recipeList = Array.isArray(recipes) && recipes.length > 0 ? recipes : RECIPE_DATABASE
   const filteredRecipes = recipeList.filter((r) => {
     // 1. Search Query Filter
     if (search.trim()) {
       const q = search.toLowerCase()
       const matchesName = (r.name || '').toLowerCase().includes(q)
+      const matchesCuisine = (r.cuisine || '').toLowerCase().includes(q)
       const matchesDesc = (r.whyItsGood || '').toLowerCase().includes(q)
       const matchesTags = (r.tags || []).some((t) => t.toLowerCase().includes(q))
-      if (!matchesName && !matchesDesc && !matchesTags) return false
+      const matchesIng = (r.ingredients || []).some((i) => (i.name || '').toLowerCase().includes(q))
+      if (!matchesName && !matchesCuisine && !matchesDesc && !matchesTags && !matchesIng) return false
     }
 
     // 2. Active Tag Filter
     if (activeTag === 'All') return true
     if (activeTag === 'Recommended') return r.matchBadgeText || r.favorited
-    return r.tags?.some((t) => t.toLowerCase().includes(activeTag.toLowerCase()))
+    return (
+      (r.cuisine || '').toLowerCase() === activeTag.toLowerCase() ||
+      (r.category || '').toLowerCase() === activeTag.toLowerCase() ||
+      r.tags?.some((t) => t.toLowerCase().includes(activeTag.toLowerCase()))
+    )
   })
 
   const familyName = family?.name || user?.familyName || 'Healthy Family'
@@ -418,19 +431,42 @@ export default function RecipesPage() {
           {filteredRecipes.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '40px 20px', color: '#6b7280' }}>
               <div style={{ fontSize: 32, marginBottom: 8 }}>🥗</div>
-              <div style={{ fontWeight: 700 }}>No Kerala recipes found for "{activeTag}"</div>
+              <div style={{ fontWeight: 700 }}>No recipes found for "{activeTag}"</div>
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-              {filteredRecipes.map((r, i) => (
-                <RecipeCard
-                  key={r.id}
-                  recipe={r}
-                  accentColor={ACCENT_COLORS[i % ACCENT_COLORS.length]}
-                  onClick={() => navigate(`/recipes/${r.id}`)}
-                />
-              ))}
-            </div>
+            <>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+                {filteredRecipes.slice(0, visibleCount).map((r, i) => (
+                  <RecipeCard
+                    key={r.id}
+                    recipe={r}
+                    accentColor={ACCENT_COLORS[i % ACCENT_COLORS.length]}
+                    onClick={() => navigate(`/recipes/${r.id}`)}
+                  />
+                ))}
+              </div>
+
+              {visibleCount < filteredRecipes.length && (
+                <div style={{ textAlign: 'center', marginTop: 24 }}>
+                  <button
+                    onClick={() => setVisibleCount((prev) => prev + 24)}
+                    style={{
+                      background: 'linear-gradient(135deg, #ff5e14 0%, #e04800 100%)',
+                      color: 'white',
+                      border: 'none',
+                      padding: '12px 24px',
+                      borderRadius: 20,
+                      fontWeight: 800,
+                      fontSize: 14,
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 16px rgba(224,72,0,0.3)',
+                    }}
+                  >
+                    Load More Recipes ({visibleCount} of {filteredRecipes.length})
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
 
