@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { updateMember, addMember, deleteMember } from '../api/family'
 import { useFamily } from '../context/FamilyContext'
+import MemberAvatar from './MemberAvatar'
 
 const HEALTH_CONDITION_OPTIONS = [
   'None',
@@ -300,11 +301,14 @@ export default function MemberModal({ member, onClose }) {
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="section-header" style={{ marginBottom: 20 }}>
-          <h2 className="section-title" style={{ fontSize: 19 }}>
-            {isEdit ? `Edit Profile — ${member.name}` : 'Add Family Member'}
-          </h2>
-          <button onClick={onClose} className="btn-ghost" style={{ padding: 4, borderRadius: '50%' }}>
+        <div className="section-header" style={{ marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <MemberAvatar member={{ age: form.age, gender: form.gender, role: form.role }} size={44} />
+            <h2 className="section-title" style={{ fontSize: 19, margin: 0 }}>
+              {isEdit ? `Edit Profile — ${member.name}` : 'Add Family Member'}
+            </h2>
+          </div>
+          <button type="button" onClick={onClose} className="btn-ghost" style={{ padding: 4, borderRadius: '50%' }}>
             ✕
           </button>
         </div>

@@ -1,52 +1,42 @@
 import { useTheme } from '../context/ThemeContext'
+import MemberAvatar from './MemberAvatar'
 
-// Character illustration URLs matching each member theme
+// Character illustration colors matching each member theme
 const MEMBER_THEMES = [
   {
-    avatarBg: '#ea580c',
     cardBg: '#fff8f2',
     cardBorder: '#fde8d5',
     statBg: '#fff0e6',
     allergyColor: '#ea580c',
-    illustration: 'https://cdn-icons-png.flaticon.com/512/4140/4140048.png',
   },
   {
-    avatarBg: '#8b5cf6',
     cardBg: '#faf5ff',
     cardBorder: '#ede9fa',
     statBg: '#f3eeff',
     allergyColor: '#4b5563',
-    illustration: 'https://cdn-icons-png.flaticon.com/512/4140/4140047.png',
   },
   {
-    avatarBg: '#16a34a',
     cardBg: '#f0fdf4',
     cardBorder: '#dcfce7',
     statBg: '#e8fdf0',
     allergyColor: '#ea580c',
-    illustration: 'https://cdn-icons-png.flaticon.com/512/4140/4140061.png',
   },
   {
-    avatarBg: '#e07b39',
     cardBg: '#fff8f2',
     cardBorder: '#fde8d5',
     statBg: '#fff0e6',
     allergyColor: '#4b5563',
-    illustration: 'https://cdn-icons-png.flaticon.com/512/4140/4140051.png',
   },
   {
-    avatarBg: '#2563eb',
     cardBg: '#eff6ff',
     cardBorder: '#dbeafe',
     statBg: '#e0f0ff',
     allergyColor: '#2563eb',
-    illustration: 'https://cdn-icons-png.flaticon.com/512/4140/4140039.png',
   },
 ]
 
 /**
- * MemberCard — redesigned to match reference screenshot design.
- * Shows avatar initial, character illustration, weight/BMI stats, allergies.
+ * MemberCard — Redesigned with demographic avatar icons (Child, Teenager, Adult, Elder).
  */
 export default function MemberCard({ member, onEdit, themeIndex }) {
   const { isDark } = useTheme()
@@ -55,7 +45,6 @@ export default function MemberCard({ member, onEdit, themeIndex }) {
   const idx = themeIndex !== undefined ? themeIndex : (member.id % MEMBER_THEMES.length)
   const theme = MEMBER_THEMES[idx % MEMBER_THEMES.length]
 
-  const initial = member.name?.[0]?.toUpperCase() || '?'
   const bmi = member.bmi?.toFixed(1) ?? (
     member.weightKg && member.heightCm
       ? (member.weightKg / Math.pow(member.heightCm / 100, 2)).toFixed(1)
@@ -121,27 +110,9 @@ export default function MemberCard({ member, onEdit, themeIndex }) {
         </button>
       )}
 
-      {/* ── Top Row: Avatar + Name/Age ── */}
+      {/* ── Top Row: Demographic Avatar + Name/Age ── */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingRight: 36 }}>
-        {/* Colored circle avatar */}
-        <div
-          style={{
-            width: 38,
-            height: 38,
-            borderRadius: '50%',
-            background: theme.avatarBg,
-            color: 'white',
-            fontWeight: 800,
-            fontSize: 17,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-            boxShadow: `0 4px 12px ${theme.avatarBg}55`,
-          }}
-        >
-          {initial}
-        </div>
+        <MemberAvatar member={member} size={42} />
 
         <div>
           <div style={{ fontWeight: 800, fontSize: 15, color: isDark ? '#f0f6fc' : '#111827', lineHeight: 1.2 }}>
@@ -153,21 +124,8 @@ export default function MemberCard({ member, onEdit, themeIndex }) {
         </div>
       </div>
 
-      {/* ── Middle: Illustration + Stats side by side ── */}
-      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8 }}>
-        {/* Character illustration */}
-        <img
-          src={theme.illustration}
-          alt={member.name}
-          style={{
-            width: 64,
-            height: 64,
-            objectFit: 'contain',
-            flexShrink: 0,
-            filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))',
-          }}
-        />
-
+      {/* ── Middle: Stats side by side ── */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         {/* Weight + BMI stats */}
         <div
           style={{
@@ -209,28 +167,43 @@ export default function MemberCard({ member, onEdit, themeIndex }) {
         </div>
       </div>
 
-      {/* ── Bottom: Allergies ── */}
-      <div>
-        <div style={{ fontSize: 9, fontWeight: 700, color: isDark ? '#6e7681' : '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 3 }}>
-          ALLERGIES
-        </div>
+      {/* ── Bottom: Allergies pill ── */}
+      {hasAllergy ? (
         <div
           style={{
-            fontSize: 12,
+            background: isDark ? 'rgba(239, 68, 68, 0.15)' : '#fee2e2',
+            color: isDark ? '#f87171' : '#dc2626',
+            borderRadius: 10,
+            padding: '5px 10px',
+            fontSize: 11,
             fontWeight: 700,
-            color: hasAllergy
-              ? (isDark ? '#fb923c' : theme.allergyColor)
-              : (isDark ? '#6b7280' : '#4b5563'),
-            lineHeight: 1.3,
-            overflow: 'hidden',
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
           }}
         >
-          {hasAllergy ? allergyList.join(', ') : 'None reported'}
+          <span>⚠️</span>
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {allergyList.join(', ')}
+          </span>
         </div>
-      </div>
+      ) : (
+        <div
+          style={{
+            background: isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0,0,0,0.03)',
+            color: isDark ? '#8b949e' : '#6b7280',
+            borderRadius: 10,
+            padding: '5px 10px',
+            fontSize: 11,
+            fontWeight: 600,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 4,
+          }}
+        >
+          <span>🌱</span> No allergies reported
+        </div>
+      )}
     </div>
   )
 }

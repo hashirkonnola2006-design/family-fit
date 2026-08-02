@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { getRecipeDetail } from '../api/recipes'
 import { useFamily } from '../context/FamilyContext'
 import { useTheme } from '../context/ThemeContext'
+import MemberAvatar from '../components/MemberAvatar'
 import BottomNav from '../components/BottomNav'
 import { KERALA_RECIPES } from '../data/keralaRecipesData'
 
@@ -450,16 +451,18 @@ export default function RecipeDetailPage() {
                       : isDark ? '1px solid #21262d' : '1px solid #e5e7eb',
                   }}
                 >
+                  <MemberAvatar member={member} size={36} />
+
                   {/* Status Icon Badge */}
                   <div
                     style={{
-                      width: 32,
-                      height: 32,
+                      width: 28,
+                      height: 28,
                       borderRadius: '50%',
                       background: statusBg,
                       color: statusColor,
                       fontWeight: 900,
-                      fontSize: 14,
+                      fontSize: 13,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',

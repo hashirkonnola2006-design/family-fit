@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav'
+import MemberAvatar from '../components/MemberAvatar'
 import { useFamily } from '../context/FamilyContext'
 import { useGrocery, KERALA_GROCERY_DATASET } from '../context/GroceryContext'
 import { useTheme } from '../context/ThemeContext'
@@ -370,22 +371,7 @@ export default function GroceryPage() {
                     gap: 8,
                   }}
                 >
-                  <div
-                    style={{
-                      width: 24,
-                      height: 24,
-                      borderRadius: '50%',
-                      background: '#2e5b12',
-                      color: 'white',
-                      fontSize: 11,
-                      fontWeight: 800,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    {m.name[0]}
-                  </div>
+                  <MemberAvatar member={m} size={24} />
                   <span>{m.name}</span>
                 </button>
               )
@@ -518,24 +504,7 @@ export default function GroceryPage() {
                                 {suitedMembers.length > 0 ? (
                                   <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                                     {suitedMembers.map((m) => (
-                                      <div
-                                        key={m.id}
-                                        title={`${m.name} (Recommended)`}
-                                        style={{
-                                          width: 22,
-                                          height: 22,
-                                          borderRadius: '50%',
-                                          background: '#2e5b12',
-                                          color: 'white',
-                                          fontSize: 10,
-                                          fontWeight: 800,
-                                          display: 'flex',
-                                          alignItems: 'center',
-                                          justifyContent: 'center',
-                                        }}
-                                      >
-                                        {m.name[0]}
-                                      </div>
+                                      <MemberAvatar key={m.id} member={m} size={24} />
                                     ))}
                                   </div>
                                 ) : (
