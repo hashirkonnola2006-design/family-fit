@@ -68,6 +68,13 @@ export function FamilyProvider({ children }) {
 
   useEffect(() => {
     if (user?.familyId) {
+      if (user.familyName) {
+        setFamily((prev) => ({
+          ...prev,
+          id: user.familyId,
+          name: user.familyName,
+        }))
+      }
       fetchFamily(user.familyId)
     }
   }, [user])

@@ -14,6 +14,7 @@ export default function AuthPage() {
     e.preventDefault()
     setError('')
     setLoading(true)
+
     try {
       if (mode === 'login') {
         await login(form.email, form.password)
@@ -22,13 +23,21 @@ export default function AuthPage() {
       }
       navigate('/')
     } catch (err) {
-      setError(err.response?.data?.message || 'Something went wrong. Please try again.')
+      console.error('Authentication failure:', err)
+      const userMessage = err.message || err.response?.data?.message || 'Unable to connect. Please check your connection and try again.'
+      setError(userMessage)
     } finally {
       setLoading(false)
     }
   }
 
   const set = (field) => (e) => setForm(f => ({ ...f, [field]: e.target.value }))
+
+  const handleUseDemo = () => {
+    setMode('login')
+    setError('')
+    setForm({ familyName: '', email: 'healthyfamily@example.com', password: 'password123' })
+  }
 
   return (
     <div className="auth-page">
@@ -98,11 +107,13 @@ export default function AuthPage() {
 
           {error && (
             <div style={{
-              background: '#fde8e8', color: 'var(--color-error)',
-              padding: '10px 14px', borderRadius: 10, fontSize: 13,
-              marginBottom: 16, fontWeight: 500
+              background: '#fee2e2', color: '#dc2626', border: '1px solid #fecaca',
+              padding: '12px 14px', borderRadius: 12, fontSize: 13,
+              marginBottom: 16, fontWeight: 700, lineHeight: 1.4,
+              display: 'flex', alignItems: 'center', gap: 8
             }}>
-              {error}
+              <span>⚠️</span>
+              <span>{error}</span>
             </div>
           )}
 
@@ -110,11 +121,11 @@ export default function AuthPage() {
             id="auth-submit-btn"
             type="submit"
             className="btn btn-primary w-full"
-            style={{ width: '100%', padding: '14px', fontSize: 15, borderRadius: 12 }}
+            style={{ width: '100%', padding: '14px', fontSize: 15, borderRadius: 12, cursor: 'pointer' }}
             disabled={loading}
           >
             {loading
-              ? <span style={{ opacity: 0.7 }}>Loading…</span>
+              ? <span style={{ opacity: 0.7 }}>Processing…</span>
               : mode === 'login' ? 'Sign In' : 'Create Account'
             }
           </button>
@@ -123,8 +134,9 @@ export default function AuthPage() {
         <div style={{ textAlign: 'center', marginTop: 16, fontSize: 13, color: 'var(--color-text-muted)' }}>
           Demo credentials:&nbsp;
           <button
-            style={{ color: 'var(--color-primary)', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', fontSize: 13 }}
-            onClick={() => setForm({ familyName: '', email: 'healthyfamily@example.com', password: 'password123' })}
+            type="button"
+            style={{ color: '#2e5b12', fontWeight: 700, background: 'none', border: 'none', cursor: 'pointer', fontSize: 13 }}
+            onClick={handleUseDemo}
           >
             Use demo account
           </button>
