@@ -4,36 +4,7 @@ import { getRecipeDetail } from '../api/recipes'
 import { useFamily } from '../context/FamilyContext'
 import { useTheme } from '../context/ThemeContext'
 import BottomNav from '../components/BottomNav'
-
-const DEMO_RECIPE = {
-  id: 1,
-  name: 'Kerala Fish Curry (Meen Curry with Kudampuli)',
-  description: 'Authentic Kerala fish curry cooked with red chili, Kudampuli (Gambooge), fresh curry leaves, and coconut oil.',
-  kcal: 390,
-  proteinG: 38,
-  carbsG: 18,
-  fatG: 14,
-  prepTimeMinutes: 30,
-  imageUrl: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&q=80',
-  tags: ['High-Protein', 'Diabetes', 'Dinner'],
-  whyItsGood: 'Rich in Omega-3 fatty acids and protein from fresh fish, with metabolic benefits from Kudampuli souring agent.',
-  ingredients: [
-    { name: 'Fresh Mathi / King Fish', quantity: '400', unit: 'g' },
-    { name: 'Kudampuli (Gambooge)', quantity: '3', unit: 'pieces' },
-    { name: 'Shallots (Small Onions)', quantity: '10', unit: 'sliced' },
-    { name: 'Kashmiri Chilli Powder', quantity: '2', unit: 'tbsp' },
-    { name: 'Cold-Pressed Coconut Oil', quantity: '2', unit: 'tbsp' },
-    { name: 'Curry Leaves', quantity: '2', unit: 'sprigs' },
-  ],
-  steps: [
-    'Soak Kudampuli in warm water for 10 minutes.',
-    'Heat coconut oil in a clay pot (Meen Chatti) and sauté sliced shallots, ginger, and curry leaves until fragrant.',
-    'Add Kashmiri chilli powder, turmeric, and fenugreek powder with a splash of water to form a smooth paste.',
-    'Pour in 1.5 cups water along with soaked Kudampuli and salt. Bring to a gentle boil.',
-    'Add cleaned fish pieces, cover, and simmer on medium flame for 15-20 minutes until oil separates.',
-    'Garnish with fresh curry leaves and a drizzle of raw coconut oil before serving with hot Matta rice.',
-  ],
-}
+import { KERALA_RECIPES } from '../data/keralaRecipesData'
 
 /**
  * Dynamically evaluates a recipe's suitability for a specific family member using their actual profile data:
@@ -74,7 +45,7 @@ function evaluateMemberRecipeSuitability(recipe, member) {
     if (allergen === 'Milk/Dairy' && (fullRecipeText.includes('milk') || fullRecipeText.includes('curd') || fullRecipeText.includes('ghee') || fullRecipeText.includes('thayir') || fullRecipeText.includes('sambharam') || fullRecipeText.includes('cheese') || fullRecipeText.includes('yogurt'))) return true
     if (allergen === 'Eggs' && (fullRecipeText.includes('egg') || fullRecipeText.includes('mutta'))) return true
     if (allergen === 'Peanuts/Tree Nuts' && (fullRecipeText.includes('nut') || fullRecipeText.includes('almond') || fullRecipeText.includes('peanut'))) return true
-    if (allergen === 'Seafood/Fish' && (fullRecipeText.includes('fish') || fullRecipeText.includes('mathi') || fullRecipeText.includes('ayala') || fullRecipeText.includes('neymeen') || fullRecipeText.includes('chemmeen') || fullRecipeText.includes('prawn') || fullRecipeText.includes('seafood'))) return true
+    if (allergen === 'Seafood/Fish' && (fullRecipeText.includes('fish') || fullRecipeText.includes('mathi') || fullRecipeText.includes('ayala') || fullRecipeText.includes('neymeen') || fullRecipeText.includes('chemmeen') || fullRecipeText.includes('prawn') || fullRecipeText.includes('seafood') || fullRecipeText.includes('karimeen'))) return true
     if (allergen === 'Soy' && (fullRecipeText.includes('tofu') || fullRecipeText.includes('soy'))) return true
     if (allergen === 'Wheat/Gluten' && (fullRecipeText.includes('wheat') || fullRecipeText.includes('bread'))) return true
     return false
@@ -155,7 +126,7 @@ function evaluateMemberRecipeSuitability(recipe, member) {
 
   // Weight Loss
   if (goal.includes('LOSS') || goal.includes('WEIGHT')) {
-    if (kcal > 600) {
+    if (kcal > 550) {
       return {
         isSuitable: false,
         isNeutral: false,
@@ -203,7 +174,7 @@ export default function RecipeDetailPage() {
   const navigate = useNavigate()
   const { family } = useFamily()
   const { isDark } = useTheme()
-  const [recipe, setRecipe] = useState(DEMO_RECIPE)
+  const [recipe, setRecipe] = useState(KERALA_RECIPES[0])
   const [loading, setLoading] = useState(false)
   const [checkedIngredients, setCheckedIngredients] = useState({})
   const [toastMessage, setToastMessage] = useState('')
@@ -214,6 +185,14 @@ export default function RecipeDetailPage() {
     async function load() {
       try {
         const familyId = family?.id || 1
+        // 1. Check in local KERALA_RECIPES dataset first by ID
+        const localFound = KERALA_RECIPES.find((r) => String(r.id) === String(id))
+        if (localFound) {
+          setRecipe(localFound)
+          return
+        }
+
+        // 2. Fallback to API if not in static dataset
         const res = await getRecipeDetail(id, familyId).catch(() => ({ data: null }))
         if (res?.data && typeof res.data === 'object' && res.data.name) {
           setRecipe(res.data)

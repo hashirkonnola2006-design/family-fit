@@ -8,6 +8,7 @@ import { useAuth } from '../context/AuthContext'
 import { useFamily } from '../context/FamilyContext'
 import { useTheme } from '../context/ThemeContext'
 import { useGrocery } from '../context/GroceryContext'
+import { KERALA_RECIPES } from '../data/keralaRecipesData'
 
 const RECIPE_FILTER_TAGS = [
   { id: 'All', label: 'All Recipes', icon: '⊞' },
@@ -55,89 +56,6 @@ const DEMO_PLANS = [
   },
 ]
 
-const DEMO_RECIPES = [
-  {
-    id: 1,
-    name: 'Appam with Vegetable Coconut Stew',
-    kcal: 380,
-    prepTimeMinutes: 20,
-    imageUrl: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&q=80',
-    tags: ['Breakfast', 'Kids', 'Vegetarian'],
-    matchBadgeText: '100% Family Match',
-    favorited: true,
-  },
-  {
-    id: 2,
-    name: 'Puttu with Malabar Kadala Curry',
-    kcal: 420,
-    prepTimeMinutes: 25,
-    imageUrl: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800&q=80',
-    tags: ['Breakfast', 'High-Protein'],
-    matchBadgeText: 'High Protein Fuel',
-    favorited: false,
-  },
-  {
-    id: 3,
-    name: 'Kerala Fish Curry (Kudampuli Meen Curry)',
-    kcal: 390,
-    prepTimeMinutes: 30,
-    imageUrl: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&q=80',
-    tags: ['Dinner', 'High-Protein', 'Diabetes'],
-    matchBadgeText: 'Omega-3 Rich',
-    favorited: true,
-  },
-  {
-    id: 4,
-    name: 'Nadan Chicken Roast & Matta Rice',
-    kcal: 510,
-    prepTimeMinutes: 35,
-    imageUrl: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=800&q=80',
-    tags: ['Lunch', 'High-Protein'],
-    matchBadgeText: 'Kerala Sunday Special',
-    favorited: false,
-  },
-  {
-    id: 5,
-    name: 'Kerala Avial (Coconut Yoghurt Veggies)',
-    kcal: 280,
-    prepTimeMinutes: 20,
-    imageUrl: 'https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?w=800&q=80',
-    tags: ['Dinner', 'Diabetes', 'Weight Loss'],
-    matchBadgeText: 'Low GI & Fibre',
-    favorited: false,
-  },
-  {
-    id: 6,
-    name: 'Beans & Grated Coconut Thoran',
-    kcal: 180,
-    prepTimeMinutes: 15,
-    imageUrl: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&q=80',
-    tags: ['Dinner', 'Weight Loss', 'Vegan'],
-    matchBadgeText: 'Quick Healthy Side',
-    favorited: false,
-  },
-  {
-    id: 7,
-    name: 'Kerala Parippu Curry with Pure Ghee',
-    kcal: 290,
-    prepTimeMinutes: 20,
-    imageUrl: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&q=80',
-    tags: ['Lunch', 'Kids', 'High-Protein'],
-    matchBadgeText: 'Comfort Food Classic',
-    favorited: false,
-  },
-  {
-    id: 8,
-    name: 'Pazham Pori (Nendran Banana Fritters)',
-    kcal: 210,
-    prepTimeMinutes: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&q=80',
-    tags: ['Breakfast', 'Kids'],
-    matchBadgeText: 'Kids Favorite Snack',
-    favorited: true,
-  },
-]
-
 const ACCENT_COLORS = ['#5e8404', '#ff5e14', '#2563eb', '#d97706']
 
 export default function RecipesPage() {
@@ -148,8 +66,7 @@ export default function RecipesPage() {
   const navigate = useNavigate()
 
   const [plans, setPlans]             = useState(DEMO_PLANS)
-  const [recipes, setRecipes]         = useState(DEMO_RECIPES)
-  const [recommended, setRecommended] = useState([])
+  const [recipes, setRecipes]         = useState(KERALA_RECIPES)
   const [search, setSearch]           = useState('')
   const [activeTag, setActiveTag]     = useState('All')
   const [toast, setToast]             = useState('')
@@ -158,13 +75,12 @@ export default function RecipesPage() {
     async function load() {
       try {
         const familyId = family?.id || 1
-        const [plansRes, recipesRes, recRes] = await Promise.all([
+        const [plansRes, recipesRes] = await Promise.all([
           getAllPlans().catch(() => ({ data: null })),
           getAllRecipes({
             search: search || undefined,
             tag: activeTag !== 'All' && activeTag !== 'Recommended' ? activeTag : undefined,
           }).catch(() => ({ data: null })),
-          getRecommendedRecipes(familyId).catch(() => ({ data: null })),
         ])
 
         if (Array.isArray(plansRes?.data) && plansRes.data.length > 0) {
@@ -172,9 +88,6 @@ export default function RecipesPage() {
         }
         if (Array.isArray(recipesRes?.data) && recipesRes.data.length > 0) {
           setRecipes(recipesRes.data)
-        }
-        if (Array.isArray(recRes?.data) && recRes.data.length > 0) {
-          setRecommended(recRes.data)
         }
       } catch (e) {
         console.error(e)
@@ -190,12 +103,24 @@ export default function RecipesPage() {
 
   const handleSelectPlan = (e, plan) => {
     e.stopPropagation()
-    addItemsFromPlan(plan)
+    if (typeof addItemsFromPlan === 'function') {
+      addItemsFromPlan(plan)
+    }
     showToastMsg(`Added ingredients for "${plan.name}" to Grocery list! 🛒`)
   }
 
-  const recipeList = Array.isArray(recipes) && recipes.length > 0 ? recipes : DEMO_RECIPES
+  const recipeList = Array.isArray(recipes) && recipes.length > 0 ? recipes : KERALA_RECIPES
   const filteredRecipes = recipeList.filter((r) => {
+    // 1. Search Query Filter
+    if (search.trim()) {
+      const q = search.toLowerCase()
+      const matchesName = (r.name || '').toLowerCase().includes(q)
+      const matchesDesc = (r.whyItsGood || '').toLowerCase().includes(q)
+      const matchesTags = (r.tags || []).some((t) => t.toLowerCase().includes(q))
+      if (!matchesName && !matchesDesc && !matchesTags) return false
+    }
+
+    // 2. Active Tag Filter
     if (activeTag === 'All') return true
     if (activeTag === 'Recommended') return r.matchBadgeText || r.favorited
     return r.tags?.some((t) => t.toLowerCase().includes(activeTag.toLowerCase()))
@@ -292,7 +217,7 @@ export default function RecipesPage() {
 
         {/* Title */}
         <h1 style={{ fontSize: 32, fontWeight: 900, color: '#111827', margin: '0 0 4px 0', letterSpacing: '-0.5px' }}>
-          Kerala Recipes & Plans
+          Kerala Recipes ({recipeList.length})
         </h1>
         <p style={{ fontSize: 14, color: '#3d6b24', fontWeight: 600, margin: 0 }}>
           Authentic South Indian & Malabar meal plans.
@@ -317,7 +242,7 @@ export default function RecipesPage() {
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
             <input
-              placeholder="Search Kerala recipes, fish curry, appam..."
+              placeholder="Search recipes, meen pollichathu, avial, appam..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               style={{ border: 'none', outline: 'none', width: '100%', fontSize: 14, color: '#374151', background: 'transparent' }}
@@ -439,7 +364,7 @@ export default function RecipesPage() {
                         boxShadow: '0 3px 10px rgba(61,107,63,0.25)',
                       }}
                     >
-                      <span>🛒</span> Add Plan to Grocery
+                      <span>🌿</span> Select Plan
                     </button>
                   </div>
                 </div>
@@ -452,7 +377,7 @@ export default function RecipesPage() {
         <div style={{ marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
             <h2 style={{ fontSize: 19, fontWeight: 900, margin: 0, color: isDark ? '#f8fafc' : '#111827' }}>
-              Explore Recipes
+              Explore Recipes ({filteredRecipes.length})
             </h2>
           </div>
 
