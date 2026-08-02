@@ -120,7 +120,6 @@ function ModalSheet({ onClose, children, title }) {
   const { isDark } = useTheme()
   return (
     <div
-      onClick={onClose}
       style={{
         position: 'fixed',
         inset: 0,
@@ -133,7 +132,6 @@ function ModalSheet({ onClose, children, title }) {
       }}
     >
       <div
-        onClick={e => e.stopPropagation()}
         style={{
           width: '100%',
           maxWidth: 480,

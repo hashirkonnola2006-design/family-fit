@@ -288,7 +288,6 @@ export default function MemberModal({ member, onClose }) {
         justifyContent: 'center',
         padding: '16px',
       }}
-      onClick={onClose}
     >
       <div
         className="card animate-scale-in"
@@ -299,7 +298,6 @@ export default function MemberModal({ member, onClose }) {
           maxHeight: '88vh',
           overflowY: 'auto',
         }}
-        onClick={(e) => e.stopPropagation()}
       >
         <div className="section-header" style={{ marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
