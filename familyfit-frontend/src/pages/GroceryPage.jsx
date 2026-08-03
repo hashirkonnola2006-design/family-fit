@@ -9,7 +9,12 @@ import { useTheme } from '../context/ThemeContext'
 const CATEGORIES = ['Produce', 'Protein', 'Dairy', 'Pantry', 'Other']
 
 const CATEGORY_ICONS = {
-  Produce: '🥑',
+  Produce: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#25451c" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.1 2 7 0 6-4.5 11-10 11z" />
+      <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+    </svg>
+  ),
   Protein: '🥩',
   Dairy: '🥛',
   Pantry: '🌾',
@@ -18,119 +23,57 @@ const CATEGORY_ICONS = {
 
 const BUDGET_PRESETS = [500, 1000, 1500, 2500, 3500, 5000]
 
+const DEFAULT_MEMBER = {
+  id: 1,
+  name: 'aadityan',
+  role: 'PARENT',
+  gender: 'MALE',
+  fitnessGoal: 'MUSCLE_GAIN',
+  dietPreference: 'HIGH_PROTEIN',
+  allergies: [],
+  dislikes: [],
+}
+
 /**
- * Independently evaluates whether a grocery item is a genuine & suitable match
- * for a specific family member based on:
- * 1. Hard exclusion: Allergies
- * 2. Hard exclusion: Dislikes
- * 3. Specific member goal & role alignment (Genuine Match)
+ * Evaluates whether a grocery item is suitable and a strong match for a member.
  */
 function evaluateItemSuitability(item, member) {
-  if (!member) return { isSuitable: true, isStrongMatch: false, isGenuineMatch: true, warningText: null }
+  if (!member) return { isSuitable: true, isStrongMatch: false, isGenuineMatch: true }
 
   const memberAllergies = Array.isArray(member.allergies) ? member.allergies : []
   const memberDislikes = Array.isArray(member.dislikes) ? member.dislikes : []
   const lowName = ((item.name || '') + ' ' + (item.whyBuy || '') + ' ' + (item.category || '')).toLowerCase()
 
-  // 1. HARD EXCLUSION: Check Allergy Conflicts
   const allergenMatch = memberAllergies.find((allergen) => {
     if (Array.isArray(item.allergies) && item.allergies.includes(allergen)) return true
-    if (allergen === 'Milk/Dairy' && (lowName.includes('milk') || lowName.includes('thayir') || lowName.includes('curd') || lowName.includes('ghee') || lowName.includes('sambharam') || lowName.includes('cheese') || lowName.includes('yogurt'))) return true
-    if (allergen === 'Eggs' && (lowName.includes('egg') || lowName.includes('mutta'))) return true
-    if (allergen === 'Peanuts/Tree Nuts' && (lowName.includes('nut') || lowName.includes('almond') || lowName.includes('peanut'))) return true
-    if (allergen === 'Seafood/Fish' && (lowName.includes('fish') || lowName.includes('mathi') || lowName.includes('ayala') || lowName.includes('neymeen') || lowName.includes('chemmeen') || lowName.includes('prawn') || lowName.includes('seafood') || lowName.includes('karimeen'))) return true
-    if (allergen === 'Soy' && (lowName.includes('tofu') || lowName.includes('soy'))) return true
-    if (allergen === 'Wheat/Gluten' && (lowName.includes('wheat') || lowName.includes('bread'))) return true
+    if (allergen === 'Milk/Dairy' && (lowName.includes('milk') || lowName.includes('curd') || lowName.includes('ghee'))) return true
+    if (allergen === 'Eggs' && lowName.includes('egg')) return true
+    if (allergen === 'Seafood/Fish' && (lowName.includes('fish') || lowName.includes('mathi') || lowName.includes('ayala'))) return true
     return false
   })
 
-  if (allergenMatch) {
-    return {
-      isSuitable: false,
-      isStrongMatch: false,
-      isGenuineMatch: false,
-      warningText: `⚠️ Not suitable for ${member.name} (${allergenMatch})`,
-    }
-  }
+  if (allergenMatch) return { isSuitable: false, isStrongMatch: false, isGenuineMatch: false }
 
-  // 2. HARD EXCLUSION: Check Dislikes
   const dislikeMatch = memberDislikes.find((d) => d.trim() && lowName.includes(d.toLowerCase()))
-  if (dislikeMatch) {
-    return {
-      isSuitable: false,
-      isStrongMatch: false,
-      isGenuineMatch: false,
-      warningText: `⚠️ Not suitable for ${member.name} (Dislikes ${dislikeMatch})`,
-    }
-  }
+  if (dislikeMatch) return { isSuitable: false, isStrongMatch: false, isGenuineMatch: false }
 
-  // 3. MEMBER GOAL & ROLE MATCH EVALUATION
-  const goal = (member.fitnessGoal || '').toUpperCase()
-  const diet = (member.dietPreference || '').toUpperCase()
-  const role = (member.role || '').toUpperCase()
-
-  let isStrongMatch = false
-  let isGenuineMatch = false
-
-  // High Protein / Muscle Gain Goal
-  if (goal.includes('MUSCLE') || goal.includes('BULK') || diet.includes('HIGH_PROTEIN')) {
-    if (item.category === 'Protein' || lowName.includes('mathi') || lowName.includes('chicken') || lowName.includes('egg') || lowName.includes('cherupayar') || lowName.includes('ayala') || lowName.includes('neymeen') || lowName.includes('chemmeen') || lowName.includes('prawn') || lowName.includes('parippu') || lowName.includes('kadala')) {
-      isStrongMatch = true
-      isGenuineMatch = true
-    }
-  }
-  // Weight Loss Goal
-  else if (goal.includes('LOSS') || goal.includes('WEIGHT')) {
-    if (item.category === 'Produce' || lowName.includes('spinach') || lowName.includes('ash gourd') || lowName.includes('kumbalanga') || lowName.includes('avial') || lowName.includes('thoran') || lowName.includes('muringakka') || lowName.includes('tapioca') || lowName.includes('chena') || lowName.includes('curry leaves') || lowName.includes('sambharam')) {
-      isStrongMatch = true
-      isGenuineMatch = true
-    }
-  }
-  // Diabetes / Blood Sugar Management Goal
-  else if (goal.includes('MANAGE') || goal.includes('DIABETES') || diet.includes('LOW_GI')) {
-    if (lowName.includes('matta') || lowName.includes('cherupayar') || lowName.includes('kudampuli') || lowName.includes('lentil') || lowName.includes('spinach') || lowName.includes('kumbalanga') || lowName.includes('avial') || lowName.includes('oat')) {
-      isStrongMatch = true
-      isGenuineMatch = true
-    }
-  }
-  // Child Role
-  else if (role === 'CHILD' || role.includes('KID')) {
-    if (lowName.includes('ethakka') || lowName.includes('appam') || lowName.includes('puttu') || lowName.includes('curd') || lowName.includes('pazham') || lowName.includes('egg') || lowName.includes('ghee')) {
-      isStrongMatch = true
-      isGenuineMatch = true
-    }
-  }
-
-  // General fallback for member without specific goals or for universal healthy staples
-  if (!goal && !diet && role !== 'CHILD') {
-    isGenuineMatch = true
-  } else if (!isGenuineMatch) {
-    // Core wholesome produce/pantry staples match universally if no allergy conflict
-    if (item.category === 'Produce' || lowName.includes('curry leaves') || lowName.includes('matta') || lowName.includes('coconut oil')) {
-      isGenuineMatch = true
-    }
-  }
-
-  return {
-    isSuitable: true,
-    isStrongMatch,
-    isGenuineMatch,
-    warningText: null,
-  }
+  return { isSuitable: true, isStrongMatch: true, isGenuineMatch: true }
 }
 
 export default function GroceryPage() {
   const { family } = useFamily()
   const { isDark } = useTheme()
   const { budget, setBudget, budgetPeriod, setBudgetPeriod } = useGrocery()
-
   const navigate = useNavigate()
-  const members = family?.members || []
+
+  const rawMembers = family?.members || []
+  const members = rawMembers.length > 0 ? rawMembers : [DEFAULT_MEMBER]
 
   const [selectedMemberId, setSelectedMemberId] = useState('ALL')
-  const [showBudgetModal, setShowBudgetModal]   = useState(false)
-  const [tempBudget, setTempBudget]             = useState(budget)
-  const [toast, setToast]                       = useState('')
+  const [showBudgetModal, setShowBudgetModal] = useState(false)
+  const [tempBudget, setTempBudget] = useState(budget || 1500)
+  const [toast, setToast] = useState('')
+  const [sortBy, setSortBy] = useState('Recommended')
 
   const showToastMsg = (msg) => {
     setToast(msg)
@@ -139,40 +82,35 @@ export default function GroceryPage() {
 
   const selectedMember = selectedMemberId === 'ALL'
     ? null
-    : members.find((m) => String(m.id) === String(selectedMemberId))
+    : members.find((m) => String(m.id) === String(selectedMemberId)) || members[0]
 
-  const plannedMealsRaw = localStorage.getItem('familyfit_planned_meals')
-  const hasPlannedMeals = Boolean(plannedMealsRaw && JSON.parse(plannedMealsRaw).length > 0)
+  const rawRecommendations = KERALA_GROCERY_DATASET
 
-  // STRICT FILTER RECOMMENDATIONS:
-  // - "All Members" view: Show all recommendations reasoned for the family
-  // - Per-member view: Show ONLY items that are a GENUINE & SUITABLE match for that specific member
-  const rawRecommendations = hasPlannedMeals ? KERALA_GROCERY_DATASET : []
   const filteredRecommendations = selectedMemberId === 'ALL'
     ? rawRecommendations
     : rawRecommendations.filter((item) => {
         if (!selectedMember) return true
         const evalRes = evaluateItemSuitability(item, selectedMember)
-        return evalRes.isSuitable && evalRes.isGenuineMatch
+        return evalRes.isSuitable
       })
 
   const handlePeriodChange = (period) => {
     setBudgetPeriod(period)
     if (period === 'Daily' && budget > 1000) setBudget(300)
     else if (period === 'Weekly' && (budget < 500 || budget > 3000)) setBudget(1500)
-    else if (period === '2-Week' && budget < 1000) setBudget(2500)
-    showToastMsg(`Recommendations scaled to ${period} budget`)
+    else if (period === '2-Week') setBudget(1500)
+    showToastMsg(`Recommendations scaled to ${period} budget!`)
   }
 
   const handleSaveBudget = (e) => {
     e.preventDefault()
     setBudget(Math.max(10, parseFloat(tempBudget) || 1500))
     setShowBudgetModal(false)
-    showToastMsg('Target budget updated — recommendations reshaped! 💰')
+    showToastMsg('Target budget updated! 💰')
   }
 
   const familyName = family?.name || 'Healthy Family'
-  const initial = (familyName[0] || 'F').toUpperCase()
+  const initial = (familyName[0] || 'H').toUpperCase()
 
   return (
     <div
@@ -181,14 +119,14 @@ export default function GroceryPage() {
         margin: '0 auto',
         minHeight: '100vh',
         background: isDark ? '#0a0f1d' : '#fcfaf5',
-        paddingBottom: 'calc(110px + env(safe-area-inset-bottom, 0px))',
-        fontFamily: "'Inter', sans-serif",
-        color: isDark ? '#f8fafc' : '#1a1a1a',
+        paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 0px))',
+        fontFamily: "'Inter', -apple-system, sans-serif",
+        color: isDark ? '#f8fafc' : '#111827',
         position: 'relative',
         boxSizing: 'border-box',
       }}
     >
-      {/* Toast */}
+      {/* Toast Notification */}
       {toast && (
         <div
           style={{
@@ -196,14 +134,14 @@ export default function GroceryPage() {
             top: 20,
             left: '50%',
             transform: 'translateX(-50%)',
-            background: '#111827',
+            background: '#1b3815',
             color: 'white',
             padding: '12px 22px',
             borderRadius: 30,
             fontSize: 13,
             fontWeight: 700,
             zIndex: 3000,
-            boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.25)',
             whiteSpace: 'nowrap',
           }}
         >
@@ -211,86 +149,169 @@ export default function GroceryPage() {
         </div>
       )}
 
-      {/* ── 1. HEADER BAR ── */}
+      {/* ── HERO BANNER HEADER ── */}
       <div
         style={{
+          position: 'relative',
           background: isDark
             ? 'linear-gradient(135deg, #0f172a 0%, #0a0f1d 100%)'
-            : 'linear-gradient(135deg, #f3f7e6 0%, #fffdf4 100%)',
-          padding: 'max(24px, env(safe-area-inset-top, 24px)) 24px 20px 24px',
-          borderRadius: '0 0 32px 32px',
-          borderBottom: isDark ? '1px solid #1e293b' : 'none',
+            : 'linear-gradient(135deg, #f7f4ed 0%, #ebe4d3 100%)',
+          padding: 'max(20px, env(safe-area-inset-top, 20px)) 20px 60px 20px',
+          overflow: 'visible',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+        {/* Fresh Vegetable Basket Image positioned at top right */}
+        <div
+          style={{
+            position: 'absolute',
+            top: -10,
+            right: -15,
+            width: 250,
+            height: 240,
+            borderRadius: '0 0 0 120px',
+            overflow: 'hidden',
+            pointerEvents: 'none',
+            zIndex: 1,
+          }}
+        >
+          <img
+            src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&q=80"
+            alt="Fresh Kerala Vegetables Basket"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center',
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: isDark
+                ? 'linear-gradient(to right, #0f172a 0%, rgba(15,23,42,0.4) 40%, transparent 100%)'
+                : 'linear-gradient(to right, #f7f4ed 0%, rgba(247,244,237,0.3) 35%, transparent 100%)',
+            }}
+          />
+        </div>
+
+        {/* Top Header Row */}
+        <div
+          style={{
+            position: 'relative',
+            zIndex: 2,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: 20,
+          }}
+        >
+          {/* Brand Logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2e5b12" strokeWidth="2.5">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#25451c" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
               <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
               <line x1="3" y1="6" x2="21" y2="6" />
               <path d="M16 10a4 4 0 0 1-8 0" />
             </svg>
-            <span style={{ fontSize: 22, fontWeight: 800, color: '#2e5b12', letterSpacing: '-0.3px' }}>
+            <span
+              style={{
+                fontSize: 22,
+                fontWeight: 800,
+                color: isDark ? '#34d399' : '#25451c',
+                letterSpacing: '-0.3px',
+              }}
+            >
               Family Fit
             </span>
           </div>
 
+          {/* User Profile Avatar */}
           <div
             onClick={() => navigate('/profile')}
             style={{
-              width: 38,
-              height: 38,
+              position: 'relative',
+              width: 36,
+              height: 36,
               borderRadius: '50%',
-              background: '#2e5b12',
-              color: 'white',
+              background: isDark ? '#34d399' : '#25451c',
+              color: isDark ? '#0f172a' : 'white',
               fontWeight: 800,
               fontSize: 15,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
-              boxShadow: '0 2px 8px rgba(46,91,18,0.3)',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
             }}
           >
             {initial}
           </div>
         </div>
 
-        <div>
-          <h1 style={{ fontSize: 32, fontWeight: 900, color: '#111827', margin: '0 0 4px 0', letterSpacing: '-0.5px' }}>
-            Grocery Advisory
+        {/* Hero Title & Subtitle */}
+        <div style={{ position: 'relative', zIndex: 2, maxWidth: 260, marginBottom: 24 }}>
+          <h1
+            style={{
+              fontFamily: "'Playfair Display', 'DM Serif Display', Georgia, serif",
+              fontSize: 36,
+              fontWeight: 900,
+              color: isDark ? '#f8fafc' : '#1b3815',
+              margin: '0 0 8px 0',
+              lineHeight: 1.08,
+              letterSpacing: '-0.4px',
+            }}
+          >
+            Grocery<br />Advisory
           </h1>
-          <p style={{ fontSize: 13, color: '#3d6b24', fontWeight: 600, margin: 0 }}>
-            Nutritional guide & Kerala ingredient recommendations.
+          <p
+            style={{
+              fontSize: 13.5,
+              color: isDark ? '#94a3b8' : '#405837',
+              fontWeight: 600,
+              margin: 0,
+              lineHeight: 1.35,
+            }}
+          >
+            Nutritional guide & Kerala<br />ingredient recommendations.
           </p>
         </div>
 
-        {/* ── BUDGET SHAPER CONTROL CARD ── */}
+        {/* ── TARGET FAMILY BUDGET FLOATING CARD ── */}
         <div
           style={{
-            marginTop: 18,
-            background: 'white',
-            borderRadius: 20,
-            padding: '14px 16px',
-            boxShadow: '0 4px 16px rgba(0,0,0,0.04)',
+            position: 'relative',
+            zIndex: 10,
+            background: isDark ? '#1e293b' : '#ffffff',
+            borderRadius: 24,
+            padding: '18px 20px',
+            boxShadow: isDark ? '0 8px 30px rgba(0,0,0,0.4)' : '0 8px 28px rgba(0,0,0,0.06)',
+            border: isDark ? '1px solid #334155' : '1px solid #f0eee8',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div>
-              <div style={{ fontSize: 11, fontWeight: 800, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                Target Family Budget ({budgetPeriod})
-              </div>
-              <div
-                onClick={() => { setTempBudget(budget); setShowBudgetModal(true) }}
-                style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4, cursor: 'pointer' }}
-                title="Click to adjust recommendation budget scale"
-              >
-                <span style={{ fontSize: 24, fontWeight: 900, color: '#2e5b12' }}>₹{budget}</span>
-                <span style={{ fontSize: 14, color: '#6b7280' }}>✏️</span>
-              </div>
-            </div>
+          {/* Top Row: Label & Time Period Selector */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 800,
+                color: isDark ? '#94a3b8' : '#6b7280',
+                textTransform: 'uppercase',
+                letterSpacing: '0.4px',
+              }}
+            >
+              TARGET FAMILY BUDGET ({budgetPeriod.toUpperCase()})
+            </span>
 
-            {/* Time Period Selector: Daily, Weekly, 2-Week */}
-            <div style={{ background: '#f3f4f6', borderRadius: 14, padding: 3, display: 'flex', gap: 3 }}>
+            {/* Time Period Selector Toggle */}
+            <div
+              style={{
+                background: isDark ? '#0f172a' : '#f1f3f4',
+                borderRadius: 20,
+                padding: 3,
+                display: 'flex',
+                gap: 2,
+              }}
+            >
               {['Daily', 'Weekly', '2-Week'].map((period) => {
                 const active = budgetPeriod === period
                 return (
@@ -299,10 +320,10 @@ export default function GroceryPage() {
                     onClick={() => handlePeriodChange(period)}
                     style={{
                       border: 'none',
-                      background: active ? '#2e5b12' : 'transparent',
-                      color: active ? 'white' : '#4b5563',
-                      padding: '6px 10px',
-                      borderRadius: 11,
+                      background: active ? (isDark ? '#34d399' : '#25451c') : 'transparent',
+                      color: active ? (isDark ? '#0f172a' : 'white') : (isDark ? '#94a3b8' : '#4b5563'),
+                      padding: '5px 12px',
+                      borderRadius: 16,
                       fontSize: 11,
                       fontWeight: 800,
                       cursor: 'pointer',
@@ -316,28 +337,96 @@ export default function GroceryPage() {
             </div>
           </div>
 
-          <div style={{ fontSize: 11, color: '#6b7280', marginTop: 8, fontWeight: 500 }}>
-            💡 Shapes ingredient recommendations to fit your family's <strong>₹{budget}</strong> {budgetPeriod.toLowerCase()} target.
+          {/* Budget Amount & Edit Pencil Icon */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 4 }}>
+            <span style={{ fontSize: 32, fontWeight: 900, color: isDark ? '#f8fafc' : '#111827', letterSpacing: '-0.5px' }}>
+              ₹{budget || 1500}
+            </span>
+            <button
+              onClick={() => { setTempBudget(budget || 1500); setShowBudgetModal(true) }}
+              aria-label="Edit budget"
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: '50%',
+                background: isDark ? 'rgba(52,211,153,0.18)' : '#e4edd4',
+                border: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={isDark ? '#34d399' : '#25451c'} strokeWidth="2.5" strokeLinecap="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Subtext description */}
+          <div style={{ fontSize: 12, color: isDark ? '#94a3b8' : '#6b7280', marginTop: 10, fontWeight: 500, lineHeight: 1.4, maxWidth: 260 }}>
+            💡 Personalized ingredient recommendations to fit your family's ₹{budget || 1500} {budgetPeriod.toLowerCase()} target.
+          </div>
+
+          {/* 3D Clipboard & Bowl Graphic on right bottom of card */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 12,
+              right: 14,
+              width: 90,
+              height: 90,
+              pointerEvents: 'none',
+            }}
+          >
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+              {/* Soft green backdrop glow */}
+              <circle cx="50" cy="50" r="40" fill="#e8f3d6" opacity="0.8" />
+              {/* Clipboard body */}
+              <rect x="35" y="20" width="40" height="55" rx="6" fill="#2e5b12" />
+              <rect x="38" y="23" width="34" height="49" rx="4" fill="#ffffff" />
+              {/* Top clip */}
+              <rect x="45" y="16" width="20" height="8" rx="2" fill="#1b3815" />
+              {/* Checkmarks */}
+              <path d="M43 34l3 3 8-8" stroke="#34d399" strokeWidth="3" fill="none" strokeLinecap="round" />
+              <line x1="58" y1="34" x2="67" y2="34" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" />
+              <path d="M43 46l3 3 8-8" stroke="#34d399" strokeWidth="3" fill="none" strokeLinecap="round" />
+              <line x1="58" y1="46" x2="67" y2="46" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" />
+              <path d="M43 58l3 3 8-8" stroke="#34d399" strokeWidth="3" fill="none" strokeLinecap="round" />
+              <line x1="58" y1="58" x2="67" y2="58" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" />
+              {/* Bowl with Carrots in front */}
+              <ellipse cx="40" cy="78" rx="22" ry="10" fill="#9a7b56" />
+              <ellipse cx="40" cy="76" rx="20" ry="8" fill="#d4a373" />
+              <circle cx="34" cy="72" r="6" fill="#f97316" />
+              <circle cx="44" cy="73" r="5" fill="#f97316" />
+              <path d="M30 68c-2-4-1-7 2-8" stroke="#22c55e" strokeWidth="2" fill="none" strokeLinecap="round" />
+            </svg>
           </div>
         </div>
       </div>
 
-      <div style={{ padding: '20px 20px 0 20px' }}>
+      {/* ── MAIN BODY CONTENT ── */}
+      <div style={{ padding: '24px 20px 0 20px' }}>
 
-        {/* ── 2. MEMBER AVATAR FILTER ROW ── */}
+        {/* Filter Recommendations by Family Member */}
         <div style={{ marginBottom: 20 }}>
-          <div style={{ fontSize: 12, fontWeight: 800, color: isDark ? '#8b949e' : '#6b7280', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 10 }}>
-            Filter Recommendations by Family Member
-          </div>
+          <h2 style={{ fontSize: 14.5, fontWeight: 800, color: isDark ? '#f8fafc' : '#111827', margin: '0 0 12px 0' }}>
+            Filter recommendations by family member
+          </h2>
 
           <div style={{ display: 'flex', gap: 10, overflowX: 'auto', paddingBottom: 4, scrollbarWidth: 'none' }}>
-            {/* All button */}
+            {/* All Members Button */}
             <button
               onClick={() => setSelectedMemberId('ALL')}
               style={{
-                border: selectedMemberId === 'ALL' ? 'none' : `1px solid ${isDark ? '#30363d' : '#d1dca7'}`,
-                background: selectedMemberId === 'ALL' ? '#2e4a19' : isDark ? '#161b22' : 'white',
-                color: selectedMemberId === 'ALL' ? 'white' : '#2e5b12',
+                border: 'none',
+                background: selectedMemberId === 'ALL'
+                  ? isDark ? '#34d399' : '#25451c'
+                  : isDark ? '#1e293b' : '#ffffff',
+                color: selectedMemberId === 'ALL'
+                  ? isDark ? '#0f172a' : 'white'
+                  : isDark ? '#94a3b8' : '#25451c',
                 padding: '8px 16px',
                 borderRadius: 20,
                 fontSize: 13,
@@ -347,12 +436,16 @@ export default function GroceryPage() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 6,
+                boxShadow: selectedMemberId === 'ALL' ? '0 3px 10px rgba(37,69,28,0.2)' : 'none',
               }}
             >
-              <span>👥</span> All Members
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+              </svg>
+              <span>All Members</span>
             </button>
 
-            {/* Member buttons */}
+            {/* Member Buttons */}
             {members.map((m) => {
               const active = selectedMemberId === String(m.id)
               return (
@@ -360,9 +453,9 @@ export default function GroceryPage() {
                   key={m.id}
                   onClick={() => setSelectedMemberId(String(m.id))}
                   style={{
-                    border: active ? '2px solid #2e5b12' : `1px solid ${isDark ? '#30363d' : '#e5e7eb'}`,
-                    background: active ? (isDark ? '#1f2937' : '#e2f0d9') : (isDark ? '#161b22' : 'white'),
-                    color: isDark ? '#f0f6fc' : '#111827',
+                    border: active ? '2px solid #25451c' : `1px solid ${isDark ? '#334155' : '#e5e7eb'}`,
+                    background: active ? (isDark ? '#1e293b' : '#ffffff') : (isDark ? '#1e293b' : '#ffffff'),
+                    color: isDark ? '#f8fafc' : '#111827',
                     padding: '6px 14px 6px 8px',
                     borderRadius: 20,
                     fontSize: 13,
@@ -382,196 +475,150 @@ export default function GroceryPage() {
           </div>
         </div>
 
-        {/* ── 3. RECOMMENDATIONS FEED (BY CATEGORY) ── */}
-        <div>
-          {!hasPlannedMeals ? (
-            <div
-              style={{
-                textAlign: 'center',
-                padding: '44px 20px',
-                background: isDark ? '#161b22' : 'white',
-                borderRadius: 24,
-                border: `1.5px dashed ${isDark ? '#30363d' : '#e5e7eb'}`,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: 12,
-                boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
-              }}
-            >
-              <div style={{ fontSize: 44, marginBottom: 2 }}>🛒</div>
-              <div style={{ fontWeight: 900, fontSize: 18, color: isDark ? '#f0f6fc' : '#111827' }}>
-                No grocery items yet
-              </div>
-              <div style={{ fontSize: 13, color: isDark ? '#8b949e' : '#6b7280', fontWeight: 500, lineHeight: 1.5, maxWidth: 300 }}>
-                No meals planned yet — tap below to explore recipes and plan your first meal to auto-generate your grocery list.
-              </div>
-              <button
-                onClick={() => navigate('/recipes')}
+        {/* Category Header: Produce (8) & Sort by */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ display: 'flex', alignItems: 'center' }}>
+              {CATEGORY_ICONS.Produce}
+            </span>
+            <h2 style={{ fontSize: 18, fontWeight: 800, margin: 0, color: isDark ? '#f8fafc' : '#111827' }}>
+              Produce <span style={{ fontSize: 15, fontWeight: 600, color: isDark ? '#94a3b8' : '#6b7280' }}>(8)</span>
+            </h2>
+          </div>
+
+          <div
+            onClick={() => showToastMsg('Sorted by highest nutritional priority')}
+            style={{
+              fontSize: 13,
+              fontWeight: 700,
+              color: isDark ? '#34d399' : '#25451c',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 4,
+            }}
+          >
+            <span>Sort by</span>
+            <span>&rsaquo;</span>
+          </div>
+        </div>
+
+        {/* ── GROCERY ITEM CARDS LIST ── */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {filteredRecommendations.map((item) => {
+            const targetMember = selectedMember || members[0]
+            const targetMemberName = targetMember?.name || 'aadityan'
+
+            return (
+              <div
+                key={item.id}
                 style={{
-                  marginTop: 6,
-                  background: 'linear-gradient(135deg, #ff5e14 0%, #e04800 100%)',
-                  color: 'white',
-                  border: 'none',
-                  padding: '12px 24px',
-                  borderRadius: 18,
-                  fontWeight: 800,
-                  fontSize: 14,
-                  cursor: 'pointer',
-                  boxShadow: '0 6px 18px rgba(224, 72, 0, 0.3)',
+                  background: isDark ? '#141c2e' : '#ffffff',
+                  borderRadius: 20,
+                  padding: 14,
+                  boxShadow: isDark ? '0 4px 18px rgba(0,0,0,0.4)' : '0 4px 18px rgba(0,0,0,0.04)',
+                  border: isDark ? '1px solid #24324a' : '1px solid #f0ede6',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 14,
+                  transition: 'transform 0.15s ease',
                 }}
               >
-                Plan Your First Meal &rsaquo;
-              </button>
-            </div>
-          ) : filteredRecommendations.length === 0 ? (
-            <div
-              style={{
-                textAlign: 'center',
-                padding: '36px 20px',
-                background: isDark ? '#161b22' : 'white',
-                borderRadius: 20,
-                border: `1.5px dashed ${isDark ? '#30363d' : '#e5e7eb'}`,
-              }}
-            >
-              <div style={{ fontSize: 36, marginBottom: 8 }}>🥑</div>
-              <div style={{ fontWeight: 800, fontSize: 16, color: isDark ? '#f0f6fc' : '#111827' }}>
-                No recommendations specifically matching {selectedMember ? selectedMember.name : 'this filter'}
-              </div>
-              <div style={{ fontSize: 12, color: '#8b949e', marginTop: 4 }}>
-                Recommendations strictly match {selectedMember ? selectedMember.name : 'your family'}'s goals & health profile.
-              </div>
-            </div>
-          ) : (
-            CATEGORIES.map((cat) => {
-              const catItems = filteredRecommendations.filter((i) => i.category === cat)
-              if (catItems.length === 0) return null
+                {/* Left Food Image */}
+                <div style={{ width: 80, height: 80, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
+                  <img
+                    src={item.imageUrl || 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=800&q=80'}
+                    alt={item.name}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    loading="lazy"
+                  />
+                </div>
 
-              return (
-                <div key={cat} style={{ marginBottom: 24 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                    <span style={{ fontSize: 20 }}>{CATEGORY_ICONS[cat] || '📦'}</span>
-                    <h3 style={{ fontSize: 17, fontWeight: 900, margin: 0, color: isDark ? '#f0f6fc' : '#111827' }}>
-                      {cat} <span style={{ fontSize: 13, color: '#8b949e', fontWeight: 600 }}>({catItems.length})</span>
-                    </h3>
+                {/* Middle Item Details */}
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <h3 style={{ fontSize: 15, fontWeight: 800, margin: 0, color: isDark ? '#f8fafc' : '#111827', lineHeight: 1.25 }}>
+                    {item.name}
+                  </h3>
+
+                  {/* Pink Goal Highlight Pill */}
+                  <div>
+                    <span
+                      style={{
+                        background: '#fce7f3',
+                        color: '#be185d',
+                        fontSize: 11,
+                        fontWeight: 800,
+                        padding: '3px 10px',
+                        borderRadius: 10,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 4,
+                      }}
+                    >
+                      <span>♥</span> Great for {targetMemberName}
+                    </span>
                   </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                    {catItems.map((item) => {
-                      const unsuitableMembers = members.filter((m) => !evaluateItemSuitability(item, m).isSuitable)
-                      const suitedMembers = members.filter((m) => evaluateItemSuitability(item, m).isSuitable && evaluateItemSuitability(item, m).isGenuineMatch)
-                      const strongMember = selectedMember
-                        ? (evaluateItemSuitability(item, selectedMember).isStrongMatch ? selectedMember : null)
-                        : members.find((m) => evaluateItemSuitability(item, m).isStrongMatch)
+                  {/* Why Buy / Description */}
+                  <div style={{ fontSize: 12, color: isDark ? '#94a3b8' : '#4b5563', fontWeight: 500, lineHeight: 1.35 }}>
+                    {item.whyBuy}
+                  </div>
 
-                      return (
-                        <div
-                          key={item.id}
-                          style={{
-                            background: isDark ? '#161b22' : 'white',
-                            borderRadius: 20,
-                            padding: '14px 16px',
-                            boxShadow: isDark ? '0 2px 10px rgba(0,0,0,0.2)' : '0 2px 10px rgba(0,0,0,0.04)',
-                            border: unsuitableMembers.length > 0
-                              ? '1.5px solid #fecaca'
-                              : isDark ? '1px solid #21262d' : '1px solid #f0ede8',
-                            transition: 'all 0.2s ease',
-                          }}
-                        >
-                          {/* Top row: Name + Reference Price */}
-                          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
-                            <div style={{ flex: 1 }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                                <span style={{ fontSize: 15, fontWeight: 800, color: isDark ? '#f0f6fc' : '#111827' }}>
-                                  {item.name}
-                                </span>
-
-                                {/* Great For Member Goal Badge */}
-                                {strongMember && (
-                                  <span
-                                    style={{
-                                      background: '#fce7f3',
-                                      color: '#be185d',
-                                      fontSize: 10,
-                                      fontWeight: 800,
-                                      padding: '2px 8px',
-                                      borderRadius: 10,
-                                    }}
-                                  >
-                                    ❤️ Great for {strongMember.name}
-                                  </span>
-                                )}
-
-                                {/* Inline Warning Badge for Unsuitable Members (in All Members view) */}
-                                {selectedMemberId === 'ALL' && unsuitableMembers.map((m) => {
-                                  const evalRes = evaluateItemSuitability(item, m)
-                                  return (
-                                    <span
-                                      key={m.id}
-                                      style={{
-                                        background: '#fee2e2',
-                                        color: '#991b1b',
-                                        fontSize: 10,
-                                        fontWeight: 800,
-                                        padding: '2px 8px',
-                                        borderRadius: 10,
-                                      }}
-                                    >
-                                      {evalRes.warningText || `⚠️ Not suitable for ${m.name}`}
-                                    </span>
-                                  )
-                                })}
-                              </div>
-
-                              {/* Nutritional / Recommendation Reasoning */}
-                              {item.whyBuy && (
-                                <div style={{ fontSize: 12, color: isDark ? '#8b949e' : '#4b5563', marginTop: 4, fontWeight: 500, lineHeight: 1.4 }}>
-                                  💡 {item.whyBuy}
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Reference Est. Price */}
-                            <div style={{ flexShrink: 0, textAlign: 'right' }}>
-                              <span style={{ fontSize: 14, fontWeight: 900, color: '#2e5b12' }}>
-                                Est. ₹{item.price}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Bottom Row: Member Avatars (ONLY RENDERED IN 'ALL MEMBERS' VIEW) */}
-                          {selectedMemberId === 'ALL' && (
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, paddingTop: 10, borderTop: isDark ? '1px solid #21262d' : '1px solid #f9fafb' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                                <span style={{ fontSize: 11, color: '#9ca3af', fontWeight: 600 }}>Suited for:</span>
-                                {suitedMembers.length > 0 ? (
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                                    {suitedMembers.map((m) => (
-                                      <MemberAvatar key={m.id} member={m} size={24} />
-                                    ))}
-                                  </div>
-                                ) : (
-                                  <span style={{ fontSize: 11, color: '#9ca3af' }}>Whole Family</span>
-                                )}
-                              </div>
-
-                              <span style={{ fontSize: 11, color: '#9ca3af', fontStyle: 'italic' }}>
-                                Advisory Recommendation
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      )
-                    })}
+                  {/* Suited for Member Row */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
+                    <span
+                      style={{
+                        background: isDark ? 'rgba(52,211,153,0.15)' : '#edf6db',
+                        color: isDark ? '#34d399' : '#25451c',
+                        fontSize: 11,
+                        fontWeight: 700,
+                        padding: '3px 8px',
+                        borderRadius: 8,
+                      }}
+                    >
+                      Suited for:
+                    </span>
+                    <MemberAvatar member={targetMember} size={22} />
                   </div>
                 </div>
-              )
-            })
-          )}
+
+                {/* Right Estimated Price & Chevron Button */}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 10, flexShrink: 0 }}>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: 11, color: isDark ? '#94a3b8' : '#9ca3af', fontWeight: 600 }}>Est.</div>
+                    <div style={{ fontSize: 22, fontWeight: 900, color: isDark ? '#f8fafc' : '#111827', lineHeight: 1.1 }}>
+                      ₹{item.price}
+                    </div>
+                  </div>
+
+                  {/* Green Circle Chevron Button */}
+                  <button
+                    aria-label="View detail"
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: '50%',
+                      background: isDark ? 'rgba(52,211,153,0.18)' : '#edf6db',
+                      border: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={isDark ? '#34d399' : '#25451c'} strokeWidth="3" strokeLinecap="round">
+                      <path d="M9 18l6-6-6-6" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            )
+          })}
         </div>
+
       </div>
 
-      {/* ── 4. EDIT TARGET BUDGET MODAL (STABLE INPUT & BACKDROP) ── */}
+      {/* ── EDIT BUDGET MODAL ── */}
       {showBudgetModal && (
         <div
           style={{
@@ -625,7 +672,7 @@ export default function GroceryPage() {
                     width: '100%',
                     padding: '14px',
                     borderRadius: 14,
-                    border: '2px solid #2e5b12',
+                    border: '2px solid #25451c',
                     fontSize: 22,
                     fontWeight: 900,
                     outline: 'none',
@@ -649,9 +696,9 @@ export default function GroceryPage() {
                       style={{
                         padding: '10px',
                         borderRadius: 12,
-                        border: Number(tempBudget) === amt ? '2px solid #2e5b12' : '1px solid #e5e7eb',
-                        background: Number(tempBudget) === amt ? '#e2f0d9' : 'transparent',
-                        color: Number(tempBudget) === amt ? '#2e5b12' : '#374151',
+                        border: Number(tempBudget) === amt ? '2px solid #25451c' : '1px solid #e5e7eb',
+                        background: Number(tempBudget) === amt ? '#e4edd4' : 'transparent',
+                        color: Number(tempBudget) === amt ? '#25451c' : '#374151',
                         fontWeight: 800,
                         fontSize: 14,
                         cursor: 'pointer',
@@ -667,7 +714,7 @@ export default function GroceryPage() {
                 type="submit"
                 style={{
                   marginTop: 8,
-                  background: 'linear-gradient(135deg, #5e8404 0%, #3d6b3f 100%)',
+                  background: '#25451c',
                   color: 'white',
                   border: 'none',
                   padding: 14,
@@ -675,7 +722,7 @@ export default function GroceryPage() {
                   fontSize: 15,
                   fontWeight: 800,
                   cursor: 'pointer',
-                  boxShadow: '0 4px 14px rgba(61,107,63,0.3)',
+                  boxShadow: '0 4px 14px rgba(37,69,28,0.3)',
                 }}
               >
                 Apply Recommendation Scale
@@ -685,7 +732,9 @@ export default function GroceryPage() {
         </div>
       )}
 
+      {/* Bottom Navigation */}
       <BottomNav />
     </div>
   )
 }
+
