@@ -16,11 +16,11 @@ const NAV_ITEMS = [
     path: '/recipes',
     label: 'Recipes',
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M6 2v7a3 3 0 0 0 6 0V2" />
-        <path d="M9 9v13" />
-        <path d="M18 2v20" />
-        <path d="M15 2h6" />
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M7 2v6a2 2 0 0 0 4 0V2" />
+        <path d="M9 8v14" />
+        <path d="M17 2v20" />
+        <path d="M14 2c2.5 0 3.5 1.8 3.5 4.5v3.5h-3.5" />
       </svg>
     ),
   },
@@ -72,17 +72,17 @@ export default function BottomNav() {
         transform: 'translateX(-50%)',
         width: '100%',
         maxWidth: 480,
-        background: isDark ? 'rgba(15, 23, 42, 0.97)' : 'white',
-        borderTop: isDark ? '1px solid #1e293b' : 'none',
+        background: isDark ? 'rgba(15, 23, 42, 0.98)' : '#ffffff',
+        borderTop: isDark ? '1px solid #1e293b' : '1px solid #f3f4f6',
         borderRadius: '24px 24px 0 0',
-        boxShadow: isDark ? '0 -4px 25px rgba(0,0,0,0.4)' : '0 -4px 25px rgba(0,0,0,0.08)',
+        boxShadow: isDark ? '0 -4px 25px rgba(0,0,0,0.4)' : '0 -4px 24px rgba(0,0,0,0.06)',
         display: 'flex',
         justifyContent: 'space-around',
         alignItems: 'center',
-        paddingTop: 10,
-        paddingLeft: 12,
-        paddingRight: 12,
-        paddingBottom: 'max(14px, env(safe-area-inset-bottom, 14px))',
+        paddingTop: 8,
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingBottom: 'max(12px, env(safe-area-inset-bottom, 12px))',
         boxSizing: 'border-box',
         zIndex: 1000,
         backdropFilter: isDark ? 'blur(16px)' : 'none',
@@ -97,38 +97,26 @@ export default function BottomNav() {
             style={{
               border: 'none',
               background: active
-                ? isDark ? 'rgba(16, 185, 129, 0.18)' : '#eef7d7'
+                ? isDark ? 'rgba(16, 185, 129, 0.2)' : '#e4edd4'
                 : 'transparent',
               color: active
-                ? isDark ? '#34d399' : '#5e8404'
-                : isDark ? '#64748b' : '#8e9e8f',
-              padding: '6px 14px',
-              borderRadius: 16,
+                ? isDark ? '#34d399' : '#25451c'
+                : isDark ? '#64748b' : '#718096',
+              padding: active ? '8px 18px' : '6px 10px',
+              borderRadius: 20,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: 3,
+              gap: 2,
               cursor: 'pointer',
-              fontWeight: active ? 700 : 500,
+              fontWeight: active ? 800 : 500,
               fontSize: 11,
               position: 'relative',
-              transition: 'all 0.2s ease',
+              transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
             }}
           >
             {item.icon}
-            <span>{item.label}</span>
-            {active && (
-              <span
-                style={{
-                  position: 'absolute',
-                  bottom: -4,
-                  width: 18,
-                  height: 3,
-                  borderRadius: 2,
-                  background: isDark ? '#34d399' : '#5e8404',
-                }}
-              />
-            )}
+            <span style={{ fontSize: 11, letterSpacing: '-0.1px' }}>{item.label}</span>
           </button>
         )
       })}

@@ -2,98 +2,79 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav'
 import RecipeCard from '../components/RecipeCard'
-import { getAllRecipes, getRecommendedRecipes } from '../api/recipes'
-import { getAllPlans } from '../api/plans'
+import { getAllRecipes } from '../api/recipes'
 import { useAuth } from '../context/AuthContext'
 import { useFamily } from '../context/FamilyContext'
 import { useTheme } from '../context/ThemeContext'
-import { useGrocery } from '../context/GroceryContext'
 import { RECIPE_DATABASE } from '../data/recipeDatabase'
 
-const RECIPE_FILTER_TAGS = [
-  { id: 'All', label: 'All Recipes (500)', icon: '⊞' },
-  { id: 'Saved', label: 'Saved Recipes', icon: '♥️' },
-  { id: 'Kerala', label: 'Kerala Specialties', icon: '🌴' },
-  { id: 'South Indian', label: 'South Indian', icon: '🍛' },
-  { id: 'North Indian', label: 'North Indian', icon: '🥘' },
-  { id: 'Asian', label: 'Asian', icon: '🥢' },
-  { id: 'Italian', label: 'Italian', icon: '🍕' },
-  { id: 'High-Protein', label: 'High-Protein', icon: '⚡' },
-  { id: 'Vegetarian', label: 'Vegetarian', icon: '🥗' },
-  { id: 'Vegan', label: 'Vegan', icon: '🌱' },
-  { id: 'Low-Carb', label: 'Low-Carb', icon: '🥑' },
-  { id: 'Breakfast', label: 'Breakfast', icon: '☼' },
-  { id: 'Lunch', label: 'Lunch', icon: '🍱' },
-  { id: 'Dinner', label: 'Dinner', icon: '🍽️' },
-  { id: 'Kids', label: 'Kid-Friendly', icon: '🙂' },
-]
-
-const DEMO_PLANS = [
+const FILTER_TABS = [
   {
-    id: 1,
-    name: 'Kerala Family Thali Plan',
-    description: 'Balanced Kerala nutrients with Matta rice, Parippu curry, Thoran, Fish Curry & fresh curd.',
-    tags: ['family', 'balanced'],
-    imageUrl: 'https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?w=800&q=80',
-    accent: '#5e8404',
+    id: 'All',
+    label: 'All Recipes (500)',
+    icon: (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z" />
+      </svg>
+    ),
   },
   {
-    id: 2,
-    name: 'Malabar High-Protein Plan',
-    description: 'Coastal protein diet featuring Mathi (sardine), Meen Curry, Nadan Chicken & Country Eggs.',
-    tags: ['high-protein', 'coastal'],
-    imageUrl: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&q=80',
-    accent: '#ff5e14',
+    id: 'Saved',
+    label: 'Saved Recipes',
+    icon: (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z" />
+      </svg>
+    ),
   },
   {
-    id: 3,
-    name: 'Diabetes-Friendly Kerala Plan',
-    description: 'Low-GI Kerala meals with Cherupayar, Matta red rice, Avial & Kudampuli Fish Curry.',
-    tags: ['diabetes', 'low-gi'],
-    imageUrl: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800&q=80',
-    accent: '#2563eb',
+    id: 'Kerala',
+    label: 'Kerala Specials',
+    icon: '🌴',
   },
   {
-    id: 4,
-    name: 'Kids Special Malabar Plan',
-    description: 'Soft Appam & Veg Stew, Puttu & Kadala, Idiyappam, and Pazham Pori banana snacks.',
-    tags: ['kids', 'traditional'],
-    imageUrl: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&q=80',
-    accent: '#d97706',
+    id: 'Quick',
+    label: 'Quick Meals',
+    icon: '⚡',
+  },
+  {
+    id: 'High-Protein',
+    label: 'High-Protein',
+    icon: '💪',
+  },
+  {
+    id: 'Vegetarian',
+    label: 'Vegetarian',
+    icon: '🥗',
+  },
+  {
+    id: 'Breakfast',
+    label: 'Breakfast',
+    icon: '☕',
   },
 ]
-
-const ACCENT_COLORS = ['#5e8404', '#ff5e14', '#2563eb', '#d97706']
 
 export default function RecipesPage() {
   const { user } = useAuth()
   const { family } = useFamily()
   const { isDark } = useTheme()
-  const { addItemsFromPlan } = useGrocery()
   const navigate = useNavigate()
 
-  const [plans, setPlans]             = useState(DEMO_PLANS)
-  const [recipes, setRecipes]         = useState(RECIPE_DATABASE)
-  const [search, setSearch]           = useState('')
-  const [activeTag, setActiveTag]     = useState('All')
+  const [recipes, setRecipes] = useState(RECIPE_DATABASE)
+  const [search, setSearch] = useState('')
+  const [activeTab, setActiveTab] = useState('All')
   const [visibleCount, setVisibleCount] = useState(24)
-  const [toast, setToast]             = useState('')
+  const [toast, setToast] = useState('')
+  const [showFilterModal, setShowFilterModal] = useState(false)
 
   useEffect(() => {
     async function load() {
       try {
-        const familyId = family?.id || 1
-        const [plansRes, recipesRes] = await Promise.all([
-          getAllPlans().catch(() => ({ data: null })),
-          getAllRecipes({
-            search: search || undefined,
-            tag: activeTag !== 'All' && activeTag !== 'Recommended' ? activeTag : undefined,
-          }).catch(() => ({ data: null })),
-        ])
+        const recipesRes = await getAllRecipes({
+          search: search || undefined,
+          tag: activeTab !== 'All' && activeTab !== 'Saved' ? activeTab : undefined,
+        }).catch(() => ({ data: null }))
 
-        if (Array.isArray(plansRes?.data) && plansRes.data.length > 0) {
-          setPlans(plansRes.data)
-        }
         if (Array.isArray(recipesRes?.data) && recipesRes.data.length > 0) {
           setRecipes(recipesRes.data)
         }
@@ -102,19 +83,11 @@ export default function RecipesPage() {
       }
     }
     load()
-  }, [search, activeTag, family])
+  }, [search, activeTab])
 
   const showToastMsg = (msg) => {
     setToast(msg)
-    setTimeout(() => setToast(''), 3200)
-  }
-
-  const handleSelectPlan = (e, plan) => {
-    e.stopPropagation()
-    if (typeof addItemsFromPlan === 'function') {
-      addItemsFromPlan(plan)
-    }
-    showToastMsg(`Added ingredients for "${plan.name}" to Grocery list! 🛒`)
+    setTimeout(() => setToast(''), 3000)
   }
 
   const getSavedIds = () => {
@@ -127,36 +100,36 @@ export default function RecipesPage() {
   }
 
   const recipeList = Array.isArray(recipes) && recipes.length > 0 ? recipes : RECIPE_DATABASE
+
   const filteredRecipes = recipeList.filter((r) => {
-    // 0. Saved Filter
-    if (activeTag === 'Saved') {
+    // 1. Saved Filter
+    if (activeTab === 'Saved') {
       const savedIds = getSavedIds()
       if (!r.favorited && !savedIds.includes(String(r.id))) return false
     }
 
-    // 1. Search Query Filter
+    // 2. Search Filter
     if (search.trim()) {
       const q = search.toLowerCase()
       const matchesName = (r.name || '').toLowerCase().includes(q)
       const matchesCuisine = (r.cuisine || '').toLowerCase().includes(q)
-      const matchesDesc = (r.whyItsGood || '').toLowerCase().includes(q)
       const matchesTags = (r.tags || []).some((t) => t.toLowerCase().includes(q))
       const matchesIng = (r.ingredients || []).some((i) => (i.name || '').toLowerCase().includes(q))
-      if (!matchesName && !matchesCuisine && !matchesDesc && !matchesTags && !matchesIng) return false
+      if (!matchesName && !matchesCuisine && !matchesTags && !matchesIng) return false
     }
 
-    // 2. Active Tag Filter
-    if (activeTag === 'All' || activeTag === 'Saved') return true
-    if (activeTag === 'Recommended') return r.matchBadgeText || r.favorited
+    // 3. Active Tab Filter
+    if (activeTab === 'All' || activeTab === 'Saved') return true
+    if (activeTab === 'Quick') return (r.prepTimeMinutes || 20) <= 20
     return (
-      (r.cuisine || '').toLowerCase() === activeTag.toLowerCase() ||
-      (r.category || '').toLowerCase() === activeTag.toLowerCase() ||
-      r.tags?.some((t) => t.toLowerCase().includes(activeTag.toLowerCase()))
+      (r.cuisine || '').toLowerCase() === activeTab.toLowerCase() ||
+      (r.category || '').toLowerCase() === activeTab.toLowerCase() ||
+      r.tags?.some((t) => t.toLowerCase().includes(activeTab.toLowerCase()))
     )
   })
 
   const familyName = family?.name || user?.familyName || 'Healthy Family'
-  const initial = (familyName[0] || 'F').toUpperCase()
+  const initial = (familyName[0] || 'H').toUpperCase()
 
   return (
     <div
@@ -165,15 +138,15 @@ export default function RecipesPage() {
         margin: '0 auto',
         minHeight: '100vh',
         background: isDark ? '#0a0f1d' : '#fcfaf5',
-        paddingBottom: 'calc(110px + env(safe-area-inset-bottom, 0px))',
-        fontFamily: "'Inter', sans-serif",
-        color: isDark ? '#f8fafc' : '#1a1a1a',
+        paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 0px))',
+        fontFamily: "'Inter', -apple-system, sans-serif",
+        color: isDark ? '#f8fafc' : '#111827',
         position: 'relative',
         boxShadow: '0 0 40px rgba(0,0,0,0.06)',
         boxSizing: 'border-box',
       }}
     >
-      {/* Toast notification */}
+      {/* Toast Banner */}
       {toast && (
         <div
           style={{
@@ -181,299 +154,360 @@ export default function RecipesPage() {
             top: 20,
             left: '50%',
             transform: 'translateX(-50%)',
-            background: '#111827',
+            background: '#1e3815',
             color: 'white',
             padding: '12px 22px',
             borderRadius: 30,
             fontSize: 13,
             fontWeight: 700,
             zIndex: 3000,
-            boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.25)',
             whiteSpace: 'nowrap',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
           }}
         >
           {toast}
         </div>
       )}
 
-      {/* ── 1. TOP HEADER BAR ── */}
+      {/* ── HERO BANNER HEADER ── */}
       <div
         style={{
+          position: 'relative',
           background: isDark
             ? 'linear-gradient(135deg, #0f172a 0%, #0a0f1d 100%)'
-            : 'linear-gradient(135deg, #f3f7e6 0%, #fffdf4 100%)',
-          padding: 'max(24px, env(safe-area-inset-top, 24px)) 24px 20px 24px',
-          borderRadius: '0 0 32px 32px',
-          borderBottom: isDark ? '1px solid #1e293b' : 'none',
+            : 'linear-gradient(135deg, #f7f4ed 0%, #ebe4d3 100%)',
+          padding: 'max(20px, env(safe-area-inset-top, 20px)) 20px 24px 20px',
+          overflow: 'hidden',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+        {/* Kerala Food Image positioned at top right */}
+        <div
+          style={{
+            position: 'absolute',
+            top: -10,
+            right: -20,
+            width: 250,
+            height: 230,
+            borderRadius: '0 0 0 120px',
+            overflow: 'hidden',
+            pointerEvents: 'none',
+            zIndex: 1,
+          }}
+        >
+          <img
+            src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800&q=80"
+            alt="Kerala Kadala Curry"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center',
+            }}
+          />
+          {/* Subtle gradient overlay to blend seamlessly */}
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: isDark
+                ? 'linear-gradient(to right, #0f172a 0%, rgba(15,23,42,0.4) 40%, transparent 100%)'
+                : 'linear-gradient(to right, #f7f4ed 0%, rgba(247,244,237,0.4) 35%, transparent 100%)',
+            }}
+          />
+        </div>
+
+        {/* Header Top Bar */}
+        <div
+          style={{
+            position: 'relative',
+            zIndex: 2,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: 20,
+          }}
+        >
+          {/* Brand Logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2e5b12" strokeWidth="2.5">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#25451c" strokeWidth="2.6">
               <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.1 2 7 0 6-4.5 11-10 11z" />
               <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
             </svg>
-            <span style={{ fontSize: 22, fontWeight: 800, color: '#2e5b12', letterSpacing: '-0.3px' }}>
+            <span
+              style={{
+                fontSize: 22,
+                fontWeight: 800,
+                color: isDark ? '#34d399' : '#25451c',
+                letterSpacing: '-0.3px',
+              }}
+            >
               Family Fit
             </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div
-              onClick={() => navigate('/profile')}
-              style={{
-                width: 38,
-                height: 38,
-                borderRadius: '50%',
-                background: '#2e5b12',
-                color: 'white',
-                fontWeight: 800,
-                fontSize: 15,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(46,91,18,0.3)',
-              }}
-            >
-              {initial}
-            </div>
-          </div>
-        </div>
-
-        {/* Title */}
-        <h1 style={{ fontSize: 32, fontWeight: 900, color: '#111827', margin: '0 0 4px 0', letterSpacing: '-0.5px' }}>
-          Kerala Recipes ({recipeList.length})
-        </h1>
-        <p style={{ fontSize: 14, color: '#3d6b24', fontWeight: 600, margin: 0 }}>
-          Authentic South Indian & Malabar meal plans.
-        </p>
-
-        {/* Search bar */}
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginTop: 18 }}>
+          {/* User Profile Avatar */}
           <div
+            onClick={() => navigate('/profile')}
             style={{
-              flex: 1,
-              background: 'white',
-              borderRadius: 30,
-              padding: '12px 18px',
+              position: 'relative',
+              width: 36,
+              height: 36,
+              borderRadius: '50%',
+              background: isDark ? '#34d399' : '#25451c',
+              color: isDark ? '#0f172a' : 'white',
+              fontWeight: 800,
+              fontSize: 15,
               display: 'flex',
               alignItems: 'center',
-              gap: 10,
-              boxShadow: '0 4px 16px rgba(0,0,0,0.04)',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
             }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2.2">
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-            <input
-              placeholder="Search recipes, meen pollichathu, avial, appam..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              style={{ border: 'none', outline: 'none', width: '100%', fontSize: 14, color: '#374151', background: 'transparent' }}
+            {initial}
+            {/* Orange Status Dot */}
+            <span
+              style={{
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                width: 9,
+                height: 9,
+                borderRadius: '50%',
+                background: '#ff6b00',
+                border: '2px solid white',
+              }}
             />
           </div>
         </div>
+
+        {/* Main Hero Header Title */}
+        <div style={{ position: 'relative', zIndex: 2, maxWidth: 270, marginBottom: 22 }}>
+          <h1
+            style={{
+              fontFamily: "'Playfair Display', 'DM Serif Display', Georgia, serif",
+              fontSize: 34,
+              fontWeight: 900,
+              color: isDark ? '#f8fafc' : '#1b3815',
+              margin: '0 0 6px 0',
+              lineHeight: 1.12,
+              letterSpacing: '-0.4px',
+            }}
+          >
+            Kerala Recipes (500)
+          </h1>
+          <p
+            style={{
+              fontSize: 13.5,
+              color: isDark ? '#94a3b8' : '#405837',
+              fontWeight: 600,
+              margin: 0,
+              lineHeight: 1.35,
+            }}
+          >
+            Authentic South Indian & Malabar meal plans.
+          </p>
+        </div>
+
+        {/* Search Bar Input Container */}
+        <div
+          style={{
+            position: 'relative',
+            zIndex: 10,
+            background: isDark ? '#1e293b' : '#ffffff',
+            borderRadius: 30,
+            padding: '6px 6px 6px 18px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            boxShadow: isDark ? '0 4px 20px rgba(0,0,0,0.4)' : '0 6px 20px rgba(0,0,0,0.06)',
+            border: isDark ? '1px solid #334155' : '1px solid #f0eee8',
+          }}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2.2">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input
+            placeholder="Search recipes, meen pollichathu, avial, appam..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{
+              border: 'none',
+              outline: 'none',
+              width: '100%',
+              fontSize: 13.5,
+              color: isDark ? '#f8fafc' : '#374151',
+              background: 'transparent',
+              fontFamily: 'inherit',
+            }}
+          />
+
+          {/* Right Filter Button */}
+          <button
+            onClick={() => {
+              setShowFilterModal(!showFilterModal)
+              showToastMsg('Filter options opened! 🎛️')
+            }}
+            aria-label="Filter"
+            style={{
+              width: 38,
+              height: 38,
+              borderRadius: '50%',
+              background: isDark ? 'rgba(52,211,153,0.18)' : '#e4edd4',
+              border: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              flexShrink: 0,
+              transition: 'transform 0.15s ease',
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={isDark ? '#34d399' : '#25451c'} strokeWidth="2.2" strokeLinecap="round">
+              <line x1="4" y1="7" x2="20" y2="7" />
+              <line x1="4" y1="17" x2="20" y2="17" />
+              <circle cx="9" cy="7" r="2.5" fill={isDark ? '#0f172a' : '#e4edd4'} />
+              <circle cx="15" cy="17" r="2.5" fill={isDark ? '#0f172a' : '#e4edd4'} />
+            </svg>
+          </button>
+        </div>
       </div>
 
+      {/* ── MAIN BODY CONTENT ── */}
       <div style={{ padding: '20px 20px 0 20px' }}>
 
-        {/* ── 2. TOP SECTION: HORIZONTALLY SCROLLABLE KERALA PLANS ── */}
-        {!search && (
-          <div style={{ marginBottom: 28 }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ color: '#5e8404', fontSize: 18 }}>🌿</span>
-                <h2 style={{ fontSize: 19, fontWeight: 900, margin: 0, color: isDark ? '#f8fafc' : '#111827' }}>
-                  Curated Kerala Plans
-                </h2>
-              </div>
-              <span style={{ fontSize: 12, color: '#6b7280', fontWeight: 600 }}>Scroll &rsaquo;</span>
-            </div>
-
-            {/* Horizontal Scroll Cards */}
-            <div
+        {/* Explore Recipes Header Section */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+          <div>
+            <h2
               style={{
-                display: 'flex',
-                gap: 14,
-                overflowX: 'auto',
-                paddingBottom: 10,
-                scrollSnapType: 'x mandatory',
-                scrollbarWidth: 'none',
+                fontSize: 18,
+                fontWeight: 800,
+                margin: 0,
+                color: isDark ? '#f8fafc' : '#1b2a1a',
+                display: 'inline-block',
+                position: 'relative',
               }}
             >
-              {plans.map((p) => (
-                <div
-                  key={p.id}
-                  style={{
-                    flexShrink: 0,
-                    width: 260,
-                    borderRadius: 22,
-                    background: isDark ? '#161b22' : 'white',
-                    boxShadow: isDark ? '0 4px 18px rgba(0,0,0,0.3)' : '0 6px 20px rgba(0,0,0,0.06)',
-                    border: isDark ? '1px solid #21262d' : '1px solid #f0ede8',
-                    overflow: 'hidden',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    scrollSnapAlign: 'start',
-                    position: 'relative',
-                  }}
-                >
-                  {/* Card Image Banner */}
-                  <div
-                    style={{
-                      height: 120,
-                      backgroundImage: `url('${p.imageUrl}')`,
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                      position: 'relative',
-                      padding: 12,
-                    }}
-                  >
-                    <div
-                      style={{
-                        position: 'absolute',
-                        inset: 0,
-                        background: 'linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%)',
-                      }}
-                    />
-                    <div style={{ position: 'relative', zIndex: 2, display: 'flex', gap: 6 }}>
-                      {(p.tags || ['Balanced']).slice(0, 2).map((t) => (
-                        <span
-                          key={t}
-                          style={{
-                            background: 'rgba(255,255,255,0.92)',
-                            color: '#2e5b12',
-                            fontSize: 10,
-                            fontWeight: 800,
-                            padding: '3px 9px',
-                            borderRadius: 10,
-                            textTransform: 'capitalize',
-                          }}
-                        >
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Body Content */}
-                  <div style={{ padding: 14, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                    <div>
-                      <h3 style={{ fontSize: 16, fontWeight: 800, margin: '0 0 4px 0', color: isDark ? '#f0f6fc' : '#111827', lineHeight: 1.25 }}>
-                        {p.name}
-                      </h3>
-                      <p style={{ fontSize: 12, color: isDark ? '#8b949e' : '#6b7280', margin: 0, lineHeight: 1.4, height: 34, overflow: 'hidden' }}>
-                        {p.description}
-                      </p>
-                    </div>
-
-                    <button
-                      onClick={(e) => handleSelectPlan(e, p)}
-                      style={{
-                        marginTop: 12,
-                        width: '100%',
-                        background: 'linear-gradient(135deg, #5e8404 0%, #3d6b3f 100%)',
-                        color: 'white',
-                        border: 'none',
-                        padding: '9px 12px',
-                        borderRadius: 14,
-                        fontSize: 12,
-                        fontWeight: 800,
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: 6,
-                        boxShadow: '0 3px 10px rgba(61,107,63,0.25)',
-                      }}
-                    >
-                      <span>🌿</span> Select Plan
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* ── 3. FILTER CHIPS FOR RECIPES ── */}
-        <div style={{ marginBottom: 16 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-            <h2 style={{ fontSize: 19, fontWeight: 900, margin: 0, color: isDark ? '#f8fafc' : '#111827' }}>
-              Explore Recipes ({filteredRecipes.length})
+              Explore Recipes (500)
+              {/* Short green underline under Explore Recipes */}
+              <span
+                style={{
+                  display: 'block',
+                  width: '100%',
+                  height: 2.5,
+                  background: isDark ? '#34d399' : '#25451c',
+                  borderRadius: 2,
+                  marginTop: 2,
+                }}
+              />
             </h2>
           </div>
 
-          <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 6, scrollbarWidth: 'none' }}>
-            {RECIPE_FILTER_TAGS.map((t) => {
-              const active = activeTag === t.id
-              return (
-                <button
-                  key={t.id}
-                  onClick={() => setActiveTag(t.id)}
-                  style={{
-                    border: active ? 'none' : `1px solid ${isDark ? '#30363d' : '#d1dca7'}`,
-                    background: active ? '#2e4a19' : isDark ? '#161b22' : '#fafcf0',
-                    color: active ? 'white' : isDark ? '#8b949e' : '#2e5b12',
-                    padding: '8px 16px',
-                    borderRadius: 20,
-                    fontSize: 13,
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    whiteSpace: 'nowrap',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 6,
-                    flexShrink: 0,
-                    transition: 'all 0.15s ease',
-                  }}
-                >
-                  <span>{t.icon}</span>
-                  <span>{t.label}</span>
-                </button>
-              )
-            })}
+          <div
+            onClick={() => {
+              setActiveTab('All')
+              setSearch('')
+              showToastMsg('Showing all 500 recipes!')
+            }}
+            style={{
+              fontSize: 13,
+              color: isDark ? '#34d399' : '#25451c',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 4,
+            }}
+          >
+            <span>View all</span>
+            <span>&rarr;</span>
           </div>
         </div>
 
-        {/* ── 4. RECIPES 2-COLUMN GRID ── */}
+        {/* Horizontal Filter Tabs */}
+        <div
+          style={{
+            display: 'flex',
+            gap: 8,
+            overflowX: 'auto',
+            paddingBottom: 10,
+            marginBottom: 16,
+            scrollbarWidth: 'none',
+          }}
+        >
+          {FILTER_TABS.map((t) => {
+            const active = activeTab === t.id
+            return (
+              <button
+                key={t.id}
+                onClick={() => setActiveTab(t.id)}
+                style={{
+                  border: active
+                    ? 'none'
+                    : isDark ? '1px solid #334155' : '1px solid #d4dfc4',
+                  background: active
+                    ? isDark ? '#34d399' : '#25451c'
+                    : isDark ? '#1e293b' : '#ffffff',
+                  color: active
+                    ? isDark ? '#0f172a' : 'white'
+                    : isDark ? '#94a3b8' : '#25451c',
+                  padding: '8px 16px',
+                  borderRadius: 18,
+                  fontSize: 13,
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  flexShrink: 0,
+                  boxShadow: active ? '0 3px 10px rgba(37,69,28,0.2)' : 'none',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                {typeof t.icon === 'string' ? (
+                  <span>{t.icon}</span>
+                ) : (
+                  <span>{t.icon}</span>
+                )}
+                <span>{t.label}</span>
+              </button>
+            )
+          })}
+        </div>
+
+        {/* Recipe Grid (2 Columns) */}
         <div>
           {filteredRecipes.length === 0 ? (
             <div
               style={{
                 textAlign: 'center',
-                padding: '44px 20px',
-                background: isDark ? '#161b22' : 'white',
-                borderRadius: 24,
-                border: isDark ? '1px solid #30363d' : '1.5px dashed #e5e7eb',
-                boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
+                padding: '40px 20px',
+                background: isDark ? '#141c2e' : '#ffffff',
+                borderRadius: 20,
+                border: isDark ? '1px solid #24324a' : '1px dashed #d4dfc4',
                 margin: '10px 0',
               }}
             >
-              <div style={{ fontSize: 44, marginBottom: 8 }}>{activeTag === 'Saved' ? '♥️' : '🥗'}</div>
+              <div style={{ fontSize: 40, marginBottom: 8 }}>{activeTab === 'Saved' ? '♥️' : '🥗'}</div>
               <div style={{ fontWeight: 800, fontSize: 16, color: isDark ? '#f8fafc' : '#111827', marginBottom: 6 }}>
-                {activeTag === 'Saved' ? 'No saved recipes yet' : `No recipes found for "${activeTag}"`}
+                {activeTab === 'Saved' ? 'No saved recipes yet' : `No recipes found for "${activeTab}"`}
               </div>
-              <div style={{ fontSize: 13, color: isDark ? '#94a3b8' : '#6b7280', fontWeight: 500, lineHeight: 1.5, maxWidth: 300, margin: '0 auto' }}>
-                {activeTag === 'Saved'
-                  ? 'Tap the heart icon on any recipe to save it here for quick access later.'
-                  : 'Try searching for a different dish name, ingredient, or tag.'}
+              <div style={{ fontSize: 13, color: isDark ? '#94a3b8' : '#6b7280', fontWeight: 500, maxWidth: 280, margin: '0 auto' }}>
+                {activeTab === 'Saved'
+                  ? 'Tap the heart icon on any recipe to save it here.'
+                  : 'Try searching for a different dish or select another category tab.'}
               </div>
             </div>
           ) : (
             <>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-                {filteredRecipes.slice(0, visibleCount).map((r, i) => (
+                {filteredRecipes.slice(0, visibleCount).map((r) => (
                   <RecipeCard
                     key={r.id}
                     recipe={r}
-                    accentColor={ACCENT_COLORS[i % ACCENT_COLORS.length]}
                     onClick={() => navigate(`/recipes/${r.id}`)}
                   />
                 ))}
@@ -484,15 +518,15 @@ export default function RecipesPage() {
                   <button
                     onClick={() => setVisibleCount((prev) => prev + 24)}
                     style={{
-                      background: 'linear-gradient(135deg, #ff5e14 0%, #e04800 100%)',
-                      color: 'white',
+                      background: isDark ? '#34d399' : '#25451c',
+                      color: isDark ? '#0f172a' : 'white',
                       border: 'none',
                       padding: '12px 24px',
                       borderRadius: 20,
                       fontWeight: 800,
                       fontSize: 14,
                       cursor: 'pointer',
-                      boxShadow: '0 4px 16px rgba(224,72,0,0.3)',
+                      boxShadow: '0 4px 16px rgba(37,69,28,0.25)',
                     }}
                   >
                     Load More Recipes ({visibleCount} of {filteredRecipes.length})
@@ -502,9 +536,9 @@ export default function RecipesPage() {
             </>
           )}
         </div>
-
       </div>
 
+      {/* Bottom Navigation */}
       <BottomNav />
     </div>
   )
