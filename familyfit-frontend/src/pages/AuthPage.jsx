@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { clearFamilyCache } from '../lib/familyCache'
 
 export default function AuthPage() {
   const [mode, setMode]       = useState('login')   // 'login' | 'register'
@@ -21,8 +22,9 @@ export default function AuthPage() {
         navigate('/')
       } else {
         await register(form.familyName, form.email, form.password)
-        // Clear old members from previous session if any
-        localStorage.removeItem('familyfit_members')
+        // clearFamilyCache() is already called inside AuthContext.register,
+        // but call it here too as a belt-and-suspenders guard before navigation.
+        clearFamilyCache()
         navigate('/onboarding')
       }
     } catch (err) {

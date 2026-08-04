@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { login as apiLogin, register as apiRegister } from '../api/auth'
+import { clearFamilyCache } from '../lib/familyCache'
 
 const AuthContext = createContext(null)
 
@@ -44,7 +45,7 @@ export function AuthProvider({ children }) {
   const [user, setUser]       = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // Restore session from localStorage on mount, fallback to demo login
+  // Restore session from localStorage on mount — no auto demo login
   useEffect(() => {
     async function initAuth() {
       const token      = localStorage.getItem('accessToken')
@@ -53,14 +54,11 @@ export function AuthProvider({ children }) {
       const familyName = localStorage.getItem('familyName')
 
       if (token && familyId && familyId !== 'undefined' && familyId !== 'null') {
-        setUser({ familyId: Number(familyId) || 1, email, familyName: familyName || 'Healthy Family' })
-        setLoading(false)
-      } else {
-        // Auto-initialize demo session if no active session exists
-        persistAuth(DEMO_USER)
-        setUser({ familyId: DEMO_USER.familyId, email: DEMO_USER.email, familyName: DEMO_USER.familyName })
-        setLoading(false)
+        // Valid persisted session — restore it (FamilyContext will fetch fresh data)
+        setUser({ familyId: Number(familyId), email, familyName: familyName || 'My Family' })
       }
+      // If no valid token: stay as null — PrivateRoute will redirect to /auth
+      setLoading(false)
     }
     initAuth()
   }, [])
@@ -76,6 +74,10 @@ export function AuthProvider({ children }) {
       throw new Error('Please enter your password.')
     }
 
+    // Clear any stale family data from a previous account BEFORE setting the new user.
+    // This prevents a flash of old members/recipes while the new API fetch is in-flight.
+    clearFamilyCache()
+
     // 1. Try Backend API login
     try {
       const res = await apiLogin({ email: cleanEmail, password })
@@ -84,13 +86,13 @@ export function AuthProvider({ children }) {
         saveToLocalRegistry({
           familyId: data.familyId,
           email: cleanEmail,
-          familyName: data.familyName || 'Healthy Family',
+          familyName: data.familyName || 'My Family',
           password,
           accessToken: data.accessToken || `token_${Date.now()}`,
           refreshToken: data.refreshToken || `ref_${Date.now()}`,
         })
         persistAuth(data)
-        setUser({ familyId: data.familyId, email: cleanEmail, familyName: data.familyName || 'Healthy Family' })
+        setUser({ familyId: data.familyId, email: cleanEmail, familyName: data.familyName || 'My Family' })
         return data
       }
     } catch (apiErr) {
@@ -145,6 +147,9 @@ export function AuthProvider({ children }) {
       throw new Error('This email is already registered. Try signing in instead.')
     }
 
+    // Clear stale family data before registering a fresh account
+    clearFamilyCache()
+
     // 1. Try Backend API registration
     try {
       const res = await apiRegister({ familyName, email: cleanEmail, password })
@@ -187,11 +192,16 @@ export function AuthProvider({ children }) {
   }
 
   const logout = () => {
+    // 1. Clear auth tokens
     localStorage.removeItem('accessToken')
     localStorage.removeItem('refreshToken')
     localStorage.removeItem('familyId')
     localStorage.removeItem('email')
     localStorage.removeItem('familyName')
+
+    // 2. Clear ALL family-scoped cached data so the next account starts clean
+    clearFamilyCache()
+
     setUser(null)
   }
 
@@ -201,7 +211,7 @@ export function AuthProvider({ children }) {
     localStorage.setItem('refreshToken', data.refreshToken || 'demo-refresh')
     localStorage.setItem('familyId',     String(data.familyId || 1))
     localStorage.setItem('email',        data.email || '')
-    localStorage.setItem('familyName',   data.familyName || 'Healthy Family')
+    localStorage.setItem('familyName',   data.familyName || 'My Family')
   }
 
   return (

@@ -4,92 +4,39 @@ import { useAuth } from './AuthContext'
 
 const FamilyContext = createContext(null)
 
-const DEFAULT_MEMBERS = [
-  {
-    id: 1,
-    name: 'Hashir',
-    role: 'PARENT',
-    gender: 'MALE',
-    age: 24,
-    heightCm: 175,
-    weightKg: 70,
-    dailyKcalTarget: 1980,
-    activityLevel: 'MODERATELY_ACTIVE',
-    healthConditions: [],
-    allergies: [],
-    fitnessGoal: 'MAINTAIN_WEIGHT',
-    dietPreference: 'NO_PREFERENCE',
-  },
-  {
-    id: 2,
-    name: 'Mom',
-    role: 'PARENT',
-    gender: 'FEMALE',
-    age: 48,
-    heightCm: 160,
-    weightKg: 62,
-    dailyKcalTarget: 1760,
-    activityLevel: 'MODERATELY_ACTIVE',
-    healthConditions: [],
-    allergies: ['Milk/Dairy'],
-    fitnessGoal: 'WEIGHT_LOSS',
-    dietPreference: 'VEGETARIAN',
-  },
-  {
-    id: 3,
-    name: 'Dad',
-    role: 'PARENT',
-    gender: 'MALE',
-    age: 52,
-    heightCm: 172,
-    weightKg: 78,
-    dailyKcalTarget: 2240,
-    activityLevel: 'VERY_ACTIVE',
-    healthConditions: [],
-    allergies: [],
-    fitnessGoal: 'MUSCLE_GAIN',
-    dietPreference: 'HIGH_PROTEIN',
-  },
-  {
-    id: 4,
-    name: 'Anya',
-    role: 'CHILD',
-    gender: 'FEMALE',
-    age: 8,
-    heightCm: 128,
-    weightKg: 26,
-    dailyKcalTarget: 1480,
-    activityLevel: 'MODERATELY_ACTIVE',
-    healthConditions: [],
-    allergies: ['Peanuts/Tree Nuts'],
-    fitnessGoal: 'MAINTAIN_WEIGHT',
-    dietPreference: 'NO_PREFERENCE',
-  },
-]
-
 export function FamilyProvider({ children }) {
   const { user } = useAuth()
-  const [family, setFamily] = useState(() => {
-    const saved = localStorage.getItem('familyfit_members')
-    const members = saved ? JSON.parse(saved) : DEFAULT_MEMBERS
-    return { id: 1, name: 'Hashir Family', members }
-  })
+
+  // Start with null members — never read from localStorage on initial mount.
+  // localStorage is written AFTER a successful authenticated fetch and used
+  // only as an optimistic write-back for local mutations (add/update/delete).
+  // The source of truth is always the backend API response.
+  const [family, setFamily] = useState(() => ({
+    id: user?.familyId || null,
+    name: user?.familyName || 'My Family',
+    members: [],   // always empty until the API responds — no stale pre-fill
+  }))
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [activeMember, setActiveMember] = useState(null)
 
   useEffect(() => {
     if (user?.familyId) {
-      if (user.familyName) {
-        setFamily((prev) => ({
-          ...prev,
-          id: user.familyId,
-          name: user.familyName,
-        }))
-      }
+      // Update family meta immediately from the JWT payload (no cache needed)
+      setFamily((prev) => ({
+        ...prev,
+        id: user.familyId,
+        name: user.familyName || prev.name,
+        members: [],   // reset members so we never flash the previous account's list
+      }))
+      setActiveMember(null)  // reset active member selection
       fetchFamily(user.familyId)
+    } else {
+      // User logged out — reset to empty state
+      setFamily({ id: null, name: 'My Family', members: [] })
+      setActiveMember(null)
     }
-  }, [user])
+  }, [user?.familyId])   // re-run whenever the logged-in family changes
 
   const fetchFamily = async (id) => {
     setLoading(true)
@@ -98,6 +45,7 @@ export function FamilyProvider({ children }) {
       const res = await getFamily(id).catch(() => ({ data: null }))
       if (res?.data && Array.isArray(res.data.members)) {
         setFamily(res.data)
+        // Write to localStorage only AFTER a successful API fetch (performance cache)
         localStorage.setItem('familyfit_members', JSON.stringify(res.data.members))
         if (res.data.members.length > 0 && !activeMember) {
           const parent = res.data.members.find((m) => m.role === 'PARENT') || res.data.members[0]
@@ -111,6 +59,8 @@ export function FamilyProvider({ children }) {
     }
   }
 
+  // ─── Local optimistic updates (mirror to localStorage for mutations only) ─
+
   const addMemberToContext = (newMember) => {
     setFamily((prev) => {
       const existing = prev?.members || []
@@ -118,7 +68,7 @@ export function FamilyProvider({ children }) {
       const updatedMembers = [...existing, memberWithId]
       localStorage.setItem('familyfit_members', JSON.stringify(updatedMembers))
       if (!activeMember) setActiveMember(memberWithId)
-      return { ...(prev || { id: 1, name: 'My Family' }), members: updatedMembers }
+      return { ...(prev || { id: null, name: 'My Family' }), members: updatedMembers }
     })
   }
 
