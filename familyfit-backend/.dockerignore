@@ -1,12 +1,20 @@
+# Build artifacts
 target/
+
+# Version control
 .git/
 .gitignore
+
+# IDE / editor files
 .idea/
 *.iml
+.vscode/
+
+# Local environment / secrets — never bake into the image
 .env
 .env.*
-Dockerfile
-.dockerignore
-mvnw
-mvnw.cmd
-.mvn/
+*.env
+
+# OS noise
+.DS_Store
+Thumbs.db
