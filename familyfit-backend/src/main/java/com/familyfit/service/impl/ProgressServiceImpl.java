@@ -3,6 +3,7 @@ package com.familyfit.service.impl;
 import com.familyfit.dto.HealthScoreDTO;
 import com.familyfit.entity.*;
 import com.familyfit.exception.ResourceNotFoundException;
+import com.familyfit.exception.UnauthorizedException;
 import com.familyfit.repository.*;
 import com.familyfit.service.HealthInsightGenerator;
 import lombok.RequiredArgsConstructor;
@@ -25,15 +26,42 @@ public class ProgressServiceImpl {
     private final HealthInsightGenerator insightGenerator;
     private final EntityMapper mapper;
 
-    public HealthScoreDTO getHealthScore(Long memberId) {
+    /**
+     * Returns the health score for a member, after verifying the caller owns the member.
+     *
+     * @param callerFamilyId family ID from the caller's JWT
+     */
+    public HealthScoreDTO getHealthScore(Long memberId, Long callerFamilyId) {
         FamilyMember member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("FamilyMember", memberId));
 
+        // ── Multi-tenancy guard ──────────────────────────────────────────
+        if (!member.getFamily().getId().equals(callerFamilyId)) {
+            throw new UnauthorizedException(
+                    "Access denied: this member belongs to a different family account.");
+        }
+
+        return computeHealthScore(member);
+    }
+
+    /** Returns latest health score for each member in the family, keyed by memberId */
+    public Map<Long, HealthScoreDTO> getFamilyComparison(Long familyId) {
+        List<FamilyMember> members = memberRepository.findByFamilyId(familyId);
+        return members.stream()
+                .collect(Collectors.toMap(
+                        FamilyMember::getId,
+                        m -> computeHealthScore(m)
+                ));
+    }
+
+    // ─── Private helpers ──────────────────────────────────────────────────
+
+    /** Computes and returns the health score for a member (no ownership check — caller must verify). */
+    private HealthScoreDTO computeHealthScore(FamilyMember member) {
         List<DailyLog> history = dailyLogRepository
                 .findByFamilyMemberIdAndDateBetweenOrderByDateDesc(
-                        memberId, LocalDate.now().minusDays(14), LocalDate.now());
+                        member.getId(), LocalDate.now().minusDays(14), LocalDate.now());
 
-        // Compute score: baseline 60 + kcal adherence bonus (up to 30) + water bonus (up to 10)
         int score = computeScore(member, history);
         String insight = insightGenerator.generateInsight(member, history);
 
@@ -45,16 +73,6 @@ public class ProgressServiceImpl {
                 .build();
 
         return mapper.toHealthScoreDTO(hs);
-    }
-
-    /** Returns latest health score for each member in the family, keyed by memberId */
-    public Map<Long, HealthScoreDTO> getFamilyComparison(Long familyId) {
-        List<FamilyMember> members = memberRepository.findByFamilyId(familyId);
-        return members.stream()
-                .collect(Collectors.toMap(
-                        FamilyMember::getId,
-                        m -> getHealthScore(m.getId())
-                ));
     }
 
     // ─── Scoring logic ────────────────────────────────────────────────────

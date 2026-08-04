@@ -4,6 +4,7 @@ import com.familyfit.dto.FamilyDTO;
 import com.familyfit.dto.FamilyMemberDTO;
 import com.familyfit.entity.*;
 import com.familyfit.exception.ResourceNotFoundException;
+import com.familyfit.exception.UnauthorizedException;
 import com.familyfit.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -47,9 +48,21 @@ public class FamilyServiceImpl {
         return mapper.toMemberDTO(memberRepository.save(member));
     }
 
-    public FamilyMemberDTO updateMember(Long memberId, FamilyMemberDTO dto) {
+    /**
+     * Updates a family member after verifying the caller owns the member.
+     *
+     * @param callerFamilyId the family ID extracted from the caller's JWT — must
+     *                       match the member's family_id or the call is rejected.
+     */
+    public FamilyMemberDTO updateMember(Long memberId, FamilyMemberDTO dto, Long callerFamilyId) {
         FamilyMember member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("FamilyMember", memberId));
+
+        // ── Multi-tenancy guard ──────────────────────────────────────────
+        if (!member.getFamily().getId().equals(callerFamilyId)) {
+            throw new UnauthorizedException(
+                    "Access denied: this member belongs to a different family account.");
+        }
 
         if (dto.getName() != null && !dto.getName().isBlank()) member.setName(dto.getName());
         if (dto.getAge() > 0) member.setAge(dto.getAge());
@@ -76,10 +89,21 @@ public class FamilyServiceImpl {
         return mapper.toMemberDTO(memberRepository.save(member));
     }
 
-    public void deleteMember(Long memberId) {
-        if (!memberRepository.existsById(memberId)) {
-            throw new ResourceNotFoundException("FamilyMember", memberId);
+    /**
+     * Deletes a family member after verifying the caller owns the member.
+     *
+     * @param callerFamilyId the family ID extracted from the caller's JWT.
+     */
+    public void deleteMember(Long memberId, Long callerFamilyId) {
+        FamilyMember member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ResourceNotFoundException("FamilyMember", memberId));
+
+        // ── Multi-tenancy guard ──────────────────────────────────────────
+        if (!member.getFamily().getId().equals(callerFamilyId)) {
+            throw new UnauthorizedException(
+                    "Access denied: this member belongs to a different family account.");
         }
+
         memberRepository.deleteById(memberId);
     }
 

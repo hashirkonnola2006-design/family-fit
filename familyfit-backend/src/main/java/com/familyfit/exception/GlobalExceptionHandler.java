@@ -26,8 +26,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ErrorResponse> handleUnauthorized(UnauthorizedException ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(buildError(HttpStatus.UNAUTHORIZED, "Unauthorized", ex.getMessage(), null));
+        // 403 Forbidden: the user IS authenticated but is NOT permitted to access this resource.
+        // (401 Unauthorized would mean the request lacks valid authentication credentials.)
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(buildError(HttpStatus.FORBIDDEN, "Forbidden", ex.getMessage(), null));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
