@@ -230,7 +230,10 @@ export default function MemberModal({ member, onClose }) {
         await updateMember(member.id, payload).catch((err) => console.warn('API updateMember failed, using local:', err))
         updateMemberInContext({ ...payload, id: member.id })
       } else {
-        const familyId = family?.id || Number(localStorage.getItem('familyId')) || 1
+        const familyId = family?.id || Number(localStorage.getItem('familyId'))
+        if (!familyId) {
+          throw new Error('No authenticated family ID found')
+        }
         const res = await addMember(familyId, payload).catch((err) => console.warn('API addMember failed, using local:', err))
         const created = res?.data && typeof res.data === 'object' && res.data.id ? res.data : { ...payload, id: Date.now() }
         addMemberToContext(created)

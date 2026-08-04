@@ -23,7 +23,9 @@ function getLocalRegistry() {
   } catch (e) {
     console.error('Failed to parse local user registry:', e)
   }
-  return [DEMO_USER]
+  // Return empty array for fresh browsers — do NOT inject DEMO_USER here,
+  // as familyId:1 may point to a real database family with seeded members.
+  return []
 }
 
 function saveToLocalRegistry(userObj) {
