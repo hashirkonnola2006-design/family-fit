@@ -358,7 +358,20 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="homepage-hero-grid" style={{ width: '100%' }}>
+        <div className="homepage-hero-grid" style={{ width: '100%', position: 'relative' }}>
+          {/* Torn Paper Borders (Desktop Only) */}
+          <svg className="torn-edge-top" viewBox="0 0 1200 20" preserveAspectRatio="none" style={{ display: 'none', position: 'absolute', top: -1, left: 0, width: '100%', height: 16, zIndex: 5, pointerEvents: 'none' }}>
+            <path d="M0 0 L1200 0 L1200 12 Q1150 6 1100 14 T1000 8 T900 12 T800 6 T700 14 T600 8 T500 10 T400 14 T300 6 T200 12 T100 8 T0 12 Z" fill={isDark ? "#0A0F1D" : "#FAFAF7"} />
+          </svg>
+          <svg className="torn-edge-bottom" viewBox="0 0 1200 20" preserveAspectRatio="none" style={{ display: 'none', position: 'absolute', bottom: -1, left: 0, width: '100%', height: 16, zIndex: 5, pointerEvents: 'none' }}>
+            <path d="M0 20 L1200 20 L1200 8 Q1150 14 1100 6 T1000 12 T900 8 T800 14 T700 6 T600 12 T500 10 T400 6 T300 14 T200 8 T100 12 T0 8 Z" fill={isDark ? "#0A0F1D" : "#FAFAF7"} />
+          </svg>
+          <svg className="torn-edge-left" viewBox="0 0 20 600" preserveAspectRatio="none" style={{ display: 'none', position: 'absolute', top: 0, left: -1, height: '100%', width: 16, zIndex: 5, pointerEvents: 'none' }}>
+            <path d="M0 0 L0 600 L12 600 Q6 550 14 500 T8 400 T12 300 T6 200 T14 100 T8 0 Z" fill={isDark ? "#0A0F1D" : "#FAFAF7"} />
+          </svg>
+          <svg className="torn-edge-right" viewBox="0 0 20 600" preserveAspectRatio="none" style={{ display: 'none', position: 'absolute', top: 0, right: -1, height: '100%', width: 16, zIndex: 5, pointerEvents: 'none' }}>
+            <path d="M20 0 L20 600 L8 600 Q14 550 6 500 T12 400 T8 300 T14 200 T6 100 T12 0 Z" fill={isDark ? "#0A0F1D" : "#FAFAF7"} />
+          </svg>
           {/* Hero Left Content Text & Action Button */}
           <div className="homepage-hero-left" style={{ zIndex: 2, marginTop: 38, maxWidth: '52%' }}>
             {/* Greeting Row */}
@@ -949,6 +962,9 @@ export default function HomePage() {
             position: relative;
             overflow: hidden;
             box-sizing: border-box;
+          }
+          .torn-edge-top, .torn-edge-bottom, .torn-edge-left, .torn-edge-right {
+            display: block !important;
           }
           .homepage-hero-left {
             width: 45% !important;
