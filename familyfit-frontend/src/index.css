@@ -8,35 +8,50 @@
 /* ─── Design Tokens ────────────────────────────────────────── */
 :root {
   /* Brand colours */
-  --color-primary:       #3d6b3f;
-  --color-primary-light: #5a8c5c;
-  --color-primary-dark:  #2a4d2b;
-  --color-accent:        #7ab648;
-  --color-accent-light:  #d4edda;
+  --color-primary:       #2F6B1F;
+  --color-dark-forest:   #1E4D18;
+  --color-accent-orange: #F97316;
+  --color-soft-lime:     #CFE8A9;
+  --color-olive-green:   #7DAA4B;
 
   /* Neutrals */
-  --color-bg:            #f5f2ee;
-  --color-surface:       #ffffff;
-  --color-surface-2:     #f0ede8;
-  --color-border:        #e8e3dc;
+  --color-bg:            #FAFAF7;
+  --color-surface:       #FFFFFF;
+  --color-secondary-surface: #F4F5EF;
+  --color-divider:        #E8E8E3;
 
   /* Text */
-  --color-text-primary:  #1a1a1a;
-  --color-text-secondary:#6b6b6b;
-  --color-text-muted:    #9e9e9e;
-  --color-text-inverse:  #ffffff;
+  --color-text-primary:  #121826;
+  --color-text-secondary:#5B6472;
+  --color-text-muted:    #8C95A3;
+  --color-text-disabled: #B6BEC8;
 
-  /* Semantic */
-  --color-warning:       #e07b39;
-  --color-error:         #d64545;
-  --color-info:          #2b7cd1;
-  --color-success:       #3d6b3f;
+  /* Semantic Status */
+  --color-success:       #34A853;
+  --color-warning:       #F59E0B;
+  --color-error:         #EF4444;
+  --color-info:          #3B82F6;
 
-  /* Macro colours */
-  --color-carbs:         #e8b84b;
-  --color-protein:       #5a8c5c;
-  --color-fat:           #d47e4a;
-  --color-water:         #4a8fc2;
+  /* Typography */
+  --font-family-base:    'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Shadows */
+  --shadow-card:         0 10px 30px rgba(0, 0, 0, 0.08);
+  --shadow-floating-btn: 0 14px 30px rgba(47, 107, 31, 0.30);
+  --shadow-hero:         0 25px 45px rgba(0, 0, 0, 0.12);
+
+  /* Radius */
+  --radius-hero:         32px;
+  --radius-search:       28px;
+  --radius-card:         24px;
+  --radius-button:       18px;
+  --radius-pill:         999px;
+}
+
+body {
+  font-family: var(--font-family-base);
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
 }
 
 /* ─── Premium Luxury Dark Mode ───────────────────────────── */
