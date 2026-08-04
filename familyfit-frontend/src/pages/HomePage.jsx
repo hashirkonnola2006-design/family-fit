@@ -226,24 +226,20 @@ export default function HomePage() {
         WebkitFontSmoothing: 'antialiased',
       }}
     >
-      {/* ── 1. HERO SECTION (Matching Reference Image 1 & Image 2) ── */}
+      {/* ── 1. HERO SECTION (Split Columns for Perfect Readability & Zero Overlap) ── */}
       <div
         style={{
-          position: 'relative',
           background: isDark ? '#141C2E' : '#FAFAF7',
-          padding: '16px 16px 36px 16px',
+          padding: '16px 16px 28px 16px',
           borderRadius: '0 0 36px 36px',
-          backgroundImage: 'url("/hero_biryani.jpg")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'top right',
-          minHeight: 410,
+          boxShadow: isDark ? '0 20px 40px rgba(0,0,0,0.4)' : '0 20px 40px rgba(0,0,0,0.06)',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
+          position: 'relative',
         }}
       >
         {/* Top Bar Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 2 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, zIndex: 3 }}>
           {/* Logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <LeafIcon />
@@ -307,81 +303,104 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Hero Left Content Text & Action Button */}
-        <div style={{ zIndex: 2, marginTop: 24, maxWidth: '62%' }}>
-          {/* Greeting Row */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-            <SmallLeafIcon />
-            <span style={{ fontSize: 17, fontWeight: 700, color: isDark ? '#F8FAFC' : '#121826' }}>
-              {greetingLine}
-            </span>
-          </div>
+        {/* Hero split layout */}
+        <div style={{ display: 'flex', minHeight: 280, position: 'relative', marginTop: 4 }}>
+          {/* Left Text Column */}
+          <div style={{ width: '48%', paddingRight: 6, display: 'flex', flexDirection: 'column', justifyContent: 'center', zIndex: 2 }}>
+            {/* Greeting Row */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+              <SmallLeafIcon />
+              <span style={{ fontSize: 14, fontWeight: 700, color: isDark ? '#F8FAFC' : '#5B6472' }}>
+                {greetingLine}
+              </span>
+            </div>
 
-          {/* Family Name Headline */}
-          <div style={{ position: 'relative', marginBottom: 12 }}>
-            <h1
+            {/* Family Name Headline */}
+            <div style={{ position: 'relative', marginBottom: 8 }}>
+              <h1
+                style={{
+                  fontSize: 28,
+                  fontWeight: 800,
+                  color: '#1E4D18',
+                  lineHeight: 1.15,
+                  margin: 0,
+                  letterSpacing: '-0.5px',
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                }}
+              >
+                {displayName.toLowerCase()} family!
+              </h1>
+              {/* Thin Orange Underline */}
+              <div style={{ width: 80, height: 3, background: '#F97316', borderRadius: 2, marginTop: 4 }} />
+            </div>
+
+            {/* Subtext */}
+            <p
               style={{
-                fontSize: 34,
-                fontWeight: 800,
-                color: '#1E4D18',
-                lineHeight: 1.15,
-                margin: 0,
-                letterSpacing: '-0.6px',
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                fontSize: 12.5,
+                color: isDark ? '#CBD5E1' : '#5B6472',
+                fontWeight: 500,
+                lineHeight: 1.4,
+                margin: '0 0 14px 0',
               }}
             >
-              {displayName.toLowerCase()} family!
-            </h1>
+              Wholesome Kerala meals, made for your family.
+            </p>
 
-            {/* Thin Orange Underline Accent */}
-            <div
+            {/* Let's eat button */}
+            <button
+              onClick={() => navigate('/recipes')}
               style={{
-                width: 95,
-                height: 3.5,
-                background: '#F97316',
-                borderRadius: 2,
-                marginTop: 6,
+                background: '#1E4D18',
+                color: '#FFFFFF',
+                border: 'none',
+                borderRadius: 999,
+                padding: '8px 14px',
+                fontSize: 12,
+                fontWeight: 700,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                cursor: 'pointer',
+                boxShadow: '0 4px 10px rgba(30,77,24,0.2)',
+                alignSelf: 'flex-start',
               }}
-            />
+            >
+              <WhiteLeafIcon />
+              <span style={{ whiteSpace: 'nowrap' }}>Let's eat healthy</span>
+            </button>
           </div>
 
-          {/* Subtext */}
-          <p
+          {/* Right Image Column */}
+          <div
             style={{
-              fontSize: 14,
-              color: isDark ? '#CBD5E1' : '#5B6472',
-              fontWeight: 500,
-              lineHeight: 1.45,
-              margin: '0 0 18px 0',
+              position: 'absolute',
+              top: 0,
+              right: -16, // Bleed parent padding right
+              bottom: -28, // Bleed parent padding bottom
+              width: '58%',
+              backgroundImage: 'url("/hero_biryani.jpg")',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              borderRadius: '0 0 36px 0',
+              zIndex: 1,
             }}
-          >
-            Wholesome Kerala meals,<br />made for your family.
-          </p>
+          />
 
-          {/* New Pill Button */}
-          <button
-            onClick={() => navigate('/recipes')}
+          {/* Subtle gradient to blend left edge of image with background */}
+          <div
             style={{
-              background: '#1E4D18',
-              color: '#FFFFFF',
-              border: 'none',
-              borderRadius: 999,
-              padding: '10px 18px',
-              fontSize: 13,
-              fontWeight: 700,
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 8,
-              cursor: 'pointer',
-              boxShadow: '0 4px 14px rgba(30,77,24,0.3)',
-              transition: 'transform 0.2s ease',
+              position: 'absolute',
+              top: 0,
+              left: '42%',
+              width: 30,
+              height: '100%',
+              background: isDark
+                ? 'linear-gradient(to right, #141C2E, transparent)'
+                : 'linear-gradient(to right, #FAFAF7, transparent)',
+              zIndex: 2,
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.03)')}
-            onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-          >
-            <WhiteLeafIcon />
-            <span>Let's eat healthy together</span>
-          </button>
+          />
         </div>
       </div>
 
