@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav'
+import MemberAvatar from '../components/MemberAvatar'
 import { useFamily } from '../context/FamilyContext'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
@@ -130,39 +131,9 @@ const RECOMMENDED_RECIPES = [
   },
 ]
 
-const FAMILY_MEMBERS = [
-  {
-    id: 'hashir',
-    name: 'Hashir',
-    kcal: '1,980 kcal',
-    avatar: '/avatars/teen_male.png',
-    status: 'On track',
-  },
-  {
-    id: 'mom',
-    name: 'Mom',
-    kcal: '1,760 kcal',
-    avatar: '/avatars/adult_female.png',
-    status: 'On track',
-  },
-  {
-    id: 'dad',
-    name: 'Dad',
-    kcal: '2,240 kcal',
-    avatar: '/avatars/adult_male.png',
-    status: 'On track',
-  },
-  {
-    id: 'anya',
-    name: 'Anya',
-    kcal: '1,480 kcal',
-    avatar: '/avatars/child_female.png',
-    status: 'On track',
-  },
-]
-
 export default function HomePage() {
   const { user } = useAuth()
+  const { family, setActiveMember } = useFamily()
   const { isDark } = useTheme()
   const [search, setSearch] = useState('')
   const [savedRecipeIds, setSavedRecipeIds] = useState(['1001', '1002'])
@@ -191,8 +162,21 @@ export default function HomePage() {
     localStorage.setItem('familyfit_saved_recipes', JSON.stringify(updated))
   }
 
-  const initial = user?.name ? user.name[0].toUpperCase() : 'H'
-  const familyName = user?.familyName || 'Hashir'
+  // Determine Greeting Time
+  const getGreetingTime = () => {
+    const h = new Date().getHours()
+    if (h < 12) return 'Good morning,'
+    if (h < 17) return 'Good afternoon,'
+    return 'Good evening,'
+  }
+
+  // Clean Family Name without duplicate "family"
+  const rawName = user?.familyName || family?.name || user?.name || 'Hashir'
+  let displayName = rawName.replace(/ family$/i, '').trim()
+  if (!displayName || displayName === 'My Family') displayName = 'Hashir'
+
+  const memberList = family?.members || []
+  const initial = displayName ? displayName[0].toUpperCase() : 'H'
 
   const filteredRecipes = search
     ? RECOMMENDED_RECIPES.filter((r) => r.name.toLowerCase().includes(search.toLowerCase()))
@@ -221,39 +205,58 @@ export default function HomePage() {
             borderRadius: 32,
             boxShadow: isDark ? '0 25px 45px rgba(0,0,0,0.5)' : '0 25px 45px rgba(0,0,0,0.12)',
             overflow: 'hidden',
-            background: isDark ? '#141C2E' : '#FFFFFF',
-            minHeight: 280,
+            background: isDark ? '#141C2E' : '#FAFAF7',
+            minHeight: 380, // ~60% larger vertical space for rich hero presentation
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
           }}
         >
-          {/* Background Food Photo */}
+          {/* Background Food Photo with Ken Burns subtle depth */}
           <div
             style={{
               position: 'absolute',
               top: 0,
               right: 0,
-              width: '65%',
+              width: '72%',
               height: '100%',
-              backgroundImage: 'url("https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=1000&q=80")',
+              backgroundImage: 'url("https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=1200&q=80")',
               backgroundSize: 'cover',
-              backgroundPosition: 'center center',
+              backgroundPosition: 'center 30%',
+              transform: 'scale(1.05)',
+              transformOrigin: 'center center',
             }}
           />
 
-          {/* Smooth Gradient Overlay for legibility */}
+          {/* Layered Gradient Overlay: Left-to-right fade & bottom edge gradient */}
           <div
             style={{
               position: 'absolute',
               inset: 0,
               background: isDark
-                ? 'linear-gradient(to right, #141C2E 42%, rgba(20,28,46,0.85) 68%, rgba(20,28,46,0.15) 100%)'
-                : 'linear-gradient(to right, #FAFAF7 38%, rgba(250,250,247,0.88) 65%, rgba(250,250,247,0.1) 100%)',
+                ? 'linear-gradient(to right, #141C2E 32%, rgba(20,28,46,0.85) 55%, rgba(20,28,46,0) 85%)'
+                : 'linear-gradient(to right, #FAFAF7 32%, rgba(250,250,247,0.88) 55%, rgba(250,250,247,0) 85%)',
+            }}
+          />
+
+          {/* Subtle Bottom Gradient Overlay for Search Bar Overlap */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: 70,
+              background: isDark
+                ? 'linear-gradient(to top, rgba(10,15,29,0.7) 0%, rgba(10,15,29,0) 100%)'
+                : 'linear-gradient(to top, rgba(250,250,247,0.9) 0%, rgba(250,250,247,0) 100%)',
             }}
           />
 
           {/* Content Wrapper */}
-          <div style={{ position: 'relative', zIndex: 2, padding: '20px 20px 38px 20px' }}>
+          <div style={{ position: 'relative', zIndex: 2, padding: '20px 20px 48px 20px' }}>
             {/* Top Header Row */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 36 }}>
               {/* Logo */}
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <LeafIcon />
@@ -318,10 +321,10 @@ export default function HomePage() {
             </div>
 
             {/* Headline & Subtext */}
-            <div style={{ maxWidth: '78%' }}>
+            <div style={{ maxWidth: '80%' }}>
               <h1
                 style={{
-                  fontSize: 28,
+                  fontSize: 30,
                   fontWeight: 800,
                   color: isDark ? '#F8FAFC' : '#121826',
                   lineHeight: 1.18,
@@ -329,10 +332,10 @@ export default function HomePage() {
                   letterSpacing: '-0.5px',
                 }}
               >
-                Good evening,<br />
-                <span style={{ color: '#2F6B1F', position: 'relative', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                  {familyName} family!
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                {getGreetingTime()}<br />
+                <span style={{ color: '#2F6B1F', position: 'relative', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  {displayName} family! 👋
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                     <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="#F97316" />
                   </svg>
                 </span>
@@ -340,21 +343,21 @@ export default function HomePage() {
 
               <p
                 style={{
-                  fontSize: 13,
+                  fontSize: 14,
                   color: isDark ? '#94A3B8' : '#5B6472',
-                  marginTop: 8,
+                  marginTop: 10,
                   fontWeight: 500,
-                  lineHeight: 1.4,
-                  margin: '8px 0 0',
+                  lineHeight: 1.45,
+                  margin: '10px 0 0',
                 }}
               >
                 Wholesome Kerala meals,<br />made for your family.
               </p>
 
               {/* Green Accent Swoop */}
-              <div style={{ marginTop: 6 }}>
-                <svg width="65" height="8" viewBox="0 0 65 8" fill="none">
-                  <path d="M2 6C20 2 45 2 63 6" stroke="#2F6B1F" strokeWidth="3" strokeLinecap="round" />
+              <div style={{ marginTop: 8 }}>
+                <svg width="70" height="9" viewBox="0 0 70 9" fill="none">
+                  <path d="M2 7C22 2 50 2 68 7" stroke="#2F6B1F" strokeWidth="3.5" strokeLinecap="round" />
                 </svg>
               </div>
             </div>
@@ -362,7 +365,7 @@ export default function HomePage() {
         </div>
 
         {/* ── 3. SEARCH BAR (Overlapping Hero) ── */}
-        <div style={{ padding: '0 10px', marginTop: -24, position: 'relative', zIndex: 10 }}>
+        <div style={{ padding: '0 10px', marginTop: -26, position: 'relative', zIndex: 10 }}>
           <div
             style={{
               background: isDark ? '#1E293B' : '#FFFFFF',
@@ -415,8 +418,8 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── 4. QUICK STATS ROW ── */}
-      <div style={{ padding: '0 16px', marginTop: 24 }}>
+      {/* ── 4. QUICK STATS ROW (Generous Spacing) ── */}
+      <div style={{ padding: '0 16px', marginTop: 32 }}>
         <div
           style={{
             background: isDark ? '#141C2E' : '#FFFFFF',
@@ -541,11 +544,14 @@ export default function HomePage() {
       </div>
 
       {/* ── 5. RECOMMENDED FOR YOUR FAMILY ── */}
-      <div style={{ padding: '0 16px', marginTop: 28 }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-          <h2 style={{ fontSize: 18, fontWeight: 800, margin: 0, color: isDark ? '#F8FAFC' : '#121826', letterSpacing: '-0.3px' }}>
-            Recommended for your family
-          </h2>
+      <div style={{ padding: '0 16px', marginTop: 32 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+          <div style={{ borderLeft: '4px solid #2F6B1F', paddingLeft: 10 }}>
+            <h2 style={{ fontSize: 18, fontWeight: 800, margin: 0, color: isDark ? '#F8FAFC' : '#121826', letterSpacing: '-0.3px' }}>
+              Recommended for your family
+            </h2>
+          </div>
+
           <button
             onClick={() => navigate('/recipes')}
             style={{
@@ -594,14 +600,30 @@ export default function HomePage() {
                   flexShrink: 0,
                   display: 'flex',
                   flexDirection: 'column',
+                  transition: 'transform 0.25s ease, box-shadow 0.25s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-3px)'
+                  const img = e.currentTarget.querySelector('img')
+                  if (img) img.style.transform = 'scale(1.06)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)'
+                  const img = e.currentTarget.querySelector('img')
+                  if (img) img.style.transform = 'scale(1)'
                 }}
               >
                 {/* Photo Top */}
-                <div style={{ position: 'relative', width: '100%', height: 135 }}>
+                <div style={{ position: 'relative', width: '100%', height: 135, overflow: 'hidden' }}>
                   <img
                     src={recipe.imageUrl}
                     alt={recipe.name}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      transition: 'transform 0.35s ease',
+                    }}
                   />
                   <button
                     onClick={(e) => {
@@ -669,8 +691,8 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── 6. YOUR FAMILY AT A GLANCE ── */}
-      <div style={{ padding: '0 16px', marginTop: 28 }}>
+      {/* ── 6. YOUR FAMILY AT A GLANCE (DYNAMIC STATE FROM FamilyContext) ── */}
+      <div style={{ padding: '0 16px', marginTop: 32 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
           <h3 style={{ fontSize: 18, fontWeight: 800, margin: 0, color: isDark ? '#F8FAFC' : '#121826', letterSpacing: '-0.3px' }}>
             Your family at a glance
@@ -694,75 +716,152 @@ export default function HomePage() {
           </button>
         </div>
 
-        {/* 4 Member Grid */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: 10,
-          }}
-        >
-          {FAMILY_MEMBERS.map((member) => (
+        {/* Dynamic Family Members Grid from useFamily() Context */}
+        {memberList.length === 0 ? (
+          /* Empty State if no members present */
+          <div
+            onClick={() => navigate('/profile')}
+            style={{
+              background: isDark ? '#141C2E' : '#FFFFFF',
+              borderRadius: 24,
+              padding: '24px 16px',
+              textAlign: 'center',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
+              border: isDark ? '1px dashed #334155' : '1px dashed #CFE8A9',
+              cursor: 'pointer',
+            }}
+          >
             <div
-              key={member.id}
-              onClick={() => navigate('/profile')}
               style={{
-                background: isDark ? '#141C2E' : '#FFFFFF',
-                borderRadius: 24,
-                padding: '14px 6px 14px 6px',
-                boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
-                border: isDark ? '1px solid #24324A' : '1px solid #F4F5EF',
-                textAlign: 'center',
-                cursor: 'pointer',
+                width: 48,
+                height: 48,
+                borderRadius: '50%',
+                background: '#CFE8A9',
+                color: '#1E4D18',
+                fontSize: 24,
+                fontWeight: 700,
                 display: 'flex',
-                flexDirection: 'column',
                 alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 10px',
               }}
             >
-              {/* Avatar Illustration */}
+              +
+            </div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: isDark ? '#F8FAFC' : '#121826' }}>
+              Add Family Member
+            </div>
+            <div style={{ fontSize: 12, color: '#5B6472', marginTop: 4 }}>
+              Set up profiles to customize meals and calorie goals
+            </div>
+          </div>
+        ) : (
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: `repeat(${Math.min(memberList.length + (memberList.length < 4 ? 1 : 0), 4)}, 1fr)`,
+              gap: 10,
+            }}
+          >
+            {memberList.map((member) => {
+              // Calculate or retrieve daily calorie target
+              const targetKcal = member.dailyKcalTarget
+                ? `${member.dailyKcalTarget.toLocaleString()} kcal`
+                : member.weightKg
+                ? `${Math.round(member.weightKg * 28).toLocaleString()} kcal`
+                : '1,980 kcal'
+
+              return (
+                <div
+                  key={member.id}
+                  onClick={() => {
+                    setActiveMember(member)
+                    navigate('/profile')
+                  }}
+                  style={{
+                    background: isDark ? '#141C2E' : '#FFFFFF',
+                    borderRadius: 24,
+                    padding: '14px 6px 14px 6px',
+                    boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
+                    border: isDark ? '1px solid #24324A' : '1px solid #F4F5EF',
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    transition: 'transform 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.transform = 'translateY(-2px)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
+                >
+                  {/* Demographic Avatar Illustration */}
+                  <div style={{ marginBottom: 8 }}>
+                    <MemberAvatar member={member} size={58} />
+                  </div>
+
+                  {/* Name */}
+                  <div style={{ fontSize: 13, fontWeight: 700, color: isDark ? '#F8FAFC' : '#121826', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>
+                    {member.name}
+                  </div>
+
+                  {/* Kcal Target */}
+                  <div style={{ fontSize: 11, fontWeight: 500, color: '#5B6472', marginTop: 2 }}>
+                    {targetKcal}
+                  </div>
+
+                  {/* Status Indicator */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 6 }}>
+                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#34A853' }} />
+                    <span style={{ fontSize: 10, fontWeight: 700, color: '#2F6B1F' }}>
+                      On track
+                    </span>
+                  </div>
+                </div>
+              )
+            })}
+
+            {/* If fewer than 4 members exist, render + Add card */}
+            {memberList.length < 4 && (
               <div
+                onClick={() => navigate('/profile')}
                 style={{
-                  width: 58,
-                  height: 58,
-                  borderRadius: '50%',
-                  background: '#F4F5EF',
-                  overflow: 'hidden',
-                  marginBottom: 8,
+                  background: isDark ? '#141C2E' : '#FFFFFF',
+                  borderRadius: 24,
+                  padding: '14px 6px 14px 6px',
+                  boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
+                  border: isDark ? '1px dashed #334155' : '1.5px dashed #CFE8A9',
+                  textAlign: 'center',
+                  cursor: 'pointer',
                   display: 'flex',
+                  flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
               >
-                <img
-                  src={member.avatar}
-                  alt={member.name}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  onError={(e) => {
-                    e.target.style.display = 'none'
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: '50%',
+                    background: '#CFE8A9',
+                    color: '#1E4D18',
+                    fontSize: 20,
+                    fontWeight: 700,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: 6,
                   }}
-                />
+                >
+                  +
+                </div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#2F6B1F' }}>
+                  Add Member
+                </div>
               </div>
-
-              {/* Name */}
-              <div style={{ fontSize: 13, fontWeight: 700, color: isDark ? '#F8FAFC' : '#121826' }}>
-                {member.name}
-              </div>
-
-              {/* Kcal */}
-              <div style={{ fontSize: 11, fontWeight: 500, color: '#5B6472', marginTop: 2 }}>
-                {member.kcal}
-              </div>
-
-              {/* Status */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 6 }}>
-                <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#34A853' }} />
-                <span style={{ fontSize: 10, fontWeight: 700, color: '#2F6B1F' }}>
-                  {member.status}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* ── UNTOUCHED FIXED BOTTOM NAV DOCK ── */}

@@ -7,51 +7,63 @@ const FamilyContext = createContext(null)
 const DEFAULT_MEMBERS = [
   {
     id: 1,
-    name: 'Sarah',
+    name: 'Hashir',
     role: 'PARENT',
-    gender: 'FEMALE',
-    age: 34,
-    heightCm: 165,
-    weightKg: 62,
+    gender: 'MALE',
+    age: 24,
+    heightCm: 175,
+    weightKg: 70,
+    dailyKcalTarget: 1980,
     activityLevel: 'MODERATELY_ACTIVE',
     healthConditions: [],
-    allergies: ['Milk/Dairy'],
-    likes: ['Salmon', 'Quinoa', 'Avocado', 'Berries'],
-    dislikes: ['Red Meat'],
-    fitnessGoal: 'WEIGHT_LOSS',
+    allergies: [],
+    fitnessGoal: 'MAINTAIN_WEIGHT',
     dietPreference: 'NO_PREFERENCE',
   },
   {
     id: 2,
-    name: 'Alex',
+    name: 'Mom',
+    role: 'PARENT',
+    gender: 'FEMALE',
+    age: 48,
+    heightCm: 160,
+    weightKg: 62,
+    dailyKcalTarget: 1760,
+    activityLevel: 'MODERATELY_ACTIVE',
+    healthConditions: [],
+    allergies: ['Milk/Dairy'],
+    fitnessGoal: 'WEIGHT_LOSS',
+    dietPreference: 'VEGETARIAN',
+  },
+  {
+    id: 3,
+    name: 'Dad',
     role: 'PARENT',
     gender: 'MALE',
-    age: 36,
-    heightCm: 180,
+    age: 52,
+    heightCm: 172,
     weightKg: 78,
+    dailyKcalTarget: 2240,
     activityLevel: 'VERY_ACTIVE',
     healthConditions: [],
     allergies: [],
-    likes: ['Chicken Breast', 'Eggs', 'Oats', 'Bananas'],
-    dislikes: ['Tofu'],
     fitnessGoal: 'MUSCLE_GAIN',
     dietPreference: 'HIGH_PROTEIN',
   },
   {
-    id: 3,
-    name: 'Maya',
+    id: 4,
+    name: 'Anya',
     role: 'CHILD',
     gender: 'FEMALE',
     age: 8,
     heightCm: 128,
     weightKg: 26,
+    dailyKcalTarget: 1480,
     activityLevel: 'MODERATELY_ACTIVE',
-    healthConditions: ['Diabetes'],
+    healthConditions: [],
     allergies: ['Peanuts/Tree Nuts'],
-    likes: ['Pancakes', 'Berries', 'Greek Yogurt'],
-    dislikes: ['Broccoli'],
-    fitnessGoal: 'MANAGE_CONDITION',
-    dietPreference: 'LOW_GI',
+    fitnessGoal: 'MAINTAIN_WEIGHT',
+    dietPreference: 'NO_PREFERENCE',
   },
 ]
 
@@ -59,8 +71,8 @@ export function FamilyProvider({ children }) {
   const { user } = useAuth()
   const [family, setFamily] = useState(() => {
     const saved = localStorage.getItem('familyfit_members')
-    const members = saved ? JSON.parse(saved) : []
-    return { id: 1, name: 'My Family', members }
+    const members = saved ? JSON.parse(saved) : DEFAULT_MEMBERS
+    return { id: 1, name: 'Hashir Family', members }
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
