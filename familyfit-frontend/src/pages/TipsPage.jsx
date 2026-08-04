@@ -222,19 +222,71 @@ export default function TipsPage() {
 
   return (
     <div
+      className="page-responsive-container"
       style={{
-        maxWidth: 480,
-        margin: '0 auto',
-        minHeight: '100vh',
         background: isDark ? '#0A0F1D' : '#FAFAF7',
-        paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 0px))',
         fontFamily: "'Plus Jakarta Sans', sans-serif",
         color: isDark ? '#F8FAFC' : '#121826',
         position: 'relative',
-        boxSizing: 'border-box',
         WebkitFontSmoothing: 'antialiased',
       }}
     >
+      {/* Desktop-Only Header (bell + profile right-aligned) */}
+      <div className="desktop-only-header" style={{ display: 'none', justifyContent: 'flex-end', alignItems: 'center', gap: 16, marginBottom: 20 }}>
+        <button
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: '50%',
+            background: isDark ? '#1E293B' : '#FFFFFF',
+            border: `1px solid ${isDark ? '#334155' : '#E8E8E3'}`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            position: 'relative',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+          }}
+          onClick={() => alert('No new notifications')}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={isDark ? '#94A3B8' : '#121826'} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          <span
+            style={{
+              position: 'absolute',
+              top: 10,
+              right: 10,
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              background: '#F97316',
+              border: '1.5px solid #FFFFFF',
+            }}
+          />
+        </button>
+        <div
+          onClick={() => navigate('/profile')}
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: '50%',
+            background: '#1E4D18',
+            color: 'white',
+            fontWeight: 700,
+            fontSize: 18,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            boxShadow: '0 4px 12px rgba(30,77,24,0.25)',
+          }}
+        >
+          {familyName[0] ? familyName[0].toUpperCase() : 'H'}
+        </div>
+      </div>
+
       <div style={{ padding: '16px 16px 0 16px' }}>
 
         {/* ── 1. TOP BANNER / HEADER CARD ("Tips & Suggestions") ── */}
@@ -539,7 +591,7 @@ export default function TipsPage() {
         )}
 
         {/* ── 4. MEMBER SUGGESTIONS LIST ── */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <div className="tips-responsive-grid" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
           {(selectedMemberId === 'ALL' ? members : [activeMember]).map((member) => {
             if (!member) return null
             const memberTips = getPersonalizedMemberTips(member)
@@ -648,6 +700,17 @@ export default function TipsPage() {
 
       {/* ── UNTOUCHED BOTTOM NAVIGATION BAR ── */}
       <BottomNav />
+
+      {/* Responsive styles */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media (min-width: 1024px) {
+          .tips-responsive-grid {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 28px !important;
+          }
+        }
+      `}} />
     </div>
   )
 }

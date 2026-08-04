@@ -1153,3 +1153,90 @@ input, textarea, select {
   background: #fde8e8;
   color: var(--color-error);
 }
+
+/* ─── Responsive Desktop Layouts (min-width: 1024px) ────────── */
+@media (min-width: 1024px) {
+  /* Global desktop main container layout */
+  .desktop-layout-shell {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--color-bg);
+  }
+
+  .desktop-sidebar {
+    width: 240px;
+    background: var(--color-surface);
+    border-right: 1px solid var(--color-divider);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-470px); /* Center aligning desktop shell width ~1440px */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 24px 20px;
+    box-sizing: border-box;
+    z-index: 100;
+  }
+
+  /* fallback if page width is not centered */
+  @media (max-width: 1480px) {
+    .desktop-sidebar {
+      left: 0;
+      transform: none;
+    }
+  }
+
+  .desktop-main-content {
+    margin-left: 240px;
+    flex: 1;
+    width: calc(100% - 240px);
+    max-width: 1200px;
+    padding: 32px 48px;
+    box-sizing: border-box;
+    position: relative;
+  }
+
+  /* Layout grids */
+  .desktop-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+  }
+
+  .desktop-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .desktop-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+}
+
+.page-responsive-container {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+@media (min-width: 1024px) {
+  .page-responsive-container {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  
+  /* Hide mobile-only header logo and right bell on desktop since it is in sidebar */
+  .mobile-only-header {
+    display: none !important;
+  }
+}
+
+

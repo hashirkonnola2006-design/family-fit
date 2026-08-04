@@ -133,19 +133,70 @@ export default function RecipesPage() {
 
   return (
     <div
+      className="page-responsive-container"
       style={{
-        maxWidth: 480,
-        margin: '0 auto',
-        minHeight: '100vh',
         background: isDark ? '#0a0f1d' : '#fcfaf5',
-        paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 0px))',
         fontFamily: "'Inter', -apple-system, sans-serif",
         color: isDark ? '#f8fafc' : '#111827',
         position: 'relative',
-        boxShadow: '0 0 40px rgba(0,0,0,0.06)',
-        boxSizing: 'border-box',
       }}
     >
+      {/* Desktop-Only Header (bell + profile right-aligned) */}
+      <div className="desktop-only-header" style={{ display: 'none', justifyContent: 'flex-end', alignItems: 'center', gap: 16, marginBottom: 20 }}>
+        <button
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: '50%',
+            background: isDark ? '#1E293B' : '#FFFFFF',
+            border: `1px solid ${isDark ? '#334155' : '#E8E8E3'}`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            position: 'relative',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+          }}
+          onClick={() => alert('No new notifications')}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={isDark ? '#94A3B8' : '#121826'} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          <span
+            style={{
+              position: 'absolute',
+              top: 10,
+              right: 10,
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              background: '#F97316',
+              border: '1.5px solid #FFFFFF',
+            }}
+          />
+        </button>
+        <div
+          onClick={() => navigate('/profile')}
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: '50%',
+            background: '#1E4D18',
+            color: 'white',
+            fontWeight: 700,
+            fontSize: 18,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            boxShadow: '0 4px 12px rgba(30,77,24,0.25)',
+          }}
+        >
+          {initial}
+        </div>
+      </div>
+
       {/* Toast Banner */}
       {toast && (
         <div
@@ -171,17 +222,19 @@ export default function RecipesPage() {
 
       {/* ── HERO BANNER HEADER ── */}
       <div
+        className="recipes-hero"
         style={{
           position: 'relative',
           background: isDark
             ? 'linear-gradient(135deg, #0f172a 0%, #0a0f1d 100%)'
             : 'linear-gradient(135deg, #f7f4ed 0%, #ebe4d3 100%)',
-          padding: 'max(20px, env(safe-area-inset-top, 20px)) 20px 24px 20px',
+          padding: '20px 20px 24px 20px',
           overflow: 'hidden',
         }}
       >
-        {/* Kerala Food Image positioned at top right */}
+        {/* Kerala Food Image positioned at top right (Mobile Only background style) */}
         <div
+          className="mobile-only-header"
           style={{
             position: 'absolute',
             top: -10,
@@ -216,8 +269,9 @@ export default function RecipesPage() {
           />
         </div>
 
-        {/* Header Top Bar */}
+        {/* Header Top Bar (Mobile Only) */}
         <div
+          className="mobile-only-header"
           style={{
             position: 'relative',
             zIndex: 2,
@@ -281,96 +335,110 @@ export default function RecipesPage() {
           </div>
         </div>
 
-        {/* Main Hero Header Title */}
-        <div style={{ position: 'relative', zIndex: 2, maxWidth: 270, marginBottom: 22 }}>
-          <h1
-            style={{
-              fontFamily: "'Playfair Display', 'DM Serif Display', Georgia, serif",
-              fontSize: 34,
-              fontWeight: 900,
-              color: isDark ? '#f8fafc' : '#1b3815',
-              margin: '0 0 6px 0',
-              lineHeight: 1.12,
-              letterSpacing: '-0.4px',
-            }}
-          >
-            Kerala Recipes (500)
-          </h1>
-          <p
-            style={{
-              fontSize: 13.5,
-              color: isDark ? '#94a3b8' : '#405837',
-              fontWeight: 600,
-              margin: 0,
-              lineHeight: 1.35,
-            }}
-          >
-            Authentic South Indian & Malabar meal plans.
-          </p>
-        </div>
+        <div className="recipes-hero-grid" style={{ width: '100%' }}>
+          <div className="recipes-hero-left">
+            {/* Main Hero Header Title */}
+            <div style={{ position: 'relative', zIndex: 2, maxWidth: 270, marginBottom: 22 }}>
+              <h1
+                style={{
+                  fontFamily: "'Playfair Display', 'DM Serif Display', Georgia, serif",
+                  fontSize: 34,
+                  fontWeight: 900,
+                  color: isDark ? '#f8fafc' : '#1b3815',
+                  margin: '0 0 6px 0',
+                  lineHeight: 1.12,
+                  letterSpacing: '-0.4px',
+                }}
+              >
+                Kerala Recipes
+              </h1>
+              <p
+                style={{
+                  fontSize: 13.5,
+                  color: isDark ? '#94a3b8' : '#405837',
+                  fontWeight: 600,
+                  margin: 0,
+                  lineHeight: 1.35,
+                }}
+              >
+                Authentic South Indian & Malabar meal plans.
+              </p>
+            </div>
 
-        {/* Search Bar Input Container */}
-        <div
-          style={{
-            position: 'relative',
-            zIndex: 10,
-            background: isDark ? '#1e293b' : '#ffffff',
-            borderRadius: 30,
-            padding: '6px 6px 6px 18px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
-            boxShadow: isDark ? '0 4px 20px rgba(0,0,0,0.4)' : '0 6px 20px rgba(0,0,0,0.06)',
-            border: isDark ? '1px solid #334155' : '1px solid #f0eee8',
-          }}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2.2">
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-          <input
-            placeholder="Search recipes, meen pollichathu, avial, appam..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={{
-              border: 'none',
-              outline: 'none',
-              width: '100%',
-              fontSize: 13.5,
-              color: isDark ? '#f8fafc' : '#374151',
-              background: 'transparent',
-              fontFamily: 'inherit',
-            }}
-          />
+            {/* Search Bar Input Container */}
+            <div
+              className="recipes-search-container"
+              style={{
+                position: 'relative',
+                zIndex: 10,
+                background: isDark ? '#1e293b' : '#ffffff',
+                borderRadius: 30,
+                padding: '6px 6px 6px 18px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                boxShadow: isDark ? '0 4px 20px rgba(0,0,0,0.4)' : '0 6px 20px rgba(0,0,0,0.06)',
+                border: isDark ? '1px solid #334155' : '1px solid #f0eee8',
+              }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2.2">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              <input
+                placeholder="Search recipes, meen pollichathu, avial, appam..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                style={{
+                  border: 'none',
+                  outline: 'none',
+                  width: '100%',
+                  fontSize: 13.5,
+                  color: isDark ? '#f8fafc' : '#374151',
+                  background: 'transparent',
+                  fontFamily: 'inherit',
+                }}
+              />
 
-          {/* Right Filter Button */}
-          <button
-            onClick={() => {
-              setShowFilterModal(!showFilterModal)
-              showToastMsg('Filter options opened! 🎛️')
-            }}
-            aria-label="Filter"
-            style={{
-              width: 38,
-              height: 38,
-              borderRadius: '50%',
-              background: isDark ? 'rgba(52,211,153,0.18)' : '#e4edd4',
-              border: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              flexShrink: 0,
-              transition: 'transform 0.15s ease',
-            }}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={isDark ? '#34d399' : '#25451c'} strokeWidth="2.2" strokeLinecap="round">
-              <line x1="4" y1="7" x2="20" y2="7" />
-              <line x1="4" y1="17" x2="20" y2="17" />
-              <circle cx="9" cy="7" r="2.5" fill={isDark ? '#0f172a' : '#e4edd4'} />
-              <circle cx="15" cy="17" r="2.5" fill={isDark ? '#0f172a' : '#e4edd4'} />
-            </svg>
-          </button>
+              {/* Right Filter Button */}
+              <button
+                onClick={() => {
+                  setShowFilterModal(!showFilterModal)
+                  showToastMsg('Filter options opened! 🎛️')
+                }}
+                aria-label="Filter"
+                style={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: '50%',
+                  background: isDark ? 'rgba(52,211,153,0.18)' : '#e4edd4',
+                  border: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  flexShrink: 0,
+                  transition: 'transform 0.15s ease',
+                }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={isDark ? '#34d399' : '#25451c'} strokeWidth="2.2" strokeLinecap="round">
+                  <line x1="4" y1="7" x2="20" y2="7" />
+                  <line x1="4" y1="17" x2="20" y2="17" />
+                  <circle cx="9" cy="7" r="2.5" fill={isDark ? '#0f172a' : '#e4edd4'} />
+                  <circle cx="15" cy="17" r="2.5" fill={isDark ? '#0f172a' : '#e4edd4'} />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Hero Right Column (Desktop Only) */}
+          <div className="recipes-hero-right" style={{ display: 'none' }}>
+            <img
+              src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800&q=80"
+              alt="Kerala curry desktop"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+          </div>
         </div>
       </div>
 
@@ -503,7 +571,7 @@ export default function RecipesPage() {
             </div>
           ) : (
             <>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+              <div className="recipes-responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                 {filteredRecipes.slice(0, visibleCount).map((r) => (
                   <RecipeCard
                     key={r.id}
@@ -540,6 +608,43 @@ export default function RecipesPage() {
 
       {/* Bottom Navigation */}
       <BottomNav />
+
+      {/* Responsive styles */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media (min-width: 1024px) {
+          .recipes-hero {
+            background: transparent !important;
+            overflow: visible !important;
+            padding: 0 !important;
+          }
+          .recipes-hero-grid {
+            display: flex !important;
+            align-items: center;
+            gap: 32px;
+            justify-content: space-between;
+            width: 100%;
+          }
+          .recipes-hero-left {
+            width: 45% !important;
+            max-width: 45% !important;
+          }
+          .recipes-hero-right {
+            display: block !important;
+            width: 53% !important;
+            height: 280px !important;
+            border-radius: 32px !important;
+            overflow: hidden !important;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+          }
+          .recipes-search-container {
+            margin-top: 20px !important;
+          }
+          .recipes-responsive-grid {
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 24px !important;
+          }
+        }
+      `}} />
     </div>
   )
 }

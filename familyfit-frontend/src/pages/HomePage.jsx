@@ -213,38 +213,35 @@ export default function HomePage() {
 
   return (
     <div
+      className="page-responsive-container"
       style={{
-        maxWidth: 480,
-        margin: '0 auto',
-        minHeight: '100vh',
         background: isDark ? '#0A0F1D' : '#FAFAF7',
-        paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 0px))',
         fontFamily: "'Plus Jakarta Sans', sans-serif",
         color: isDark ? '#F8FAFC' : '#121826',
         position: 'relative',
-        boxSizing: 'border-box',
         WebkitFontSmoothing: 'antialiased',
       }}
     >
-      {/* ── 1. HERO SECTION (Full Image Background) ── */}
+      {/* ── 1. HERO SECTION ── */}
       <div
+        className="homepage-hero"
         style={{
           position: 'relative',
           background: isDark ? '#141C2E' : '#FAFAF7',
-          padding: '16px 16px 32px 16px',
+          padding: '16px 16px 28px 16px',
           borderRadius: '0 0 36px 36px',
           boxShadow: isDark ? '0 20px 40px rgba(0,0,0,0.4)' : '0 20px 40px rgba(0,0,0,0.06)',
           backgroundImage: 'url("/hero_biryani.jpg")',
           backgroundSize: 'cover',
-          backgroundPosition: 'right 30% center', // Focus on right portion while keeping left white space
+          backgroundPosition: 'right 30% center',
           minHeight: 380,
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-start',
         }}
       >
-        {/* Top Bar Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 3 }}>
+        {/* Top Bar Header (Mobile Only) */}
+        <div className="mobile-only-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 3 }}>
           {/* Logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <LeafIcon />
@@ -308,133 +305,191 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Hero Left Content Text & Action Button */}
-        <div style={{ zIndex: 2, marginTop: 38, maxWidth: '52%' }}>
-          {/* Greeting Row */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-            <SmallLeafIcon />
-            <span style={{ fontSize: 15, fontWeight: 700, color: isDark ? '#F8FAFC' : '#121826' }}>
-              {greetingLine}
-            </span>
-          </div>
-
-          {/* Family Name Headline */}
-          <div style={{ position: 'relative', marginBottom: 8 }}>
-            <h1
-              style={{
-                fontSize: 32,
-                fontWeight: 800,
-                color: '#1E4D18',
-                lineHeight: 1.15,
-                margin: 0,
-                letterSpacing: '-0.5px',
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
-              }}
-            >
-              {displayName.toLowerCase()} family!
-            </h1>
-
-            {/* Thin Orange Underline */}
-            <div
-              style={{
-                width: 80,
-                height: 3.5,
-                background: '#F97316',
-                borderRadius: 2,
-                marginTop: 4,
-              }}
-            />
-          </div>
-
-          {/* Subtext */}
-          <p
-            style={{
-              fontSize: 13,
-              color: isDark ? '#CBD5E1' : '#5B6472',
-              fontWeight: 500,
-              lineHeight: 1.4,
-              margin: '0 0 14px 0',
-            }}
-          >
-            Wholesome Kerala meals,<br />made for your family.
-          </p>
-
-          {/* Pill-Shaped Button */}
+        {/* Desktop-Only Header (bell + profile right-aligned) */}
+        <div className="desktop-only-header" style={{ display: 'none', justifyContent: 'flex-end', alignItems: 'center', gap: 16, marginBottom: 20 }}>
           <button
-            onClick={() => navigate('/recipes')}
-            style={{
-              background: '#1E4D18',
-              color: '#FFFFFF',
-              border: 'none',
-              borderRadius: 999,
-              padding: '8px 16px',
-              fontSize: 12.5,
-              fontWeight: 700,
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              cursor: 'pointer',
-              boxShadow: '0 4px 10px rgba(30,77,24,0.2)',
-              transition: 'transform 0.2s ease',
-            }}
-          >
-            <WhiteLeafIcon />
-            <span>Let's eat healthy</span>
-          </button>
-        </div>
-      </div>
-
-      {/* ── 2. SEARCH BAR (Overlapping Hero Bottom) ── */}
-      <div style={{ padding: '0 16px', marginTop: -24, position: 'relative', zIndex: 10 }}>
-        <div
-          style={{
-            background: isDark ? '#1E293B' : '#FFFFFF',
-            borderRadius: 28,
-            padding: '8px 8px 8px 20px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
-            border: isDark ? '1px solid #334155' : '1px solid #F4F5EF',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1 }}>
-            <SearchIcon />
-            <input
-              placeholder="Search meals, plans, recipes..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              style={{
-                border: 'none',
-                outline: 'none',
-                width: '100%',
-                fontSize: 14,
-                fontWeight: 500,
-                color: isDark ? '#F8FAFC' : '#121826',
-                background: 'transparent',
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
-              }}
-            />
-          </div>
-
-          <button
-            onClick={() => navigate('/recipes')}
             style={{
               width: 44,
               height: 44,
               borderRadius: '50%',
-              background: '#2F6B1F',
-              border: 'none',
+              background: isDark ? '#1E293B' : '#FFFFFF',
+              border: `1px solid ${isDark ? '#334155' : '#E8E8E3'}`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
-              flexShrink: 0,
-              boxShadow: '0 4px 12px rgba(47,107,31,0.25)',
+              position: 'relative',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+            }}
+            onClick={() => alert('No new notifications')}
+          >
+            <BellIcon />
+            <span
+              style={{
+                position: 'absolute',
+                top: 10,
+                right: 10,
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                background: '#F97316',
+                border: '1.5px solid #FFFFFF',
+              }}
+            />
+          </button>
+          <div
+            onClick={() => navigate('/profile')}
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: '50%',
+              background: '#1E4D18',
+              color: 'white',
+              fontWeight: 700,
+              fontSize: 18,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              boxShadow: '0 4px 12px rgba(30,77,24,0.25)',
             }}
           >
-            <FilterIconWhite />
-          </button>
+            {initial}
+          </div>
+        </div>
+
+        <div className="homepage-hero-grid" style={{ width: '100%' }}>
+          {/* Hero Left Content Text & Action Button */}
+          <div className="homepage-hero-left" style={{ zIndex: 2, marginTop: 38, maxWidth: '52%' }}>
+            {/* Greeting Row */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+              <SmallLeafIcon />
+              <span style={{ fontSize: 15, fontWeight: 700, color: isDark ? '#F8FAFC' : '#121826' }}>
+                {greetingLine}
+              </span>
+            </div>
+
+            {/* Family Name Headline */}
+            <div style={{ position: 'relative', marginBottom: 8 }}>
+              <h1
+                style={{
+                  fontSize: 32,
+                  fontWeight: 800,
+                  color: '#1E4D18',
+                  lineHeight: 1.15,
+                  margin: 0,
+                  letterSpacing: '-0.5px',
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                }}
+              >
+                {displayName.toLowerCase()} family!
+              </h1>
+
+              {/* Thin Orange Underline */}
+              <div
+                style={{
+                  width: 80,
+                  height: 3.5,
+                  background: '#F97316',
+                  borderRadius: 2,
+                  marginTop: 4,
+                }}
+              />
+            </div>
+
+            {/* Subtext */}
+            <p
+              style={{
+                fontSize: 13,
+                color: isDark ? '#CBD5E1' : '#5B6472',
+                fontWeight: 500,
+                lineHeight: 1.4,
+                margin: '0 0 14px 0',
+              }}
+            >
+              Wholesome Kerala meals,<br />made for your family.
+            </p>
+
+            {/* Pill-Shaped Button */}
+            <button
+              onClick={() => navigate('/recipes')}
+              style={{
+                background: '#1E4D18',
+                color: '#FFFFFF',
+                border: 'none',
+                borderRadius: 999,
+                padding: '8px 16px',
+                fontSize: 12.5,
+                fontWeight: 700,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                cursor: 'pointer',
+                boxShadow: '0 4px 10px rgba(30,77,24,0.2)',
+                transition: 'transform 0.2s ease',
+              }}
+            >
+              <WhiteLeafIcon />
+              <span>Let's eat healthy</span>
+            </button>
+
+            {/* Responsive Search Bar Container */}
+            <div className="homepage-search-container" style={{ position: 'absolute', bottom: -22, left: 16, right: 16, zIndex: 10 }}>
+              <div
+                style={{
+                  background: isDark ? '#1E293B' : '#FFFFFF',
+                  borderRadius: 28,
+                  padding: '8px 8px 8px 20px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
+                  border: isDark ? '1px solid #334155' : '1px solid #F4F5EF',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1 }}>
+                  <SearchIcon />
+                  <input
+                    placeholder="Search meals, plans, recipes..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    style={{
+                      border: 'none',
+                      outline: 'none',
+                      width: '100%',
+                      fontSize: 14,
+                      fontWeight: 500,
+                      color: isDark ? '#F8FAFC' : '#121826',
+                      background: 'transparent',
+                      fontFamily: "'Plus Jakarta Sans', sans-serif",
+                    }}
+                  />
+                </div>
+
+                <button
+                  onClick={() => navigate('/recipes')}
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: '50%',
+                    background: '#2F6B1F',
+                    border: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    flexShrink: 0,
+                    boxShadow: '0 4px 12px rgba(47,107,31,0.25)',
+                  }}
+                >
+                  <FilterIconWhite />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Hero Right Column (Desktop Only) */}
+          <div className="homepage-hero-right" style={{ display: 'none' }}></div>
         </div>
       </div>
 
@@ -593,6 +648,7 @@ export default function HomePage() {
 
         {/* Horizontal Recipe Cards */}
         <div
+          className="recommended-grid"
           style={{
             display: 'flex',
             gap: 14,
@@ -609,6 +665,7 @@ export default function HomePage() {
               <div
                 key={recipe.id}
                 onClick={() => navigate('/recipes')}
+                className="recommended-card"
                 style={{
                   width: 210,
                   background: isDark ? '#141C2E' : '#FFFFFF',
@@ -865,6 +922,60 @@ export default function HomePage() {
 
       {/* ── UNTOUCHED FIXED BOTTOM NAV DOCK ── */}
       <BottomNav />
+
+      {/* Responsive overrides block */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media (min-width: 1024px) {
+          .homepage-hero {
+            background-image: none !important;
+            min-height: auto !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+            background: transparent !important;
+          }
+          .homepage-hero-grid {
+            display: flex !important;
+            align-items: center;
+            gap: 32px;
+            justify-content: space-between;
+          }
+          .homepage-hero-left {
+            width: 45% !important;
+            max-width: 45% !important;
+            padding: 0 !important;
+            margin-top: 0 !important;
+            position: relative;
+          }
+          .homepage-hero-right {
+            display: block !important;
+            width: 53% !important;
+            height: 380px !important;
+            background-image: url("/hero_biryani.jpg");
+            background-size: cover;
+            background-position: center;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+          }
+          .homepage-search-container {
+            position: static !important;
+            width: 100% !important;
+            margin-top: 24px !important;
+            left: auto !important;
+            right: auto !important;
+            padding: 0 !important;
+          }
+          .recommended-grid {
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 24px !important;
+            overflow: visible !important;
+          }
+          .recommended-card {
+            width: 100% !important;
+          }
+        }
+      `}} />
     </div>
   )
 }
+

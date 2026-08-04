@@ -276,12 +276,9 @@ export default function RecipeDetailPage() {
 
   return (
     <div
+      className="page-responsive-container"
       style={{
-        maxWidth: 480,
-        margin: '0 auto',
-        minHeight: '100vh',
-        background: isDark ? '#0a0f1d' : '#fcfaf7',
-        paddingBottom: 110,
+        background: isDark ? '#0a0f1d' : '#fcfaf5',
         fontFamily: "'Inter', sans-serif",
         color: isDark ? '#f8fafc' : '#1a1a1a',
         position: 'relative',
@@ -309,96 +306,99 @@ export default function RecipeDetailPage() {
         </div>
       )}
 
-      {/* 1. HERO IMAGE WITH GRADIENT & OVERLAY */}
-      <div style={{ position: 'relative', width: '100%', height: 320, overflow: 'hidden' }}>
-        <img
-          src={recipe.imageUrl || 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&q=80'}
-          alt={recipe.name}
-          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.85) 100%)',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-            padding: 20,
-          }}
-        >
-          {/* Top Bar: Back Arrow & Heart Button */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 10 }}>
-            <button
-              onClick={() => navigate(-1)}
+      <div className="recipe-detail-split">
+        {/* 1. HERO IMAGE WITH GRADIENT & OVERLAY (Left Column on Desktop) */}
+        <div className="recipe-detail-left">
+          <div style={{ position: 'relative', width: '100%', height: '100%', minHeight: 320, overflow: 'hidden' }}>
+            <img
+              src={recipe.imageUrl || 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&q=80'}
+              alt={recipe.name}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+            <div
               style={{
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                background: 'rgba(255,255,255,0.9)',
-                border: 'none',
+                position: 'absolute',
+                inset: 0,
+                background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.85) 100%)',
                 display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                padding: 20,
               }}
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="2.5">
-                <line x1="19" y1="12" x2="5" y2="12" />
-                <polyline points="12 19 5 12 12 5" />
-              </svg>
-            </button>
+              {/* Top Bar: Back Arrow & Heart Button */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 10 }}>
+                <button
+                  onClick={() => navigate(-1)}
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: '50%',
+                    background: 'rgba(255,255,255,0.9)',
+                    border: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                  }}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="2.5">
+                    <line x1="19" y1="12" x2="5" y2="12" />
+                    <polyline points="12 19 5 12 12 5" />
+                  </svg>
+                </button>
 
-            <button
-              onClick={handleToggleSaved}
-              aria-label={isFavorited ? 'Remove from saved' : 'Save recipe'}
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                background: 'rgba(255,255,255,0.9)',
-                border: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-              }}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill={isFavorited ? '#ef4444' : 'none'} stroke={isFavorited ? '#ef4444' : '#111827'} strokeWidth="2.2">
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z" />
-              </svg>
-            </button>
-          </div>
+                <button
+                  onClick={handleToggleSaved}
+                  aria-label={isFavorited ? 'Remove from saved' : 'Save recipe'}
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: '50%',
+                    background: 'rgba(255,255,255,0.9)',
+                    border: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                  }}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill={isFavorited ? '#ef4444' : 'none'} stroke={isFavorited ? '#ef4444' : '#111827'} strokeWidth="2.2">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z" />
+                  </svg>
+                </button>
+              </div>
 
-          {/* Title and match badge */}
-          <div>
-            {recipe.matchBadgeText && (
-              <span
-                style={{
-                  background: '#e8f5e9',
-                  color: '#2e7d32',
-                  fontSize: 12,
-                  fontWeight: 800,
-                  padding: '4px 12px',
-                  borderRadius: 12,
-                  display: 'inline-block',
-                  marginBottom: 8,
-                }}
-              >
-                ★ {recipe.matchBadgeText}
-              </span>
-            )}
-            <h1 style={{ fontSize: 26, fontWeight: 800, color: 'white', margin: 0, lineHeight: 1.2 }}>
-              {recipe.name}
-            </h1>
+              {/* Title and match badge */}
+              <div>
+                {recipe.matchBadgeText && (
+                  <span
+                    style={{
+                      background: '#e8f5e9',
+                      color: '#2e7d32',
+                      fontSize: 12,
+                      fontWeight: 800,
+                      padding: '4px 12px',
+                      borderRadius: 12,
+                      display: 'inline-block',
+                      marginBottom: 8,
+                    }}
+                  >
+                    ★ {recipe.matchBadgeText}
+                  </span>
+                )}
+                <h1 style={{ fontSize: 26, fontWeight: 800, color: 'white', margin: 0, lineHeight: 1.2 }}>
+                  {recipe.name}
+                </h1>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Content wrapper */}
-      <div style={{ padding: '20px 20px 0 20px' }}>
+        {/* Content wrapper (Right Column on Desktop) */}
+        <div className="recipe-detail-right">
 
         {/* 2. QUICK STATS ROW */}
         <div
@@ -637,8 +637,39 @@ export default function RecipeDetailPage() {
         </div>
 
       </div>
+      </div>
 
       <BottomNav />
+
+      {/* Desktop Responsive Overrides */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media (min-width: 1024px) {
+          .recipe-detail-split {
+            display: flex !important;
+            gap: 40px;
+            align-items: flex-start;
+          }
+          .recipe-detail-left {
+            width: 42% !important;
+            position: sticky !important;
+            top: 32px;
+            height: calc(100vh - 64px) !important;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+          }
+          .recipe-detail-right {
+            width: 58% !important;
+            padding: 0 !important;
+            height: calc(100vh - 64px) !important;
+            overflow-y: auto !important;
+            scrollbar-width: none;
+          }
+          .recipe-detail-right::-webkit-scrollbar {
+            display: none;
+          }
+        }
+      `}} />
     </div>
   )
 }

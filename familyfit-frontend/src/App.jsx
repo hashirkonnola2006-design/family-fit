@@ -12,12 +12,13 @@ import ProfilePage  from './pages/ProfilePage'
 import AuthPage     from './pages/AuthPage'
 import RecipeDetailPage from './pages/RecipeDetailPage'
 import OnboardingPage   from './pages/OnboardingPage'
+import ResponsiveLayout from './components/ResponsiveLayout'
 
 /** Protected route — redirects to /auth if no JWT found */
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth()
   if (loading) return <div className="spinner" style={{ marginTop: 80 }} />
-  return user ? children : <Navigate to="/auth" replace />
+  return user ? <ResponsiveLayout>{children}</ResponsiveLayout> : <Navigate to="/auth" replace />
 }
 
 function AppRoutes() {

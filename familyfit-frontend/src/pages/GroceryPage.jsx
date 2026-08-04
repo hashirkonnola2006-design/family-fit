@@ -114,18 +114,70 @@ export default function GroceryPage() {
 
   return (
     <div
+      className="page-responsive-container"
       style={{
-        maxWidth: 480,
-        margin: '0 auto',
-        minHeight: '100vh',
         background: isDark ? '#0a0f1d' : '#fcfaf5',
-        paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 0px))',
         fontFamily: "'Inter', -apple-system, sans-serif",
         color: isDark ? '#f8fafc' : '#111827',
         position: 'relative',
-        boxSizing: 'border-box',
       }}
     >
+      {/* Desktop-Only Header (bell + profile right-aligned) */}
+      <div className="desktop-only-header" style={{ display: 'none', justifyContent: 'flex-end', alignItems: 'center', gap: 16, marginBottom: 20 }}>
+        <button
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: '50%',
+            background: isDark ? '#1E293B' : '#FFFFFF',
+            border: `1px solid ${isDark ? '#334155' : '#E8E8E3'}`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            position: 'relative',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+          }}
+          onClick={() => alert('No new notifications')}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={isDark ? '#94A3B8' : '#121826'} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          <span
+            style={{
+              position: 'absolute',
+              top: 10,
+              right: 10,
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              background: '#F97316',
+              border: '1.5px solid #FFFFFF',
+            }}
+          />
+        </button>
+        <div
+          onClick={() => navigate('/profile')}
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: '50%',
+            background: '#1E4D18',
+            color: 'white',
+            fontWeight: 700,
+            fontSize: 18,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            boxShadow: '0 4px 12px rgba(30,77,24,0.25)',
+          }}
+        >
+          {initial}
+        </div>
+      </div>
+
       {/* Toast Notification */}
       {toast && (
         <div
@@ -151,17 +203,19 @@ export default function GroceryPage() {
 
       {/* ── HERO BANNER HEADER ── */}
       <div
+        className="grocery-hero"
         style={{
           position: 'relative',
           background: isDark
             ? 'linear-gradient(135deg, #0f172a 0%, #0a0f1d 100%)'
             : 'linear-gradient(135deg, #f7f4ed 0%, #ebe4d3 100%)',
-          padding: 'max(20px, env(safe-area-inset-top, 20px)) 20px 60px 20px',
+          padding: '20px 20px 60px 20px',
           overflow: 'visible',
         }}
       >
-        {/* Fresh Vegetable Basket Image positioned at top right */}
+        {/* Fresh Vegetable Basket Image positioned at top right (Mobile Only) */}
         <div
+          className="mobile-only-header"
           style={{
             position: 'absolute',
             top: -10,
@@ -195,8 +249,9 @@ export default function GroceryPage() {
           />
         </div>
 
-        {/* Top Header Row */}
+        {/* Top Header Row (Mobile Only) */}
         <div
+          className="mobile-only-header"
           style={{
             position: 'relative',
             zIndex: 2,
@@ -248,8 +303,10 @@ export default function GroceryPage() {
           </div>
         </div>
 
-        {/* Hero Title & Subtitle */}
-        <div style={{ position: 'relative', zIndex: 2, maxWidth: 260, marginBottom: 24 }}>
+        <div className="grocery-hero-grid" style={{ width: '100%' }}>
+          <div className="grocery-hero-left">
+            {/* Hero Title & Subtitle */}
+            <div style={{ position: 'relative', zIndex: 2, maxWidth: 260, marginBottom: 24 }}>
           <h1
             style={{
               fontFamily: "'Playfair Display', 'DM Serif Display', Georgia, serif",
@@ -403,6 +460,16 @@ export default function GroceryPage() {
               <path d="M30 68c-2-4-1-7 2-8" stroke="#22c55e" strokeWidth="2" fill="none" strokeLinecap="round" />
             </svg>
           </div>
+          </div>
+          </div>
+          {/* Hero Right Column (Desktop Only) */}
+          <div className="grocery-hero-right" style={{ display: 'none' }}>
+            <img
+              src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&q=80"
+              alt="Fresh Kerala Vegetables Basket Desktop"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+          </div>
         </div>
       </div>
 
@@ -504,7 +571,7 @@ export default function GroceryPage() {
         </div>
 
         {/* ── GROCERY ITEM CARDS LIST ── */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <div className="grocery-responsive-grid" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           {filteredRecommendations.map((item) => {
             const targetMember = selectedMember || members[0]
             const targetMemberName = targetMember?.name || 'aadityan'
@@ -512,6 +579,7 @@ export default function GroceryPage() {
             return (
               <div
                 key={item.id}
+                className="grocery-item-card"
                 style={{
                   background: isDark ? '#141c2e' : '#ffffff',
                   borderRadius: 20,
@@ -734,6 +802,51 @@ export default function GroceryPage() {
 
       {/* Bottom Navigation */}
       <BottomNav />
+
+      {/* Responsive overrides block */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media (min-width: 1024px) {
+          .grocery-hero {
+            background: transparent !important;
+            overflow: visible !important;
+            padding: 0 !important;
+          }
+          .grocery-hero-grid {
+            display: flex !important;
+            align-items: center;
+            gap: 32px;
+            justify-content: space-between;
+            width: 100%;
+          }
+          .grocery-hero-left {
+            width: 45% !important;
+            max-width: 45% !important;
+          }
+          .grocery-hero-right {
+            display: block !important;
+            width: 53% !important;
+            height: 280px !important;
+            border-radius: 32px !important;
+            overflow: hidden !important;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+          }
+          .grocery-responsive-grid {
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 24px !important;
+          }
+          .grocery-item-card {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            padding: 18px !important;
+            gap: 12px !important;
+          }
+          .grocery-item-card > div:first-child {
+            width: 100% !important;
+            height: 140px !important;
+          }
+        }
+      `}} />
     </div>
   )
 }
