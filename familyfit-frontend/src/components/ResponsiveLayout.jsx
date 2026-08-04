@@ -182,18 +182,19 @@ export default function ResponsiveLayout({ children }) {
             }
             .desktop-sidebar {
               display: flex !important;
-              flex-direction: column;
-              justify-content: space-between;
-              position: fixed;
-              top: 0;
-              left: 0;
-              bottom: 0;
-              width: 240px;
-              box-sizing: border-box;
-              background-color: ${isDark ? '#141c2e' : '#ffffff'};
-              border-right: 1px solid ${isDark ? '#24324a' : '#f0ede6'};
-              padding: 32px 24px;
-              z-index: 100;
+              flex-direction: column !important;
+              justify-content: space-between !important;
+              position: fixed !important;
+              top: 0 !important;
+              left: 0 !important;
+              bottom: 0 !important;
+              width: 240px !important;
+              transform: none !important;
+              box-sizing: border-box !important;
+              background-color: ${isDark ? '#141c2e' : '#ffffff'} !important;
+              border-right: 1px solid ${isDark ? '#24324a' : '#f0ede6'} !important;
+              padding: 32px 24px !important;
+              z-index: 1000 !important;
             }
             .layout-content-wrapper {
               margin-left: 240px !important;
