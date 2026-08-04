@@ -240,7 +240,7 @@ export default function HomePage() {
           minHeight: 380,
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
+          justifyContent: 'flex-start',
         }}
       >
         {/* Top Bar Header */}
@@ -309,7 +309,7 @@ export default function HomePage() {
         </div>
 
         {/* Hero Left Content Text & Action Button */}
-        <div style={{ zIndex: 2, marginTop: 12, maxWidth: '52%' }}>
+        <div style={{ zIndex: 2, marginTop: 38, maxWidth: '52%' }}>
           {/* Greeting Row */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
             <SmallLeafIcon />
