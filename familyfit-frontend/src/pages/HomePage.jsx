@@ -982,7 +982,7 @@ export default function HomePage() {
           .homepage-hero-right {
             display: block !important;
             width: 53% !important;
-            height: 380px !important;
+            height: 280px !important;
             background-image: url("https://images.unsplash.com/photo-1626132647523-66f5bf380027?w=1200&q=80") !important;
             background-size: cover;
             background-position: center;
