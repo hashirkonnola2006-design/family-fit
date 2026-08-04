@@ -214,6 +214,7 @@ export default function ResponsiveLayout({ children }) {
               display: flex;
               background-color: ${isDark ? '#0A0F1D' : '#FAFAF7'};
             }
+
             .desktop-sidebar {
               display: flex !important;
               flex-direction: column !important;
@@ -222,26 +223,68 @@ export default function ResponsiveLayout({ children }) {
               top: 0 !important;
               left: 0 !important;
               bottom: 0 !important;
-              width: 240px !important;
+              width: 260px !important;
+              padding: 28px 20px !important;
               transform: none !important;
               box-sizing: border-box !important;
               background-color: ${isDark ? '#141c2e' : '#ffffff'} !important;
               border-right: 1px solid ${isDark ? '#24324a' : '#f0ede6'} !important;
               z-index: 1000 !important;
             }
+
             .desktop-only-illustration {
               display: block !important;
             }
+
+            /* Content area fills all space to the right of the sidebar */
             .layout-content-wrapper {
-              margin-left: 240px !important;
-              width: calc(100% - 240px) !important;
-              padding: 32px 48px !important;
+              margin-left: 260px !important;
+              width: calc(100% - 260px) !important;
+              min-height: 100vh;
+              padding: 0 !important;
               box-sizing: border-box;
               background-color: ${isDark ? '#0A0F1D' : '#FAFAF7'};
             }
-            /* Hide mobile bottom navigation dock */
+
+            /*
+             * Override the mobile-only 430px max-width cap on .app-container
+             * so page content fills the full desktop canvas instead of leaving
+             * a large empty gap on the right side.
+             */
+            .layout-content-wrapper .app-container,
+            .layout-content-wrapper .page-responsive-container {
+              max-width: 100% !important;
+              width: 100% !important;
+              margin: 0 !important;
+              padding-bottom: 0 !important;
+            }
+
+            /* Also let direct page divs stretch full width */
+            .layout-content-wrapper > div {
+              max-width: 100% !important;
+              width: 100% !important;
+            }
+
+            /* Remove bottom padding reserved for mobile nav dock */
+            .layout-content-wrapper .page {
+              padding-bottom: 24px !important;
+            }
+
+            /* Hide mobile bottom navigation dock on desktop */
             nav[style*="position: 'fixed'"], nav[style*="position: fixed"] {
               display: none !important;
+            }
+          }
+
+          /* Wide desktop: give a comfortable max-width and center the content */
+          @media (min-width: 1440px) {
+            .layout-content-wrapper {
+              display: flex;
+              justify-content: center;
+            }
+            .layout-content-wrapper > * {
+              width: 100%;
+              max-width: 1100px !important;
             }
           }
         `}} />
