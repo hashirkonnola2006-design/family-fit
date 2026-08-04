@@ -235,7 +235,6 @@ export default function ResponsiveLayout({ children }) {
             .layout-content-wrapper {
               margin-left: 240px !important;
               width: calc(100% - 240px) !important;
-              max-width: 1200px !important;
               padding: 32px 48px !important;
               box-sizing: border-box;
               background-color: ${isDark ? '#0A0F1D' : '#FAFAF7'};
