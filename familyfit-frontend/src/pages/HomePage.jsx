@@ -141,27 +141,27 @@ function getDynamicGreeting() {
 const RECOMMENDED_RECIPES = [
   {
     id: 1001,
-    name: 'Kerala Chicken Biryani',
-    tag: 'Great for Dad',
-    prepTimeMinutes: 45,
-    kcal: 520,
-    imageUrl: '/hero_biryani.jpg',
+    name: 'Kerala Vegetable Upma',
+    tag: 'Great for Everyone',
+    prepTimeMinutes: 25,
+    kcal: 280,
+    imageUrl: 'https://images.unsplash.com/photo-1601050690597-df056fb4ce78?w=800&q=80',
   },
   {
     id: 1002,
-    name: 'Appam & Fish Stew',
-    tag: 'Great for Mom',
-    prepTimeMinutes: 30,
-    kcal: 410,
-    imageUrl: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=800&q=80',
+    name: 'Green Moong Smoothie',
+    tag: 'Detoxifying • Immunity Boost',
+    prepTimeMinutes: 10,
+    kcal: 180,
+    imageUrl: 'https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=800&q=80',
   },
   {
     id: 1003,
-    name: 'Idli & Sambar',
-    tag: 'Great for All',
+    name: 'Kerala Vegetable Stew',
+    tag: 'High Fiber • Heart Healthy',
     prepTimeMinutes: 20,
-    kcal: 280,
-    imageUrl: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800&q=80',
+    kcal: 260,
+    imageUrl: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=800&q=80',
   },
 ]
 
@@ -511,6 +511,7 @@ export default function HomePage() {
           {/* Saved Recipes */}
           <div
             onClick={() => navigate('/recipes')}
+            className="quick-stat-item"
             style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
           >
             <div
@@ -538,6 +539,7 @@ export default function HomePage() {
           {/* Favorites */}
           <div
             onClick={() => navigate('/recipes')}
+            className="quick-stat-item"
             style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
           >
             <div
@@ -565,6 +567,7 @@ export default function HomePage() {
           {/* Smart Grocery */}
           <div
             onClick={() => navigate('/grocery')}
+            className="quick-stat-item"
             style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
           >
             <div
@@ -592,6 +595,7 @@ export default function HomePage() {
           {/* Meal Streak */}
           <div
             onClick={() => navigate('/tips')}
+            className="quick-stat-item"
             style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
           >
             <div
@@ -938,6 +942,13 @@ export default function HomePage() {
             align-items: center;
             gap: 32px;
             justify-content: space-between;
+            background: #F2ECE0 !important; /* Sandy Beige Parchment */
+            border-radius: 32px;
+            padding: 40px !important;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.04);
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
           }
           .homepage-hero-left {
             width: 45% !important;
@@ -946,14 +957,20 @@ export default function HomePage() {
             margin-top: 0 !important;
             position: relative;
           }
+          .homepage-hero-left h1 {
+            font-family: 'DM Serif Display', Georgia, serif !important;
+            color: #1b3815 !important;
+            font-size: 40px !important;
+            font-weight: 900 !important;
+          }
           .homepage-hero-right {
             display: block !important;
             width: 53% !important;
             height: 380px !important;
-            background-image: url("/hero_biryani.jpg");
+            background-image: url("https://images.unsplash.com/photo-1626132647523-66f5bf380027?w=1200&q=80") !important;
             background-size: cover;
             background-position: center;
-            border-radius: 32px;
+            border-radius: 24px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.06);
           }
           .homepage-search-container {
@@ -963,6 +980,9 @@ export default function HomePage() {
             left: auto !important;
             right: auto !important;
             padding: 0 !important;
+          }
+          .quick-stat-item:not(:last-child) {
+            border-right: 1.5px solid ${isDark ? '#24324a' : '#f0ede6'} !important;
           }
           .recommended-grid {
             display: grid !important;

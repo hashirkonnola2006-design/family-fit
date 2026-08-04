@@ -118,43 +118,77 @@ export default function ResponsiveLayout({ children }) {
           </nav>
         </div>
 
+        {/* Kerala Backwaters Illustration (Desktop Only) */}
+        <svg className="desktop-only-illustration" viewBox="0 0 240 160" fill="none" style={{ display: 'none', position: 'absolute', bottom: 90, left: 0, width: '100%', opacity: 0.15, pointerEvents: 'none', zIndex: 0 }}>
+          {/* Water waves */}
+          <path d="M0 140 Q 60 135, 120 140 T 240 140" stroke="#2F6B1F" strokeWidth="1.5" strokeLinecap="round" />
+          <path d="M0 148 Q 60 145, 120 148 T 240 148" stroke="#2F6B1F" strokeWidth="1" strokeLinecap="round" />
+          {/* Boat */}
+          <path d="M140 138 L170 138 L178 132 L132 132 Z" fill="#2F6B1F" />
+          <path d="M155 132 L155 115 L140 125 Z" fill="#2F6B1F" />
+          {/* Palm tree 1 */}
+          <path d="M30 140 Q 40 100, 25 60" stroke="#2F6B1F" strokeWidth="4" strokeLinecap="round" fill="none" />
+          <path d="M25 60 Q 5 65, 0 80" stroke="#2F6B1F" strokeWidth="2.5" fill="none" />
+          <path d="M25 60 Q 10 50, 5 35" stroke="#2F6B1F" strokeWidth="2.5" fill="none" />
+          <path d="M25 60 Q 30 40, 45 35" stroke="#2F6B1F" strokeWidth="2.5" fill="none" />
+          <path d="M25 60 Q 45 55, 55 70" stroke="#2F6B1F" strokeWidth="2.5" fill="none" />
+          <path d="M25 60 Q 35 70, 40 85" stroke="#2F6B1F" strokeWidth="2.5" fill="none" />
+          {/* Palm tree 2 */}
+          <path d="M60 140 Q 55 105, 50 75" stroke="#2F6B1F" strokeWidth="3" strokeLinecap="round" fill="none" />
+          <path d="M50 75 Q 35 70, 30 55" stroke="#2F6B1F" strokeWidth="2" fill="none" />
+          <path d="M50 75 Q 55 55, 70 50" stroke="#2F6B1F" strokeWidth="2" fill="none" />
+          <path d="M50 75 Q 65 75, 70 90" stroke="#2F6B1F" strokeWidth="2" fill="none" />
+          {/* Little hills / ground */}
+          <path d="M-10 140 Q 40 135, 90 140" fill="#2F6B1F" opacity="0.3" />
+        </svg>
+
         {/* Account Switcher / User Info at Bottom */}
         <div
           onClick={() => navigate('/profile')}
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 12,
-            padding: '12px',
+            justifyContent: 'space-between',
+            gap: 10,
+            padding: '10px 12px',
             borderRadius: 18,
             cursor: 'pointer',
             background: isDark ? '#1E293B' : '#F4F5EF',
             border: `1px solid ${isDark ? '#334155' : '#E8E8E3'}`,
+            zIndex: 10,
+            position: 'relative',
           }}
         >
-          <div
-            style={{
-              width: 38,
-              height: 38,
-              borderRadius: '50%',
-              background: '#2F6B1F',
-              color: 'white',
-              fontWeight: 700,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            {initial}
-          </div>
-          <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: isDark ? '#F8FAFC' : '#121826' }}>
-              {displayName}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0, flex: 1 }}>
+            <div
+              style={{
+                width: 38,
+                height: 38,
+                borderRadius: '50%',
+                background: '#2F6B1F',
+                color: 'white',
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}
+            >
+              {initial}
             </div>
-            <span style={{ fontSize: 11, color: '#5B6472', fontWeight: 600 }}>
-              Family Admin
-            </span>
+            <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: isDark ? '#F8FAFC' : '#121826', lineHeight: 1.2 }}>
+                {displayName} Family
+              </div>
+              <span style={{ fontSize: 11, color: '#5B6472', fontWeight: 600 }}>
+                Family Admin
+              </span>
+            </div>
           </div>
+          {/* Dropdown Chevron */}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5B6472" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
         </div>
       </aside>
 
@@ -193,8 +227,10 @@ export default function ResponsiveLayout({ children }) {
               box-sizing: border-box !important;
               background-color: ${isDark ? '#141c2e' : '#ffffff'} !important;
               border-right: 1px solid ${isDark ? '#24324a' : '#f0ede6'} !important;
-              padding: 32px 24px !important;
               z-index: 1000 !important;
+            }
+            .desktop-only-illustration {
+              display: block !important;
             }
             .layout-content-wrapper {
               margin-left: 240px !important;
