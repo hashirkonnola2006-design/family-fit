@@ -165,39 +165,50 @@ export default function ResponsiveLayout({ children }) {
 
       {/* Inject styling rules specifically for responsive layout */}
       <style dangerouslySetInnerHTML={{ __html: `
-        .layout-root {
-          width: 100%;
-          min-height: 100vh;
-        }
-
-        .layout-content-wrapper {
-          width: 100%;
-          margin: 0 auto;
-        }
-
-        @media (min-width: 1024px) {
           .layout-root {
-            display: flex;
-            justify-content: center;
-            background-color: ${isDark ? '#0A0F1D' : '#FAFAF7'};
+            width: 100%;
+            min-height: 100vh;
           }
-          .desktop-sidebar {
-            display: flex !important;
-          }
+
           .layout-content-wrapper {
-            margin-left: 240px !important;
-            width: calc(100% - 240px) !important;
-            max-width: 1200px !important;
-            padding: 32px 48px !important;
-            box-sizing: border-box;
-            background-color: ${isDark ? '#0A0F1D' : '#FAFAF7'};
+            width: 100%;
+            margin: 0 auto;
           }
-          /* Hide mobile bottom navigation dock */
-          nav[style*="position: 'fixed'"], nav[style*="position: fixed"] {
-            display: none !important;
+
+          @media (min-width: 1024px) {
+            .layout-root {
+              display: flex;
+              background-color: ${isDark ? '#0A0F1D' : '#FAFAF7'};
+            }
+            .desktop-sidebar {
+              display: flex !important;
+              flex-direction: column;
+              justify-content: space-between;
+              position: fixed;
+              top: 0;
+              left: 0;
+              bottom: 0;
+              width: 240px;
+              box-sizing: border-box;
+              background-color: ${isDark ? '#141c2e' : '#ffffff'};
+              border-right: 1px solid ${isDark ? '#24324a' : '#f0ede6'};
+              padding: 32px 24px;
+              z-index: 100;
+            }
+            .layout-content-wrapper {
+              margin-left: 240px !important;
+              width: calc(100% - 240px) !important;
+              max-width: 1200px !important;
+              padding: 32px 48px !important;
+              box-sizing: border-box;
+              background-color: ${isDark ? '#0A0F1D' : '#FAFAF7'};
+            }
+            /* Hide mobile bottom navigation dock */
+            nav[style*="position: 'fixed'"], nav[style*="position: fixed"] {
+              display: none !important;
+            }
           }
-        }
-      `}} />
+        `}} />
     </div>
   )
 }
