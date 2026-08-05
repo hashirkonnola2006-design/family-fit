@@ -97,24 +97,14 @@ export function AuthProvider({ children }) {
         setUser({ familyId: data.familyId, email: cleanEmail, familyName: data.familyName || 'My Family' })
         return data
       }
+      throw new Error('Invalid login credentials')
     } catch (apiErr) {
-      console.warn('Backend API login unavailable/failed, attempting local registry authentication:', apiErr)
-      if (apiErr.response?.data?.message) {
-        throw new Error(apiErr.response.data.message)
+      console.error('Backend API login failed:', apiErr)
+      const serverMessage = apiErr.response?.data?.message || apiErr.message
+      if (serverMessage && !serverMessage.includes('timeout') && !serverMessage.includes('Network Error')) {
+        throw new Error(serverMessage)
       }
-    }
-
-    // 2. Local Registry Authentication Fallback
-    const registry = getLocalRegistry()
-    const found = registry.find((u) => u.email.toLowerCase() === cleanEmail)
-
-    if (found) {
-      if (found.password !== password && password !== 'password123') {
-        throw new Error('Incorrect password. Please try again.')
-      }
-      persistAuth(found)
-      setUser({ familyId: found.familyId, email: found.email, familyName: found.familyName })
-      return found
+      throw new Error('Login failed: could not reach the server. Please try again in a moment (the server may be waking up).')
     }
 
     // Demo account check

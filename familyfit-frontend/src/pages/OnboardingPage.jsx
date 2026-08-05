@@ -195,26 +195,21 @@ export default function OnboardingPage() {
 
     try {
       // Persist to backend — use the authenticated family's ID from context
-      const familyId = family?.id || user?.familyId
-      if (familyId) {
-        const res = await apiAddMember(familyId, payload).catch((err) => {
-          console.warn('Onboarding: API addMember failed, saving locally:', err)
-          return null
-        })
-        // Use the server-assigned ID if available; fall back to timestamp id for offline mode
-        const saved = res?.data?.id ? res.data : { ...payload, id: Date.now() }
-        addMemberToContext(saved)
-      } else {
-        // No valid family ID yet (offline local-fallback registration) — save locally
-        addMemberToContext({ ...payload, id: Date.now() })
+      const familyId = family?.id || user?.familyId || Number(localStorage.getItem('familyId'))
+      if (!familyId) {
+        throw new Error('No authenticated family account found. Please log in again.')
       }
-    } catch (err) {
-      console.warn('Onboarding: member save error, saving locally:', err)
-      addMemberToContext({ ...payload, id: Date.now() })
-    } finally {
-      setSaving(false)
+      const res = await apiAddMember(familyId, payload)
+      const saved = res?.data?.id ? res.data : { ...payload, id: Date.now() }
+      addMemberToContext(saved)
       setForm(INITIAL_MEMBER_FORM)
       setStep('summary')
+    } catch (err) {
+      console.error('Onboarding: member save error:', err)
+      const errorMsg = err.response?.data?.message || err.message || 'Failed to save family member to server. Please try again.'
+      alert(`Error adding family member: ${errorMsg}`)
+    } finally {
+      setSaving(false)
     }
   }
 

@@ -227,25 +227,23 @@ export default function MemberModal({ member, onClose }) {
 
     try {
       if (isEdit) {
-        await updateMember(member.id, payload).catch((err) => console.warn('API updateMember failed, using local:', err))
-        updateMemberInContext({ ...payload, id: member.id })
+        const res = await updateMember(member.id, payload)
+        const updated = res?.data || { ...payload, id: member.id }
+        updateMemberInContext(updated)
       } else {
         const familyId = family?.id || Number(localStorage.getItem('familyId'))
         if (!familyId) {
-          throw new Error('No authenticated family ID found')
+          throw new Error('No authenticated family ID found. Please log in again.')
         }
-        const res = await addMember(familyId, payload).catch((err) => console.warn('API addMember failed, using local:', err))
+        const res = await addMember(familyId, payload)
         const created = res?.data && typeof res.data === 'object' && res.data.id ? res.data : { ...payload, id: Date.now() }
         addMemberToContext(created)
       }
       onClose()
     } catch (err) {
-      if (isEdit) {
-        updateMemberInContext({ ...payload, id: member.id })
-      } else {
-        addMemberToContext({ ...payload, id: Date.now() })
-      }
-      onClose()
+      console.error('Failed to save family member to server:', err)
+      const errorMsg = err.response?.data?.message || err.message || 'Failed to save family member. Please check server connection.'
+      alert(`Error saving member: ${errorMsg}`)
     } finally {
       setLoading(false)
     }
@@ -255,12 +253,13 @@ export default function MemberModal({ member, onClose }) {
     if (!window.confirm(`Are you sure you want to remove ${member.name}?`)) return
     setLoading(true)
     try {
-      await deleteMember(member.id).catch((err) => console.warn('API deleteMember failed, deleting locally:', err))
+      await deleteMember(member.id)
       deleteMemberFromContext(member.id)
       onClose()
     } catch (err) {
-      deleteMemberFromContext(member.id)
-      onClose()
+      console.error('Failed to delete family member from server:', err)
+      const errorMsg = err.response?.data?.message || err.message || 'Failed to delete member. Please check server connection.'
+      alert(`Error deleting member: ${errorMsg}`)
     } finally {
       setLoading(false)
     }
