@@ -17,6 +17,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 0.3,
     fiberG: 1.8,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1598965402089-897ce52e8355?w=800&q=80',
     whyBuy: 'Traditional Kerala carbohydrate staple — high energy root vegetable for Kappa Puzhukku.',
   },
   {
@@ -31,6 +32,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 0.1,
     fiberG: 5.7,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1590779033100-9f60a05a013d?w=800&q=80',
     whyBuy: 'High fiber Kerala root vegetable rich in copper and potassium — staple for Chena Erissery & Kalan.',
   },
   {
@@ -45,6 +47,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 0.2,
     fiberG: 4.1,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=800&q=80',
     whyBuy: 'Nutrient-rich low-GI root vegetable — traditional choice for Chembu Mezhukkupuratti & curry.',
   },
   {
@@ -59,6 +62,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 0.4,
     fiberG: 2.3,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=800&q=80',
     whyBuy: 'Kerala signature plantain — packed with potassium, resistant starch & energy for Pazham Pori & chips.',
   },
   {
@@ -73,6 +77,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 0.2,
     fiberG: 3.2,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1567375698348-5d9d5ae99de0?w=800&q=80',
     whyBuy: 'Antioxidant & Vitamin C powerhouse — essential for Kerala Sambar, Avial & Muringakka Curry.',
   },
   {
@@ -87,6 +92,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 0.1,
     fiberG: 0.8,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1597362925123-77861d3fbac7?w=800&q=80',
     whyBuy: 'Cooling, hydrating low-calorie vegetable — perfect for Padavalanga Thoran & Kootu Curry.',
   },
   {
@@ -101,6 +107,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 0.2,
     fiberG: 2.9,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800&q=80',
     whyBuy: 'Alkalizing detoxifying vegetable — essential ingredient for Kumbalanga Olan & Moru Curry.',
   },
   {
@@ -115,6 +122,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 0.1,
     fiberG: 1.6,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1588879460618-924a737877e8?w=800&q=80',
     whyBuy: 'Diabetes-friendly low-GI vegetable — classic ingredient for crispy Kovakka Mezhukkupuratti.',
   },
   {
@@ -129,6 +137,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 0.1,
     fiberG: 2.8,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=800&q=80',
     whyBuy: 'Renowned blood sugar regulating vegetable — staple for Pavakka Fry & Pavakka Theeyal.',
   },
 
@@ -145,6 +154,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 33.5,
     fiberG: 9.0,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1543362906-acfc16c67564?w=800&q=80',
     whyBuy: 'Heart of Kerala cuisine — rich in healthy medium-chain fats for Thoran, Avial & Varutharacha paste.',
   },
   {
@@ -159,6 +169,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 23.8,
     fiberG: 2.2,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1589927986089-35812388d1f4?w=800&q=80',
     whyBuy: 'Creamy nutrient-dense liquid for Kerala Stew, Fish Molee & Payasam.',
   },
   {
@@ -173,6 +184,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 13.6,
     fiberG: 0,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1620706857370-e1b9770e8bb1?w=800&q=80',
     whyBuy: 'Pure unrefined Kerala cooking fat — provides authentic aroma & quick energy from MCTs.',
   },
 
@@ -189,6 +201,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 0.1,
     fiberG: 0.6,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=800&q=80',
     whyBuy: 'Essential aromatic herb rich in iron, antioxidants & digestive benefits for tadka.',
   },
   {
@@ -203,6 +216,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 0.1,
     fiberG: 0.5,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800&q=80',
     whyBuy: 'Authentic Kerala fish curry souring agent — contains Garcinia Cambogia for digestion & metabolism.',
   },
   {
@@ -217,6 +231,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 0.3,
     fiberG: 1.2,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?w=800&q=80',
     whyBuy: 'Blood sugar & lactation supporting seed — key seasoning for Fish Curry & Sambar.',
   },
   {
@@ -231,6 +246,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 0.2,
     fiberG: 1.3,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1509358211425-24d08ca35f2c?w=800&q=80',
     whyBuy: 'King of spices from Kerala — boosts piperine bio-absorption & respiratory health in Pepper Chicken.',
   },
   {
@@ -245,6 +261,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 0.1,
     fiberG: 0.6,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1590301157890-4810ed352733?w=800&q=80',
     whyBuy: 'Aromatic queen of High Range spices — elevates Payasam, Biryani & Kerala Tea.',
   },
   {
@@ -259,6 +276,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 0.4,
     fiberG: 1.1,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800&q=80',
     whyBuy: 'Handcrafted blend of fennel, cloves, cinnamon, star anise & mace for authentic Malabar roasts.',
   },
 
@@ -275,6 +293,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 1.2,
     fiberG: 3.5,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=800&q=80',
     whyBuy: 'Unpolished nutrient-rich Kerala red rice — low GI, rich in magnesium & fiber.',
   },
   {
@@ -289,6 +308,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 0.8,
     fiberG: 2.4,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1613758235256-42d88ea9b97b?w=800&q=80',
     whyBuy: 'Coarse roasted rice grain flour for making light, airy steamed Puttu.',
   },
   {
@@ -303,6 +323,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 1.4,
     fiberG: 2.4,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1627662236973-4fd8258fa17f?w=800&q=80',
     whyBuy: 'Ultra-fine double-steamed rice flour for soft Palappam and Idiyappam string hoppers.',
   },
   {
@@ -317,6 +338,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 0.6,
     fiberG: 1.8,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=800&q=80',
     whyBuy: 'Tiny cut steamed rice sheets designed specifically for classic Kerala Palada Payasam.',
   },
 
@@ -333,6 +355,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 11.5,
     fiberG: 0,
     allergies: ['Seafood/Fish'],
+    imageUrl: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=800&q=80',
     whyBuy: 'Coastal Kerala favorite — extremely high in Omega-3 EPA/DHA, Calcium & Vitamin D for Mathi Curry.',
   },
   {
@@ -347,6 +370,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 13.9,
     fiberG: 0,
     allergies: ['Seafood/Fish'],
+    imageUrl: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=800&q=80',
     whyBuy: 'Rich, flavorful ocean fish for spicy Ayala Varuthathu (fried) & Ayala Mulakittathu.',
   },
   {
@@ -361,6 +385,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 3.2,
     fiberG: 0,
     allergies: ['Seafood/Fish'],
+    imageUrl: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80',
     whyBuy: 'Backwater delicacy — delicate lean white fish ideal for Karimeen Pollichathu in banana leaf.',
   },
   {
@@ -375,6 +400,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 5.0,
     fiberG: 0,
     allergies: ['Seafood/Fish'],
+    imageUrl: 'https://images.unsplash.com/photo-1535567465397-7523840f2ae9?w=800&q=80',
     whyBuy: 'Premium firm-fleshed fish for Malabar Fish Fry & Neymeen Curry.',
   },
   {
@@ -389,6 +415,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 6.8,
     fiberG: 0,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=800&q=80',
     whyBuy: 'High protein lean meat for Nadan Chicken Roast, Varutharacha Curry & Stew.',
   },
   {
@@ -403,6 +430,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 11.2,
     fiberG: 0,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=800&q=80',
     whyBuy: 'Rich source of iron, zinc & protein for legendary Kerala Beef Fry (BDF) & Beef Ularthiyathu.',
   },
   {
@@ -417,6 +445,7 @@ export const KERALA_INGREDIENTS = [
     fatG: 15.2,
     fiberG: 0,
     allergies: [],
+    imageUrl: 'https://images.unsplash.com/photo-1516467508483-a7212febe31a?w=800&q=80',
     whyBuy: 'Kuttanad backwater specialty — rich flavor profile for traditional Duck Roast & Curry.',
   },
 ]
