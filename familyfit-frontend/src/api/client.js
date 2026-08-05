@@ -2,6 +2,7 @@ import axios from 'axios'
 
 // Use VITE_API_URL environment variable for backend base URL, defaulting to empty string in local dev for proxy fallback
 const API_BASE_URL = import.meta.env.VITE_API_URL || ''
+console.log('API_BASE_URL is:', API_BASE_URL)
 
 const client = axios.create({
   baseURL: `${API_BASE_URL}/api`,
