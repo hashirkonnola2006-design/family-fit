@@ -7,7 +7,7 @@ console.log('API_BASE_URL is:', API_BASE_URL)
 const client = axios.create({
   baseURL: `${API_BASE_URL}/api`,
   headers: { 'Content-Type': 'application/json' },
-  timeout: 10000,
+  timeout: 60000,
 })
 
 // Request interceptor: attach JWT access token

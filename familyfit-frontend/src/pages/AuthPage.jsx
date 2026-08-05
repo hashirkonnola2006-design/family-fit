@@ -4,12 +4,12 @@ import { useAuth } from '../context/AuthContext'
 import { clearFamilyCache } from '../lib/familyCache'
 
 export default function AuthPage() {
-  const [mode, setMode]       = useState('login')   // 'login' | 'register'
+  const [mode, setMode] = useState('login')   // 'login' | 'register'
   const [loading, setLoading] = useState(false)
-  const [error, setError]     = useState('')
-  const [form, setForm]       = useState({ familyName: '', email: '', password: '' })
-  const { login, register }   = useAuth()
-  const navigate              = useNavigate()
+  const [error, setError] = useState('')
+  const [form, setForm] = useState({ familyName: '', email: '', password: '' })
+  const { login, register } = useAuth()
+  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -29,7 +29,7 @@ export default function AuthPage() {
       }
     } catch (err) {
       console.error('Authentication failure:', err)
-      const userMessage = err.message || err.response?.data?.message || 'Unable to connect. Please check your connection and try again.'
+      const userMessage = err.message || err.response?.data?.message || 'Signup failed: could not reach the server. Please try again in a moment (the server may be waking up).'
       setError(userMessage)
     } finally {
       setLoading(false)

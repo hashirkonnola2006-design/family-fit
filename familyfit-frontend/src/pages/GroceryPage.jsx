@@ -23,51 +23,13 @@ const CATEGORY_ICONS = {
 
 const BUDGET_PRESETS = [500, 1000, 1500, 2500, 3500, 5000]
 
-const DEFAULT_MEMBER = {
-  id: 1,
-  name: 'aadityan',
-  role: 'PARENT',
-  gender: 'MALE',
-  fitnessGoal: 'MUSCLE_GAIN',
-  dietPreference: 'HIGH_PROTEIN',
-  allergies: [],
-  dislikes: [],
-}
-
-/**
- * Evaluates whether a grocery item is suitable and a strong match for a member.
- */
-function evaluateItemSuitability(item, member) {
-  if (!member) return { isSuitable: true, isStrongMatch: false, isGenuineMatch: true }
-
-  const memberAllergies = Array.isArray(member.allergies) ? member.allergies : []
-  const memberDislikes = Array.isArray(member.dislikes) ? member.dislikes : []
-  const lowName = ((item.name || '') + ' ' + (item.whyBuy || '') + ' ' + (item.category || '')).toLowerCase()
-
-  const allergenMatch = memberAllergies.find((allergen) => {
-    if (Array.isArray(item.allergies) && item.allergies.includes(allergen)) return true
-    if (allergen === 'Milk/Dairy' && (lowName.includes('milk') || lowName.includes('curd') || lowName.includes('ghee'))) return true
-    if (allergen === 'Eggs' && lowName.includes('egg')) return true
-    if (allergen === 'Seafood/Fish' && (lowName.includes('fish') || lowName.includes('mathi') || lowName.includes('ayala'))) return true
-    return false
-  })
-
-  if (allergenMatch) return { isSuitable: false, isStrongMatch: false, isGenuineMatch: false }
-
-  const dislikeMatch = memberDislikes.find((d) => d.trim() && lowName.includes(d.toLowerCase()))
-  if (dislikeMatch) return { isSuitable: false, isStrongMatch: false, isGenuineMatch: false }
-
-  return { isSuitable: true, isStrongMatch: true, isGenuineMatch: true }
-}
-
 export default function GroceryPage() {
   const { family } = useFamily()
   const { isDark } = useTheme()
   const { budget, setBudget, budgetPeriod, setBudgetPeriod } = useGrocery()
   const navigate = useNavigate()
 
-  const rawMembers = family?.members || []
-  const members = rawMembers.length > 0 ? rawMembers : [DEFAULT_MEMBER]
+  const members = family?.members || []
 
   const [selectedMemberId, setSelectedMemberId] = useState('ALL')
   const [showBudgetModal, setShowBudgetModal] = useState(false)
@@ -82,7 +44,7 @@ export default function GroceryPage() {
 
   const selectedMember = selectedMemberId === 'ALL'
     ? null
-    : members.find((m) => String(m.id) === String(selectedMemberId)) || members[0]
+    : members.find((m) => String(m.id) === String(selectedMemberId)) || null
 
   const rawRecommendations = KERALA_GROCERY_DATASET
 
@@ -573,8 +535,8 @@ export default function GroceryPage() {
         {/* ── GROCERY ITEM CARDS LIST ── */}
         <div className="grocery-responsive-grid" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           {filteredRecommendations.map((item) => {
-            const targetMember = selectedMember || members[0]
-            const targetMemberName = targetMember?.name || 'aadityan'
+            const targetMember = selectedMember || members[0] || null
+            const targetMemberName = targetMember?.name || 'Whole Family'
 
             return (
               <div
@@ -633,21 +595,23 @@ export default function GroceryPage() {
                   </div>
 
                   {/* Suited for Member Row */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
-                    <span
-                      style={{
-                        background: isDark ? 'rgba(52,211,153,0.15)' : '#edf6db',
-                        color: isDark ? '#34d399' : '#25451c',
-                        fontSize: 11,
-                        fontWeight: 700,
-                        padding: '3px 8px',
-                        borderRadius: 8,
-                      }}
-                    >
-                      Suited for:
-                    </span>
-                    <MemberAvatar member={targetMember} size={22} />
-                  </div>
+                  {targetMember && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
+                      <span
+                        style={{
+                          background: isDark ? 'rgba(52,211,153,0.15)' : '#edf6db',
+                          color: isDark ? '#34d399' : '#25451c',
+                          fontSize: 11,
+                          fontWeight: 700,
+                          padding: '3px 8px',
+                          borderRadius: 8,
+                        }}
+                      >
+                        Suited for:
+                      </span>
+                      <MemberAvatar member={targetMember} size={22} />
+                    </div>
+                  )}
                 </div>
 
                 {/* Right Estimated Price & Chevron Button */}

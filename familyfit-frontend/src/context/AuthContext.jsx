@@ -152,7 +152,7 @@ export function AuthProvider({ children }) {
     // Clear stale family data before registering a fresh account
     clearFamilyCache()
 
-    // 1. Try Backend API registration
+    // Try Backend API registration
     try {
       const res = await apiRegister({ familyName, email: cleanEmail, password })
       if (res?.data && res.data.familyId) {
@@ -170,27 +170,15 @@ export function AuthProvider({ children }) {
         setUser({ familyId: newUser.familyId, email: cleanEmail, familyName: newUser.familyName })
         return newUser
       }
+      throw new Error('Registration failed. Please try again.')
     } catch (apiErr) {
-      console.warn('Backend API registration unavailable/failed, completing account creation locally:', apiErr)
-      if (apiErr.response?.data?.message) {
-        throw new Error(apiErr.response.data.message)
+      console.error('Backend API registration failed:', apiErr)
+      const serverMessage = apiErr.response?.data?.message || apiErr.message
+      if (serverMessage && !serverMessage.includes('timeout') && !serverMessage.includes('Network Error')) {
+        throw new Error(serverMessage)
       }
+      throw new Error('Signup failed: could not reach the server. Please try again in a moment (the server may be waking up).')
     }
-
-    // 2. Local Account Creation Fallback (for static Vercel host / offline mode)
-    const newFamilyId = Date.now()
-    const newUser = {
-      familyId: newFamilyId,
-      familyName,
-      email: cleanEmail,
-      password,
-      accessToken: `token_${newFamilyId}`,
-      refreshToken: `ref_${newFamilyId}`,
-    }
-    saveToLocalRegistry(newUser)
-    persistAuth(newUser)
-    setUser({ familyId: newFamilyId, email: cleanEmail, familyName })
-    return newUser
   }
 
   const logout = () => {
