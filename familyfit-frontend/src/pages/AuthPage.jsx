@@ -127,7 +127,7 @@ export default function AuthPage() {
 
           <div className="family-photo-wrapper">
             <img
-              src="/happy_family_eating.png"
+              src="/tall_family_portrait_eating.png"
               alt="Happy family enjoying healthy meal together"
               className="family-photo"
             />
@@ -136,19 +136,35 @@ export default function AuthPage() {
           {/* 3 Pillar Pills */}
           <div className="auth-pillars">
             <div className="pillar-item">
-              <div className="pillar-icon">🌿</div>
+              <div className="pillar-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.1 2 7 0 6-4.5 11-10 11z" />
+                  <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                </svg>
+              </div>
               <span className="pillar-title">Healthy</span>
               <span className="pillar-sub">Choices</span>
             </div>
             <div className="pillar-divider" />
             <div className="pillar-item">
-              <div className="pillar-icon">👨‍👩‍👧‍👦</div>
+              <div className="pillar-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+              </div>
               <span className="pillar-title">Stronger</span>
               <span className="pillar-sub">Together</span>
             </div>
             <div className="pillar-divider" />
             <div className="pillar-item">
-              <div className="pillar-icon">💚</div>
+              <div className="pillar-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+              </div>
               <span className="pillar-title">Better</span>
               <span className="pillar-sub">Every Day</span>
             </div>
@@ -173,14 +189,23 @@ export default function AuthPage() {
               className={`mode-tab-btn ${mode === 'login' ? 'active' : ''}`}
               onClick={() => { setMode('login'); setError('') }}
             >
-              <span style={{ fontSize: 15 }}>👤</span> Sign In
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              <span>Sign In</span>
             </button>
             <button
               type="button"
               className={`mode-tab-btn ${mode === 'register' ? 'active' : ''}`}
               onClick={() => { setMode('register'); setError('') }}
             >
-              <span style={{ fontSize: 15 }}>⊕</span> Create Account
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="16" />
+                <line x1="8" y1="12" x2="16" y2="12" />
+              </svg>
+              <span>Create Account</span>
             </button>
           </div>
 
@@ -214,7 +239,12 @@ export default function AuthPage() {
               <div className="custom-input-group">
                 <label htmlFor="reg-family-name">Family Name</label>
                 <div className="input-with-icon">
-                  <span className="input-icon">🏡</span>
+                  <span className="input-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                      <polyline points="9 22 9 12 15 12 15 22" />
+                    </svg>
+                  </span>
                   <input
                     id="reg-family-name"
                     type="text"
@@ -292,7 +322,11 @@ export default function AuthPage() {
             {/* Error Message */}
             {error && (
               <div className="auth-error-banner">
-                <span>⚠️</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
                 <span>{error}</span>
               </div>
             )}
@@ -308,7 +342,7 @@ export default function AuthPage() {
                 <span>{wakingUp ? 'Waking up server (up to 30s)...' : 'Processing…'}</span>
               ) : (
                 <>
-                  <span style={{ fontSize: 16 }}>🍃</span>
+                  <LeafBrandIcon />
                   <span>{mode === 'login' ? 'Sign In' : 'Create Account'}</span>
                 </>
               )}
@@ -412,7 +446,7 @@ export default function AuthPage() {
         .family-photo-wrapper {
           width: 100%;
           flex: 1;
-          max-height: 310px;
+          min-height: 340px;
           border-radius: 24px;
           overflow: hidden;
           box-shadow: 0 12px 30px rgba(46, 125, 50, 0.14);
