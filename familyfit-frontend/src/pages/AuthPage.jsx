@@ -113,12 +113,6 @@ export default function AuthPage() {
 
   return (
     <div className="auth-redesign-root">
-      {/* ── BACKGROUND VECTOR ART (DECORATIVE LEAVES & DOT PATTERN) ── */}
-      <div className="bg-leaf-top-right" />
-      <div className="bg-leaf-bottom-left" />
-      <div className="bg-blob-top-left" />
-      <div className="bg-blob-bottom-right" />
-
       {/* ── MAIN SPLIT CARD ── */}
       <div className="auth-split-card animate-scale-in">
         {/* ── LEFT PANEL: BRANDING & FAMILY PHOTO ── */}
@@ -342,74 +336,24 @@ export default function AuthPage() {
           padding: 48px 24px;
           box-sizing: border-box;
           position: relative;
-          background-color: #f7f9f4;
-          background-image: 
-            radial-gradient(circle at 10% 20%, rgba(226, 237, 214, 0.8) 0%, transparent 45%),
-            radial-gradient(circle at 90% 80%, rgba(226, 237, 214, 0.8) 0%, transparent 45%);
+          background-color: #fafcf7;
+          background-image: url("/exact_watercolor_leaves_bg.png");
+          background-size: cover;
+          background-position: center center;
+          background-repeat: no-repeat;
           overflow: hidden;
           font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
-        }
-
-        /* Decorative Leaf SVGs */
-        .bg-leaf-top-right {
-          position: absolute;
-          top: -30px;
-          right: -30px;
-          width: 380px;
-          height: 380px;
-          background-image: url("data:image/svg+xml,%3Csvg width='300' height='300' viewBox='0 0 300 300' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M150 0C220 50 280 120 300 200C220 220 140 180 100 120C60 60 80 10 150 0Z' fill='%232E7D32' fill-opacity='0.14'/%3E%3Cpath d='M200 20C250 80 270 160 250 240C180 230 120 170 110 100C100 30 140 10 200 20Z' fill='%2381C784' fill-opacity='0.20'/%3E%3C/svg%3E");
-          background-repeat: no-repeat;
-          background-size: contain;
-          pointer-events: none;
-          z-index: 1;
-        }
-
-        .bg-leaf-bottom-left {
-          position: absolute;
-          bottom: -30px;
-          left: -30px;
-          width: 380px;
-          height: 380px;
-          background-image: url("data:image/svg+xml,%3Csvg width='300' height='300' viewBox='0 0 300 300' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 150C50 80 120 20 200 0C220 80 180 160 120 200C60 240 10 220 0 150Z' fill='%232E7D32' fill-opacity='0.14'/%3E%3Cpath d='M20 100C80 50 160 30 240 50C230 120 170 180 100 190C30 200 10 160 20 100Z' fill='%2381C784' fill-opacity='0.20'/%3E%3C/svg%3E");
-          background-repeat: no-repeat;
-          background-size: contain;
-          pointer-events: none;
-          z-index: 1;
-        }
-
-        .bg-blob-top-left {
-          position: absolute;
-          top: -120px;
-          left: -120px;
-          width: 450px;
-          height: 450px;
-          border-radius: 50%;
-          background: rgba(226, 237, 214, 0.55);
-          filter: blur(50px);
-          pointer-events: none;
-        }
-
-        .bg-blob-bottom-right {
-          position: absolute;
-          bottom: -120px;
-          right: -120px;
-          width: 450px;
-          height: 450px;
-          border-radius: 50%;
-          background: rgba(226, 237, 214, 0.55);
-          filter: blur(50px);
-          pointer-events: none;
         }
 
         /* Split Card */
         .auth-split-card {
           width: 100%;
-          max-width: 1020px;
+          max-width: 1000px;
           background: #ffffff;
           border-radius: 32px;
-          box-shadow: 0 24px 70px rgba(46, 125, 50, 0.10), 0 8px 24px rgba(0,0,0,0.03);
+          box-shadow: 0 24px 70px rgba(46, 125, 50, 0.12), 0 8px 24px rgba(0,0,0,0.03);
           display: grid;
-          grid-template-columns: 450px 1fr;
+          grid-template-columns: 430px 1fr;
           overflow: hidden;
           position: relative;
           z-index: 10;
@@ -428,21 +372,23 @@ export default function AuthPage() {
 
         /* Left Panel */
         .auth-left-panel {
-          background: linear-gradient(180deg, #F4F8EE 0%, #E8F2DD 100%);
-          padding: 48px 36px 36px 36px;
+          background: linear-gradient(180deg, #F3F8EC 0%, #E7F2DA 100%);
+          padding: 44px 36px 36px 36px;
           display: flex;
           flex-direction: column;
           align-items: center;
+          justify-content: space-between;
           text-align: center;
           border-right: 1px solid #e0ebd3;
           position: relative;
+          box-sizing: border-box;
         }
 
         .auth-brand {
           display: flex;
           align-items: center;
           gap: 12px;
-          margin-bottom: 8px;
+          margin-bottom: 6px;
         }
 
         .brand-name {
@@ -460,21 +406,24 @@ export default function AuthPage() {
           font-size: 14px;
           color: #556B2F;
           font-weight: 600;
-          margin: 0 0 28px 0;
+          margin: 0 0 16px 0;
         }
 
         .family-photo-wrapper {
           width: 100%;
+          flex: 1;
+          max-height: 310px;
           border-radius: 24px;
           overflow: hidden;
           box-shadow: 0 12px 30px rgba(46, 125, 50, 0.14);
-          margin-bottom: 28px;
+          margin-bottom: 18px;
           background: #ffffff;
+          display: flex;
         }
 
         .family-photo {
           width: 100%;
-          height: 270px;
+          height: 100%;
           object-fit: cover;
           display: block;
         }
