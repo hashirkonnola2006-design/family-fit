@@ -339,13 +339,13 @@ export default function AuthPage() {
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 32px 20px;
+          padding: 48px 24px;
           box-sizing: border-box;
           position: relative;
           background-color: #f7f9f4;
           background-image: 
-            radial-gradient(circle at 10% 20%, rgba(226, 237, 214, 0.7) 0%, transparent 40%),
-            radial-gradient(circle at 90% 80%, rgba(226, 237, 214, 0.7) 0%, transparent 40%);
+            radial-gradient(circle at 10% 20%, rgba(226, 237, 214, 0.8) 0%, transparent 45%),
+            radial-gradient(circle at 90% 80%, rgba(226, 237, 214, 0.8) 0%, transparent 45%);
           overflow: hidden;
           font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
         }
@@ -353,11 +353,11 @@ export default function AuthPage() {
         /* Decorative Leaf SVGs */
         .bg-leaf-top-right {
           position: absolute;
-          top: -40px;
-          right: -40px;
-          width: 320px;
-          height: 320px;
-          background-image: url("data:image/svg+xml,%3Csvg width='300' height='300' viewBox='0 0 300 300' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M150 0C220 50 280 120 300 200C220 220 140 180 100 120C60 60 80 10 150 0Z' fill='%232E7D32' fill-opacity='0.12'/%3E%3Cpath d='M200 20C250 80 270 160 250 240C180 230 120 170 110 100C100 30 140 10 200 20Z' fill='%2381C784' fill-opacity='0.18'/%3E%3C/svg%3E");
+          top: -30px;
+          right: -30px;
+          width: 380px;
+          height: 380px;
+          background-image: url("data:image/svg+xml,%3Csvg width='300' height='300' viewBox='0 0 300 300' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M150 0C220 50 280 120 300 200C220 220 140 180 100 120C60 60 80 10 150 0Z' fill='%232E7D32' fill-opacity='0.14'/%3E%3Cpath d='M200 20C250 80 270 160 250 240C180 230 120 170 110 100C100 30 140 10 200 20Z' fill='%2381C784' fill-opacity='0.20'/%3E%3C/svg%3E");
           background-repeat: no-repeat;
           background-size: contain;
           pointer-events: none;
@@ -366,11 +366,11 @@ export default function AuthPage() {
 
         .bg-leaf-bottom-left {
           position: absolute;
-          bottom: -40px;
-          left: -40px;
-          width: 320px;
-          height: 320px;
-          background-image: url("data:image/svg+xml,%3Csvg width='300' height='300' viewBox='0 0 300 300' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 150C50 80 120 20 200 0C220 80 180 160 120 200C60 240 10 220 0 150Z' fill='%232E7D32' fill-opacity='0.12'/%3E%3Cpath d='M20 100C80 50 160 30 240 50C230 120 170 180 100 190C30 200 10 160 20 100Z' fill='%2381C784' fill-opacity='0.18'/%3E%3C/svg%3E");
+          bottom: -30px;
+          left: -30px;
+          width: 380px;
+          height: 380px;
+          background-image: url("data:image/svg+xml,%3Csvg width='300' height='300' viewBox='0 0 300 300' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 150C50 80 120 20 200 0C220 80 180 160 120 200C60 240 10 220 0 150Z' fill='%232E7D32' fill-opacity='0.14'/%3E%3Cpath d='M20 100C80 50 160 30 240 50C230 120 170 180 100 190C30 200 10 160 20 100Z' fill='%2381C784' fill-opacity='0.20'/%3E%3C/svg%3E");
           background-repeat: no-repeat;
           background-size: contain;
           pointer-events: none;
@@ -379,47 +379,47 @@ export default function AuthPage() {
 
         .bg-blob-top-left {
           position: absolute;
-          top: -100px;
-          left: -100px;
-          width: 400px;
-          height: 400px;
+          top: -120px;
+          left: -120px;
+          width: 450px;
+          height: 450px;
           border-radius: 50%;
-          background: rgba(226, 237, 214, 0.45);
-          filter: blur(40px);
+          background: rgba(226, 237, 214, 0.55);
+          filter: blur(50px);
           pointer-events: none;
         }
 
         .bg-blob-bottom-right {
           position: absolute;
-          bottom: -100px;
-          right: -100px;
-          width: 400px;
-          height: 400px;
+          bottom: -120px;
+          right: -120px;
+          width: 450px;
+          height: 450px;
           border-radius: 50%;
-          background: rgba(226, 237, 214, 0.45);
-          filter: blur(40px);
+          background: rgba(226, 237, 214, 0.55);
+          filter: blur(50px);
           pointer-events: none;
         }
 
         /* Split Card */
         .auth-split-card {
           width: 100%;
-          max-width: 960px;
+          max-width: 1020px;
           background: #ffffff;
-          border-radius: 28px;
-          box-shadow: 0 20px 60px rgba(46, 125, 50, 0.08), 0 4px 16px rgba(0,0,0,0.02);
+          border-radius: 32px;
+          box-shadow: 0 24px 70px rgba(46, 125, 50, 0.10), 0 8px 24px rgba(0,0,0,0.03);
           display: grid;
-          grid-template-columns: 420px 1fr;
+          grid-template-columns: 450px 1fr;
           overflow: hidden;
           position: relative;
           z-index: 10;
-          border: 1px solid #eef2e6;
+          border: 1px solid #eaf0e2;
         }
 
-        @media (max-width: 860px) {
+        @media (max-width: 900px) {
           .auth-split-card {
             grid-template-columns: 1fr;
-            max-width: 460px;
+            max-width: 480px;
           }
           .auth-left-panel {
             display: none !important;
@@ -428,28 +428,28 @@ export default function AuthPage() {
 
         /* Left Panel */
         .auth-left-panel {
-          background: linear-gradient(180deg, #F4F8EE 0%, #EBF3E2 100%);
-          padding: 40px 32px 32px 32px;
+          background: linear-gradient(180deg, #F4F8EE 0%, #E8F2DD 100%);
+          padding: 48px 36px 36px 36px;
           display: flex;
           flex-direction: column;
           align-items: center;
           text-align: center;
-          border-right: 1px solid #e2ebd7;
+          border-right: 1px solid #e0ebd3;
           position: relative;
         }
 
         .auth-brand {
           display: flex;
           align-items: center;
-          gap: 10px;
-          margin-bottom: 6px;
+          gap: 12px;
+          margin-bottom: 8px;
         }
 
         .brand-name {
-          font-size: 28px;
+          font-size: 32px;
           font-weight: 800;
           color: #1E4D18;
-          letter-spacing: -0.5px;
+          letter-spacing: -0.6px;
         }
 
         .brand-accent {
@@ -457,24 +457,24 @@ export default function AuthPage() {
         }
 
         .brand-tagline {
-          font-size: 13px;
+          font-size: 14px;
           color: #556B2F;
           font-weight: 600;
-          margin: 0 0 24px 0;
+          margin: 0 0 28px 0;
         }
 
         .family-photo-wrapper {
           width: 100%;
-          border-radius: 20px;
+          border-radius: 24px;
           overflow: hidden;
-          box-shadow: 0 8px 24px rgba(46, 125, 50, 0.12);
-          margin-bottom: 24px;
+          box-shadow: 0 12px 30px rgba(46, 125, 50, 0.14);
+          margin-bottom: 28px;
           background: #ffffff;
         }
 
         .family-photo {
           width: 100%;
-          height: 230px;
+          height: 270px;
           object-fit: cover;
           display: block;
         }
@@ -485,10 +485,10 @@ export default function AuthPage() {
           justify-content: space-around;
           width: 100%;
           background: #ffffff;
-          padding: 14px 10px;
-          border-radius: 16px;
-          box-shadow: 0 4px 14px rgba(0,0,0,0.03);
-          border: 1px solid #e6eedb;
+          padding: 16px 12px;
+          border-radius: 20px;
+          box-shadow: 0 4px 18px rgba(0,0,0,0.04);
+          border: 1px solid #e4eed8;
           margin-top: auto;
         }
 
@@ -499,31 +499,31 @@ export default function AuthPage() {
         }
 
         .pillar-icon {
-          font-size: 20px;
-          margin-bottom: 2px;
+          font-size: 22px;
+          margin-bottom: 3px;
         }
 
         .pillar-title {
-          font-size: 12px;
+          font-size: 13px;
           font-weight: 700;
           color: #1E4D18;
         }
 
         .pillar-sub {
-          font-size: 10px;
+          font-size: 11px;
           color: #64748B;
           font-weight: 500;
         }
 
         .pillar-divider {
           width: 1px;
-          height: 28px;
-          background: #e2ebd7;
+          height: 32px;
+          background: #e0ebd3;
         }
 
         /* Right Panel */
         .auth-right-panel {
-          padding: 40px 44px;
+          padding: 48px 52px;
           display: flex;
           flex-direction: column;
           justify-content: center;
@@ -531,22 +531,22 @@ export default function AuthPage() {
 
         @media (max-width: 520px) {
           .auth-right-panel {
-            padding: 28px 24px;
+            padding: 32px 24px;
           }
         }
 
         .auth-welcome-title {
-          font-size: 26px;
+          font-size: 30px;
           font-weight: 800;
           color: #1E293B;
-          margin: 0 0 6px 0;
-          letter-spacing: -0.3px;
+          margin: 0 0 8px 0;
+          letter-spacing: -0.4px;
         }
 
         .auth-welcome-sub {
-          font-size: 13px;
+          font-size: 14px;
           color: #64748B;
-          margin: 0 0 20px 0;
+          margin: 0 0 24px 0;
         }
 
         /* Mode Tabs */
@@ -555,16 +555,16 @@ export default function AuthPage() {
           grid-template-columns: 1fr 1fr;
           gap: 10px;
           background: #f1f5f9;
-          padding: 4px;
-          border-radius: 14px;
-          margin-bottom: 20px;
+          padding: 5px;
+          border-radius: 16px;
+          margin-bottom: 24px;
         }
 
         .mode-tab-btn {
           border: none;
-          padding: 10px 14px;
-          border-radius: 10px;
-          font-size: 13px;
+          padding: 12px 16px;
+          border-radius: 12px;
+          font-size: 14px;
           font-weight: 700;
           cursor: pointer;
           color: #64748B;
@@ -577,9 +577,9 @@ export default function AuthPage() {
         }
 
         .mode-tab-btn.active {
-          background: #2E7D32;
+          background: linear-gradient(135deg, #2E7D32 0%, #256628 100%);
           color: #ffffff;
-          box-shadow: 0 4px 12px rgba(46, 125, 50, 0.25);
+          box-shadow: 0 4px 14px rgba(46, 125, 50, 0.28);
         }
 
         /* Social Row */
@@ -588,9 +588,9 @@ export default function AuthPage() {
           align-items: center;
           text-align: center;
           color: #94A3B8;
-          font-size: 11px;
+          font-size: 12px;
           font-weight: 600;
-          margin: 12px 0 16px 0;
+          margin: 14px 0 18px 0;
         }
 
         .social-divider::before,
@@ -601,22 +601,22 @@ export default function AuthPage() {
         }
 
         .social-divider span {
-          padding: 0 12px;
+          padding: 0 14px;
         }
 
         .social-buttons-row {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 10px;
+          gap: 12px;
         }
 
         .social-btn {
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 6px;
-          padding: 10px;
-          border-radius: 12px;
+          gap: 8px;
+          padding: 12px;
+          border-radius: 14px;
           border: 1px solid #e2e8f0;
           background: #ffffff;
           font-size: 13px;
@@ -641,12 +641,12 @@ export default function AuthPage() {
         .custom-input-group {
           display: flex;
           flex-direction: column;
-          gap: 6px;
-          margin-bottom: 14px;
+          gap: 7px;
+          margin-bottom: 16px;
         }
 
         .custom-input-group label {
-          font-size: 12px;
+          font-size: 13px;
           font-weight: 700;
           color: #334155;
         }
@@ -659,7 +659,7 @@ export default function AuthPage() {
 
         .input-icon {
           position: absolute;
-          left: 14px;
+          left: 16px;
           display: flex;
           align-items: center;
           pointer-events: none;
@@ -667,8 +667,8 @@ export default function AuthPage() {
 
         .input-with-icon input {
           width: 100%;
-          padding: 12px 14px 12px 42px;
-          border-radius: 12px;
+          padding: 14px 16px 14px 46px;
+          border-radius: 14px;
           border: 1px solid #e2e8f0;
           font-size: 14px;
           outline: none;
@@ -680,12 +680,12 @@ export default function AuthPage() {
 
         .input-with-icon input:focus {
           border-color: #2E7D32;
-          box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.12);
+          box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.14);
         }
 
         .eye-toggle-btn {
           position: absolute;
-          right: 12px;
+          right: 14px;
           background: none;
           border: none;
           cursor: pointer;
@@ -700,8 +700,8 @@ export default function AuthPage() {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          margin-bottom: 18px;
-          font-size: 12px;
+          margin-bottom: 20px;
+          font-size: 13px;
         }
 
         .checkbox-label {
@@ -716,8 +716,8 @@ export default function AuthPage() {
 
         .checkbox-label input {
           accent-color: #2E7D32;
-          width: 16px;
-          height: 16px;
+          width: 17px;
+          height: 17px;
           cursor: pointer;
         }
 
@@ -726,7 +726,7 @@ export default function AuthPage() {
           border: none;
           color: #2E7D32;
           font-weight: 700;
-          font-size: 12px;
+          font-size: 13px;
           cursor: pointer;
         }
 
@@ -738,37 +738,38 @@ export default function AuthPage() {
           background: #fef2f2;
           border: 1px solid #fecaca;
           color: #dc2626;
-          padding: 10px 14px;
-          border-radius: 10px;
+          padding: 12px 16px;
+          border-radius: 12px;
           font-size: 13px;
           font-weight: 600;
           display: flex;
           align-items: center;
           gap: 8px;
-          margin-bottom: 16px;
+          margin-bottom: 18px;
         }
 
         /* Main Submit Button */
         .auth-main-submit-btn {
           width: 100%;
-          padding: 14px;
-          border-radius: 14px;
+          padding: 16px;
+          border-radius: 16px;
           border: none;
-          background: #2E7D32;
+          background: linear-gradient(135deg, #2E7D32 0%, #215924 100%);
           color: #ffffff;
-          font-size: 15px;
+          font-size: 16px;
           font-weight: 700;
           cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
           gap: 8px;
-          box-shadow: 0 4px 14px rgba(46, 125, 50, 0.3);
-          transition: background 0.15s ease, transform 0.1s ease;
+          box-shadow: 0 6px 18px rgba(46, 125, 50, 0.32);
+          transition: all 0.15s ease;
         }
 
         .auth-main-submit-btn:hover {
-          background: #256628;
+          background: linear-gradient(135deg, #256628 0%, #1a471c 100%);
+          box-shadow: 0 8px 22px rgba(46, 125, 50, 0.38);
         }
 
         .auth-main-submit-btn:disabled {
@@ -778,7 +779,7 @@ export default function AuthPage() {
 
         .demo-link-footer {
           text-align: center;
-          margin-top: 18px;
+          margin-top: 22px;
           font-size: 13px;
           color: #64748B;
         }
