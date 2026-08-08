@@ -127,8 +127,8 @@ export default function AuthPage() {
 
           <div className="family-photo-wrapper">
             <img
-              src="/tall_family_portrait_eating.png"
-              alt="Happy family enjoying healthy meal together"
+              src="/minimal_leaf_illustration.png"
+              alt="Minimalist leaf illustration"
               className="family-photo"
             />
           </div>
@@ -209,27 +209,13 @@ export default function AuthPage() {
             </button>
           </div>
 
-          {/* Social Sign-In Buttons */}
-          <div className="social-divider">
-            <span>or continue with</span>
-          </div>
+          {/* Google / Gmail Quick Sign-In */}
+          <button type="button" className="google-sign-in-btn" onClick={handleUseDemo}>
+            <GoogleIcon />
+            <span>Continue with Google / Gmail</span>
+          </button>
 
-          <div className="social-buttons-row">
-            <button type="button" className="social-btn" onClick={handleUseDemo}>
-              <GoogleIcon />
-              <span>Google</span>
-            </button>
-            <button type="button" className="social-btn" onClick={handleUseDemo}>
-              <AppleIcon />
-              <span>Apple</span>
-            </button>
-            <button type="button" className="social-btn active-brand" onClick={handleUseDemo}>
-              <LeafBrandIcon />
-              <span>Family Fit</span>
-            </button>
-          </div>
-
-          <div className="social-divider" style={{ marginTop: 20 }}>
+          <div className="social-divider" style={{ marginTop: 22 }}>
             <span>or sign in with email</span>
           </div>
 
@@ -371,12 +357,37 @@ export default function AuthPage() {
           box-sizing: border-box;
           position: relative;
           background-color: #fafcf7;
-          background-image: url("/exact_watercolor_leaves_bg.png");
+          background-image: url("/minimal_clean_bg.png");
           background-size: cover;
           background-position: center center;
           background-repeat: no-repeat;
           overflow: hidden;
           font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+        }
+
+        .google-sign-in-btn {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          padding: 13px 20px;
+          border-radius: 14px;
+          border: 1px solid #e2e8f0;
+          background: #ffffff;
+          font-size: 14px;
+          font-weight: 700;
+          color: #1e293b;
+          cursor: pointer;
+          transition: all 0.15s ease;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+          margin-top: 4px;
+        }
+
+        .google-sign-in-btn:hover {
+          background: #f8fafc;
+          border-color: #cbd5e1;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.06);
         }
 
         /* Split Card */
