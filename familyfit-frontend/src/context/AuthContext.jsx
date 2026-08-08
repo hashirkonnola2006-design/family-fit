@@ -80,41 +80,63 @@ export function AuthProvider({ children }) {
     // This prevents a flash of old members/recipes while the new API fetch is in-flight.
     clearFamilyCache()
 
-    // 1. Try Backend API login
-    try {
-      const res = await apiLogin({ email: cleanEmail, password })
-      if (res?.data && res.data.familyId) {
-        const data = res.data
-        saveToLocalRegistry({
-          familyId: data.familyId,
-          email: cleanEmail,
-          familyName: data.familyName || 'My Family',
-          password,
-          accessToken: data.accessToken || `token_${Date.now()}`,
-          refreshToken: data.refreshToken || `ref_${Date.now()}`,
-        })
-        persistAuth(data)
-        setUser({ familyId: data.familyId, email: cleanEmail, familyName: data.familyName || 'My Family' })
-        return data
+    // 1. Try Backend API login with retry logic (up to 2 retries, 3s delay)
+    let lastError = null
+    const maxRetries = 2
+    const delayMs = 3000
+
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      if (attempt > 0) {
+        await new Promise((resolve) => setTimeout(resolve, delayMs))
       }
-      throw new Error('Invalid login credentials')
-    } catch (apiErr) {
-      console.error('Backend API login failed:', apiErr)
-      const serverMessage = apiErr.response?.data?.message || apiErr.message
-      if (serverMessage && !serverMessage.includes('timeout') && !serverMessage.includes('Network Error')) {
-        throw new Error(serverMessage)
+      try {
+        const res = await apiLogin({ email: cleanEmail, password })
+        if (res?.data && res.data.familyId) {
+          const data = res.data
+          saveToLocalRegistry({
+            familyId: data.familyId,
+            email: cleanEmail,
+            familyName: data.familyName || 'My Family',
+            password,
+            accessToken: data.accessToken || `token_${Date.now()}`,
+            refreshToken: data.refreshToken || `ref_${Date.now()}`,
+          })
+          persistAuth(data)
+          setUser({ familyId: data.familyId, email: cleanEmail, familyName: data.familyName || 'My Family' })
+          return data
+        }
+        throw new Error('Invalid login credentials')
+      } catch (apiErr) {
+        console.error(`Backend API login attempt ${attempt + 1} failed:`, apiErr)
+        lastError = apiErr
+        // If it's an explicit response from backend (e.g., 400 Bad credentials, 401 Unauthorized), do not retry server errors
+        const responseData = apiErr.response?.data
+        const serverMsg = responseData?.message || (typeof responseData === 'string' ? responseData : null)
+        if (serverMsg && serverMsg !== 'Bad credentials' && !serverMsg.toLowerCase().includes('timeout') && !serverMsg.toLowerCase().includes('network error')) {
+          throw new Error(serverMsg)
+        }
+        if (apiErr.response?.status === 400 || apiErr.response?.status === 401) {
+          if (serverMsg === 'Bad credentials') {
+            throw new Error('Invalid email or password.')
+          }
+          throw new Error(serverMsg || 'Invalid email or password.')
+        }
       }
-      throw new Error('Login failed: could not reach the server. Please try again in a moment (the server may be waking up).')
     }
 
-    // Demo account check
+    // Demo account fallback check
     if (cleanEmail === DEMO_USER.email && (password === DEMO_USER.password || password === 'password123')) {
       persistAuth(DEMO_USER)
       setUser({ familyId: DEMO_USER.familyId, email: DEMO_USER.email, familyName: DEMO_USER.familyName })
       return DEMO_USER
     }
 
-    throw new Error('Account not found with this email. Try creating an account instead.')
+    // If network/server connection completely failed after retries
+    const lastServerMsg = lastError?.response?.data?.message
+    if (lastServerMsg) {
+      throw new Error(lastServerMsg)
+    }
+    throw new Error('Login failed: could not reach the server. Please try again in a moment (the server may be waking up).')
   }
 
   const register = async (familyNameInput, emailInput, passwordInput) => {

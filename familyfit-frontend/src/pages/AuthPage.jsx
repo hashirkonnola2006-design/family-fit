@@ -1,20 +1,35 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { clearFamilyCache } from '../lib/familyCache'
+import client from '../api/client'
 
 export default function AuthPage() {
   const [mode, setMode] = useState('login')   // 'login' | 'register'
   const [loading, setLoading] = useState(false)
+  const [wakingUp, setWakingUp] = useState(false)
   const [error, setError] = useState('')
   const [form, setForm] = useState({ familyName: '', email: '', password: '' })
   const { login, register } = useAuth()
   const navigate = useNavigate()
 
+  // Ping backend /healthz silently on mount so server starts spinning up before user submits
+  useEffect(() => {
+    client.get('/healthz').catch(() => {
+      // Ignore background wake-up errors silently
+    })
+  }, [])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
     setLoading(true)
+    setWakingUp(false)
+
+    // Set a timer to update loading text if the request takes longer than 2.5s (server waking up)
+    const wakeTimer = setTimeout(() => {
+      setWakingUp(true)
+    }, 2500)
 
     try {
       if (mode === 'login') {
@@ -29,10 +44,12 @@ export default function AuthPage() {
       }
     } catch (err) {
       console.error('Authentication failure:', err)
-      const userMessage = err.message || err.response?.data?.message || 'Signup failed: could not reach the server. Please try again in a moment (the server may be waking up).'
+      const userMessage = err.message || err.response?.data?.message || 'Authentication failed: could not reach the server. Please try again in a moment.'
       setError(userMessage)
     } finally {
+      clearTimeout(wakeTimer)
       setLoading(false)
+      setWakingUp(false)
     }
   }
 
@@ -130,7 +147,7 @@ export default function AuthPage() {
             disabled={loading}
           >
             {loading
-              ? <span style={{ opacity: 0.7 }}>Processing…</span>
+              ? <span style={{ opacity: 0.9 }}>{wakingUp ? 'Waking up server (may take up to 30s)...' : 'Processing…'}</span>
               : mode === 'login' ? 'Sign In' : 'Create Account'
             }
           </button>
