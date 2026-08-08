@@ -1,10 +1,14 @@
 import { useTheme } from '../context/ThemeContext'
+import Header from './Header'
 
 export default function ResponsiveLayout({ children }) {
   const { isDark } = useTheme()
 
   return (
     <div className="layout-root">
+      {/* ── GLOBAL TOP NAVIGATION BAR ── */}
+      <Header />
+
       {/* ── RESPONSIVE VIEWPORT CONTAINER ── */}
       <div className="layout-content-wrapper">
         {children}
