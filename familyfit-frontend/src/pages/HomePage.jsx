@@ -4,6 +4,7 @@ import { useFamily } from '../context/FamilyContext'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import TestimonialMarquee from '../components/ui/marquee-01'
+import BottomNav from '../components/BottomNav'
 
 // ── ICONS ──
 const LeafIcon = ({ size = 20, color = "#4F6343" }) => (
@@ -1030,6 +1031,7 @@ export default function HomePage() {
           text-decoration: none;
         }
       `}} />
+      <BottomNav />
     </div>
   )
 }

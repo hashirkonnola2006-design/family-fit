@@ -6,6 +6,7 @@ import { useTheme } from '../context/ThemeContext'
 import { RECIPE_DATABASE } from '../data/recipeDatabase'
 import { getAllRecipes } from '../api/recipes'
 import { evaluateRecipeHealth } from '../utils/healthEvaluation'
+import BottomNav from '../components/BottomNav'
 
 // ── FILTER TABS ──
 const FILTER_TABS = [
@@ -448,6 +449,7 @@ export default function RecipesPage() {
         }
         ::-webkit-scrollbar { display: none; }
       `}} />
+      <BottomNav />
     </div>
   )
 }
