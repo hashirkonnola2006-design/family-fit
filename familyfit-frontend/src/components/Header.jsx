@@ -43,7 +43,7 @@ export default function Header() {
   return (
     <header
       style={{
-        background: isHomePage ? '#3D4A2E' : isDark ? '#141C2E' : '#FFFFFF',
+        background: isHomePage ? '#4F6343' : isDark ? '#141C2E' : '#FFFFFF',
         borderBottom: isHomePage ? 'none' : `1px solid ${isDark ? '#24324A' : '#EAECE5'}`,
         position: 'sticky',
         top: 0,
