@@ -23,7 +23,7 @@ const NAV_LINKS = [
   { path: '/recipes', label: 'Recipes' },
   { path: '/grocery', label: 'Grocery' },
   { path: '/tips', label: 'Tips' },
-  { path: '/about', label: 'About Us' },
+  { path: '/profile', label: 'About Us' },
 ]
 
 export default function Header() {
