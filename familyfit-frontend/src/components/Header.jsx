@@ -48,7 +48,7 @@ export default function Header() {
         position: 'sticky',
         top: 0,
         zIndex: 1000,
-        padding: '12px 32px',
+        padding: '16px 80px',
         boxShadow: isHomePage ? 'none' : '0 2px 10px rgba(0,0,0,0.02)',
         width: '100%',
         boxSizing: 'border-box',
@@ -57,7 +57,7 @@ export default function Header() {
     >
       <div
         style={{
-          maxWidth: 1240,
+          maxWidth: 1320,
           margin: '0 auto',
           height: 60,
           display: 'flex',
@@ -103,7 +103,7 @@ export default function Header() {
         </div>
 
         {/* Nav Links */}
-        <nav style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
+        <nav style={{ display: 'flex', alignItems: 'center', gap: 36 }}>
           {NAV_LINKS.map((link, idx) => {
             const isActive = (pathname === '/' && link.path === '/' && idx === 0) || (link.path !== '/' && pathname.startsWith(link.path))
             return (
@@ -149,7 +149,7 @@ export default function Header() {
 
         {/* Right Controls */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-          {/* Notification Bell */}
+          {/* Notification Bell with Badge Dot */}
           <button
             onClick={() => alert('No new notifications')}
             style={{
@@ -171,17 +171,18 @@ export default function Header() {
             <span
               style={{
                 position: 'absolute',
-                top: 10,
-                right: 10,
-                width: 7,
-                height: 7,
+                top: 8,
+                right: 8,
+                width: 9,
+                height: 9,
                 borderRadius: '50%',
                 background: '#FF8A00',
+                border: '1.5px solid #FFFFFF',
               }}
             />
           </button>
 
-          {/* Profile Pill Badge */}
+          {/* Profile Pill Badge (Light Mint #E8F0E3) */}
           <div
             onClick={() => navigate('/profile')}
             style={{
@@ -189,10 +190,10 @@ export default function Header() {
               alignItems: 'center',
               gap: 10,
               cursor: 'pointer',
-              padding: '4px 14px 4px 6px',
+              padding: '4px 14px 4px 5px',
               borderRadius: 30,
-              background: isHomePage ? '#FFFFFF' : isDark ? '#1E293B' : '#F6F7F2',
-              boxShadow: isHomePage ? '0 2px 10px rgba(0,0,0,0.08)' : 'none',
+              background: isHomePage ? '#E8F0E3' : isDark ? '#1E293B' : '#F6F7F2',
+              boxShadow: isHomePage ? '0 2px 8px rgba(0,0,0,0.06)' : 'none',
             }}
           >
             <div
@@ -200,13 +201,14 @@ export default function Header() {
                 width: 32,
                 height: 32,
                 borderRadius: '50%',
-                background: isHomePage ? '#E8F3E5' : '#2E7D32',
-                color: isHomePage ? '#3D4A2E' : 'white',
+                background: '#FFFFFF',
+                color: '#3D4A2E',
                 fontWeight: 700,
                 fontSize: 14,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
               }}
             >
               {isHomePage ? <LeafIcon size={16} color="#3D4A2E" /> : initial}
@@ -215,11 +217,11 @@ export default function Header() {
               <span style={{ fontSize: 13, fontWeight: 700, color: '#1E293B', lineHeight: 1.1 }}>
                 {displayName} Family
               </span>
-              <span style={{ fontSize: 10, color: '#64748B', fontWeight: 500 }}>
+              <span style={{ fontSize: 10, color: '#55654B', fontWeight: 500 }}>
                 Family Admin
               </span>
             </div>
-            <span style={{ fontSize: 11, color: '#64748B', marginLeft: 2 }}>▾</span>
+            <span style={{ fontSize: 11, color: '#55654B', marginLeft: 2 }}>▾</span>
           </div>
         </div>
       </div>

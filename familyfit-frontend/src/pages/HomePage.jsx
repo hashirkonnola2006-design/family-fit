@@ -43,8 +43,8 @@ const FlameIcon = () => (
   </svg>
 )
 
-const HeartIcon = ({ filled = false, size = 18 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill={filled ? "#EF4444" : "none"} stroke={filled ? "#EF4444" : "#475569"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+const HeartIcon = ({ filled = false, size = 18, color = "#475569" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill={filled ? "#EF4444" : "none"} stroke={filled ? "#EF4444" : color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
   </svg>
 )
@@ -104,7 +104,7 @@ const CURATED_PLANS = [
     title: 'For Weight Balance',
     sub: 'Balanced meals for healthy weight',
     image: '/kerala_vegetable_upma.png',
-    iconBg: '#E8F3E5',
+    iconBg: '#E8F0E3',
     iconColor: '#3D4A2E',
     type: 'shield',
   },
@@ -174,7 +174,7 @@ export default function HomePage() {
 
   return (
     <div className="landing-page-root">
-      {/* ── 01. HERO SECTION (DARK OLIVE GREEN WITH ASYMMETRIC BOTTOM-LEFT CURVE) ── */}
+      {/* ── 01. HERO SECTION (DARK OLIVE GREEN WITH DEEP CONCAVE SWOOP CURVE) ── */}
       <section className="hero-olive-container">
         <div className="hero-inner-content">
           {/* Left Column: Heading, Subheading, CTAs, Search */}
@@ -228,20 +228,22 @@ export default function HomePage() {
       <section className="section-main-wrapper">
         <div className="fitness-header-center">
           <div className="leaf-header-icon-wrap">
-            <LeafIcon size={22} color="#3D4A2E" />
+            <LeafIcon size={20} color="#3D4A2E" />
           </div>
           <h2 className="fitness-heading">
             Fitness plus Nutrition<br />
             equals Transformation
           </h2>
+
+          {/* Hand-drawn style short wavy SVG line (~80px wide) */}
           <div className="squiggle-line-wrap">
-            <svg width="140" height="12" viewBox="0 0 140 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M2 6C25 1 45 11 70 6C95 1 115 11 138 6" stroke="#81C784" strokeWidth="2.2" strokeLinecap="round" />
+            <svg width="80" height="8" viewBox="0 0 80 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 4 C 15 1, 25 7, 40 4 C 55 1, 65 7, 78 4" stroke="#81C784" strokeWidth="1.8" strokeLinecap="round" />
             </svg>
           </div>
         </div>
 
-        {/* 4 Recipe Cards Grid */}
+        {/* 4 Recipe Cards Grid with tighter 20-24px gap */}
         <div className="recipe-cards-grid">
           {filteredRecipes.map((recipe) => (
             <div key={recipe.id} className="recipe-card-clean">
@@ -252,7 +254,7 @@ export default function HomePage() {
                   onClick={() => toggleFavorite(recipe.id)}
                   aria-label="Save recipe"
                 >
-                  <HeartIcon filled={favorites.includes(recipe.id)} size={17} />
+                  <HeartIcon filled={favorites.includes(recipe.id)} size={16} />
                 </button>
               </div>
 
@@ -281,7 +283,7 @@ export default function HomePage() {
           <div className="loved-header-row">
             <div className="loved-header-left">
               <div className="heart-icon-badge">
-                <HeartIcon filled={false} size={22} />
+                <HeartIcon filled={false} size={20} color="#3D4A2E" />
               </div>
               <div>
                 <h3 className="loved-title">Loved by Families</h3>
@@ -294,6 +296,7 @@ export default function HomePage() {
             </button>
           </div>
 
+          {/* 3 Testimonial Cards */}
           <div className="testimonials-cards-grid">
             {TESTIMONIALS.map((t, idx) => (
               <div key={idx} className="testimonial-card-clean">
@@ -309,6 +312,7 @@ export default function HomePage() {
             ))}
           </div>
 
+          {/* Pagination Dots */}
           <div className="pagination-dots">
             <span className="dot active" />
             <span className="dot" />
@@ -448,21 +452,21 @@ export default function HomePage() {
           overflow-x: hidden;
         }
 
-        /* HERO SECTION */
+        /* HERO SECTION WITH LARGE CONCAVE BOTTOM-LEFT SWOOP CURVE (95px) */
         .hero-olive-container {
           background-color: #3D4A2E;
-          border-bottom-left-radius: 75px;
+          border-bottom-left-radius: 95px;
           border-bottom-right-radius: 0px;
           border-top-left-radius: 0px;
           border-top-right-radius: 0px;
-          padding: 40px 48px 64px 48px;
+          padding: 40px 80px 64px 80px;
           color: #ffffff;
           width: 100%;
           box-sizing: border-box;
         }
 
         .hero-inner-content {
-          max-width: 1240px;
+          max-width: 1320px;
           margin: 0 auto;
           display: grid;
           grid-template-columns: 1.15fr 0.85fr;
@@ -473,7 +477,7 @@ export default function HomePage() {
         @media (max-width: 980px) {
           .hero-olive-container {
             padding: 32px 24px 48px 24px;
-            border-bottom-left-radius: 48px;
+            border-bottom-left-radius: 60px;
           }
           .hero-inner-content {
             grid-template-columns: 1fr;
@@ -611,17 +615,23 @@ export default function HomePage() {
           }
         }
 
-        /* MAIN CONTENT AREA */
+        /* MAIN CONTENT AREA WITH CONSISTENT 80px HORIZONTAL PADDING */
         .section-main-wrapper {
-          max-width: 1240px;
+          max-width: 1320px;
           margin: 0 auto;
-          padding: 60px 32px 40px 32px;
+          padding: 60px 80px 48px 80px;
           box-sizing: border-box;
+        }
+
+        @media (max-width: 980px) {
+          .section-main-wrapper {
+            padding: 40px 24px 32px 24px;
+          }
         }
 
         .fitness-header-center {
           text-align: center;
-          margin-bottom: 40px;
+          margin-bottom: 36px;
         }
 
         .leaf-header-icon-wrap {
@@ -632,7 +642,7 @@ export default function HomePage() {
           font-size: 32px;
           font-weight: 800;
           color: ${isDark ? '#FFFFFF' : '#3D4A2E'};
-          margin: 4px 0 8px 0;
+          margin: 4px 0 6px 0;
           letter-spacing: -0.5px;
           line-height: 1.25;
         }
@@ -640,14 +650,14 @@ export default function HomePage() {
         .squiggle-line-wrap {
           display: flex;
           justify-content: center;
-          margin-top: 4px;
+          margin-top: 6px;
         }
 
-        /* RECIPE CARDS GRID */
+        /* RECIPE CARDS GRID - 20px TIGHT GAP & LANDSCAPE 4:3 ASPECT RATIO IMAGES */
         .recipe-cards-grid {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
-          gap: 24px;
+          gap: 20px;
           margin-bottom: 56px;
         }
 
@@ -680,9 +690,11 @@ export default function HomePage() {
         .recipe-card-img-wrap {
           position: relative;
           width: 100%;
-          height: 180px;
+          height: 150px;
           overflow: hidden;
           background: #EAEFE7;
+          border-top-left-radius: 20px;
+          border-top-right-radius: 20px;
         }
 
         .recipe-card-img {
@@ -696,8 +708,8 @@ export default function HomePage() {
           position: absolute;
           top: 12px;
           right: 12px;
-          width: 34px;
-          height: 34px;
+          width: 32px;
+          height: 32px;
           border-radius: 50%;
           background: #FFFFFF;
           border: none;
@@ -714,14 +726,14 @@ export default function HomePage() {
         }
 
         .recipe-card-body {
-          padding: 18px 18px 20px 18px;
+          padding: 16px;
         }
 
         .recipe-card-title {
-          font-size: 16px;
+          font-size: 15px;
           font-weight: 700;
           color: ${isDark ? '#F8FAFC' : '#1E293B'};
-          margin: 0 0 10px 0;
+          margin: 0 0 8px 0;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -729,13 +741,13 @@ export default function HomePage() {
 
         .recipe-card-tag-pill {
           display: inline-block;
-          background: ${isDark ? '#166534' : '#E8F3E5'};
+          background: ${isDark ? '#166534' : '#E8F0E3'};
           color: ${isDark ? '#DCFCE7' : '#3D4A2E'};
           font-size: 11px;
           font-weight: 700;
           padding: 4px 12px;
           border-radius: 9999px;
-          margin-bottom: 16px;
+          margin-bottom: 14px;
         }
 
         .recipe-meta-row {
@@ -757,7 +769,7 @@ export default function HomePage() {
           color: #CBD5E1;
         }
 
-        /* LOVED BY FAMILIES */
+        /* LOVED BY FAMILIES SECTION */
         .loved-by-families-container {
           margin-bottom: 60px;
         }
@@ -776,10 +788,10 @@ export default function HomePage() {
         }
 
         .heart-icon-badge {
-          width: 40px;
-          height: 40px;
+          width: 38px;
+          height: 38px;
           border-radius: 50%;
-          background: #E8F3E5;
+          background: #E8F0E3;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -817,8 +829,8 @@ export default function HomePage() {
         .testimonials-cards-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 24px;
-          margin-bottom: 24px;
+          gap: 20px;
+          margin-bottom: 20px;
         }
 
         @media (max-width: 860px) {
@@ -829,17 +841,17 @@ export default function HomePage() {
 
         .testimonial-card-clean {
           background: ${isDark ? '#1E293B' : '#FFFFFF'};
-          border-radius: 20px;
-          padding: 22px;
-          border: none;
-          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+          border-radius: 16px;
+          padding: 20px;
+          border: 1px solid ${isDark ? '#334155' : '#EAEFE5'};
+          box-shadow: 0 2px 12px rgba(0, 0, 0, 0.02);
         }
 
         .t-user-row {
           display: flex;
           align-items: center;
           gap: 12px;
-          margin-bottom: 12px;
+          margin-bottom: 10px;
         }
 
         .t-avatar {
@@ -850,7 +862,7 @@ export default function HomePage() {
         }
 
         .t-name {
-          font-size: 15px;
+          font-size: 14px;
           font-weight: 700;
           color: ${isDark ? '#F8FAFC' : '#1E293B'};
           margin: 0 0 2px 0;
@@ -858,6 +870,7 @@ export default function HomePage() {
 
         .t-quote {
           font-size: 13px;
+          font-style: italic;
           color: ${isDark ? '#CBD5E1' : '#475569'};
           line-height: 1.5;
           margin: 0;
@@ -868,6 +881,7 @@ export default function HomePage() {
           align-items: center;
           justify-content: center;
           gap: 8px;
+          margin-top: 20px;
         }
 
         .dot {
@@ -911,7 +925,7 @@ export default function HomePage() {
         .plans-three-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 24px;
+          gap: 20px;
         }
 
         @media (max-width: 860px) {
@@ -962,7 +976,7 @@ export default function HomePage() {
           width: 32px;
           height: 32px;
           border-radius: 50%;
-          background: #E8F3E5;
+          background: #E8F0E3;
           border: none;
           display: flex;
           align-items: center;
@@ -988,12 +1002,18 @@ export default function HomePage() {
         /* FOOTER */
         .site-footer-redesign {
           background: ${isDark ? '#0F172A' : '#EAEFE7'};
-          padding: 60px 32px 32px 32px;
+          padding: 60px 80px 32px 80px;
           border-top: 1px solid ${isDark ? '#1E293B' : '#DFE6DB'};
         }
 
+        @media (max-width: 980px) {
+          .site-footer-redesign {
+            padding: 40px 24px 24px 24px;
+          }
+        }
+
         .footer-top-grid {
-          max-width: 1240px;
+          max-width: 1320px;
           margin: 0 auto 40px auto;
           display: grid;
           grid-template-columns: 2fr 1fr 1fr 2fr;
@@ -1109,7 +1129,7 @@ export default function HomePage() {
         }
 
         .footer-bottom-bar {
-          max-width: 1240px;
+          max-width: 1320px;
           margin: 0 auto;
           padding-top: 24px;
           border-top: 1px solid ${isDark ? '#1E293B' : '#D5DDD1'};
