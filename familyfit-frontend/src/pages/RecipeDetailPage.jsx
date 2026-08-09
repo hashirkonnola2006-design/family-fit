@@ -41,14 +41,27 @@ function evaluateMemberRecipeSuitability(recipe, member) {
     }
   }
 
-  // 2. Check Allergy Conflicts
+  // 2. Check Allergy Conflicts with strict word boundary checks
   const allergenConflict = memberAllergies.find((allergen) => {
-    if (allergen === 'Milk/Dairy' && (fullRecipeText.includes('milk') || fullRecipeText.includes('curd') || fullRecipeText.includes('ghee') || fullRecipeText.includes('thayir') || fullRecipeText.includes('sambharam') || fullRecipeText.includes('cheese') || fullRecipeText.includes('yogurt'))) return true
-    if (allergen === 'Eggs' && (fullRecipeText.includes('egg') || fullRecipeText.includes('mutta'))) return true
-    if (allergen === 'Peanuts/Tree Nuts' && (fullRecipeText.includes('nut') || fullRecipeText.includes('almond') || fullRecipeText.includes('peanut'))) return true
-    if (allergen === 'Seafood/Fish' && (fullRecipeText.includes('fish') || fullRecipeText.includes('mathi') || fullRecipeText.includes('ayala') || fullRecipeText.includes('neymeen') || fullRecipeText.includes('chemmeen') || fullRecipeText.includes('prawn') || fullRecipeText.includes('seafood') || fullRecipeText.includes('karimeen'))) return true
-    if (allergen === 'Soy' && (fullRecipeText.includes('tofu') || fullRecipeText.includes('soy'))) return true
-    if (allergen === 'Wheat/Gluten' && (fullRecipeText.includes('wheat') || fullRecipeText.includes('bread'))) return true
+    if (allergen === 'Milk/Dairy') {
+      return /\b(milk|curd|ghee|thayir|sambharam|cheese|yogurt|butter|paneer)\b/i.test(fullRecipeText)
+    }
+    if (allergen === 'Eggs') {
+      return /\b(eggs?|mutta)\b/i.test(fullRecipeText)
+    }
+    if (allergen === 'Peanuts/Tree Nuts') {
+      // Must match actual nuts (peanuts, almonds, cashews, etc.) and NOT "nutrients", "nutrition", or "coconut"
+      return /\b(peanuts?|tree nuts?|almonds?|cashews?|walnuts?|hazelnuts?|pistachios?)\b/i.test(fullRecipeText)
+    }
+    if (allergen === 'Seafood/Fish') {
+      return /\b(fish|mathi|ayala|neymeen|chemmeen|prawns?|seafood|karimeen|crab|squid)\b/i.test(fullRecipeText)
+    }
+    if (allergen === 'Soy') {
+      return /\b(tofu|soy|soya)\b/i.test(fullRecipeText)
+    }
+    if (allergen === 'Wheat/Gluten') {
+      return /\b(wheat|parotta|bread|maida)\b/i.test(fullRecipeText)
+    }
     return false
   })
 

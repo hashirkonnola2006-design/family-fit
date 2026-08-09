@@ -33,36 +33,31 @@ export function evaluateRecipeHealth(recipe, member) {
         recipeAllergies.some(
           (ra) => ra.toLowerCase().includes('fish') || ra.toLowerCase().includes('seafood')
         ) ||
-        nameLower.includes('fish') ||
-        nameLower.includes('prawn') ||
-        nameLower.includes('chemmeen') ||
-        nameLower.includes('meen') ||
-        nameLower.includes('mathi') ||
-        nameLower.includes('ayala') ||
-        nameLower.includes('seer')
+        /\b(fish|prawns?|chemmeen|mathi|ayala|neymeen|seafood|karimeen|crab|squid)\b/i.test(nameLower)
       )
     }
     if (aLower.includes('dairy') || aLower.includes('milk')) {
       return (
         recipeAllergies.some((ra) => ra.toLowerCase().includes('dairy')) ||
-        nameLower.includes('paneer') ||
-        nameLower.includes('milk') ||
-        nameLower.includes('curd') ||
-        nameLower.includes('ghee')
+        /\b(paneer|milk|curd|ghee|thayir|cheese|yogurt|butter)\b/i.test(nameLower)
       )
     }
     if (aLower.includes('egg')) {
       return (
         recipeAllergies.some((ra) => ra.toLowerCase().includes('egg')) ||
-        nameLower.includes('egg') ||
-        nameLower.includes('mutta')
+        /\b(eggs?|mutta)\b/i.test(nameLower)
+      )
+    }
+    if (aLower.includes('nut') || aLower.includes('peanut')) {
+      return (
+        recipeAllergies.some((ra) => ra.toLowerCase().includes('nut') || ra.toLowerCase().includes('peanut')) ||
+        /\b(peanuts?|tree nuts?|almonds?|cashews?|walnuts?|hazelnuts?|pistachios?)\b/i.test(nameLower)
       )
     }
     if (aLower.includes('wheat') || aLower.includes('gluten')) {
       return (
         recipeAllergies.some((ra) => ra.toLowerCase().includes('gluten')) ||
-        nameLower.includes('parotta') ||
-        nameLower.includes('wheat')
+        /\b(parotta|wheat|maida)\b/i.test(nameLower)
       )
     }
     return false
