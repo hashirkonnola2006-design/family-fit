@@ -6,21 +6,6 @@ import { useFamily } from '../context/FamilyContext'
 import { useGrocery, KERALA_GROCERY_DATASET } from '../context/GroceryContext'
 import { useTheme } from '../context/ThemeContext'
 
-const CATEGORIES = ['Produce', 'Protein', 'Dairy', 'Pantry', 'Other']
-
-const CATEGORY_ICONS = {
-  Produce: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#25451c" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.1 2 7 0 6-4.5 11-10 11z" />
-      <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
-    </svg>
-  ),
-  Protein: '🥩',
-  Dairy: '🥛',
-  Pantry: '🌾',
-  Other: '🍎',
-}
-
 const BUDGET_PRESETS = [500, 1000, 1500, 2500, 3500, 5000]
 
 export default function GroceryPage() {
@@ -36,30 +21,39 @@ export default function GroceryPage() {
   const [tempBudget, setTempBudget] = useState(budget || 1500)
   const [toast, setToast] = useState('')
   const [sortBy, setSortBy] = useState('Recommended')
+  const [favorites, setFavorites] = useState([201]) // default favorite items
 
   const showToastMsg = (msg) => {
     setToast(msg)
     setTimeout(() => setToast(''), 3000)
   }
 
-  const selectedMember = selectedMemberId === 'ALL'
-    ? null
-    : members.find((m) => String(m.id) === String(selectedMemberId)) || null
+  const toggleFavorite = (id) => {
+    setFavorites((prev) =>
+      prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]
+    )
+  }
+
+  const selectedMember =
+    selectedMemberId === 'ALL'
+      ? null
+      : members.find((m) => String(m.id) === String(selectedMemberId)) || null
 
   const rawRecommendations = KERALA_GROCERY_DATASET
 
-  const filteredRecommendations = selectedMemberId === 'ALL'
-    ? rawRecommendations
-    : rawRecommendations.filter((item) => {
-        if (!selectedMember) return true
-        const evalRes = evaluateItemSuitability(item, selectedMember)
-        return evalRes.isSuitable
-      })
+  // Filter produce items for primary view (Produce category first, or all based on selection)
+  const produceItems = rawRecommendations.filter(
+    (item) => item.category === 'Produce'
+  )
+  const otherItems = rawRecommendations.filter(
+    (item) => item.category !== 'Produce'
+  )
 
   const handlePeriodChange = (period) => {
     setBudgetPeriod(period)
     if (period === 'Daily' && budget > 1000) setBudget(300)
-    else if (period === 'Weekly' && (budget < 500 || budget > 3000)) setBudget(1500)
+    else if (period === 'Weekly' && (budget < 500 || budget > 3000))
+      setBudget(1500)
     else if (period === '2-Week') setBudget(1500)
     showToastMsg(`Recommendations scaled to ${period} budget!`)
   }
@@ -71,264 +65,323 @@ export default function GroceryPage() {
     showToastMsg('Target budget updated! 💰')
   }
 
-  const familyName = family?.name || 'Healthy Family'
-  const initial = (familyName[0] || 'H').toUpperCase()
-
   return (
     <div
-      className="page-responsive-container"
       style={{
-        background: isDark ? '#0a0f1d' : '#fcfaf5',
-        fontFamily: "'Inter', -apple-system, sans-serif",
-        color: isDark ? '#f8fafc' : '#111827',
-        position: 'relative',
+        background: isDark ? '#0A0F1D' : '#FAFAFA',
+        fontFamily: "'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif",
+        color: isDark ? '#F8FAFC' : '#111827',
+        minHeight: '100vh',
+        paddingBottom: 80,
       }}
     >
-      {/* Desktop-Only Header (bell + profile right-aligned) */}
-      <div className="desktop-only-header" style={{ display: 'none', justifyContent: 'flex-end', alignItems: 'center', gap: 16, marginBottom: 20 }}>
-        <button
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: '50%',
-            background: isDark ? '#1E293B' : '#FFFFFF',
-            border: `1px solid ${isDark ? '#334155' : '#E8E8E3'}`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            position: 'relative',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-          }}
-          onClick={() => alert('No new notifications')}
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={isDark ? '#94A3B8' : '#121826'} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-          </svg>
-          <span
-            style={{
-              position: 'absolute',
-              top: 10,
-              right: 10,
-              width: 8,
-              height: 8,
-              borderRadius: '50%',
-              background: '#F97316',
-              border: '1.5px solid #FFFFFF',
-            }}
-          />
-        </button>
-        <div
-          onClick={() => navigate('/profile')}
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: '50%',
-            background: '#1E4D18',
-            color: 'white',
-            fontWeight: 700,
-            fontSize: 18,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            boxShadow: '0 4px 12px rgba(30,77,24,0.25)',
-          }}
-        >
-          {initial}
-        </div>
-      </div>
-
       {/* Toast Notification */}
       {toast && (
         <div
           style={{
             position: 'fixed',
-            top: 20,
+            top: 24,
             left: '50%',
             transform: 'translateX(-50%)',
-            background: '#1b3815',
+            background: '#1B4D2E',
             color: 'white',
-            padding: '12px 22px',
+            padding: '12px 24px',
             borderRadius: 30,
-            fontSize: 13,
+            fontSize: 14,
             fontWeight: 700,
             zIndex: 3000,
-            boxShadow: '0 8px 24px rgba(0,0,0,0.25)',
-            whiteSpace: 'nowrap',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
           }}
         >
           {toast}
         </div>
       )}
 
-      {/* ── HERO BANNER HEADER ── */}
+      {/* Main Responsive Wrapper */}
       <div
-        className="grocery-hero"
         style={{
-          position: 'relative',
-          background: isDark
-            ? 'linear-gradient(135deg, #0f172a 0%, #0a0f1d 100%)'
-            : 'linear-gradient(135deg, #f7f4ed 0%, #ebe4d3 100%)',
-          padding: '20px 20px 60px 20px',
-          overflow: 'visible',
+          maxWidth: 1380,
+          margin: '0 auto',
+          padding: '24px 32px',
         }}
       >
-        {/* Fresh Vegetable Basket Image positioned at top right (Mobile Only) */}
+        {/* ── HERO BANNER SECTION ── */}
         <div
-          className="mobile-only-header"
           style={{
-            position: 'absolute',
-            top: -10,
-            right: -15,
-            width: 250,
-            height: 240,
-            borderRadius: '0 0 0 120px',
-            overflow: 'hidden',
-            pointerEvents: 'none',
-            zIndex: 1,
-          }}
-        >
-          <img
-            src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&q=80"
-            alt="Fresh Kerala Vegetables Basket"
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              objectPosition: 'center',
-            }}
-          />
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background: isDark
-                ? 'linear-gradient(to right, #0f172a 0%, rgba(15,23,42,0.4) 40%, transparent 100%)'
-                : 'linear-gradient(to right, #f7f4ed 0%, rgba(247,244,237,0.3) 35%, transparent 100%)',
-            }}
-          />
-        </div>
-
-        {/* Top Header Row (Mobile Only) */}
-        <div
-          className="mobile-only-header"
-          style={{
+            background: isDark
+              ? 'linear-gradient(135deg, #141C2E 0%, #0F172A 100%)'
+              : '#F4F3ED',
+            borderRadius: 28,
+            padding: '40px 48px',
             position: 'relative',
-            zIndex: 2,
+            overflow: 'hidden',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            marginBottom: 20,
+            gap: 32,
+            minHeight: 280,
           }}
         >
-          {/* Brand Logo */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#25451c" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <path d="M16 10a4 4 0 0 1-8 0" />
-            </svg>
-            <span
+          {/* Leaf Background Patterns */}
+          <div
+            style={{
+              position: 'absolute',
+              top: -20,
+              left: 280,
+              width: 320,
+              height: 320,
+              background:
+                'radial-gradient(circle, rgba(129,199,132,0.15) 0%, transparent 70%)',
+              borderRadius: '50%',
+              pointerEvents: 'none',
+            }}
+          />
+
+          {/* Hero Left Content */}
+          <div style={{ zIndex: 2, maxWidth: 640 }}>
+            <h1
               style={{
-                fontSize: 22,
+                fontSize: 48,
                 fontWeight: 800,
-                color: isDark ? '#34d399' : '#25451c',
-                letterSpacing: '-0.3px',
+                color: isDark ? '#F8FAFC' : '#111827',
+                margin: '0 0 12px 0',
+                letterSpacing: '-1px',
+                lineHeight: 1.1,
               }}
             >
-              Family Fit
-            </span>
+              Grocery{' '}
+              <span style={{ color: '#2E7D32', fontWeight: 800 }}>
+                Advisory
+              </span>
+            </h1>
+
+            <p
+              style={{
+                fontSize: 16,
+                color: isDark ? '#94A3B8' : '#4B5563',
+                margin: '0 0 24px 0',
+                fontWeight: 500,
+                maxWidth: 480,
+                lineHeight: 1.4,
+              }}
+            >
+              Smart ingredient recommendations for a healthier Kerala lifestyle.
+            </p>
+
+            {/* 3 Feature Pills */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 16,
+                flexWrap: 'wrap',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: isDark ? '#CBD5E1' : '#374151',
+                }}
+              >
+                <span style={{ fontSize: 16 }}>🍃</span> Personalized for your family
+              </div>
+
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: isDark ? '#CBD5E1' : '#374151',
+                }}
+              >
+                <span style={{ fontSize: 16 }}>🍲</span> Kerala ingredients
+              </div>
+
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: isDark ? '#CBD5E1' : '#374151',
+                }}
+              >
+                <span style={{ fontSize: 16 }}>💚</span> Nutrition focused
+              </div>
+            </div>
           </div>
 
-          {/* User Profile Avatar */}
+          {/* Hero Right Image (Salad Bowl photography) */}
           <div
-            onClick={() => navigate('/profile')}
             style={{
               position: 'relative',
-              width: 36,
-              height: 36,
-              borderRadius: '50%',
-              background: isDark ? '#34d399' : '#25451c',
-              color: isDark ? '#0f172a' : 'white',
-              fontWeight: 800,
-              fontSize: 15,
+              zIndex: 2,
+              width: 480,
+              height: 280,
+              borderRadius: 24,
+              overflow: 'hidden',
+              flexShrink: 0,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              cursor: 'pointer',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
             }}
           >
-            {initial}
+            <img
+              src="/grocery_hero_salad.png"
+              alt="Fresh Kerala Salad Bowl"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center',
+              }}
+            />
           </div>
         </div>
 
-        <div className="grocery-hero-grid" style={{ width: '100%' }}>
-          <div className="grocery-hero-left">
-            {/* Hero Title & Subtitle */}
-            <div style={{ position: 'relative', zIndex: 2, maxWidth: 260, marginBottom: 24 }}>
-          <h1
-            style={{
-              fontFamily: "'Playfair Display', 'DM Serif Display', Georgia, serif",
-              fontSize: 36,
-              fontWeight: 900,
-              color: isDark ? '#f8fafc' : '#1b3815',
-              margin: '0 0 8px 0',
-              lineHeight: 1.08,
-              letterSpacing: '-0.4px',
-            }}
-          >
-            Grocery<br />Advisory
-          </h1>
-          <p
-            style={{
-              fontSize: 13.5,
-              color: isDark ? '#94a3b8' : '#405837',
-              fontWeight: 600,
-              margin: 0,
-              lineHeight: 1.35,
-            }}
-          >
-            Nutritional guide & Kerala<br />ingredient recommendations.
-          </p>
-        </div>
-
-        {/* ── TARGET FAMILY BUDGET FLOATING CARD ── */}
+        {/* ── FLOATING TARGET FAMILY BUDGET BAR ── */}
         <div
           style={{
-            position: 'relative',
-            zIndex: 10,
-            background: isDark ? '#1e293b' : '#ffffff',
-            borderRadius: 24,
-            padding: '18px 20px',
-            boxShadow: isDark ? '0 8px 30px rgba(0,0,0,0.4)' : '0 8px 28px rgba(0,0,0,0.06)',
-            border: isDark ? '1px solid #334155' : '1px solid #f0eee8',
+            background: isDark ? '#1E293B' : '#FFFFFF',
+            borderRadius: 20,
+            padding: '20px 28px',
+            marginTop: 20,
+            marginBottom: 32,
+            boxShadow: isDark
+              ? '0 8px 30px rgba(0,0,0,0.3)'
+              : '0 4px 24px rgba(0,0,0,0.05)',
+            border: isDark ? '1px solid #334155' : '1px solid #EFECE6',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 24,
+            flexWrap: 'wrap',
           }}
         >
-          {/* Top Row: Label & Time Period Selector */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-            <span
-              style={{
-                fontSize: 11,
-                fontWeight: 800,
-                color: isDark ? '#94a3b8' : '#6b7280',
-                textTransform: 'uppercase',
-                letterSpacing: '0.4px',
-              }}
-            >
-              TARGET FAMILY BUDGET ({budgetPeriod.toUpperCase()})
-            </span>
-
-            {/* Time Period Selector Toggle */}
+          {/* Section 1: Wallet & Budget Amount */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             <div
               style={{
-                background: isDark ? '#0f172a' : '#f1f3f4',
-                borderRadius: 20,
-                padding: 3,
+                width: 48,
+                height: 48,
+                borderRadius: 14,
+                background: isDark ? 'rgba(52,211,153,0.15)' : '#E8F0E3',
                 display: 'flex',
-                gap: 2,
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: 22,
+                flexShrink: 0,
+              }}
+            >
+              👛
+            </div>
+
+            <div>
+              <div
+                style={{
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: isDark ? '#94A3B8' : '#6B7280',
+                  lineHeight: 1.2,
+                }}
+              >
+                Family Budget ({budgetPeriod})
+              </div>
+
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  marginTop: 2,
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 28,
+                    fontWeight: 900,
+                    color: isDark ? '#34D399' : '#1B4D2E',
+                    letterSpacing: '-0.5px',
+                  }}
+                >
+                  ₹{budget}
+                </span>
+
+                <button
+                  onClick={() => {
+                    setTempBudget(budget)
+                    setShowBudgetModal(true)
+                  }}
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: '50%',
+                    background: isDark ? '#334155' : '#F0F4EC',
+                    border: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    color: isDark ? '#34D399' : '#2E7D32',
+                  }}
+                  title="Edit Budget"
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 2: Scale Duration Selector */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 16,
+              borderLeft: isDark ? '1px solid #334155' : '1px solid #F0EFE9',
+              borderRight: isDark ? '1px solid #334155' : '1px solid #F0EFE9',
+              paddingLeft: 24,
+              paddingRight: 24,
+            }}
+          >
+            <div
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                color: isDark ? '#94A3B8' : '#4B5563',
+                maxWidth: 160,
+                lineHeight: 1.3,
+              }}
+            >
+              {budgetPeriod.toLowerCase()} personalized recommendations
+            </div>
+
+            <div
+              style={{
+                background: isDark ? '#0F172A' : '#F3F4F6',
+                borderRadius: 24,
+                padding: 4,
+                display: 'flex',
+                gap: 4,
               }}
             >
               {['Daily', 'Weekly', '2-Week'].map((period) => {
@@ -339,14 +392,24 @@ export default function GroceryPage() {
                     onClick={() => handlePeriodChange(period)}
                     style={{
                       border: 'none',
-                      background: active ? (isDark ? '#34d399' : '#25451c') : 'transparent',
-                      color: active ? (isDark ? '#0f172a' : 'white') : (isDark ? '#94a3b8' : '#4b5563'),
-                      padding: '5px 12px',
-                      borderRadius: 16,
-                      fontSize: 11,
-                      fontWeight: 800,
+                      background: active
+                        ? isDark
+                          ? '#34D399'
+                          : '#1B4D2E'
+                        : 'transparent',
+                      color: active
+                        ? isDark
+                          ? '#0F172A'
+                          : '#FFFFFF'
+                        : isDark
+                        ? '#94A3B8'
+                        : '#4B5563',
+                      padding: '6px 14px',
+                      borderRadius: 20,
+                      fontSize: 12,
+                      fontWeight: 700,
                       cursor: 'pointer',
-                      transition: 'all 0.15s ease',
+                      transition: 'all 0.2s ease',
                     }}
                   >
                     {period}
@@ -356,298 +419,675 @@ export default function GroceryPage() {
             </div>
           </div>
 
-          {/* Budget Amount & Edit Pencil Icon */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 4 }}>
-            <span style={{ fontSize: 32, fontWeight: 900, color: isDark ? '#f8fafc' : '#111827', letterSpacing: '-0.5px' }}>
-              ₹{budget || 1500}
-            </span>
-            <button
-              onClick={() => { setTempBudget(budget || 1500); setShowBudgetModal(true) }}
-              aria-label="Edit budget"
+          {/* Section 3: Target Status Pill */}
+          <div
+            style={{
+              background: isDark ? 'rgba(52,211,153,0.1)' : '#F0F7EB',
+              border: isDark
+                ? '1px solid rgba(52,211,153,0.2)'
+                : '1px solid #E2F0D9',
+              borderRadius: 16,
+              padding: '10px 18px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 14,
+              cursor: 'pointer',
+            }}
+            onClick={() => showToastMsg('Target budget is optimally balanced!')}
+          >
+            <div
               style={{
-                width: 30,
-                height: 30,
-                borderRadius: '50%',
-                background: isDark ? 'rgba(52,211,153,0.18)' : '#e4edd4',
-                border: 'none',
+                width: 34,
+                height: 34,
+                borderRadius: 10,
+                background: isDark ? 'rgba(52,211,153,0.2)' : '#E4F2DC',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                cursor: 'pointer',
+                fontSize: 18,
               }}
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={isDark ? '#34d399' : '#25451c'} strokeWidth="2.5" strokeLinecap="round">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-              </svg>
-            </button>
-          </div>
+              📋
+            </div>
 
-          {/* Subtext description */}
-          <div style={{ fontSize: 12, color: isDark ? '#94a3b8' : '#6b7280', marginTop: 10, fontWeight: 500, lineHeight: 1.4, maxWidth: 260 }}>
-            💡 Personalized ingredient recommendations to fit your family's ₹{budget || 1500} {budgetPeriod.toLowerCase()} target.
-          </div>
+            <div>
+              <div
+                style={{
+                  fontSize: 13,
+                  fontWeight: 700,
+                  color: isDark ? '#34D399' : '#1B4D2E',
+                  lineHeight: 1.2,
+                }}
+              >
+                On track for your target
+              </div>
+              <div
+                style={{
+                  fontSize: 11,
+                  color: isDark ? '#94A3B8' : '#668059',
+                  fontWeight: 500,
+                }}
+              >
+                You're all set! Let's keep it healthy.
+              </div>
+            </div>
 
-          {/* 3D Clipboard & Bowl Graphic on right bottom of card */}
-          <div
-            style={{
-              position: 'absolute',
-              bottom: 12,
-              right: 14,
-              width: 90,
-              height: 90,
-              pointerEvents: 'none',
-            }}
-          >
-            <svg viewBox="0 0 100 100" width="100%" height="100%">
-              {/* Soft green backdrop glow */}
-              <circle cx="50" cy="50" r="40" fill="#e8f3d6" opacity="0.8" />
-              {/* Clipboard body */}
-              <rect x="35" y="20" width="40" height="55" rx="6" fill="#2e5b12" />
-              <rect x="38" y="23" width="34" height="49" rx="4" fill="#ffffff" />
-              {/* Top clip */}
-              <rect x="45" y="16" width="20" height="8" rx="2" fill="#1b3815" />
-              {/* Checkmarks */}
-              <path d="M43 34l3 3 8-8" stroke="#34d399" strokeWidth="3" fill="none" strokeLinecap="round" />
-              <line x1="58" y1="34" x2="67" y2="34" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" />
-              <path d="M43 46l3 3 8-8" stroke="#34d399" strokeWidth="3" fill="none" strokeLinecap="round" />
-              <line x1="58" y1="46" x2="67" y2="46" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" />
-              <path d="M43 58l3 3 8-8" stroke="#34d399" strokeWidth="3" fill="none" strokeLinecap="round" />
-              <line x1="58" y1="58" x2="67" y2="58" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" />
-              {/* Bowl with Carrots in front */}
-              <ellipse cx="40" cy="78" rx="22" ry="10" fill="#9a7b56" />
-              <ellipse cx="40" cy="76" rx="20" ry="8" fill="#d4a373" />
-              <circle cx="34" cy="72" r="6" fill="#f97316" />
-              <circle cx="44" cy="73" r="5" fill="#f97316" />
-              <path d="M30 68c-2-4-1-7 2-8" stroke="#22c55e" strokeWidth="2" fill="none" strokeLinecap="round" />
-            </svg>
-          </div>
-          </div>
-          </div>
-          {/* Hero Right Column (Desktop Only) */}
-          <div className="grocery-hero-right" style={{ display: 'none' }}>
-            <img
-              src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&q=80"
-              alt="Fresh Kerala Vegetables Basket Desktop"
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            />
+            <span
+              style={{
+                fontSize: 16,
+                color: isDark ? '#34D399' : '#1B4D2E',
+                marginLeft: 4,
+              }}
+            >
+              ›
+            </span>
           </div>
         </div>
-      </div>
 
-      {/* ── MAIN BODY CONTENT ── */}
-      <div style={{ padding: '24px 20px 0 20px' }}>
-
-        {/* Filter Recommendations by Family Member */}
-        <div style={{ marginBottom: 20 }}>
-          <h2 style={{ fontSize: 14.5, fontWeight: 800, color: isDark ? '#f8fafc' : '#111827', margin: '0 0 12px 0' }}>
-            Filter recommendations by family member
-          </h2>
-
-          <div style={{ display: 'flex', gap: 10, overflowX: 'auto', paddingBottom: 4, scrollbarWidth: 'none' }}>
-            {/* All Members Button */}
-            <button
-              onClick={() => setSelectedMemberId('ALL')}
+        {/* ── FILTER & SORT BAR ── */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: 20,
+            flexWrap: 'wrap',
+            gap: 16,
+          }}
+        >
+          <div>
+            <div
               style={{
-                border: 'none',
-                background: selectedMemberId === 'ALL'
-                  ? isDark ? '#34d399' : '#25451c'
-                  : isDark ? '#1e293b' : '#ffffff',
-                color: selectedMemberId === 'ALL'
-                  ? isDark ? '#0f172a' : 'white'
-                  : isDark ? '#94a3b8' : '#25451c',
-                padding: '8px 16px',
-                borderRadius: 20,
                 fontSize: 13,
                 fontWeight: 700,
-                cursor: 'pointer',
-                flexShrink: 0,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-                boxShadow: selectedMemberId === 'ALL' ? '0 3px 10px rgba(37,69,28,0.2)' : 'none',
+                color: isDark ? '#94A3B8' : '#6B7280',
+                marginBottom: 8,
               }}
             >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
-              </svg>
-              <span>All Members</span>
-            </button>
+              Filter recommendations by family member
+            </div>
 
-            {/* Member Buttons */}
-            {members.map((m) => {
-              const active = selectedMemberId === String(m.id)
-              return (
-                <button
-                  key={m.id}
-                  onClick={() => setSelectedMemberId(String(m.id))}
-                  style={{
-                    border: active ? '2px solid #25451c' : `1px solid ${isDark ? '#334155' : '#e5e7eb'}`,
-                    background: active ? (isDark ? '#1e293b' : '#ffffff') : (isDark ? '#1e293b' : '#ffffff'),
-                    color: isDark ? '#f8fafc' : '#111827',
-                    padding: '6px 14px 6px 8px',
-                    borderRadius: 20,
-                    fontSize: 13,
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    flexShrink: 0,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                  }}
-                >
-                  <MemberAvatar member={m} size={24} />
-                  <span>{m.name}</span>
-                </button>
-              )
-            })}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                flexWrap: 'wrap',
+              }}
+            >
+              {/* All Members Dropdown Button */}
+              <button
+                onClick={() => setSelectedMemberId('ALL')}
+                style={{
+                  background:
+                    selectedMemberId === 'ALL'
+                      ? isDark
+                        ? '#34D399'
+                        : '#1B4D2E'
+                      : isDark
+                      ? '#1E293B'
+                      : '#FFFFFF',
+                  color:
+                    selectedMemberId === 'ALL'
+                      ? isDark
+                        ? '#0F172A'
+                        : '#FFFFFF'
+                      : isDark
+                      ? '#F8FAFC'
+                      : '#374151',
+                  padding: '8px 16px',
+                  borderRadius: 20,
+                  fontSize: 13,
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                  border: `1px solid ${
+                    selectedMemberId === 'ALL'
+                      ? 'transparent'
+                      : isDark
+                      ? '#334155'
+                      : '#E5E7EB'
+                  }`,
+                }}
+              >
+                <span>👥 All Members</span>
+                <span style={{ fontSize: 10 }}>▾</span>
+              </button>
+
+              {/* Individual Member Filter Pills */}
+              {members.map((m) => {
+                const active = selectedMemberId === String(m.id)
+                return (
+                  <button
+                    key={m.id}
+                    onClick={() => setSelectedMemberId(String(m.id))}
+                    style={{
+                      border: `1px solid ${
+                        active ? '#1B4D2E' : isDark ? '#334155' : '#E5E7EB'
+                      }`,
+                      background: active
+                        ? isDark
+                          ? '#1E293B'
+                          : '#F0F7EB'
+                        : isDark
+                        ? '#1E293B'
+                        : '#FFFFFF',
+                      color: isDark ? '#F8FAFC' : '#111827',
+                      padding: '6px 14px 6px 8px',
+                      borderRadius: 20,
+                      fontSize: 13,
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8,
+                    }}
+                  >
+                    <MemberAvatar member={m} size={22} />
+                    <span>{m.name}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Sort Selector */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <span
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                color: isDark ? '#94A3B8' : '#6B7280',
+              }}
+            >
+              Sort by:
+            </span>
+
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              style={{
+                background: isDark ? '#1E293B' : '#FFFFFF',
+                color: isDark ? '#F8FAFC' : '#111827',
+                border: `1px solid ${isDark ? '#334155' : '#E5E7EB'}`,
+                borderRadius: 12,
+                padding: '8px 14px',
+                fontSize: 13,
+                fontWeight: 700,
+                outline: 'none',
+                cursor: 'pointer',
+              }}
+            >
+              <option value="Recommended">Recommended</option>
+              <option value="PriceLowHigh">Price: Low to High</option>
+              <option value="PriceHighLow">Price: High to Low</option>
+            </select>
           </div>
         </div>
 
-        {/* Category Header: Produce (8) & Sort by */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ display: 'flex', alignItems: 'center' }}>
-              {CATEGORY_ICONS.Produce}
-            </span>
-            <h2 style={{ fontSize: 18, fontWeight: 800, margin: 0, color: isDark ? '#f8fafc' : '#111827' }}>
-              Produce <span style={{ fontSize: 15, fontWeight: 600, color: isDark ? '#94a3b8' : '#6b7280' }}>(8)</span>
-            </h2>
-          </div>
-
-          <div
-            onClick={() => showToastMsg('Sorted by highest nutritional priority')}
+        {/* ── CATEGORY HEADER: Produce (8) ── */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            marginBottom: 20,
+            marginTop: 10,
+          }}
+        >
+          <span style={{ fontSize: 20 }}>🍃</span>
+          <h2
             style={{
-              fontSize: 13,
-              fontWeight: 700,
-              color: isDark ? '#34d399' : '#25451c',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 4,
+              fontSize: 20,
+              fontWeight: 800,
+              margin: 0,
+              color: isDark ? '#F8FAFC' : '#111827',
             }}
           >
-            <span>Sort by</span>
-            <span>&rsaquo;</span>
-          </div>
+            Produce{' '}
+            <span
+              style={{
+                fontSize: 16,
+                fontWeight: 600,
+                color: isDark ? '#94A3B8' : '#6B7280',
+              }}
+            >
+              ({produceItems.length})
+            </span>
+          </h2>
         </div>
 
-        {/* ── GROCERY ITEM CARDS LIST ── */}
-        <div className="grocery-responsive-grid" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          {filteredRecommendations.map((item) => {
-            const targetMember = selectedMember || members[0] || null
-            const targetMemberName = targetMember?.name || 'Whole Family'
-
+        {/* ── 5-COLUMN GROCERY GRID ── */}
+        <div className="grocery-5col-grid">
+          {produceItems.map((item) => {
+            const isFav = favorites.includes(item.id)
             return (
               <div
                 key={item.id}
-                className="grocery-item-card"
                 style={{
-                  background: isDark ? '#141c2e' : '#ffffff',
+                  background: isDark ? '#1E293B' : '#FFFFFF',
                   borderRadius: 20,
-                  padding: 14,
-                  boxShadow: isDark ? '0 4px 18px rgba(0,0,0,0.4)' : '0 4px 18px rgba(0,0,0,0.04)',
-                  border: isDark ? '1px solid #24324a' : '1px solid #f0ede6',
+                  border: `1px solid ${isDark ? '#334155' : '#ECEAE3'}`,
+                  overflow: 'hidden',
                   display: 'flex',
-                  alignItems: 'center',
-                  gap: 14,
-                  transition: 'transform 0.15s ease',
+                  flexDirection: 'column',
+                  boxShadow: isDark
+                    ? '0 4px 16px rgba(0,0,0,0.2)'
+                    : '0 2px 12px rgba(0,0,0,0.03)',
+                  transition: 'transform 0.2s ease, box-shadow 0.2s ease',
                 }}
               >
-                {/* Left Food Image */}
-                <div style={{ width: 80, height: 80, borderRadius: 16, overflow: 'hidden', flexShrink: 0 }}>
+                {/* Image Box with Custom Background Tint */}
+                <div
+                  style={{
+                    height: 170,
+                    width: '100%',
+                    background: isDark ? '#0F172A' : item.bgTint || '#F6F7F2',
+                    position: 'relative',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    overflow: 'hidden',
+                  }}
+                >
                   <img
-                    src={item.imageUrl || 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=800&q=80'}
+                    src={item.imageUrl}
                     alt={item.name}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    loading="lazy"
-                  />
-                </div>
-
-                {/* Middle Item Details */}
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4 }}>
-                  <h3 style={{ fontSize: 15, fontWeight: 800, margin: 0, color: isDark ? '#f8fafc' : '#111827', lineHeight: 1.25 }}>
-                    {item.name}
-                  </h3>
-
-                  {/* Pink Goal Highlight Pill */}
-                  <div>
-                    <span
-                      style={{
-                        background: '#fce7f3',
-                        color: '#be185d',
-                        fontSize: 11,
-                        fontWeight: 800,
-                        padding: '3px 10px',
-                        borderRadius: 10,
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: 4,
-                      }}
-                    >
-                      <span>♥</span> Great for {targetMemberName}
-                    </span>
-                  </div>
-
-                  {/* Why Buy / Description */}
-                  <div style={{ fontSize: 12, color: isDark ? '#94a3b8' : '#4b5563', fontWeight: 500, lineHeight: 1.35 }}>
-                    {item.whyBuy}
-                  </div>
-
-                  {/* Suited for Member Row */}
-                  {targetMember && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
-                      <span
-                        style={{
-                          background: isDark ? 'rgba(52,211,153,0.15)' : '#edf6db',
-                          color: isDark ? '#34d399' : '#25451c',
-                          fontSize: 11,
-                          fontWeight: 700,
-                          padding: '3px 8px',
-                          borderRadius: 8,
-                        }}
-                      >
-                        Suited for:
-                      </span>
-                      <MemberAvatar member={targetMember} size={22} />
-                    </div>
-                  )}
-                </div>
-
-                {/* Right Estimated Price & Chevron Button */}
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 10, flexShrink: 0 }}>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: 11, color: isDark ? '#94a3b8' : '#9ca3af', fontWeight: 600 }}>Est.</div>
-                    <div style={{ fontSize: 22, fontWeight: 900, color: isDark ? '#f8fafc' : '#111827', lineHeight: 1.1 }}>
-                      ₹{item.price}
-                    </div>
-                  </div>
-
-                  {/* Green Circle Chevron Button */}
-                  <button
-                    aria-label="View detail"
                     style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      transition: 'transform 0.3s ease',
+                    }}
+                  />
+
+                  {/* Heart / Favorite Button in top right */}
+                  <button
+                    onClick={() => toggleFavorite(item.id)}
+                    style={{
+                      position: 'absolute',
+                      top: 10,
+                      right: 10,
                       width: 32,
                       height: 32,
                       borderRadius: '50%',
-                      background: isDark ? 'rgba(52,211,153,0.18)' : '#edf6db',
+                      background: 'rgba(255, 255, 255, 0.9)',
+                      backdropFilter: 'blur(4px)',
                       border: 'none',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       cursor: 'pointer',
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+                      color: isFav ? '#E11D48' : '#9CA3AF',
                     }}
                   >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={isDark ? '#34d399' : '#25451c'} strokeWidth="3" strokeLinecap="round">
-                      <path d="M9 18l6-6-6-6" />
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill={isFav ? '#E11D48' : 'none'}
+                      stroke="currentColor"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                     </svg>
                   </button>
+                </div>
+
+                {/* Content Details */}
+                <div
+                  style={{
+                    padding: '16px 16px 18px 16px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    flex: 1,
+                    justifyContent: 'space-between',
+                    gap: 12,
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 8,
+                    }}
+                  >
+                    {/* Item Title */}
+                    <h3
+                      style={{
+                        fontSize: 14.5,
+                        fontWeight: 800,
+                        margin: 0,
+                        color: isDark ? '#F8FAFC' : '#111827',
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {item.name}
+                    </h3>
+
+                    {/* Pink Badge Tag */}
+                    <div>
+                      <span
+                        style={{
+                          background: '#FFF0F5',
+                          color: '#DB2777',
+                          fontSize: 11,
+                          fontWeight: 700,
+                          padding: '4px 10px',
+                          borderRadius: 12,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 4,
+                        }}
+                      >
+                        <span style={{ fontSize: 10 }}>♥</span> Great for Whole
+                        Family
+                      </span>
+                    </div>
+
+                    {/* Description */}
+                    <p
+                      style={{
+                        fontSize: 12,
+                        color: isDark ? '#94A3B8' : '#6B7280',
+                        fontWeight: 500,
+                        margin: 0,
+                        lineHeight: 1.35,
+                      }}
+                    >
+                      {item.whyBuy}
+                    </p>
+                  </div>
+
+                  {/* Bottom Row: Price + Shopping Cart Icon */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginTop: 4,
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: 20,
+                        fontWeight: 900,
+                        color: isDark ? '#F8FAFC' : '#111827',
+                      }}
+                    >
+                      ₹{item.price}
+                    </span>
+
+                    <button
+                      onClick={() =>
+                        showToastMsg(`Added ${item.name} to grocery list! 🛒`)
+                      }
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: '50%',
+                        background: isDark ? '#34D399' : '#1B4D2E',
+                        border: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        color: isDark ? '#0F172A' : '#FFFFFF',
+                        boxShadow: '0 2px 8px rgba(27,77,46,0.25)',
+                        transition: 'transform 0.15s ease',
+                      }}
+                      title="Add to List"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <path d="M16 10a4 4 0 0 1-8 0" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               </div>
             )
           })}
         </div>
 
+        {/* ── ADDITIONAL CATEGORIES (Protein, Dairy, Pantry) ── */}
+        {otherItems.length > 0 && (
+          <div style={{ marginTop: 48 }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                marginBottom: 20,
+              }}
+            >
+              <span style={{ fontSize: 20 }}>🥩</span>
+              <h2
+                style={{
+                  fontSize: 20,
+                  fontWeight: 800,
+                  margin: 0,
+                  color: isDark ? '#F8FAFC' : '#111827',
+                }}
+              >
+                Protein & Staples{' '}
+                <span
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 600,
+                    color: isDark ? '#94A3B8' : '#6B7280',
+                  }}
+                >
+                  ({otherItems.length})
+                </span>
+              </h2>
+            </div>
+
+            <div className="grocery-5col-grid">
+              {otherItems.map((item) => {
+                const isFav = favorites.includes(item.id)
+                return (
+                  <div
+                    key={item.id}
+                    style={{
+                      background: isDark ? '#1E293B' : '#FFFFFF',
+                      borderRadius: 20,
+                      border: `1px solid ${isDark ? '#334155' : '#ECEAE3'}`,
+                      overflow: 'hidden',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      boxShadow: isDark
+                        ? '0 4px 16px rgba(0,0,0,0.2)'
+                        : '0 2px 12px rgba(0,0,0,0.03)',
+                    }}
+                  >
+                    <div
+                      style={{
+                        height: 170,
+                        width: '100%',
+                        background: isDark ? '#0F172A' : item.bgTint || '#F6F7F2',
+                        position: 'relative',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      <img
+                        src={item.imageUrl}
+                        alt={item.name}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                        }}
+                      />
+                      <button
+                        onClick={() => toggleFavorite(item.id)}
+                        style={{
+                          position: 'absolute',
+                          top: 10,
+                          right: 10,
+                          width: 32,
+                          height: 32,
+                          borderRadius: '50%',
+                          background: 'rgba(255, 255, 255, 0.9)',
+                          backdropFilter: 'blur(4px)',
+                          border: 'none',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          color: isFav ? '#E11D48' : '#9CA3AF',
+                        }}
+                      >
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill={isFav ? '#E11D48' : 'none'}
+                          stroke="currentColor"
+                          strokeWidth="2.2"
+                        >
+                          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                        </svg>
+                      </button>
+                    </div>
+
+                    <div
+                      style={{
+                        padding: '16px 16px 18px 16px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        flex: 1,
+                        justifyContent: 'space-between',
+                        gap: 12,
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 8,
+                        }}
+                      >
+                        <h3
+                          style={{
+                            fontSize: 14.5,
+                            fontWeight: 800,
+                            margin: 0,
+                            color: isDark ? '#F8FAFC' : '#111827',
+                            lineHeight: 1.3,
+                          }}
+                        >
+                          {item.name}
+                        </h3>
+
+                        <div>
+                          <span
+                            style={{
+                              background: '#FFF0F5',
+                              color: '#DB2777',
+                              fontSize: 11,
+                              fontWeight: 700,
+                              padding: '4px 10px',
+                              borderRadius: 12,
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 4,
+                            }}
+                          >
+                            <span style={{ fontSize: 10 }}>♥</span> Great for
+                            Whole Family
+                          </span>
+                        </div>
+
+                        <p
+                          style={{
+                            fontSize: 12,
+                            color: isDark ? '#94A3B8' : '#6B7280',
+                            fontWeight: 500,
+                            margin: 0,
+                            lineHeight: 1.35,
+                          }}
+                        >
+                          {item.whyBuy}
+                        </p>
+                      </div>
+
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          marginTop: 4,
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontSize: 20,
+                            fontWeight: 900,
+                            color: isDark ? '#F8FAFC' : '#111827',
+                          }}
+                        >
+                          ₹{item.price}
+                        </span>
+
+                        <button
+                          onClick={() =>
+                            showToastMsg(`Added ${item.name} to grocery list! 🛒`)
+                          }
+                          style={{
+                            width: 36,
+                            height: 36,
+                            borderRadius: '50%',
+                            background: isDark ? '#34D399' : '#1B4D2E',
+                            border: 'none',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            color: isDark ? '#0F172A' : '#FFFFFF',
+                            boxShadow: '0 2px 8px rgba(27,77,46,0.25)',
+                          }}
+                        >
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                          >
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                            <line x1="3" y1="6" x2="21" y2="6" />
+                            <path d="M16 10a4 4 0 0 1-8 0" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ── EDIT BUDGET MODAL ── */}
@@ -669,28 +1109,59 @@ export default function GroceryPage() {
             style={{
               width: '100%',
               maxWidth: 400,
-              background: isDark ? '#1e2530' : 'white',
+              background: isDark ? '#1E293B' : 'white',
               borderRadius: 24,
               padding: 24,
               boxShadow: '0 8px 30px rgba(0,0,0,0.2)',
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h3 style={{ fontSize: 20, fontWeight: 900, margin: 0, color: isDark ? '#f0f6fc' : '#111827' }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: 16,
+              }}
+            >
+              <h3
+                style={{
+                  fontSize: 20,
+                  fontWeight: 800,
+                  margin: 0,
+                  color: isDark ? '#F8FAFC' : '#111827',
+                }}
+              >
                 Set Recommendation Budget (₹)
               </h3>
               <button
                 type="button"
                 onClick={() => setShowBudgetModal(false)}
-                style={{ background: 'none', border: 'none', fontSize: 18, color: '#9ca3af', cursor: 'pointer' }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: 18,
+                  color: '#9CA3AF',
+                  cursor: 'pointer',
+                }}
               >
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleSaveBudget} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <form
+              onSubmit={handleSaveBudget}
+              style={{ display: 'flex', flexDirection: 'column', gap: 16 }}
+            >
               <div>
-                <label style={{ fontSize: 12, fontWeight: 700, color: isDark ? '#8b949e' : '#4b5563', display: 'block', marginBottom: 6 }}>
+                <label
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: isDark ? '#94A3B8' : '#4B5563',
+                    display: 'block',
+                    marginBottom: 6,
+                  }}
+                >
                   Target Budget Scale (₹)
                 </label>
                 <input
@@ -704,22 +1175,37 @@ export default function GroceryPage() {
                     width: '100%',
                     padding: '14px',
                     borderRadius: 14,
-                    border: '2px solid #25451c',
+                    border: '2px solid #1B4D2E',
                     fontSize: 22,
                     fontWeight: 900,
                     outline: 'none',
                     boxSizing: 'border-box',
                     textAlign: 'center',
-                    color: '#111827',
+                    color: isDark ? '#F8FAFC' : '#111827',
+                    background: isDark ? '#0F172A' : '#FFFFFF',
                   }}
                 />
               </div>
 
               <div>
-                <label style={{ fontSize: 12, fontWeight: 700, color: isDark ? '#8b949e' : '#4b5563', display: 'block', marginBottom: 6 }}>
+                <label
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: isDark ? '#94A3B8' : '#4B5563',
+                    display: 'block',
+                    marginBottom: 6,
+                  }}
+                >
                   Quick Presets (INR)
                 </label>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(3, 1fr)',
+                    gap: 8,
+                  }}
+                >
                   {BUDGET_PRESETS.map((amt) => (
                     <button
                       key={amt}
@@ -728,9 +1214,24 @@ export default function GroceryPage() {
                       style={{
                         padding: '10px',
                         borderRadius: 12,
-                        border: Number(tempBudget) === amt ? '2px solid #25451c' : '1px solid #e5e7eb',
-                        background: Number(tempBudget) === amt ? '#e4edd4' : 'transparent',
-                        color: Number(tempBudget) === amt ? '#25451c' : '#374151',
+                        border:
+                          Number(tempBudget) === amt
+                            ? '2px solid #1B4D2E'
+                            : `1px solid ${isDark ? '#334155' : '#E5E7EB'}`,
+                        background:
+                          Number(tempBudget) === amt
+                            ? isDark
+                              ? '#1E293B'
+                              : '#E4EDD4'
+                            : 'transparent',
+                        color:
+                          Number(tempBudget) === amt
+                            ? isDark
+                              ? '#34D399'
+                              : '#1B4D2E'
+                            : isDark
+                            ? '#94A3B8'
+                            : '#374151',
                         fontWeight: 800,
                         fontSize: 14,
                         cursor: 'pointer',
@@ -746,7 +1247,7 @@ export default function GroceryPage() {
                 type="submit"
                 style={{
                   marginTop: 8,
-                  background: '#25451c',
+                  background: '#1B4D2E',
                   color: 'white',
                   border: 'none',
                   padding: 14,
@@ -754,7 +1255,7 @@ export default function GroceryPage() {
                   fontSize: 15,
                   fontWeight: 800,
                   cursor: 'pointer',
-                  boxShadow: '0 4px 14px rgba(37,69,28,0.3)',
+                  boxShadow: '0 4px 14px rgba(27,77,46,0.3)',
                 }}
               >
                 Apply Recommendation Scale
@@ -767,51 +1268,38 @@ export default function GroceryPage() {
       {/* Bottom Navigation */}
       <BottomNav />
 
-      {/* Responsive overrides block */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        @media (min-width: 1024px) {
-          .grocery-hero {
-            background: transparent !important;
-            overflow: visible !important;
-            padding: 0 !important;
-          }
-          .grocery-hero-grid {
-            display: flex !important;
-            align-items: center;
-            gap: 32px;
-            justify-content: space-between;
-            width: 100%;
-          }
-          .grocery-hero-left {
-            width: 45% !important;
-            max-width: 45% !important;
-          }
-          .grocery-hero-right {
-            display: block !important;
-            width: 53% !important;
-            height: 280px !important;
-            border-radius: 32px !important;
-            overflow: hidden !important;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.06);
-          }
-          .grocery-responsive-grid {
-            display: grid !important;
-            grid-template-columns: repeat(3, 1fr) !important;
-            gap: 24px !important;
-          }
-          .grocery-item-card {
-            flex-direction: column !important;
-            align-items: stretch !important;
-            padding: 18px !important;
-            gap: 12px !important;
-          }
-          .grocery-item-card > div:first-child {
-            width: 100% !important;
-            height: 140px !important;
+      {/* CSS Styles for 5-column grid & responsive breakpoints */}
+      <style>{`
+        .grocery-5col-grid {
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          gap: 20px;
+        }
+
+        @media (max-width: 1280px) {
+          .grocery-5col-grid {
+            grid-template-columns: repeat(4, 1fr);
           }
         }
-      `}} />
+
+        @media (max-width: 1024px) {
+          .grocery-5col-grid {
+            grid-template-columns: repeat(3, 1fr);
+          }
+        }
+
+        @media (max-width: 768px) {
+          .grocery-5col-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+
+        @media (max-width: 480px) {
+          .grocery-5col-grid {
+            grid-template-columns: repeat(1, 1fr);
+          }
+        }
+      `}</style>
     </div>
   )
 }
-
