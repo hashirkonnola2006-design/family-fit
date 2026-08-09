@@ -2,6 +2,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useFamily } from '../context/FamilyContext'
 import { useTheme } from '../context/ThemeContext'
+import { GlowMenuBar } from './ui/glow-menu'
 
 const LeafIcon = ({ size = 24, color = "#3D4A2E" }) => (
   <svg width={size} height={size} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -102,50 +103,8 @@ export default function Header() {
           </span>
         </div>
 
-        {/* Nav Links */}
-        <nav style={{ display: 'flex', alignItems: 'center', gap: 36 }}>
-          {NAV_LINKS.map((link, idx) => {
-            const isActive = (pathname === '/' && link.path === '/' && idx === 0) || (link.path !== '/' && pathname.startsWith(link.path))
-            return (
-              <button
-                key={idx}
-                onClick={() => navigate(link.path)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: isHomePage
-                    ? '#FFFFFF'
-                    : isActive
-                    ? (isDark ? '#81C784' : '#2E7D32')
-                    : isDark ? '#94A3B8' : '#4A5568',
-                  fontWeight: isHomePage ? (isActive ? 700 : 500) : (isActive ? 700 : 600),
-                  fontSize: 14,
-                  cursor: 'pointer',
-                  position: 'relative',
-                  padding: '6px 0',
-                  opacity: isHomePage ? (isActive ? 1 : 0.88) : 1,
-                  transition: 'opacity 0.15s ease, color 0.15s ease',
-                  fontFamily: "'Plus Jakarta Sans', sans-serif",
-                }}
-              >
-                {link.label}
-                {!isHomePage && isActive && (
-                  <span
-                    style={{
-                      position: 'absolute',
-                      bottom: 0,
-                      left: 0,
-                      width: '100%',
-                      height: 2.5,
-                      background: '#2E7D32',
-                      borderRadius: 2,
-                    }}
-                  />
-                )}
-              </button>
-            )
-          })}
-        </nav>
+        {/* Glow Menu Navbar */}
+        <GlowMenuBar isDark={isDark} isHomePage={isHomePage} />
 
         {/* Right Controls */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
