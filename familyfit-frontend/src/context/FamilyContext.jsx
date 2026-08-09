@@ -1,16 +1,13 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { getFamily } from '../api/family'
 import { useAuth } from './AuthContext'
+import { fetchCloudMembers, syncMembersToCloud } from '../utils/cloudSync'
 
 const FamilyContext = createContext(null)
 
 export function FamilyProvider({ children }) {
   const { user } = useAuth()
 
-  // Start with null members — never read from localStorage on initial mount.
-  // localStorage is written AFTER a successful authenticated fetch and used
-  // only as an optimistic write-back for local mutations (add/update/delete).
-  // The source of truth is always the backend API response.
   const [family, setFamily] = useState(() => {
     const saved = localStorage.getItem('familyfit_members')
     const savedMembers = saved ? JSON.parse(saved) : []
@@ -20,6 +17,7 @@ export function FamilyProvider({ children }) {
       members: savedMembers,
     }
   })
+
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [activeMember, setActiveMember] = useState(() => {
@@ -28,16 +26,11 @@ export function FamilyProvider({ children }) {
     return savedMembers[0] || null
   })
 
-  useEffect(() => {
-    if (user?.familyId) {
-      fetchFamily(user.familyId)
-    }
-  }, [user?.familyId])
-
-  const fetchFamily = async (id) => {
+  const fetchFamily = useCallback(async (id) => {
     setLoading(true)
     setError(null)
     try {
+      // 1. Try primary backend API first
       const res = await getFamily(id).catch(() => ({ data: null }))
       if (res?.data && Array.isArray(res.data.members) && res.data.members.length > 0) {
         setFamily(res.data)
@@ -46,14 +39,27 @@ export function FamilyProvider({ children }) {
           const parent = res.data.members.find((m) => m.role === 'PARENT') || res.data.members[0]
           setActiveMember(parent)
         }
-      } else {
-        const saved = localStorage.getItem('familyfit_members')
-        if (saved) {
-          const parsed = JSON.parse(saved)
-          if (parsed.length > 0) {
-            setFamily((prev) => ({ ...prev, members: parsed }))
-            if (!activeMember) setActiveMember(parsed[0])
-          }
+        setLoading(false)
+        return
+      }
+
+      // 2. Try cross-device Cloud Sync
+      const cloudMembers = await fetchCloudMembers()
+      if (cloudMembers && Array.isArray(cloudMembers) && cloudMembers.length > 0) {
+        setFamily((prev) => ({ ...prev, members: cloudMembers }))
+        localStorage.setItem('familyfit_members', JSON.stringify(cloudMembers))
+        setActiveMember((prev) => prev || cloudMembers[0])
+        setLoading(false)
+        return
+      }
+
+      // 3. Fallback to localStorage
+      const saved = localStorage.getItem('familyfit_members')
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        if (parsed.length > 0) {
+          setFamily((prev) => ({ ...prev, members: parsed }))
+          if (!activeMember) setActiveMember(parsed[0])
         }
       }
     } catch (e) {
@@ -61,16 +67,42 @@ export function FamilyProvider({ children }) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [activeMember])
 
-  // ─── Local optimistic updates (mirror to localStorage for mutations only) ─
+  useEffect(() => {
+    fetchFamily(user?.familyId || 1)
+
+    // Window focus listener to re-sync members when user switches back to mobile app
+    const onFocus = () => {
+      fetchCloudMembers().then((cloudMembers) => {
+        if (cloudMembers && Array.isArray(cloudMembers) && cloudMembers.length > 0) {
+          setFamily((prev) => ({ ...prev, members: cloudMembers }))
+          localStorage.setItem('familyfit_members', JSON.stringify(cloudMembers))
+        }
+      })
+    }
+
+    window.addEventListener('focus', onFocus)
+    // Periodic light poll every 8 seconds for cross-device synchronization
+    const interval = setInterval(onFocus, 8000)
+
+    return () => {
+      window.removeEventListener('focus', onFocus)
+      clearInterval(interval)
+    }
+  }, [user?.familyId, fetchFamily])
+
+  // ─── Cross-device sync mutations ─
 
   const addMemberToContext = (newMember) => {
     setFamily((prev) => {
       const existing = prev?.members || []
       const memberWithId = { ...newMember, id: newMember.id || Date.now() }
       const updatedMembers = [...existing, memberWithId]
+
       localStorage.setItem('familyfit_members', JSON.stringify(updatedMembers))
+      syncMembersToCloud(updatedMembers)
+
       if (!activeMember) setActiveMember(memberWithId)
       return { ...(prev || { id: null, name: 'My Family' }), members: updatedMembers }
     })
@@ -80,7 +112,10 @@ export function FamilyProvider({ children }) {
     setFamily((prev) => {
       const existing = prev?.members || []
       const updatedMembers = existing.map((m) => (m.id === updatedMember.id ? { ...m, ...updatedMember } : m))
+
       localStorage.setItem('familyfit_members', JSON.stringify(updatedMembers))
+      syncMembersToCloud(updatedMembers)
+
       if (activeMember?.id === updatedMember.id) setActiveMember({ ...activeMember, ...updatedMember })
       return { ...prev, members: updatedMembers }
     })
@@ -90,7 +125,10 @@ export function FamilyProvider({ children }) {
     setFamily((prev) => {
       const existing = prev?.members || []
       const updatedMembers = existing.filter((m) => m.id !== memberId)
+
       localStorage.setItem('familyfit_members', JSON.stringify(updatedMembers))
+      syncMembersToCloud(updatedMembers)
+
       if (activeMember?.id === memberId) {
         setActiveMember(updatedMembers[0] || null)
       }
@@ -98,7 +136,7 @@ export function FamilyProvider({ children }) {
     })
   }
 
-  const refresh = () => user?.familyId && fetchFamily(user.familyId)
+  const refresh = () => fetchFamily(user?.familyId || 1)
 
   return (
     <FamilyContext.Provider
