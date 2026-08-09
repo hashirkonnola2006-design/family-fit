@@ -194,12 +194,7 @@ export default function HomePage() {
           <div className="hero-right-spacer" />
         </div>
 
-        {/* Organic Bottom Curve matching reference image */}
-        <div className="hero-bottom-curve-svg">
-          <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ width: '100%', height: '50px', display: 'block' }}>
-            <path d="M0,0 C380,56 760,58 1440,16 L1440,60 L0,60 Z" fill={isDark ? '#0A0F1D' : '#F5F3EE'} />
-          </svg>
-        </div>
+
       </section>
 
       {/* ── 02. FITNESS PLUS NUTRITION EQUALS TRANSFORMATION (RECIPES SECTION) ── */}
@@ -569,12 +564,7 @@ export default function HomePage() {
           }
         }
 
-        .hero-bottom-curve-svg {
-          width: 100%;
-          overflow: hidden;
-          line-height: 0;
-          margin-top: 10px;
-        }
+
 
         /* MAIN CONTENT AREA WITH CONSISTENT 80px HORIZONTAL PADDING */
         .section-main-wrapper {
