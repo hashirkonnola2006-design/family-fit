@@ -37,14 +37,18 @@ export default function Header() {
 
   const isHome = pathname === '/'
   const isRecipes = pathname === '/recipes'
+  const isGrocery = pathname === '/grocery'
+
   const bg = isHome
     ? scrolled ? 'rgba(52,67,37,0.97)' : 'rgba(52,67,37,0.85)'
+    : isGrocery && !isDark
+    ? '#F4511E'
     : isRecipes && !isDark
     ? '#f1e9df'
     : isDark ? '#0F172A' : '#FFFFFF'
 
-  const textColor = isHome ? '#FFFFFF' : isDark ? '#F1F5F9' : '#1E293B'
-  const accentColor = '#6BBF4E'
+  const textColor = isHome || (isGrocery && !isDark) ? '#FFFFFF' : isDark ? '#F1F5F9' : '#1E293B'
+  const accentColor = isGrocery && !isDark ? '#FFFFFF' : '#6BBF4E'
 
   const rawName = user?.familyName || family?.name || user?.name || 'Healthy'
   let displayName = rawName.replace(/ family$/i, '').trim()
@@ -170,16 +174,26 @@ export default function Header() {
 
           {/* ── Desktop Nav ── */}
           <nav className="ff-desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: 36 }}>
-            {NAV_LINKS.map(link => (
-              <button
-                key={link.path}
-                className={`ff-nav-link${pathname === link.path ? ' active' : ''}`}
-                style={{ color: pathname === link.path ? accentColor : textColor }}
-                onClick={() => navigate(link.path)}
-              >
-                {link.label}
-              </button>
-            ))}
+            {NAV_LINKS.map(link => {
+              const isActive = pathname === link.path
+              const isGroceryWhitePill = isGrocery && !isDark && isActive
+              return (
+                <button
+                  key={link.path}
+                  className={`ff-nav-link${isActive ? ' active' : ''}`}
+                  style={{
+                    color: isGroceryWhitePill ? '#F4511E' : isActive ? accentColor : textColor,
+                    background: isGroceryWhitePill ? '#FFFFFF' : 'transparent',
+                    padding: isGroceryWhitePill ? '6px 18px' : '6px 4px',
+                    borderRadius: isGroceryWhitePill ? 20 : 0,
+                    fontWeight: isGroceryWhitePill ? 800 : 600,
+                  }}
+                  onClick={() => navigate(link.path)}
+                >
+                  {link.label}
+                </button>
+              )
+            })}
           </nav>
 
           {/* ── Right: Bell + Avatar ── */}
