@@ -449,32 +449,45 @@ export default function HomePage() {
 
         @media (max-width: 980px) {
           .hero-olive-container {
-            padding: 32px 24px 0 24px;
-            background-position: center center;
+            padding: 24px 20px 16px 20px;
+            background-position: 85% center;
+            background-size: cover;
+            min-height: 400px;
           }
           .hero-inner-content {
             grid-template-columns: 1fr;
-            gap: 32px;
+            gap: 20px;
           }
         }
 
-        .hero-left-col {
-          width: 100%;
-        }
-
-        .hero-heading {
-          font-size: 52px;
-          font-weight: 800;
-          line-height: 1.12;
-          letter-spacing: -0.8px;
-          color: #FFFFFF;
-          margin: 0 0 16px 0;
-          text-shadow: 0 2px 10px rgba(0,0,0,0.12);
-        }
-
         @media (max-width: 640px) {
+          .hero-olive-container {
+            padding: 20px 16px 16px 16px;
+            background-position: 88% center;
+          }
           .hero-heading {
-            font-size: 36px;
+            font-size: 30px;
+            margin-bottom: 10px;
+          }
+          .hero-subheading {
+            font-size: 13.5px;
+            margin-bottom: 18px;
+            line-height: 1.45;
+          }
+          .hero-ctas-row {
+            margin-bottom: 20px;
+            gap: 12px;
+          }
+          .btn-solid-white-pill {
+            padding: 10px 20px;
+            font-size: 13px;
+          }
+          .btn-plain-text-link {
+            font-size: 13.5px;
+          }
+          .hero-search-pill-bar {
+            max-width: 100%;
+            padding: 4px 4px 4px 14px;
           }
         }
 
