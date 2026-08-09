@@ -260,61 +260,6 @@ export default function ProfilePage() {
         position: 'relative',
       }}
     >
-      {/* Desktop-Only Header (bell + profile right-aligned) */}
-      <div className="desktop-only-header" style={{ display: 'none', justifyContent: 'flex-end', alignItems: 'center', gap: 16, marginBottom: 20 }}>
-        <button
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: '50%',
-            background: isDark ? '#1E293B' : '#FFFFFF',
-            border: `1px solid ${isDark ? '#334155' : '#E8E8E3'}`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            position: 'relative',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-          }}
-          onClick={() => alert('No new notifications')}
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={isDark ? '#94A3B8' : '#121826'} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-          </svg>
-          <span
-            style={{
-              position: 'absolute',
-              top: 10,
-              right: 10,
-              width: 8,
-              height: 8,
-              borderRadius: '50%',
-              background: '#F97316',
-              border: '1.5px solid #FFFFFF',
-            }}
-          />
-        </button>
-        <div
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: '50%',
-            background: '#1E4D18',
-            color: 'white',
-            fontWeight: 700,
-            fontSize: 18,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            boxShadow: '0 4px 12px rgba(30,77,24,0.25)',
-          }}
-        >
-          {initial}
-        </div>
-      </div>
-
       {/* ── Toast ── */}
       {toastMessage && (
         <div
@@ -329,60 +274,6 @@ export default function ProfilePage() {
           {toastMessage}
         </div>
       )}
-
-      {/* ── 1. TOP HEADER BAR ── */}
-      <div
-        className="mobile-only-header"
-        style={{
-          padding: 'max(20px, env(safe-area-inset-top, 20px)) 22px 16px',
-          background: isDark ? '#161b22' : 'linear-gradient(135deg, #f3f7e6 0%, #fffdf4 100%)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
-        {/* Brand logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2e5b12" strokeWidth="2.5">
-            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.1 2 7 0 6-4.5 11-10 11z" />
-            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
-          </svg>
-          <span style={{ fontSize: 20, fontWeight: 800, color: isDark ? '#7ab648' : '#2e5b12', letterSpacing: '-0.3px' }}>
-            Family Fit
-          </span>
-        </div>
-
-        {/* Bell + Avatar */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <button
-            style={{
-              width: 40, height: 40, borderRadius: '50%',
-              background: isDark ? '#21262d' : 'white',
-              border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              cursor: 'pointer', position: 'relative',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
-            }}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={isDark ? '#f0f6fc' : '#111827'} strokeWidth="2">
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-            </svg>
-            <span style={{ position: 'absolute', top: 8, right: 8, width: 8, height: 8, borderRadius: '50%', background: '#ef4444', border: '2px solid white' }} />
-          </button>
-
-          <div
-            style={{
-              width: 40, height: 40, borderRadius: '50%',
-              background: '#2e5b12', color: 'white',
-              fontWeight: 800, fontSize: 16,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 2px 8px rgba(46,91,18,0.3)',
-            }}
-          >
-            {initial}
-          </div>
-        </div>
-      </div>
 
       {/* ── 2. PAGE TITLE + ADD MEMBER ── */}
       <div style={{ padding: '20px 22px 0' }}>

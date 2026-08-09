@@ -231,61 +231,7 @@ export default function TipsPage() {
         WebkitFontSmoothing: 'antialiased',
       }}
     >
-      {/* Desktop-Only Header (bell + profile right-aligned) */}
-      <div className="desktop-only-header" style={{ display: 'none', justifyContent: 'flex-end', alignItems: 'center', gap: 16, marginBottom: 20 }}>
-        <button
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: '50%',
-            background: isDark ? '#1E293B' : '#FFFFFF',
-            border: `1px solid ${isDark ? '#334155' : '#E8E8E3'}`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            position: 'relative',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-          }}
-          onClick={() => alert('No new notifications')}
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={isDark ? '#94A3B8' : '#121826'} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-          </svg>
-          <span
-            style={{
-              position: 'absolute',
-              top: 10,
-              right: 10,
-              width: 8,
-              height: 8,
-              borderRadius: '50%',
-              background: '#F97316',
-              border: '1.5px solid #FFFFFF',
-            }}
-          />
-        </button>
-        <div
-          onClick={() => navigate('/profile')}
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: '50%',
-            background: '#1E4D18',
-            color: 'white',
-            fontWeight: 700,
-            fontSize: 18,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            boxShadow: '0 4px 12px rgba(30,77,24,0.25)',
-          }}
-        >
-          {familyName[0] ? familyName[0].toUpperCase() : 'H'}
-        </div>
-      </div>
+
 
       <div style={{ padding: '16px 16px 0 16px' }}>
 
