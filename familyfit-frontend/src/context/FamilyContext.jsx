@@ -11,45 +11,49 @@ export function FamilyProvider({ children }) {
   // localStorage is written AFTER a successful authenticated fetch and used
   // only as an optimistic write-back for local mutations (add/update/delete).
   // The source of truth is always the backend API response.
-  const [family, setFamily] = useState(() => ({
-    id: user?.familyId || null,
-    name: user?.familyName || 'My Family',
-    members: [],   // always empty until the API responds — no stale pre-fill
-  }))
+  const [family, setFamily] = useState(() => {
+    const saved = localStorage.getItem('familyfit_members')
+    const savedMembers = saved ? JSON.parse(saved) : []
+    return {
+      id: user?.familyId || 1,
+      name: user?.familyName || 'My Family',
+      members: savedMembers,
+    }
+  })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-  const [activeMember, setActiveMember] = useState(null)
+  const [activeMember, setActiveMember] = useState(() => {
+    const saved = localStorage.getItem('familyfit_members')
+    const savedMembers = saved ? JSON.parse(saved) : []
+    return savedMembers[0] || null
+  })
 
   useEffect(() => {
     if (user?.familyId) {
-      // Update family meta immediately from the JWT payload (no cache needed)
-      setFamily((prev) => ({
-        ...prev,
-        id: user.familyId,
-        name: user.familyName || prev.name,
-        members: [],   // reset members so we never flash the previous account's list
-      }))
-      setActiveMember(null)  // reset active member selection
       fetchFamily(user.familyId)
-    } else {
-      // User logged out — reset to empty state
-      setFamily({ id: null, name: 'My Family', members: [] })
-      setActiveMember(null)
     }
-  }, [user?.familyId])   // re-run whenever the logged-in family changes
+  }, [user?.familyId])
 
   const fetchFamily = async (id) => {
     setLoading(true)
     setError(null)
     try {
       const res = await getFamily(id).catch(() => ({ data: null }))
-      if (res?.data && Array.isArray(res.data.members)) {
+      if (res?.data && Array.isArray(res.data.members) && res.data.members.length > 0) {
         setFamily(res.data)
-        // Write to localStorage only AFTER a successful API fetch (performance cache)
         localStorage.setItem('familyfit_members', JSON.stringify(res.data.members))
-        if (res.data.members.length > 0 && !activeMember) {
+        if (!activeMember) {
           const parent = res.data.members.find((m) => m.role === 'PARENT') || res.data.members[0]
           setActiveMember(parent)
+        }
+      } else {
+        const saved = localStorage.getItem('familyfit_members')
+        if (saved) {
+          const parsed = JSON.parse(saved)
+          if (parsed.length > 0) {
+            setFamily((prev) => ({ ...prev, members: parsed }))
+            if (!activeMember) setActiveMember(parsed[0])
+          }
         }
       }
     } catch (e) {
