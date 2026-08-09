@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useFamily } from '../context/FamilyContext'
 import { useTheme } from '../context/ThemeContext'
-import AnimatedNavbar from './ui/animated-navbar'
+import NavigationMenu4 from './ui/navigation-menu-4'
 
 const LeafIcon = ({ size = 24, color = "#3D4A2E" }) => (
   <svg width={size} height={size} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -103,8 +103,8 @@ export default function Header() {
           </span>
         </div>
 
-        {/* Animated Navbar */}
-        <AnimatedNavbar isDark={isDark} isHomePage={isHomePage} />
+        {/* Navigation Menu 4 */}
+        <NavigationMenu4 isDark={isDark} isHomePage={isHomePage} />
 
         {/* Right Controls */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
