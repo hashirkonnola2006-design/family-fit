@@ -36,8 +36,11 @@ export default function Header() {
   }, [])
 
   const isHome = pathname === '/'
+  const isRecipes = pathname === '/recipes'
   const bg = isHome
     ? scrolled ? 'rgba(52,67,37,0.97)' : 'rgba(52,67,37,0.85)'
+    : isRecipes && !isDark
+    ? '#f1e9df'
     : isDark ? '#0F172A' : '#FFFFFF'
 
   const textColor = isHome ? '#FFFFFF' : isDark ? '#F1F5F9' : '#1E293B'
