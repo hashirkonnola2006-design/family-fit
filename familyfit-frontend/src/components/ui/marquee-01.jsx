@@ -76,28 +76,45 @@ export const ReviewCard = ({ profile, name, username, body }) => {
         borderRadius: '16px',
         border: '1px solid #EAEFE5',
         boxShadow: '0 2px 10px rgba(0, 0, 0, 0.02)',
+        whiteSpace: 'normal',
+        boxSizing: 'border-box',
+        overflow: 'hidden',
       }}
     >
-      <CardContent style={{ padding: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <CardContent style={{ padding: 0, display: 'flex', flexDirection: 'column', gap: '10px', whiteSpace: 'normal' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <img
             src={profile}
-            alt={name}
-            style={{ width: 38, height: 38, borderRadius: '50%', objectFit: 'cover' }}
+            alt=""
+            style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, background: '#E8F0E3' }}
           />
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: '14px', fontWeight: 700, color: '#1E293B', lineHeight: 1.2 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <span style={{ fontSize: '14px', fontWeight: 700, color: '#1E293B', lineHeight: 1.2, whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
               {name}
             </span>
-            <span style={{ fontSize: '11px', fontWeight: 500, color: '#64748B' }}>
+            <span style={{ fontSize: '11px', fontWeight: 500, color: '#64748B', whiteSpace: 'nowrap' }}>
               {username}
             </span>
           </div>
-          <div style={{ marginLeft: 'auto', color: '#F59E0B', fontSize: '12px', display: 'flex', gap: '2px' }}>
+          <div style={{ marginLeft: 'auto', color: '#F59E0B', fontSize: '12px', display: 'flex', gap: '2px', flexShrink: 0 }}>
             {'★'.repeat(5)}
           </div>
         </div>
-        <p style={{ fontSize: '13px', color: '#475569', lineHeight: 1.5, margin: 0 }}>
+        <p
+          style={{
+            fontSize: '13px',
+            color: '#475569',
+            lineHeight: '1.45',
+            margin: 0,
+            whiteSpace: 'normal',
+            wordBreak: 'break-word',
+            overflowWrap: 'break-word',
+            display: '-webkit-box',
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          }}
+        >
           {body}
         </p>
       </CardContent>
@@ -208,6 +225,9 @@ export default function TestimonialMarquee() {
         }
         .marquee-row-wrapper.pause-hover:hover .marquee-track {
           animation-play-state: paused !important;
+        }
+        .marquee-card-item * {
+          white-space: normal;
         }
       `}} />
     </div>
