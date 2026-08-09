@@ -19,10 +19,10 @@ import {
 } from 'react';
 import { cn } from '../../lib/utils';
 
-const DOCK_HEIGHT = 128;
-const DEFAULT_MAGNIFICATION = 80;
-const DEFAULT_DISTANCE = 150;
-const DEFAULT_PANEL_HEIGHT = 64;
+const DOCK_HEIGHT = 110;
+const DEFAULT_MAGNIFICATION = 70;
+const DEFAULT_DISTANCE = 140;
+const DEFAULT_PANEL_HEIGHT = 56;
 
 const DockContext = createContext(undefined);
 
@@ -74,7 +74,7 @@ function Dock({
           mouseX.set(Infinity);
         }}
         className={cn(
-          'mx-auto flex w-fit gap-3 rounded-2xl bg-white/90 backdrop-blur-md px-3 border border-gray-200/80 shadow-lg dark:bg-neutral-900/90 dark:border-neutral-800',
+          'mx-auto flex w-fit items-center gap-3.5 rounded-full bg-[#FDFCFA] px-4 py-1.5 border border-[#EAE7DF] shadow-[0_4px_20px_rgba(0,0,0,0.08)] dark:bg-neutral-900 dark:border-neutral-800',
           className
         )}
         style={{ height: panelHeight }}
@@ -104,7 +104,7 @@ function DockItem({ children, className, onClick }) {
   const widthTransform = useTransform(
     mouseDistance,
     [-distance, 0, distance],
-    [40, magnification, 40]
+    [38, magnification, 38]
   );
 
   const width = useSpring(widthTransform, spring);
@@ -155,7 +155,7 @@ function DockLabel({ children, className, ...rest }) {
           exit={{ opacity: 0, y: 0 }}
           transition={{ duration: 0.2 }}
           className={cn(
-            'absolute -top-7 left-1/2 w-fit whitespace-pre rounded-md border border-gray-200 bg-gray-900 px-2 py-0.5 text-xs text-white dark:border-neutral-800 dark:bg-neutral-800 pointer-events-none shadow-md',
+            'absolute -top-7 left-1/2 w-fit whitespace-pre rounded-lg border border-[#3D4A2E] bg-[#3D4A2E] px-2.5 py-1 text-[11px] font-semibold text-white pointer-events-none shadow-md',
             className
           )}
           role='tooltip'
@@ -171,7 +171,7 @@ function DockLabel({ children, className, ...rest }) {
 function DockIcon({ children, className, ...rest }) {
   const width = rest['width'];
 
-  const widthTransform = useTransform(width, (val) => (val ? val / 2 : 20));
+  const widthTransform = useTransform(width, (val) => (val ? val / 2.1 : 18));
 
   return (
     <motion.div

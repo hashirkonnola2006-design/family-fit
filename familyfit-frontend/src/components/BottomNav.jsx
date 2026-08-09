@@ -34,14 +34,13 @@ const NAV_ITEMS = [
 export default function BottomNav() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  const { isDark } = useTheme()
 
   return (
     <div
       className="mobile-bottom-dock-wrapper"
       style={{
         position: 'fixed',
-        bottom: 12,
+        bottom: 16,
         left: '50%',
         transform: 'translateX(-50%)',
         zIndex: 2000,
@@ -49,7 +48,7 @@ export default function BottomNav() {
         maxWidth: '100vw',
       }}
     >
-      <Dock className="items-end pb-2">
+      <Dock className="items-center">
         {NAV_ITEMS.map((item) => {
           const isActive = pathname === item.path
           const IconComponent = item.icon
@@ -58,10 +57,10 @@ export default function BottomNav() {
             <DockItem
               key={item.path}
               onClick={() => navigate(item.path)}
-              className={`aspect-square rounded-full transition-colors ${
+              className={`aspect-square rounded-full transition-all duration-200 ${
                 isActive
-                  ? 'bg-emerald-600 text-white dark:bg-emerald-500'
-                  : 'bg-gray-100 text-neutral-700 hover:bg-gray-200 dark:bg-neutral-800 dark:text-neutral-200'
+                  ? 'bg-[#3D4A2E] text-white shadow-md'
+                  : 'bg-transparent text-[#6B7364] hover:bg-[#F2EFE9] dark:hover:bg-neutral-800'
               }`}
             >
               <DockLabel>{item.label}</DockLabel>
@@ -70,8 +69,9 @@ export default function BottomNav() {
                   className={`h-5 w-5 ${
                     isActive
                       ? 'text-white'
-                      : 'text-neutral-700 dark:text-neutral-200'
+                      : 'text-[#6B7364] dark:text-neutral-300'
                   }`}
+                  strokeWidth={isActive ? 2.3 : 1.9}
                 />
               </DockIcon>
             </DockItem>
@@ -80,7 +80,7 @@ export default function BottomNav() {
       </Dock>
 
       <style>{`
-        /* Show dock on mobile/tablet view by default, hide top desktop navbar menu on small screens */
+        /* Show dock on mobile/tablet view by default */
         .mobile-bottom-dock-wrapper {
           display: block;
         }
