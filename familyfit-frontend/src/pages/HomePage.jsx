@@ -157,11 +157,11 @@ export default function HomePage() {
           {/* Left Column: Heading, Subheading, CTAs, Search placed over blank green area */}
           <div className="hero-left-col">
             <h1 className="hero-heading">
-              Wholesome Kerala meals,<br />
-              stronger every day.
+              Kerala's flavors.<br />
+              Your family's strength.
             </h1>
             <p className="hero-subheading">
-              Personalized nutrition, healthy recipes and smart planning for your family's well-being.
+              Nutrition plans, recipes, and grocery help — tailored to your family.
             </p>
 
             <div className="hero-ctas-row">
@@ -204,8 +204,8 @@ export default function HomePage() {
             <LeafIcon size={20} color="#4F6343" />
           </div>
           <h2 className="fitness-heading">
-            Fitness plus Nutrition<br />
-            equals Transformation
+            Small changes at the table,<br />
+            big changes in life.
           </h2>
 
           {/* Hand-drawn style short wavy SVG line (~80px wide) */}
