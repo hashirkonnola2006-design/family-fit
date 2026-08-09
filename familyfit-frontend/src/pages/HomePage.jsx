@@ -6,7 +6,7 @@ import { useTheme } from '../context/ThemeContext'
 import TestimonialMarquee from '../components/ui/marquee-01'
 
 // ── ICONS ──
-const LeafIcon = ({ size = 20, color = "#4F6343" }) => (
+const LeafIcon = ({ size = 20, color = "#3D4A2E" }) => (
   <svg width={size} height={size} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M8 24C8 24 10 14 20 8C20 8 22 18 12 24C10.5 24.9 9 24.5 8 24Z" fill={color} />
     <path d="M6 18C6 18 12 10 24 6C24 6 22 18 14 20C10 21 7.5 19.5 6 18Z" fill="#81C784" />
@@ -100,7 +100,7 @@ const CURATED_PLANS = [
     sub: 'Balanced meals for healthy weight',
     image: '/kerala_vegetable_upma.png',
     iconBg: '#E8F0E3',
-    iconColor: '#4F6343',
+    iconColor: '#3D4A2E',
     type: 'shield',
   },
   {
@@ -151,7 +151,7 @@ export default function HomePage() {
 
   return (
     <div className="landing-page-root">
-      {/* ── 01. HERO SECTION WITH FULL WIDE PANORAMA BACKGROUND IMAGE ── */}
+      {/* ── 01. HERO SECTION (SOLID DARK OLIVE GREEN WITH CONTAINED 2-COLUMN PHOTO) ── */}
       <section className="hero-olive-container">
         <div className="hero-inner-content">
           {/* Left Column: Heading, Subheading, CTAs, Search */}
@@ -166,7 +166,7 @@ export default function HomePage() {
 
             <div className="hero-ctas-row">
               <button className="btn-solid-white-pill" onClick={() => navigate('/recipes')}>
-                <LeafIcon size={18} color="#4F6343" />
+                <LeafIcon size={18} color="#3D4A2E" />
                 <span>Let's eat healthy</span>
               </button>
               <button className="btn-plain-text-link" onClick={() => navigate('/recipes')}>
@@ -190,8 +190,14 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Right Column Spacer (family photo displays naturally from background image) */}
-          <div className="hero-right-spacer" />
+          {/* Right Column: Contained Family Photo with rounded corners */}
+          <div className="hero-right-col">
+            <img
+              src="/hero_family_kerala.jpg"
+              alt="Family enjoying wholesome Kerala food"
+              className="hero-family-photo"
+            />
+          </div>
         </div>
 
         {/* Organic Bottom Curve matching reference image */}
@@ -206,7 +212,7 @@ export default function HomePage() {
       <section className="section-main-wrapper">
         <div className="fitness-header-center">
           <div className="leaf-header-icon-wrap">
-            <LeafIcon size={20} color="#4F6343" />
+            <LeafIcon size={20} color="#3D4A2E" />
           </div>
           <h2 className="fitness-heading">
             Fitness plus Nutrition<br />
@@ -261,7 +267,7 @@ export default function HomePage() {
           <div className="loved-header-row">
             <div className="loved-header-left">
               <div className="heart-icon-badge">
-                <HeartIcon filled={false} size={20} color="#4F6343" />
+                <HeartIcon filled={false} size={20} color="#3D4A2E" />
               </div>
               <div>
                 <h3 className="loved-title">Loved by Families</h3>
@@ -270,7 +276,7 @@ export default function HomePage() {
             </div>
             <button className="view-reviews-link" onClick={() => navigate('/tips')}>
               <span>View all reviews</span>
-              <ArrowRight color="#4F6343" />
+              <ArrowRight color="#3D4A2E" />
             </button>
           </div>
 
@@ -287,7 +293,7 @@ export default function HomePage() {
             </div>
             <button className="view-reviews-link" onClick={() => navigate('/recipes')}>
               <span>Explore plans</span>
-              <ArrowRight color="#4F6343" />
+              <ArrowRight color="#3D4A2E" />
             </button>
           </div>
 
@@ -318,7 +324,7 @@ export default function HomePage() {
                   <p className="plan-card-sub">{plan.sub}</p>
 
                   <button className="plan-arrow-circle-btn" onClick={() => navigate('/recipes')}>
-                    <ArrowRight color="#4F6343" />
+                    <ArrowRight color="#3D4A2E" />
                   </button>
                 </div>
 
@@ -336,7 +342,7 @@ export default function HomePage() {
         <div className="footer-top-grid">
           <div className="footer-col-brand">
             <div className="footer-brand-row">
-              <LeafIcon size={24} color="#4F6343" />
+              <LeafIcon size={24} color="#3D4A2E" />
               <span className="footer-brand-name">FamilyFit</span>
             </div>
             <p className="footer-slogan">Wholesome Kerala meals and smart planning for a healthier family.</p>
@@ -410,23 +416,22 @@ export default function HomePage() {
           overflow-x: hidden;
         }
 
-        /* HERO SECTION WITH WIDE BACKGROUND IMAGE */
+        /* HERO SECTION WITH SOLID DARK OLIVE GREEN BACKGROUND & CONTAINED RIGHT PHOTO */
         .hero-olive-container {
-          background: #4F6343 url('/hero_banner_wide.png') no-repeat center right / cover;
+          background-color: #3D4A2E;
           position: relative;
           padding: 40px 80px 0 80px;
           color: #ffffff;
           width: 100%;
           box-sizing: border-box;
-          min-height: 480px;
         }
 
         .hero-inner-content {
           max-width: 1320px;
           margin: 0 auto;
           display: grid;
-          grid-template-columns: 1.15fr 0.85fr;
-          gap: 48px;
+          grid-template-columns: 1fr 1fr;
+          gap: 40px;
           align-items: center;
           padding-bottom: 24px;
         }
@@ -434,12 +439,15 @@ export default function HomePage() {
         @media (max-width: 980px) {
           .hero-olive-container {
             padding: 32px 24px 0 24px;
-            background-position: center center;
           }
           .hero-inner-content {
             grid-template-columns: 1fr;
             gap: 32px;
           }
+        }
+
+        .hero-left-col {
+          width: 100%;
         }
 
         .hero-heading {
@@ -449,7 +457,6 @@ export default function HomePage() {
           letter-spacing: -0.8px;
           color: #FFFFFF;
           margin: 0 0 16px 0;
-          text-shadow: 0 2px 10px rgba(0,0,0,0.15);
         }
 
         @media (max-width: 640px) {
@@ -460,11 +467,10 @@ export default function HomePage() {
 
         .hero-subheading {
           font-size: 16px;
-          color: rgba(255, 255, 255, 0.92);
+          color: rgba(255, 255, 255, 0.86);
           line-height: 1.55;
           margin: 0 0 32px 0;
           max-width: 450px;
-          text-shadow: 0 1px 6px rgba(0,0,0,0.15);
         }
 
         .hero-ctas-row {
@@ -477,7 +483,7 @@ export default function HomePage() {
 
         .btn-solid-white-pill {
           background: #FFFFFF;
-          color: #4F6343;
+          color: #3D4A2E;
           border: none;
           padding: 14px 28px;
           border-radius: 9999px;
@@ -554,14 +560,28 @@ export default function HomePage() {
           background-color: #2D3A20;
         }
 
-        .hero-right-spacer {
+        .hero-right-col {
           width: 100%;
-          min-height: 360px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .hero-family-photo {
+          width: 100%;
+          max-width: 560px;
+          height: 380px;
+          border-radius: 24px;
+          object-fit: cover;
+          object-position: center;
+          display: block;
+          border: none;
+          box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
         }
 
         @media (max-width: 980px) {
-          .hero-right-spacer {
-            min-height: 200px;
+          .hero-family-photo {
+            height: 280px;
           }
         }
 
@@ -598,7 +618,7 @@ export default function HomePage() {
         .fitness-heading {
           font-size: 32px;
           font-weight: 800;
-          color: ${isDark ? '#FFFFFF' : '#4F6343'};
+          color: ${isDark ? '#FFFFFF' : '#3D4A2E'};
           margin: 4px 0 6px 0;
           letter-spacing: -0.5px;
           line-height: 1.25;
@@ -699,7 +719,7 @@ export default function HomePage() {
         .recipe-card-tag-pill {
           display: inline-block;
           background: ${isDark ? '#166534' : '#E8F0E3'};
-          color: ${isDark ? '#DCFCE7' : '#4F6343'};
+          color: ${isDark ? '#DCFCE7' : '#3D4A2E'};
           font-size: 11px;
           font-weight: 700;
           padding: 4px 12px;
@@ -770,7 +790,7 @@ export default function HomePage() {
         .view-reviews-link {
           background: none;
           border: none;
-          color: ${isDark ? '#81C784' : '#4F6343'};
+          color: ${isDark ? '#81C784' : '#3D4A2E'};
           font-size: 14px;
           font-weight: 700;
           cursor: pointer;
@@ -922,7 +942,7 @@ export default function HomePage() {
         .footer-brand-name {
           font-size: 22px;
           font-weight: 800;
-          color: ${isDark ? '#FFFFFF' : '#4F6343'};
+          color: ${isDark ? '#FFFFFF' : '#3D4A2E'};
         }
 
         .footer-slogan {
@@ -979,7 +999,7 @@ export default function HomePage() {
         }
 
         .footer-links button:hover {
-          color: #4F6343;
+          color: #3D4A2E;
           text-decoration: underline;
         }
 
@@ -1004,7 +1024,7 @@ export default function HomePage() {
         }
 
         .btn-subscribe {
-          background: #4F6343;
+          background: #3D4A2E;
           color: #FFFFFF;
           border: none;
           padding: 10px 20px;
