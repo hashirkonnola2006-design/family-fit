@@ -5,6 +5,31 @@ import { fetchCloudMembers, syncMembersToCloud } from '../utils/cloudSync'
 
 const FamilyContext = createContext(null)
 
+// Smart merger function to ensure no added member is ever lost
+function mergeMemberLists(listA = [], listB = []) {
+  const map = new Map()
+
+  listA.forEach((m) => {
+    if (m && (m.id || m.name)) {
+      const key = String(m.id || m.name)
+      map.set(key, m)
+    }
+  })
+
+  listB.forEach((m) => {
+    if (m && (m.id || m.name)) {
+      const key = String(m.id || m.name)
+      if (map.has(key)) {
+        map.set(key, { ...map.get(key), ...m })
+      } else {
+        map.set(key, m)
+      }
+    }
+  })
+
+  return Array.from(map.values())
+}
+
 export function FamilyProvider({ children }) {
   const { user } = useAuth()
 
@@ -33,34 +58,26 @@ export function FamilyProvider({ children }) {
       // 1. Try primary backend API first
       const res = await getFamily(id).catch(() => ({ data: null }))
       if (res?.data && Array.isArray(res.data.members) && res.data.members.length > 0) {
-        setFamily(res.data)
-        localStorage.setItem('familyfit_members', JSON.stringify(res.data.members))
-        if (!activeMember) {
-          const parent = res.data.members.find((m) => m.role === 'PARENT') || res.data.members[0]
-          setActiveMember(parent)
-        }
+        const localSaved = JSON.parse(localStorage.getItem('familyfit_members') || '[]')
+        const merged = mergeMemberLists(localSaved, res.data.members)
+        setFamily({ ...res.data, members: merged })
+        localStorage.setItem('familyfit_members', JSON.stringify(merged))
+        if (!activeMember) setActiveMember(merged[0])
         setLoading(false)
         return
       }
 
-      // 2. Try cross-device Cloud Sync
+      // 2. Try cross-device Cloud Sync and merge with localStorage
       const cloudMembers = await fetchCloudMembers()
-      if (cloudMembers && Array.isArray(cloudMembers) && cloudMembers.length > 0) {
-        setFamily((prev) => ({ ...prev, members: cloudMembers }))
-        localStorage.setItem('familyfit_members', JSON.stringify(cloudMembers))
-        setActiveMember((prev) => prev || cloudMembers[0])
-        setLoading(false)
-        return
-      }
+      const localSaved = JSON.parse(localStorage.getItem('familyfit_members') || '[]')
+      const merged = mergeMemberLists(localSaved, cloudMembers || [])
 
-      // 3. Fallback to localStorage
-      const saved = localStorage.getItem('familyfit_members')
-      if (saved) {
-        const parsed = JSON.parse(saved)
-        if (parsed.length > 0) {
-          setFamily((prev) => ({ ...prev, members: parsed }))
-          if (!activeMember) setActiveMember(parsed[0])
-        }
+      if (merged.length > 0) {
+        setFamily((prev) => ({ ...prev, members: merged }))
+        localStorage.setItem('familyfit_members', JSON.stringify(merged))
+        setActiveMember((prev) => prev || merged[0])
+        // Also push merged state to cloud sync to keep both devices in harmony
+        syncMembersToCloud(merged)
       }
     } catch (e) {
       setError(e.message)
@@ -72,33 +89,37 @@ export function FamilyProvider({ children }) {
   useEffect(() => {
     fetchFamily(user?.familyId || 1)
 
-    // Window focus listener to re-sync members when user switches back to mobile app
-    const onFocus = () => {
+    // Window focus / poll listener that MERGES instead of overwriting
+    const onSyncCheck = () => {
       fetchCloudMembers().then((cloudMembers) => {
         if (cloudMembers && Array.isArray(cloudMembers) && cloudMembers.length > 0) {
-          setFamily((prev) => ({ ...prev, members: cloudMembers }))
-          localStorage.setItem('familyfit_members', JSON.stringify(cloudMembers))
+          setFamily((prev) => {
+            const currentMembers = prev?.members || []
+            const merged = mergeMemberLists(currentMembers, cloudMembers)
+            localStorage.setItem('familyfit_members', JSON.stringify(merged))
+            return { ...prev, members: merged }
+          })
         }
       })
     }
 
-    window.addEventListener('focus', onFocus)
-    // Periodic light poll every 8 seconds for cross-device synchronization
-    const interval = setInterval(onFocus, 8000)
+    window.addEventListener('focus', onSyncCheck)
+    const interval = setInterval(onSyncCheck, 10000)
 
     return () => {
-      window.removeEventListener('focus', onFocus)
+      window.removeEventListener('focus', onSyncCheck)
       clearInterval(interval)
     }
   }, [user?.familyId, fetchFamily])
 
-  // ─── Cross-device sync mutations ─
+  // ─── Local & Cloud Sync Mutations ─
 
   const addMemberToContext = (newMember) => {
+    const memberWithId = { ...newMember, id: newMember.id || Date.now() }
+    
     setFamily((prev) => {
       const existing = prev?.members || []
-      const memberWithId = { ...newMember, id: newMember.id || Date.now() }
-      const updatedMembers = [...existing, memberWithId]
+      const updatedMembers = mergeMemberLists(existing, [memberWithId])
 
       localStorage.setItem('familyfit_members', JSON.stringify(updatedMembers))
       syncMembersToCloud(updatedMembers)
@@ -111,12 +132,16 @@ export function FamilyProvider({ children }) {
   const updateMemberInContext = (updatedMember) => {
     setFamily((prev) => {
       const existing = prev?.members || []
-      const updatedMembers = existing.map((m) => (m.id === updatedMember.id ? { ...m, ...updatedMember } : m))
+      const updatedMembers = existing.map((m) =>
+        String(m.id) === String(updatedMember.id) ? { ...m, ...updatedMember } : m
+      )
 
       localStorage.setItem('familyfit_members', JSON.stringify(updatedMembers))
       syncMembersToCloud(updatedMembers)
 
-      if (activeMember?.id === updatedMember.id) setActiveMember({ ...activeMember, ...updatedMember })
+      if (String(activeMember?.id) === String(updatedMember.id)) {
+        setActiveMember({ ...activeMember, ...updatedMember })
+      }
       return { ...prev, members: updatedMembers }
     })
   }
@@ -124,12 +149,12 @@ export function FamilyProvider({ children }) {
   const deleteMemberFromContext = (memberId) => {
     setFamily((prev) => {
       const existing = prev?.members || []
-      const updatedMembers = existing.filter((m) => m.id !== memberId)
+      const updatedMembers = existing.filter((m) => String(m.id) !== String(memberId))
 
       localStorage.setItem('familyfit_members', JSON.stringify(updatedMembers))
       syncMembersToCloud(updatedMembers)
 
-      if (activeMember?.id === memberId) {
+      if (String(activeMember?.id) === String(memberId)) {
         setActiveMember(updatedMembers[0] || null)
       }
       return { ...prev, members: updatedMembers }
