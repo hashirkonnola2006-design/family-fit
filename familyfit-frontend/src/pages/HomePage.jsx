@@ -1,11 +1,11 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useFamily } from '../context/FamilyContext'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 
 // ── ICONS ──
-const LeafIcon = ({ size = 24, color = "#2E5B1A" }) => (
+const LeafIcon = ({ size = 20, color = "#3D4A2E" }) => (
   <svg width={size} height={size} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M8 24C8 24 10 14 20 8C20 8 22 18 12 24C10.5 24.9 9 24.5 8 24Z" fill={color} />
     <path d="M6 18C6 18 12 10 24 6C24 6 22 18 14 20C10 21 7.5 19.5 6 18Z" fill="#81C784" />
@@ -30,34 +30,34 @@ const FilterIcon = () => (
 )
 
 const ClockIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="10" />
     <polyline points="12 6 12 12 16 14" />
   </svg>
 )
 
 const FlameIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E65100" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M8.5 14.5A2.5 2.5 0 0 0 11 17c1.38 0 2.5-1.12 2.5-2.5 0-1.67-1.5-3.5-3.5-5.5-2 2-3.5 3.83-3.5 5.5z" fill="#FF8A00" />
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M8.5 14.5A2.5 2.5 0 0 0 11 17c1.38 0 2.5-1.12 2.5-2.5 0-1.67-1.5-3.5-3.5-5.5-2 2-3.5 3.83-3.5 5.5z" fill="#F97316" />
     <path d="M12 2c1 3 4 4.5 4 9a6 6 0 1 1-12 0c0-4 3.5-7 5-9 0 2.5 1.5 3.5 3 2z" />
   </svg>
 )
 
-const HeartIcon = ({ filled = false }) => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill={filled ? "#EF4444" : "none"} stroke={filled ? "#EF4444" : "#475569"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+const HeartIcon = ({ filled = false, size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill={filled ? "#EF4444" : "none"} stroke={filled ? "#EF4444" : "#475569"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
   </svg>
 )
 
-const ArrowRight = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+const ArrowRight = ({ color = "currentColor" }) => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <line x1="5" y1="12" x2="19" y2="12" />
     <polyline points="12 5 19 12 12 19" />
   </svg>
 )
 
 const StarRating = () => (
-  <div style={{ display: 'flex', gap: 2, color: '#F59E0B' }}>
+  <div style={{ display: 'flex', gap: 2, color: '#F59E0B', fontSize: 13 }}>
     {'★'.repeat(5)}
   </div>
 )
@@ -90,7 +90,7 @@ const RECIPES = [
   },
   {
     id: 4,
-    name: 'Rorstas Salad',
+    name: 'Rorstas',
     tag: 'High Protein • Nutritious',
     time: '15 min',
     kcal: '230 kcal',
@@ -104,8 +104,8 @@ const CURATED_PLANS = [
     title: 'For Weight Balance',
     sub: 'Balanced meals for healthy weight',
     image: '/kerala_vegetable_upma.png',
-    iconBg: '#EBF5E1',
-    iconColor: '#2E7D32',
+    iconBg: '#E8F3E5',
+    iconColor: '#3D4A2E',
     type: 'shield',
   },
   {
@@ -173,84 +173,99 @@ export default function HomePage() {
   }, [search])
 
   return (
-    <div className="landing-redesign-root">
-      {/* ── 01. HERO BANNER SECTION ── */}
-      <section className="hero-banner-card">
-        <div className="hero-left-content">
-          <h1 className="hero-headline">
-            Wholesome Kerala meals,<br />
-            stronger every day.
-          </h1>
-          <p className="hero-subtitle">
-            Personalized nutrition, healthy recipes and smart planning for your family's well-being.
-          </p>
+    <div className="landing-page-root">
+      {/* ── 01. HERO SECTION (DARK OLIVE GREEN WITH ASYMMETRIC BOTTOM-LEFT CURVE) ── */}
+      <section className="hero-olive-container">
+        <div className="hero-inner-content">
+          {/* Left Column: Heading, Subheading, CTAs, Search */}
+          <div className="hero-left-col">
+            <h1 className="hero-heading">
+              Wholesome Kerala meals,<br />
+              stronger every day.
+            </h1>
+            <p className="hero-subheading">
+              Personalized nutrition, healthy recipes and smart planning for your family's well-being.
+            </p>
 
-          <div className="hero-actions-row">
-            <button className="btn-primary-white" onClick={() => navigate('/recipes')}>
-              <LeafIcon size={20} color="#2E5B1A" />
-              <span>Let's eat healthy</span>
-            </button>
-            <button className="btn-secondary-link" onClick={() => navigate('/recipes')}>
-              <span>Explore recipes</span>
-              <ArrowRight />
-            </button>
+            <div className="hero-ctas-row">
+              <button className="btn-solid-white-pill" onClick={() => navigate('/recipes')}>
+                <LeafIcon size={18} color="#3D4A2E" />
+                <span>Let's eat healthy</span>
+              </button>
+              <button className="btn-plain-text-link" onClick={() => navigate('/recipes')}>
+                <span>Explore recipes</span>
+                <ArrowRight color="#FFFFFF" />
+              </button>
+            </div>
+
+            {/* Pill Search Bar */}
+            <div className="hero-search-pill-bar">
+              <SearchIcon />
+              <input
+                type="text"
+                placeholder="Search meals, plans, recipes..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <button className="search-filter-circle" onClick={() => navigate('/recipes')}>
+                <FilterIcon />
+              </button>
+            </div>
           </div>
 
-          {/* Floating Search Bar */}
-          <div className="hero-search-pill">
-            <SearchIcon />
-            <input
-              type="text"
-              placeholder="Search meals, plans, recipes..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+          {/* Right Column: Single Photo edge-to-edge */}
+          <div className="hero-right-col">
+            <img
+              src="/hero_family_kerala.jpg"
+              alt="Family enjoying wholesome Kerala food"
+              className="hero-family-photo"
             />
-            <button className="filter-circle-btn" onClick={() => navigate('/recipes')}>
-              <FilterIcon />
-            </button>
           </div>
-        </div>
-
-        <div className="hero-right-photo-wrapper">
-          <img
-            src="/hero_family_kerala.jpg"
-            alt="Family eating healthy Kerala food together"
-            className="hero-family-photo"
-          />
         </div>
       </section>
 
-      {/* ── 02. FITNESS + NUTRITION EQUALS TRANSFORMATION (RECIPES GRID) ── */}
-      <section className="section-container">
-        <div className="section-header-center">
-          <div className="leaf-overhead-icon">🍃</div>
-          <h2 className="section-title">Fitness plus Nutrition equals Transformation</h2>
+      {/* ── 02. FITNESS PLUS NUTRITION EQUALS TRANSFORMATION (RECIPES SECTION) ── */}
+      <section className="section-main-wrapper">
+        <div className="fitness-header-center">
+          <div className="leaf-header-icon-wrap">
+            <LeafIcon size={22} color="#3D4A2E" />
+          </div>
+          <h2 className="fitness-heading">
+            Fitness plus Nutrition<br />
+            equals Transformation
+          </h2>
+          <div className="squiggle-line-wrap">
+            <svg width="140" height="12" viewBox="0 0 140 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 6C25 1 45 11 70 6C95 1 115 11 138 6" stroke="#81C784" strokeWidth="2.2" strokeLinecap="round" />
+            </svg>
+          </div>
         </div>
 
-        <div className="recipes-four-grid">
+        {/* 4 Recipe Cards Grid */}
+        <div className="recipe-cards-grid">
           {filteredRecipes.map((recipe) => (
-            <div key={recipe.id} className="recipe-card">
-              <div className="recipe-img-container">
-                <img src={recipe.image} alt={recipe.name} className="recipe-img" />
+            <div key={recipe.id} className="recipe-card-clean">
+              <div className="recipe-card-img-wrap">
+                <img src={recipe.image} alt={recipe.name} className="recipe-card-img" />
                 <button
-                  className="favorite-heart-btn"
+                  className="favorite-heart-float"
                   onClick={() => toggleFavorite(recipe.id)}
                   aria-label="Save recipe"
                 >
-                  <HeartIcon filled={favorites.includes(recipe.id)} />
+                  <HeartIcon filled={favorites.includes(recipe.id)} size={17} />
                 </button>
               </div>
 
-              <div className="recipe-info">
-                <h3 className="recipe-name">{recipe.name}</h3>
-                <span className="recipe-tag-pill">{recipe.tag}</span>
+              <div className="recipe-card-body">
+                <h3 className="recipe-card-title">{recipe.name}</h3>
+                <span className="recipe-card-tag-pill">{recipe.tag}</span>
 
                 <div className="recipe-meta-row">
                   <div className="recipe-meta-item">
                     <ClockIcon />
                     <span>{recipe.time}</span>
                   </div>
-                  <div className="recipe-meta-divider">|</div>
+                  <span className="recipe-meta-divider">|</span>
                   <div className="recipe-meta-item">
                     <FlameIcon />
                     <span>{recipe.kcal}</span>
@@ -261,91 +276,30 @@ export default function HomePage() {
           ))}
         </div>
 
-        <div className="loved-by-families-header">
-          <div className="loved-by-left">
-            <div className="heart-leaf-icon">💚</div>
-            <div>
-              <h3 className="loved-title">Loved by Families</h3>
-              <p className="loved-sub">Real families. Real results.</p>
-            </div>
-          </div>
-          <button className="view-all-link" onClick={() => navigate('/tips')}>
-            <span>View all reviews</span>
-            <ArrowRight />
-          </button>
-        </div>
-      </section>
-
-      {/* ── 03. CURATED KERALA PLANS SECTION ── */}
-      <section className="section-container" style={{ marginTop: 40 }}>
-        <div className="section-header-row">
-          <div>
-            <h2 className="section-title-left">Curated Kerala Plans for Your Family</h2>
-            <p className="section-sub-left">Balanced weekly meal plans inspired by Kerala tradition.</p>
-          </div>
-          <button className="explore-plans-link" onClick={() => navigate('/recipes')}>
-            <span>Explore plans</span>
-            <ArrowRight />
-          </button>
-        </div>
-
-        <div className="plans-three-grid">
-          {CURATED_PLANS.map((plan) => (
-            <div key={plan.id} className="plan-card">
-              <div className="plan-left-info">
-                <div className="plan-icon-circle" style={{ background: plan.iconBg }}>
-                  {plan.type === 'shield' && (
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={plan.iconColor} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                      <path d="M9 12l2 2 4-4" />
-                    </svg>
-                  )}
-                  {plan.type === 'leaf' && (
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={plan.iconColor} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.1 2 7 0 6-4.5 11-10 11z" />
-                    </svg>
-                  )}
-                  {plan.type === 'heart' && (
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={plan.iconColor} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                    </svg>
-                  )}
-                </div>
-
-                <h3 className="plan-title">{plan.title}</h3>
-                <p className="plan-sub">{plan.sub}</p>
-
-                <button className="plan-arrow-btn" onClick={() => navigate('/recipes')}>
-                  <ArrowRight />
-                </button>
+        {/* ── 03. LOVED BY FAMILIES (TESTIMONIALS SECTION) ── */}
+        <div className="loved-by-families-container">
+          <div className="loved-header-row">
+            <div className="loved-header-left">
+              <div className="heart-icon-badge">
+                <HeartIcon filled={false} size={22} />
               </div>
-
-              <div className="plan-right-img-container">
-                <img src={plan.image} alt={plan.title} className="plan-img" />
+              <div>
+                <h3 className="loved-title">Loved by Families</h3>
+                <p className="loved-subtitle">Real families. Real results.</p>
               </div>
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── 04. TESTIMONIALS & RATING BLOCK ── */}
-      <section className="section-container" style={{ marginTop: 40, marginBottom: 60 }}>
-        <div className="testimonials-box">
-          <div className="testimonials-left-summary">
-            <h3 className="loved-hero-title">Loved by<br />Families <span style={{ color: '#81C784' }}>🍃</span></h3>
-            <p className="loved-hero-sub">Real families. Real results.</p>
-            <div style={{ margin: '14px 0 8px 0' }}>
-              <StarRating />
-            </div>
-            <p className="loved-rating-score"><strong>4.8/5</strong> from 1,200+ families</p>
+            <button className="view-reviews-link" onClick={() => navigate('/tips')}>
+              <span>View all reviews</span>
+              <ArrowRight color="#3D4A2E" />
+            </button>
           </div>
 
           <div className="testimonials-cards-grid">
             {TESTIMONIALS.map((t, idx) => (
-              <div key={idx} className="testimonial-card">
+              <div key={idx} className="testimonial-card-clean">
                 <div className="t-user-row">
                   <img src={t.avatar} alt={t.name} className="t-avatar" />
-                  <div>
+                  <div className="t-user-meta">
                     <h4 className="t-name">{t.name}</h4>
                     <StarRating />
                   </div>
@@ -354,57 +308,108 @@ export default function HomePage() {
               </div>
             ))}
           </div>
+
+          <div className="pagination-dots">
+            <span className="dot active" />
+            <span className="dot" />
+            <span className="dot" />
+          </div>
+        </div>
+
+        {/* ── 04. CURATED KERALA PLANS SECTION ── */}
+        <div className="curated-plans-container">
+          <div className="plans-header-row">
+            <div>
+              <h2 className="plans-title">Curated Kerala Plans for Your Family</h2>
+              <p className="plans-sub">Balanced weekly meal plans inspired by Kerala tradition.</p>
+            </div>
+            <button className="view-reviews-link" onClick={() => navigate('/recipes')}>
+              <span>Explore plans</span>
+              <ArrowRight color="#3D4A2E" />
+            </button>
+          </div>
+
+          <div className="plans-three-grid">
+            {CURATED_PLANS.map((plan) => (
+              <div key={plan.id} className="plan-card-clean">
+                <div className="plan-left-info">
+                  <div className="plan-icon-circle" style={{ background: plan.iconBg }}>
+                    {plan.type === 'shield' && (
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={plan.iconColor} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        <path d="M9 12l2 2 4-4" />
+                      </svg>
+                    )}
+                    {plan.type === 'leaf' && (
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={plan.iconColor} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.1 2 7 0 6-4.5 11-10 11z" />
+                      </svg>
+                    )}
+                    {plan.type === 'heart' && (
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={plan.iconColor} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                      </svg>
+                    )}
+                  </div>
+
+                  <h3 className="plan-card-title">{plan.title}</h3>
+                  <p className="plan-card-sub">{plan.sub}</p>
+
+                  <button className="plan-arrow-circle-btn" onClick={() => navigate('/recipes')}>
+                    <ArrowRight color="#3D4A2E" />
+                  </button>
+                </div>
+
+                <div className="plan-right-img-wrap">
+                  <img src={plan.image} alt={plan.title} className="plan-img" />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* ── 05. FOOTER SECTION ── */}
-      <footer className="site-footer">
+      {/* ── 05. FOOTER ── */}
+      <footer className="site-footer-redesign">
         <div className="footer-top-grid">
-          {/* Col 1: Brand info */}
           <div className="footer-col-brand">
-            <div className="footer-brand">
-              <LeafIcon size={24} color="#2E5B1A" />
+            <div className="footer-brand-row">
+              <LeafIcon size={24} color="#3D4A2E" />
               <span className="footer-brand-name">FamilyFit</span>
             </div>
             <p className="footer-slogan">Wholesome Kerala meals and smart planning for a healthier family.</p>
-
             <div className="footer-socials">
-              <a href="#" className="social-icon-circle" aria-label="Website">🌐</a>
-              <a href="#" className="social-icon-circle" aria-label="Instagram">📸</a>
-              <a href="#" className="social-icon-circle" aria-label="Facebook">📘</a>
-              <a href="#" className="social-icon-circle" aria-label="YouTube">▶️</a>
+              <a href="#" className="social-circle" aria-label="Website">🌐</a>
+              <a href="#" className="social-circle" aria-label="Instagram">📸</a>
+              <a href="#" className="social-circle" aria-label="Facebook">📘</a>
+              <a href="#" className="social-circle" aria-label="YouTube">▶️</a>
             </div>
           </div>
 
-          {/* Col 2: Quick Links */}
           <div className="footer-col">
             <h4 className="footer-heading">Quick Links</h4>
             <ul className="footer-links">
-              <li><button onClick={() => navigate('/')}>Home ›</button></li>
-              <li><button onClick={() => navigate('/recipes')}>Recipes ›</button></li>
-              <li><button onClick={() => navigate('/grocery')}>Grocery ›</button></li>
-              <li><button onClick={() => navigate('/tips')}>Tips ›</button></li>
-              <li><button onClick={() => navigate('/profile')}>Profile ›</button></li>
+              <li><button onClick={() => navigate('/')}>Home</button></li>
+              <li><button onClick={() => navigate('/recipes')}>Recipes</button></li>
+              <li><button onClick={() => navigate('/grocery')}>Grocery</button></li>
+              <li><button onClick={() => navigate('/tips')}>Tips</button></li>
+              <li><button onClick={() => navigate('/profile')}>Profile</button></li>
             </ul>
           </div>
 
-          {/* Col 3: Resources */}
           <div className="footer-col">
             <h4 className="footer-heading">Resources</h4>
             <ul className="footer-links">
-              <li><button onClick={() => navigate('/recipes')}>Meal Plans ›</button></li>
-              <li><button onClick={() => navigate('/tips')}>Health Guide ›</button></li>
-              <li><button onClick={() => navigate('/tips')}>Privacy Policy ›</button></li>
-              <li><button onClick={() => navigate('/tips')}>Terms & Conditions ›</button></li>
-              <li><button onClick={() => navigate('/tips')}>Help Center ›</button></li>
+              <li><button onClick={() => navigate('/recipes')}>Meal Plans</button></li>
+              <li><button onClick={() => navigate('/tips')}>Health Guide</button></li>
+              <li><button onClick={() => navigate('/tips')}>Privacy Policy</button></li>
+              <li><button onClick={() => navigate('/tips')}>Terms & Conditions</button></li>
             </ul>
           </div>
 
-          {/* Col 4: Newsletter */}
           <div className="footer-col-newsletter">
             <h4 className="footer-heading">Newsletter</h4>
             <p className="newsletter-sub">Subscribe for healthy recipes and family tips.</p>
-
             <form onSubmit={handleSubscribe} className="newsletter-form">
               <input
                 type="email"
@@ -417,282 +422,320 @@ export default function HomePage() {
                 {subscribed ? 'Subscribed!' : 'Subscribe'}
               </button>
             </form>
-            <p className="no-spam-note">🍃 No spam. Unsubscribe anytime.</p>
           </div>
         </div>
 
-        {/* Footer Bottom Bar */}
         <div className="footer-bottom-bar">
           <span>© 2026 FamilyFit. All rights reserved.</span>
-          <span className="footer-center-leaf">🍃</span>
-          <div className="footer-legal-links">
+          <div className="footer-bottom-links">
             <a href="#">Privacy</a>
-            <span>|</span>
+            <span>•</span>
             <a href="#">Terms</a>
-            <span>|</span>
+            <span>•</span>
             <a href="#">Cookies</a>
           </div>
         </div>
       </footer>
 
-      {/* ── STYLES ── */}
+      {/* ── CSS STYLES ── */}
       <style dangerouslySetInnerHTML={{ __html: `
-        .landing-redesign-root {
+        .landing-page-root {
           min-height: 100vh;
-          background-color: ${isDark ? '#0B132B' : '#FAFCF7'};
+          background-color: ${isDark ? '#0A0F1D' : '#F5F3EE'};
           color: ${isDark ? '#F1F5F9' : '#1E293B'};
-          font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
-          padding: 24px 24px 0 24px;
-          max-width: 1240px;
-          margin: 0 auto;
+          font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+          width: 100%;
+          overflow-x: hidden;
+        }
+
+        /* HERO SECTION */
+        .hero-olive-container {
+          background-color: #3D4A2E;
+          border-bottom-left-radius: 75px;
+          border-bottom-right-radius: 0px;
+          border-top-left-radius: 0px;
+          border-top-right-radius: 0px;
+          padding: 40px 48px 64px 48px;
+          color: #ffffff;
+          width: 100%;
           box-sizing: border-box;
         }
 
-        /* 01. Hero Banner Card */
-        .hero-banner-card {
-          background: linear-gradient(135deg, #3C5036 0%, #2D3E28 100%);
-          border-radius: 32px;
-          padding: 48px 48px 48px 56px;
+        .hero-inner-content {
+          max-width: 1240px;
+          margin: 0 auto;
           display: grid;
-          grid-template-columns: 1fr 480px;
-          gap: 36px;
+          grid-template-columns: 1.15fr 0.85fr;
+          gap: 48px;
           align-items: center;
-          color: #ffffff;
-          box-shadow: 0 20px 50px rgba(45, 62, 40, 0.25);
-          overflow: hidden;
-          margin-bottom: 48px;
         }
 
-        @media (max-width: 960px) {
-          .hero-banner-card {
+        @media (max-width: 980px) {
+          .hero-olive-container {
+            padding: 32px 24px 48px 24px;
+            border-bottom-left-radius: 48px;
+          }
+          .hero-inner-content {
             grid-template-columns: 1fr;
-            padding: 32px 24px;
-          }
-          .hero-right-photo-wrapper {
-            height: 300px !important;
+            gap: 32px;
           }
         }
 
-        .hero-headline {
-          font-size: 44px;
+        .hero-heading {
+          font-size: 52px;
           font-weight: 800;
-          line-height: 1.15;
-          margin: 0 0 16px 0;
+          line-height: 1.12;
           letter-spacing: -0.8px;
-          color: #ffffff;
+          color: #FFFFFF;
+          margin: 0 0 16px 0;
         }
 
-        .hero-subtitle {
-          font-size: 15px;
-          color: rgba(255, 255, 255, 0.88);
-          line-height: 1.5;
-          margin: 0 0 28px 0;
-          max-width: 480px;
+        @media (max-width: 640px) {
+          .hero-heading {
+            font-size: 36px;
+          }
         }
 
-        .hero-actions-row {
+        .hero-subheading {
+          font-size: 16px;
+          color: rgba(255, 255, 255, 0.86);
+          line-height: 1.55;
+          margin: 0 0 32px 0;
+          max-width: 450px;
+        }
+
+        .hero-ctas-row {
           display: flex;
           align-items: center;
-          gap: 16px;
-          margin-bottom: 32px;
+          gap: 20px;
+          margin-bottom: 36px;
           flex-wrap: wrap;
         }
 
-        .btn-primary-white {
-          background: #ffffff;
-          color: #2E5B1A;
+        .btn-solid-white-pill {
+          background: #FFFFFF;
+          color: #3D4A2E;
           border: none;
-          padding: 14px 26px;
-          border-radius: 30px;
+          padding: 14px 28px;
+          border-radius: 9999px;
           font-size: 14px;
           font-weight: 700;
           cursor: pointer;
           display: inline-flex;
           align-items: center;
-          gap: 8px;
-          box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-          transition: transform 0.15s ease;
+          gap: 10px;
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+          transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
 
-        .btn-primary-white:hover {
+        .btn-solid-white-pill:hover {
           transform: translateY(-2px);
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
         }
 
-        .btn-secondary-link {
+        .btn-plain-text-link {
           background: transparent;
-          color: #ffffff;
+          color: #FFFFFF;
           border: none;
-          font-size: 14px;
+          font-size: 15px;
           font-weight: 600;
           cursor: pointer;
           display: inline-flex;
           align-items: center;
-          gap: 6px;
+          gap: 8px;
+          padding: 0;
+          transition: opacity 0.15s ease;
         }
 
-        .btn-secondary-link:hover {
+        .btn-plain-text-link:hover {
+          opacity: 0.85;
           text-decoration: underline;
         }
 
-        .hero-search-pill {
-          background: #ffffff;
-          border-radius: 50px;
+        .hero-search-pill-bar {
+          background: #FFFFFF;
+          border-radius: 9999px;
           padding: 6px 6px 6px 20px;
           display: flex;
           align-items: center;
           gap: 12px;
-          box-shadow: 0 10px 24px rgba(0,0,0,0.15);
           max-width: 440px;
+          box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
         }
 
-        .hero-search-pill input {
+        .hero-search-pill-bar input {
           flex: 1;
           border: none;
           outline: none;
           font-size: 14px;
-          color: #1e293b;
+          color: #1E293B;
           background: transparent;
+          font-family: inherit;
         }
 
-        .filter-circle-btn {
+        .search-filter-circle {
           width: 40px;
           height: 40px;
           border-radius: 50%;
-          background: #2E5B1A;
+          background: #3D4A2E;
           border: none;
           display: flex;
           align-items: center;
           justify-content: center;
           cursor: pointer;
           flex-shrink: 0;
+          transition: background-color 0.15s ease;
         }
 
-        .hero-right-photo-wrapper {
+        .search-filter-circle:hover {
+          background-color: #2D3A20;
+        }
+
+        .hero-right-col {
           width: 100%;
-          height: 380px;
-          border-radius: 28px;
-          overflow: hidden;
-          box-shadow: 0 12px 32px rgba(0,0,0,0.25);
         }
 
         .hero-family-photo {
           width: 100%;
-          height: 100%;
+          height: 400px;
+          border-radius: 24px;
           object-fit: cover;
           display: block;
+          border: none;
+          box-shadow: none;
         }
 
-        /* 02. Section Headers & Grids */
-        .section-container {
-          margin-bottom: 48px;
+        @media (max-width: 980px) {
+          .hero-family-photo {
+            height: 280px;
+          }
         }
 
-        .section-header-center {
+        /* MAIN CONTENT AREA */
+        .section-main-wrapper {
+          max-width: 1240px;
+          margin: 0 auto;
+          padding: 60px 32px 40px 32px;
+          box-sizing: border-box;
+        }
+
+        .fitness-header-center {
           text-align: center;
-          margin-bottom: 28px;
+          margin-bottom: 40px;
         }
 
-        .leaf-overhead-icon {
-          font-size: 24px;
+        .leaf-header-icon-wrap {
           margin-bottom: 4px;
         }
 
-        .section-title {
-          font-size: 26px;
+        .fitness-heading {
+          font-size: 32px;
           font-weight: 800;
-          color: ${isDark ? '#FFFFFF' : '#1E4D18'};
-          margin: 0;
-          letter-spacing: -0.4px;
+          color: ${isDark ? '#FFFFFF' : '#3D4A2E'};
+          margin: 4px 0 8px 0;
+          letter-spacing: -0.5px;
+          line-height: 1.25;
         }
 
-        .recipes-four-grid {
+        .squiggle-line-wrap {
+          display: flex;
+          justify-content: center;
+          margin-top: 4px;
+        }
+
+        /* RECIPE CARDS GRID */
+        .recipe-cards-grid {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
-          gap: 20px;
-          margin-bottom: 32px;
+          gap: 24px;
+          margin-bottom: 56px;
         }
 
-        @media (max-width: 900px) {
-          .recipes-four-grid {
+        @media (max-width: 1024px) {
+          .recipe-cards-grid {
             grid-template-columns: repeat(2, 1fr);
           }
         }
 
-        @media (max-width: 540px) {
-          .recipes-four-grid {
+        @media (max-width: 560px) {
+          .recipe-cards-grid {
             grid-template-columns: 1fr;
           }
         }
 
-        .recipe-card {
+        .recipe-card-clean {
           background: ${isDark ? '#1E293B' : '#FFFFFF'};
           border-radius: 20px;
           overflow: hidden;
-          box-shadow: 0 6px 20px rgba(0,0,0,0.04);
-          border: 1px solid ${isDark ? '#334155' : '#EAEFE5'};
-          transition: transform 0.15s ease, box-shadow 0.15s ease;
+          border: none;
+          box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .recipe-card:hover {
+        .recipe-card-clean:hover {
           transform: translateY(-4px);
-          box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+          box-shadow: 0 12px 28px rgba(0, 0, 0, 0.07);
         }
 
-        .recipe-img-container {
+        .recipe-card-img-wrap {
           position: relative;
           width: 100%;
-          height: 170px;
+          height: 180px;
           overflow: hidden;
-          background: #f1f5f9;
+          background: #EAEFE7;
         }
 
-        .recipe-img {
+        .recipe-card-img {
           width: 100%;
           height: 100%;
           object-fit: cover;
           display: block;
         }
 
-        .favorite-heart-btn {
+        .favorite-heart-float {
           position: absolute;
           top: 12px;
           right: 12px;
           width: 34px;
           height: 34px;
           border-radius: 50%;
-          background: rgba(255, 255, 255, 0.9);
+          background: #FFFFFF;
           border: none;
           display: flex;
           align-items: center;
           justify-content: center;
           cursor: pointer;
-          backdrop-filter: blur(4px);
-          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+          transition: transform 0.15s ease;
         }
 
-        .recipe-info {
-          padding: 16px;
+        .favorite-heart-float:hover {
+          transform: scale(1.08);
         }
 
-        .recipe-name {
-          font-size: 15px;
+        .recipe-card-body {
+          padding: 18px 18px 20px 18px;
+        }
+
+        .recipe-card-title {
+          font-size: 16px;
           font-weight: 700;
           color: ${isDark ? '#F8FAFC' : '#1E293B'};
-          margin: 0 0 8px 0;
+          margin: 0 0 10px 0;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
         }
 
-        .recipe-tag-pill {
+        .recipe-card-tag-pill {
           display: inline-block;
-          background: ${isDark ? '#166534' : '#EBF5E1'};
-          color: ${isDark ? '#DCFCE7' : '#2E7D32'};
+          background: ${isDark ? '#166534' : '#E8F3E5'};
+          color: ${isDark ? '#DCFCE7' : '#3D4A2E'};
           font-size: 11px;
           font-weight: 700;
-          padding: 4px 10px;
-          border-radius: 12px;
-          margin-bottom: 14px;
+          padding: 4px 12px;
+          border-radius: 9999px;
+          margin-bottom: 16px;
         }
 
         .recipe-meta-row {
@@ -707,229 +750,89 @@ export default function HomePage() {
         .recipe-meta-item {
           display: flex;
           align-items: center;
-          gap: 4px;
+          gap: 5px;
         }
 
         .recipe-meta-divider {
           color: #CBD5E1;
         }
 
-        .loved-by-families-header {
+        /* LOVED BY FAMILIES */
+        .loved-by-families-container {
+          margin-bottom: 60px;
+        }
+
+        .loved-header-row {
           display: flex;
           align-items: center;
-          justify-content: space-between;
-          padding: 12px 0;
-        }
-
-        .loved-by-left {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-
-        .heart-leaf-icon {
-          font-size: 22px;
-        }
-
-        .loved-title {
-          font-size: 18px;
-          font-weight: 800;
-          margin: 0;
-          color: ${isDark ? '#FFFFFF' : '#1E293B'};
-        }
-
-        .loved-sub {
-          font-size: 12px;
-          color: #64748B;
-          margin: 2px 0 0 0;
-        }
-
-        .view-all-link {
-          background: none;
-          border: none;
-          color: #2E7D32;
-          font-size: 13px;
-          font-weight: 700;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          gap: 4px;
-        }
-
-        .view-all-link:hover {
-          text-decoration: underline;
-        }
-
-        /* 03. Curated Plans Grid */
-        .section-header-row {
-          display: flex;
-          align-items: flex-end;
           justify-content: space-between;
           margin-bottom: 24px;
         }
 
-        .section-title-left {
-          font-size: 24px;
-          font-weight: 800;
-          color: ${isDark ? '#FFFFFF' : '#1E293B'};
-          margin: 0 0 4px 0;
+        .loved-header-left {
+          display: flex;
+          align-items: center;
+          gap: 12px;
         }
 
-        .section-sub-left {
-          font-size: 13px;
-          color: #64748B;
+        .heart-icon-badge {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: #E8F3E5;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .loved-title {
+          font-size: 20px;
+          font-weight: 800;
+          color: ${isDark ? '#FFFFFF' : '#1E293B'};
           margin: 0;
         }
 
-        .explore-plans-link {
+        .loved-subtitle {
+          font-size: 13px;
+          color: #64748B;
+          margin: 2px 0 0 0;
+        }
+
+        .view-reviews-link {
           background: none;
           border: none;
-          color: #2E7D32;
-          font-size: 13px;
+          color: ${isDark ? '#81C784' : '#3D4A2E'};
+          font-size: 14px;
           font-weight: 700;
           cursor: pointer;
           display: flex;
           align-items: center;
-          gap: 4px;
+          gap: 6px;
         }
 
-        .plans-three-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 20px;
-        }
-
-        @media (max-width: 860px) {
-          .plans-three-grid {
-            grid-template-columns: 1fr;
-          }
-        }
-
-        .plan-card {
-          background: ${isDark ? '#1E293B' : '#FFFFFF'};
-          border-radius: 24px;
-          padding: 24px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          border: 1px solid ${isDark ? '#334155' : '#EAEFE5'};
-          box-shadow: 0 6px 20px rgba(0,0,0,0.03);
-        }
-
-        .plan-left-info {
-          flex: 1;
-          padding-right: 16px;
-        }
-
-        .plan-icon-circle {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-bottom: 14px;
-        }
-
-        .plan-title {
-          font-size: 16px;
-          font-weight: 800;
-          color: ${isDark ? '#FFFFFF' : '#1E293B'};
-          margin: 0 0 4px 0;
-        }
-
-        .plan-sub {
-          font-size: 12px;
-          color: #64748B;
-          margin: 0 0 16px 0;
-          line-height: 1.4;
-        }
-
-        .plan-arrow-btn {
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          background: ${isDark ? '#334155' : '#455B3F'};
-          color: #ffffff;
-          border: none;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-        }
-
-        .plan-right-img-container {
-          width: 110px;
-          height: 110px;
-          border-radius: 50%;
-          overflow: hidden;
-          flex-shrink: 0;
-          box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-        }
-
-        .plan-img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          display: block;
-        }
-
-        /* 04. Testimonials Block */
-        .testimonials-box {
-          background: ${isDark ? '#1E293B' : '#FFFFFF'};
-          border-radius: 28px;
-          padding: 32px;
-          display: grid;
-          grid-template-columns: 240px 1fr;
-          gap: 32px;
-          border: 1px solid ${isDark ? '#334155' : '#EAEFE5'};
-          box-shadow: 0 8px 24px rgba(0,0,0,0.03);
-          align-items: center;
-        }
-
-        @media (max-width: 860px) {
-          .testimonials-box {
-            grid-template-columns: 1fr;
-          }
-        }
-
-        .loved-hero-title {
-          font-size: 26px;
-          font-weight: 800;
-          color: #1E4D18;
-          line-height: 1.2;
-          margin: 0 0 6px 0;
-        }
-
-        .loved-hero-sub {
-          font-size: 13px;
-          color: #64748B;
-          margin: 0;
-        }
-
-        .loved-rating-score {
-          font-size: 13px;
-          color: #475569;
-          margin: 0;
+        .view-reviews-link:hover {
+          text-decoration: underline;
         }
 
         .testimonials-cards-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 16px;
+          gap: 24px;
+          margin-bottom: 24px;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 860px) {
           .testimonials-cards-grid {
             grid-template-columns: 1fr;
           }
         }
 
-        .testimonial-card {
-          background: ${isDark ? '#0F172A' : '#FAFCF7'};
-          border-radius: 18px;
-          padding: 20px;
-          border: 1px solid ${isDark ? '#334155' : '#E8F0E1'};
+        .testimonial-card-clean {
+          background: ${isDark ? '#1E293B' : '#FFFFFF'};
+          border-radius: 20px;
+          padding: 22px;
+          border: none;
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
         }
 
         .t-user-row {
@@ -940,98 +843,211 @@ export default function HomePage() {
         }
 
         .t-avatar {
-          width: 42px;
-          height: 42px;
+          width: 44px;
+          height: 44px;
           border-radius: 50%;
           object-fit: cover;
         }
 
         .t-name {
-          font-size: 14px;
+          font-size: 15px;
           font-weight: 700;
-          color: ${isDark ? '#FFFFFF' : '#1E293B'};
+          color: ${isDark ? '#F8FAFC' : '#1E293B'};
           margin: 0 0 2px 0;
         }
 
         .t-quote {
-          font-size: 12.5px;
-          color: #475569;
+          font-size: 13px;
+          color: ${isDark ? '#CBD5E1' : '#475569'};
           line-height: 1.5;
           margin: 0;
-          font-style: italic;
         }
 
-        /* 05. Site Footer */
-        .site-footer {
-          background: ${isDark ? '#090D16' : '#F3F7EB'};
-          border-radius: 28px 28px 0 0;
-          padding: 48px 40px 24px 40px;
-          margin-top: 40px;
-          border: 1px solid ${isDark ? '#1E293B' : '#E4EED8'};
+        .pagination-dots {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
         }
 
-        .footer-top-grid {
+        .dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #CBD5E1;
+        }
+
+        .dot.active {
+          background: #3D4A2E;
+          width: 10px;
+          height: 10px;
+        }
+
+        /* CURATED PLANS */
+        .curated-plans-container {
+          margin-bottom: 60px;
+        }
+
+        .plans-header-row {
+          display: flex;
+          align-items: flex-end;
+          justify-content: space-between;
+          margin-bottom: 24px;
+        }
+
+        .plans-title {
+          font-size: 24px;
+          font-weight: 800;
+          color: ${isDark ? '#FFFFFF' : '#1E293B'};
+          margin: 0 0 4px 0;
+        }
+
+        .plans-sub {
+          font-size: 13px;
+          color: #64748B;
+          margin: 0;
+        }
+
+        .plans-three-grid {
           display: grid;
-          grid-template-columns: 1.5fr 1fr 1fr 1.5fr;
-          gap: 32px;
-          margin-bottom: 40px;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 24px;
         }
 
         @media (max-width: 860px) {
-          .footer-top-grid {
-            grid-template-columns: 1fr 1fr;
+          .plans-three-grid {
+            grid-template-columns: 1fr;
           }
         }
 
-        @media (max-width: 520px) {
+        .plan-card-clean {
+          background: ${isDark ? '#1E293B' : '#FFFFFF'};
+          border-radius: 20px;
+          padding: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          border: none;
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+        }
+
+        .plan-left-info {
+          flex: 1;
+        }
+
+        .plan-icon-circle {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 12px;
+        }
+
+        .plan-card-title {
+          font-size: 16px;
+          font-weight: 700;
+          color: ${isDark ? '#F8FAFC' : '#1E293B'};
+          margin: 0 0 4px 0;
+        }
+
+        .plan-card-sub {
+          font-size: 12px;
+          color: #64748B;
+          margin: 0 0 16px 0;
+        }
+
+        .plan-arrow-circle-btn {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          background: #E8F3E5;
+          border: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+        }
+
+        .plan-right-img-wrap {
+          width: 90px;
+          height: 90px;
+          border-radius: 16px;
+          overflow: hidden;
+          flex-shrink: 0;
+          margin-left: 12px;
+        }
+
+        .plan-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        /* FOOTER */
+        .site-footer-redesign {
+          background: ${isDark ? '#0F172A' : '#EAEFE7'};
+          padding: 60px 32px 32px 32px;
+          border-top: 1px solid ${isDark ? '#1E293B' : '#DFE6DB'};
+        }
+
+        .footer-top-grid {
+          max-width: 1240px;
+          margin: 0 auto 40px auto;
+          display: grid;
+          grid-template-columns: 2fr 1fr 1fr 2fr;
+          gap: 40px;
+        }
+
+        @media (max-width: 860px) {
           .footer-top-grid {
             grid-template-columns: 1fr;
           }
         }
 
-        .footer-brand {
+        .footer-brand-row {
           display: flex;
           align-items: center;
-          gap: 8px;
-          margin-bottom: 10px;
+          gap: 10px;
+          margin-bottom: 12px;
         }
 
         .footer-brand-name {
-          font-size: 20px;
+          font-size: 22px;
           font-weight: 800;
-          color: #1E4D18;
+          color: ${isDark ? '#FFFFFF' : '#3D4A2E'};
         }
 
         .footer-slogan {
           font-size: 13px;
           color: #64748B;
           line-height: 1.5;
-          margin: 0 0 18px 0;
-          max-width: 260px;
+          margin: 0 0 20px 0;
+          max-width: 300px;
         }
 
         .footer-socials {
           display: flex;
-          align-items: center;
-          gap: 10px;
+          gap: 12px;
         }
 
-        .social-icon-circle {
-          width: 34px;
-          height: 34px;
+        .social-circle {
+          width: 36px;
+          height: 36px;
           border-radius: 50%;
-          background: #ffffff;
+          background: #FFFFFF;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 14px;
           text-decoration: none;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+          font-size: 16px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
         .footer-heading {
-          font-size: 14px;
-          font-weight: 800;
+          font-size: 15px;
+          font-weight: 700;
           color: ${isDark ? '#FFFFFF' : '#1E293B'};
           margin: 0 0 16px 0;
         }
@@ -1040,9 +1056,10 @@ export default function HomePage() {
           list-style: none;
           padding: 0;
           margin: 0;
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
+        }
+
+        .footer-links li {
+          margin-bottom: 10px;
         }
 
         .footer-links button {
@@ -1052,78 +1069,65 @@ export default function HomePage() {
           font-size: 13px;
           cursor: pointer;
           padding: 0;
-          text-align: left;
+          font-family: inherit;
         }
 
         .footer-links button:hover {
-          color: #2E7D32;
+          color: #3D4A2E;
+          text-decoration: underline;
         }
 
         .newsletter-sub {
           font-size: 13px;
           color: #64748B;
-          margin: 0 0 14px 0;
+          margin: 0 0 16px 0;
         }
 
         .newsletter-form {
           display: flex;
-          align-items: center;
           gap: 8px;
-          margin-bottom: 8px;
         }
 
         .newsletter-form input {
           flex: 1;
-          padding: 10px 14px;
-          border-radius: 20px;
-          border: 1px solid #cbd5e1;
-          outline: none;
+          padding: 10px 16px;
+          border-radius: 9999px;
+          border: 1px solid #CBD5E1;
           font-size: 13px;
-          background: #ffffff;
+          outline: none;
         }
 
         .btn-subscribe {
-          background: #2E5B1A;
-          color: #ffffff;
+          background: #3D4A2E;
+          color: #FFFFFF;
           border: none;
-          padding: 10px 18px;
-          border-radius: 20px;
-          font-size: 13px;
+          padding: 10px 20px;
+          border-radius: 9999px;
           font-weight: 700;
+          font-size: 13px;
           cursor: pointer;
         }
 
-        .no-spam-note {
-          font-size: 11px;
-          color: #64748B;
-          margin: 0;
-        }
-
         .footer-bottom-bar {
-          border-top: 1px solid ${isDark ? '#1E293B' : '#E0EAD3'};
-          padding-top: 20px;
+          max-width: 1240px;
+          margin: 0 auto;
+          padding-top: 24px;
+          border-top: 1px solid ${isDark ? '#1E293B' : '#D5DDD1'};
           display: flex;
           align-items: center;
           justify-content: space-between;
           font-size: 12px;
           color: #64748B;
-          flex-wrap: wrap;
+        }
+
+        .footer-bottom-links {
+          display: flex;
           gap: 12px;
         }
 
-        .footer-legal-links {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-
-        .footer-legal-links a {
+        .footer-bottom-links a {
           color: #64748B;
           text-decoration: none;
-        }
-
-        .footer-legal-links a:hover {
-          color: #2E7D32;
         }
       `}} />
     </div>
