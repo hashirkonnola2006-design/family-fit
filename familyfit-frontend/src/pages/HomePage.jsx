@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useFamily } from '../context/FamilyContext'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
+import TestimonialMarquee from '../components/ui/marquee-01'
 
 // ── ICONS ──
 const LeafIcon = ({ size = 20, color = "#3D4A2E" }) => (
@@ -296,28 +297,8 @@ export default function HomePage() {
             </button>
           </div>
 
-          {/* 3 Testimonial Cards */}
-          <div className="testimonials-cards-grid">
-            {TESTIMONIALS.map((t, idx) => (
-              <div key={idx} className="testimonial-card-clean">
-                <div className="t-user-row">
-                  <img src={t.avatar} alt={t.name} className="t-avatar" />
-                  <div className="t-user-meta">
-                    <h4 className="t-name">{t.name}</h4>
-                    <StarRating />
-                  </div>
-                </div>
-                <p className="t-quote">"{t.quote}"</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Pagination Dots */}
-          <div className="pagination-dots">
-            <span className="dot active" />
-            <span className="dot" />
-            <span className="dot" />
-          </div>
+          {/* Infinite Marquee Testimonials */}
+          <TestimonialMarquee />
         </div>
 
         {/* ── 04. CURATED KERALA PLANS SECTION ── */}
