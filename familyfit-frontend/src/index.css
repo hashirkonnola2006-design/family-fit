@@ -1010,6 +1010,209 @@ input, textarea, select {
   margin-top: var(--space-5);
 }
 
+/* ─── Hero Redesign & Typography (Matching Reference Screenshot 2) ─── */
+.hero-olive-container {
+  width: 100%;
+  background-color: #3B4A2F;
+  background-image: url('/kerala_grocery_hero_salad_bowl_1786299023387.png');
+  background-size: cover;
+  background-position: center right;
+  background-repeat: no-repeat;
+  padding: 56px 48px 72px 48px;
+  box-sizing: border-box;
+  position: relative;
+  border-radius: 0 0 24px 24px;
+}
+
+@media (max-width: 768px) {
+  .hero-olive-container {
+    padding: 32px 20px 48px 20px;
+    background-position: top center;
+  }
+}
+
+.hero-inner-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hero-left-col {
+  max-width: 520px;
+  color: #FFFFFF;
+  z-index: 2;
+}
+
+.hero-heading {
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 1.15;
+  color: #FFFFFF;
+  letter-spacing: -0.5px;
+  margin: 0 0 16px 0;
+  font-family: inherit;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+  .hero-heading {
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+}
+
+.hero-subheading {
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.92);
+  margin: 0 0 28px 0;
+  max-width: 460px;
+}
+
+@media (max-width: 768px) {
+  .hero-subheading {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+}
+
+.hero-ctas-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.btn-solid-white-pill {
+  background: #FFFFFF;
+  color: #3B4A2F;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-solid-white-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+}
+
+.btn-plain-text-link {
+  background: transparent;
+  color: #FFFFFF;
+  font-weight: 600;
+  font-size: 15px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 8px 12px;
+  transition: opacity 0.2s ease;
+}
+
+.btn-plain-text-link:hover {
+  opacity: 0.85;
+}
+
+.hero-search-pill-bar {
+  background: #FFFFFF;
+  border-radius: 999px;
+  padding: 6px 6px 6px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 440px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.hero-search-pill-bar input {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 15px;
+  color: #1E293B;
+  background: transparent;
+}
+
+.hero-search-pill-bar input::placeholder {
+  color: #94A3B8;
+}
+
+.search-filter-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #3B4A2F;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+}
+
+.search-filter-circle:hover {
+  background: #2D3A23;
+}
+
+.quick-action-cards-container {
+  max-width: 1200px;
+  margin: -36px auto 40px auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  position: relative;
+  z-index: 10;
+}
+
+@media (max-width: 768px) {
+  .quick-action-cards-container {
+    grid-template-columns: repeat(2, 1fr);
+    margin-top: 16px;
+    padding: 0 16px;
+  }
+}
+
+.quick-action-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  border: 1px solid #F1F5F9;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.quick-action-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+}
+
+.quick-card-icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.quick-action-card span {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1E293B;
+}
+
 /* ─── Scrollable row ────────────────────────────────────────── */
 .scroll-row {
   display: flex;
