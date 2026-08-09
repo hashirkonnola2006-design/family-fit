@@ -412,7 +412,7 @@ export default function HomePage() {
 
         /* HERO SECTION WITH WIDE PANORAMA BACKGROUND IMAGE (NO BOX FRAME) */
         .hero-olive-container {
-          background: #4F6343 url('/hero_banner_wide.png') no-repeat center right / cover;
+          background: #4D5E3A url('/hero_bg_family.png') no-repeat center center / cover;
           position: relative;
           padding: 40px 80px 0 80px;
           color: #ffffff;
@@ -425,8 +425,8 @@ export default function HomePage() {
           max-width: 1320px;
           margin: 0 auto;
           display: grid;
-          grid-template-columns: 1.15fr 0.85fr;
-          gap: 48px;
+          grid-template-columns: 48% 52%;
+          gap: 0;
           align-items: center;
           padding-bottom: 24px;
         }
