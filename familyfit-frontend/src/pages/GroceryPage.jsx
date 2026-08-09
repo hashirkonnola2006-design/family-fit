@@ -107,32 +107,29 @@ export default function GroceryPage() {
           padding: '0 32px 32px 32px',
         }}
       >
-        {/* ── HERO BANNER SECTION (Vibrant Orange) ── */}
+        {/* ── HERO BANNER SECTION (Using exact uploaded background image) ── */}
         <div
           style={{
-            background: isDark
-              ? 'linear-gradient(135deg, #141C2E 0%, #0F172A 100%)'
-              : orangeColor,
-            borderRadius: '0 0 28px 28px',
-            padding: '40px 48px',
             position: 'relative',
-            overflow: 'hidden',
+            background: `${orangeColor} url('/grocery_user_hero.jpg') no-repeat right center / cover`,
+            borderRadius: '0 0 28px 28px',
+            padding: '56px 64px 76px 64px',
+            minHeight: 330,
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 32,
-            minHeight: 280,
+            boxSizing: 'border-box',
+            overflow: 'hidden',
           }}
         >
-          {/* Hero Left Content */}
-          <div style={{ zIndex: 2, maxWidth: 600 }}>
+          {/* Hero Left Writings */}
+          <div style={{ position: 'relative', zIndex: 2, maxWidth: 560 }}>
             <h1
               style={{
-                fontSize: 52,
+                fontSize: 54,
                 fontWeight: 900,
                 color: '#FFFFFF',
-                margin: '0 0 12px 0',
-                letterSpacing: '-1px',
+                margin: '0 0 14px 0',
+                letterSpacing: '-1.2px',
                 lineHeight: 1.05,
               }}
             >
@@ -141,12 +138,12 @@ export default function GroceryPage() {
 
             <p
               style={{
-                fontSize: 16,
-                color: 'rgba(255, 255, 255, 0.92)',
-                margin: '0 0 28px 0',
+                fontSize: 16.5,
+                color: 'rgba(255, 255, 255, 0.95)',
+                margin: '0 0 32px 0',
                 fontWeight: 500,
-                maxWidth: 480,
-                lineHeight: 1.4,
+                maxWidth: 460,
+                lineHeight: 1.45,
               }}
             >
               Personalized ingredient recommendations for a healthier Kerala lifestyle.
@@ -157,7 +154,7 @@ export default function GroceryPage() {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 20,
+                gap: 24,
                 flexWrap: 'wrap',
               }}
             >
@@ -166,12 +163,12 @@ export default function GroceryPage() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 8,
-                  fontSize: 13,
+                  fontSize: 13.5,
                   fontWeight: 600,
                   color: '#FFFFFF',
                 }}
               >
-                <span style={{ fontSize: 16 }}>🍃</span> Personalized for your family
+                <span style={{ fontSize: 18 }}>🍃</span> Personalized for your family
               </div>
 
               <div
@@ -179,12 +176,12 @@ export default function GroceryPage() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 8,
-                  fontSize: 13,
+                  fontSize: 13.5,
                   fontWeight: 600,
                   color: '#FFFFFF',
                 }}
               >
-                <span style={{ fontSize: 16 }}>🍲</span> Kerala ingredients
+                <span style={{ fontSize: 18 }}>🍲</span> Kerala ingredients
               </div>
 
               <div
@@ -192,41 +189,14 @@ export default function GroceryPage() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 8,
-                  fontSize: 13,
+                  fontSize: 13.5,
                   fontWeight: 600,
                   color: '#FFFFFF',
                 }}
               >
-                <span style={{ fontSize: 16 }}>🧡</span> Nutrition focused
+                <span style={{ fontSize: 18 }}>🧡</span> Nutrition focused
               </div>
             </div>
-          </div>
-
-          {/* Hero Right Image (Salad photography with blank left space) */}
-          <div
-            style={{
-              position: 'relative',
-              zIndex: 2,
-              width: 520,
-              height: 290,
-              borderRadius: 24,
-              overflow: 'hidden',
-              flexShrink: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <img
-              src="/grocery_orange_hero.png"
-              alt="Fresh Salad photography"
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                objectPosition: 'right center',
-              }}
-            />
           </div>
         </div>
 
@@ -236,7 +206,7 @@ export default function GroceryPage() {
             background: isDark ? '#1E293B' : '#FFFFFF',
             borderRadius: 20,
             padding: '20px 28px',
-            marginTop: -30,
+            marginTop: -32,
             marginBottom: 32,
             position: 'relative',
             zIndex: 10,
