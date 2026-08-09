@@ -16,15 +16,7 @@ export default function AnimatedNavbar({ isDark = false, isHomePage = false }) {
   const { pathname } = useLocation()
 
   return (
-    <nav
-      className={`relative flex items-center gap-1 p-1.5 rounded-full transition-all duration-300 ${
-        isHomePage
-          ? 'bg-white/15 backdrop-blur-md border border-white/20 shadow-lg'
-          : isDark
-          ? 'bg-slate-900/80 backdrop-blur-md border border-slate-800 shadow-lg'
-          : 'bg-emerald-900/5 backdrop-blur-md border border-emerald-950/10 shadow-sm'
-      }`}
-    >
+    <nav className="flex items-center gap-2 p-1.5 rounded-full transition-all duration-300">
       {navItems.map((item) => {
         const isActive =
           (item.path === '/' && pathname === '/') ||
@@ -36,47 +28,47 @@ export default function AnimatedNavbar({ isDark = false, isHomePage = false }) {
           <button
             key={item.path}
             onClick={() => navigate(item.path)}
-            className={`relative flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-full transition-colors duration-200 cursor-pointer border-0 select-none ${
+            className={`relative flex items-center gap-2.5 px-5 py-2.5 text-[15px] font-medium rounded-full transition-colors duration-200 cursor-pointer border-0 select-none ${
               isActive
                 ? isHomePage
-                  ? 'text-emerald-950 font-bold'
+                  ? 'text-emerald-950 font-semibold'
                   : isDark
-                  ? 'text-emerald-300 font-bold'
-                  : 'text-emerald-950 font-bold'
+                  ? 'text-emerald-300 font-semibold'
+                  : 'text-emerald-950 font-semibold'
                 : isHomePage
-                ? 'text-white/90 hover:text-white'
+                ? 'text-white/80 hover:text-white'
                 : isDark
                 ? 'text-slate-400 hover:text-slate-200'
-                : 'text-slate-600 hover:text-emerald-900'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            {/* Animated Active Background Pill */}
+            {/* Animated Active Pill Indicator */}
             {isActive && (
               <motion.div
                 layoutId="activeNavPill"
-                className={`absolute inset-0 rounded-full shadow-md z-0 ${
+                className={`absolute inset-0 rounded-full shadow-sm z-0 ${
                   isHomePage
                     ? 'bg-white'
                     : isDark
-                    ? 'bg-emerald-950/90 border border-emerald-800/50'
-                    : 'bg-white border border-emerald-900/10'
+                    ? 'bg-emerald-950/80 border border-emerald-800/60'
+                    : 'bg-white border border-slate-200/80'
                 }`}
                 transition={{
                   type: 'spring',
-                  stiffness: 380,
-                  damping: 30,
+                  stiffness: 400,
+                  damping: 32,
                 }}
               />
             )}
 
-            {/* Icon & Label content above background */}
-            <span className="relative z-10 flex items-center gap-2">
+            {/* Icon & Label */}
+            <span className="relative z-10 flex items-center gap-2.5">
               <IconComponent
-                className={`w-4 h-4 transition-transform duration-200 ${
-                  isActive ? 'scale-110' : 'opacity-80'
+                className={`w-4.5 h-4.5 transition-transform duration-200 ${
+                  isActive ? 'scale-105 opacity-100' : 'opacity-70'
                 }`}
               />
-              <span>{item.label}</span>
+              <span className="tracking-tight">{item.label}</span>
             </span>
           </button>
         )
