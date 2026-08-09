@@ -231,14 +231,17 @@ export default function RecipesPage() {
       {/* ── HERO BANNER ── */}
       <div style={{
         position: 'relative',
-        background: isDark ? '#0F1A0A' : '#F2EDE4',
+        background: isDark
+          ? '#0F1A0A url(/kerala_recipes_hero.png) no-repeat center right / cover'
+          : '#EDE8DE url(/kerala_recipes_hero.png) no-repeat center right / cover',
         overflow: 'hidden',
-        minHeight: 300,
+        minHeight: 340,
         display: 'flex',
         alignItems: 'center',
+        padding: '40px 60px',
       }}>
-        {/* Left content */}
-        <div style={{ position: 'relative', zIndex: 2, padding: '48px 60px 40px 60px', maxWidth: '48%', flexShrink: 0 }}>
+        {/* Left content positioned over blank area */}
+        <div style={{ position: 'relative', zIndex: 2, maxWidth: '50%', flexShrink: 0 }}>
           <span style={{ fontSize: 12, fontWeight: 800, color: green, letterSpacing: 2, textTransform: 'uppercase', display: 'block', marginBottom: 10 }}>
             DISCOVER
           </span>
@@ -290,31 +293,8 @@ export default function RecipesPage() {
             </span>
           </div>
         </div>
-
-        {/* Right image */}
-        <div style={{
-          position: 'absolute', right: 0, top: 0, bottom: 0,
-          width: '55%',
-          overflow: 'hidden',
-        }}>
-          {/* Gradient fade on the left edge of the image */}
-          <div style={{
-            position: 'absolute', left: 0, top: 0, bottom: 0, width: 120,
-            background: isDark
-              ? 'linear-gradient(to right, #0F1A0A, transparent)'
-              : 'linear-gradient(to right, #F2EDE4, transparent)',
-            zIndex: 1,
-          }} />
-          <img
-            src="/kerala_recipes_hero.png"
-            alt="Kerala dishes"
-            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
-            onError={e => {
-              e.target.src = 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=900&q=80'
-            }}
-          />
-        </div>
       </div>
+
 
       {/* ── FILTER TABS ── */}
       <div style={{ background: isDark ? '#111827' : '#FFFFFF', borderBottom: `1px solid ${isDark ? '#1F2937' : '#F3F4F6'}`, padding: '0 60px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -422,18 +402,17 @@ export default function RecipesPage() {
           div[style*="grid-template-columns: repeat(4, 1fr)"] {
             grid-template-columns: repeat(2, 1fr) !important;
           }
-          div[style*="padding: 48px 60px"] {
-            padding: 36px 24px 32px 24px !important;
+          div[style*="max-width: 50%"] {
             max-width: 100% !important;
+          }
+          div[style*="padding: 40px 60px"] {
+            padding: 32px 20px !important;
           }
           div[style*="padding: 0 60px"] {
             padding: 0 16px !important;
           }
           div[style*="padding: 32px 60px 60px 60px"] {
             padding: 24px 16px 40px 16px !important;
-          }
-          div[style*="width: 55%"][style*="position: absolute"] {
-            display: none !important;
           }
         }
         @media (max-width: 640px) {
