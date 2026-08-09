@@ -99,26 +99,26 @@ export default function GroceryPage() {
         </div>
       )}
 
-      {/* Main Responsive Wrapper */}
+      {/* ── 100% FULL-WIDTH HERO BANNER SECTION ── */}
       <div
         style={{
-          maxWidth: 1380,
-          margin: '0 auto',
-          padding: '0 32px 32px 32px',
+          width: '100%',
+          position: 'relative',
+          background: `${orangeColor} url('/grocery_user_hero.jpg') no-repeat right center / cover`,
+          minHeight: 330,
+          boxSizing: 'border-box',
+          overflow: 'hidden',
         }}
       >
-        {/* ── HERO BANNER SECTION (Using exact uploaded background image) ── */}
+        {/* Inner Centered Content Container */}
         <div
           style={{
-            position: 'relative',
-            background: `${orangeColor} url('/grocery_user_hero.jpg') no-repeat right center / cover`,
-            borderRadius: '0 0 28px 28px',
-            padding: '56px 64px 76px 64px',
-            minHeight: 330,
+            maxWidth: 1380,
+            margin: '0 auto',
+            padding: '56px 32px 80px 32px',
             display: 'flex',
             alignItems: 'center',
             boxSizing: 'border-box',
-            overflow: 'hidden',
           }}
         >
           {/* Hero Left Writings */}
@@ -199,6 +199,16 @@ export default function GroceryPage() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Main Page Body Content Container */}
+      <div
+        style={{
+          maxWidth: 1380,
+          margin: '0 auto',
+          padding: '0 32px 32px 32px',
+        }}
+      >
 
         {/* ── FLOATING TARGET FAMILY BUDGET BAR ── */}
         <div

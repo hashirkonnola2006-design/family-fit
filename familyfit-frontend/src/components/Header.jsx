@@ -176,17 +176,15 @@ export default function Header() {
           <nav className="ff-desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: 36 }}>
             {NAV_LINKS.map(link => {
               const isActive = pathname === link.path
-              const isGroceryWhitePill = isGrocery && !isDark && isActive
               return (
                 <button
                   key={link.path}
                   className={`ff-nav-link${isActive ? ' active' : ''}`}
                   style={{
-                    color: isGroceryWhitePill ? '#F4511E' : isActive ? accentColor : textColor,
-                    background: isGroceryWhitePill ? '#FFFFFF' : 'transparent',
-                    padding: isGroceryWhitePill ? '6px 18px' : '6px 4px',
-                    borderRadius: isGroceryWhitePill ? 20 : 0,
-                    fontWeight: isGroceryWhitePill ? 800 : 600,
+                    color: isActive
+                      ? (isGrocery && !isDark ? '#FFFFFF' : accentColor)
+                      : textColor,
+                    fontWeight: isActive ? 800 : 600,
                   }}
                   onClick={() => navigate(link.path)}
                 >
@@ -204,10 +202,13 @@ export default function Header() {
               onClick={() => alert('No new notifications')}
               style={{
                 width: 44, height: 44, borderRadius: '50%',
-                background: isHome ? 'rgba(255,255,255,0.12)' : isDark ? '#1E293B' : '#F1F5F9',
+                background: (isGrocery && !isDark)
+                  ? '#FFFFFF'
+                  : isHome ? 'rgba(255,255,255,0.12)' : isDark ? '#1E293B' : '#F1F5F9',
                 border: 'none', cursor: 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: textColor, position: 'relative',
+                color: (isGrocery && !isDark) ? '#F4511E' : textColor, position: 'relative',
+                boxShadow: (isGrocery && !isDark) ? '0 2px 8px rgba(0,0,0,0.1)' : 'none',
               }}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -228,24 +229,27 @@ export default function Header() {
               style={{
                 display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer',
                 padding: '5px 16px 5px 5px', borderRadius: 40,
-                background: isHome ? 'rgba(255,255,255,0.15)' : isDark ? '#1E293B' : '#F1F5F9',
+                background: (isGrocery && !isDark)
+                  ? '#FFFFFF'
+                  : isHome ? 'rgba(255,255,255,0.15)' : isDark ? '#1E293B' : '#F1F5F9',
                 border: isHome ? '1px solid rgba(255,255,255,0.2)' : '1px solid transparent',
+                boxShadow: (isGrocery && !isDark) ? '0 2px 10px rgba(0,0,0,0.1)' : 'none',
               }}
             >
               <div style={{
                 width: 34, height: 34, borderRadius: '50%',
-                background: accentColor,
+                background: (isGrocery && !isDark) ? '#E8F0E3' : accentColor,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: '#fff', fontWeight: 800, fontSize: 15,
+                color: (isGrocery && !isDark) ? '#2E7D32' : '#fff', fontWeight: 800, fontSize: 15,
                 fontFamily: "'Plus Jakarta Sans', sans-serif",
               }}>
                 {initial}
               </div>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span style={{ fontSize: 13, fontWeight: 700, color: textColor, lineHeight: 1.2, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: (isGrocery && !isDark) ? '#1E293B' : textColor, lineHeight: 1.2, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                   {displayName}
                 </span>
-                <span style={{ fontSize: 11, color: isHome ? 'rgba(255,255,255,0.6)' : '#94A3B8', fontWeight: 500 }}>
+                <span style={{ fontSize: 11, color: (isGrocery && !isDark) ? '#64748B' : isHome ? 'rgba(255,255,255,0.6)' : '#94A3B8', fontWeight: 500 }}>
                   Family
                 </span>
               </div>
