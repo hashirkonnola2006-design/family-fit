@@ -123,7 +123,10 @@ export default function Header() {
         }
         @media (max-width: 768px) {
           .ff-desktop-nav { display: none !important; }
-          .ff-mobile-menu { display: flex !important; }
+        }
+        @media (max-width: 640px) {
+          .ff-header { padding: 12px 18px !important; }
+          .ff-avatar-text { display: none !important; }
         }
       `}</style>
 
@@ -195,57 +198,55 @@ export default function Header() {
           </nav>
 
           {/* ── Right: Bell + Avatar ── */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
             {/* Bell */}
             <button
               className="ff-bell"
               onClick={() => alert('No new notifications')}
               style={{
-                width: 44, height: 44, borderRadius: '50%',
+                width: 38, height: 38, borderRadius: '50%',
                 background: (isGrocery && !isDark)
                   ? '#FFFFFF'
-                  : isHome ? 'rgba(255,255,255,0.12)' : isDark ? '#1E293B' : '#F1F5F9',
+                  : isHome ? 'rgba(255,255,255,0.18)' : isDark ? '#1E293B' : '#F1F5F9',
                 border: 'none', cursor: 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 color: (isGrocery && !isDark) ? '#F4511E' : textColor, position: 'relative',
                 boxShadow: (isGrocery && !isDark) ? '0 2px 8px rgba(0,0,0,0.1)' : 'none',
               }}
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                 <path d="M13.73 21a2 2 0 0 1-3.46 0" />
               </svg>
               <span style={{
-                position: 'absolute', top: 9, right: 9,
-                width: 8, height: 8, borderRadius: '50%',
+                position: 'absolute', top: 8, right: 8,
+                width: 7, height: 7, borderRadius: '50%',
                 background: '#FF8A00', border: '1.5px solid white',
               }} />
             </button>
 
-            {/* Avatar pill */}
+            {/* Avatar Circle Badge */}
             <div
               className="ff-avatar"
               onClick={() => navigate('/profile')}
               style={{
-                display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer',
-                padding: '5px 16px 5px 5px', borderRadius: 40,
+                display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer',
+                padding: '4px', borderRadius: 40,
                 background: (isGrocery && !isDark)
                   ? '#FFFFFF'
                   : isHome ? 'rgba(255,255,255,0.15)' : isDark ? '#1E293B' : '#F1F5F9',
-                border: isHome ? '1px solid rgba(255,255,255,0.2)' : '1px solid transparent',
-                boxShadow: (isGrocery && !isDark) ? '0 2px 10px rgba(0,0,0,0.1)' : 'none',
               }}
             >
               <div style={{
                 width: 34, height: 34, borderRadius: '50%',
-                background: (isGrocery && !isDark) ? '#E8F0E3' : accentColor,
+                background: (isGrocery && !isDark) ? '#E8F0E3' : isHome ? '#81C784' : accentColor,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: (isGrocery && !isDark) ? '#2E7D32' : '#fff', fontWeight: 800, fontSize: 15,
+                color: (isGrocery && !isDark) ? '#2E7D32' : '#FFFFFF', fontWeight: 800, fontSize: 15,
                 fontFamily: "'Plus Jakarta Sans', sans-serif",
               }}>
                 {initial}
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div className="ff-avatar-text" style={{ display: 'flex', flexDirection: 'column', paddingRight: 8 }}>
                 <span style={{ fontSize: 13, fontWeight: 700, color: (isGrocery && !isDark) ? '#1E293B' : textColor, lineHeight: 1.2, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                   {displayName}
                 </span>
@@ -254,26 +255,6 @@ export default function Header() {
                 </span>
               </div>
             </div>
-
-            {/* Mobile hamburger */}
-            <button
-              className="ff-mobile-menu"
-              onClick={() => setMobileOpen(o => !o)}
-              style={{
-                display: 'none',
-                width: 44, height: 44, borderRadius: 12,
-                background: 'rgba(255,255,255,0.12)',
-                border: 'none', cursor: 'pointer',
-                alignItems: 'center', justifyContent: 'center',
-                color: textColor,
-              }}
-            >
-              {mobileOpen ? (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 6 6 18M6 6l12 12" /></svg>
-              ) : (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
-              )}
-            </button>
           </div>
         </div>
 

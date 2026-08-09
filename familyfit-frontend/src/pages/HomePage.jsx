@@ -198,6 +198,26 @@ export default function HomePage() {
 
       </section>
 
+      {/* ── 01.5 QUICK ACTION CARDS (4 CARDS MATCHING REFERENCE IMAGE 2) ── */}
+      <div className="quick-action-cards-container">
+        <div className="quick-action-card" onClick={() => navigate('/recipes')}>
+          <div className="quick-card-icon">🍃</div>
+          <span>Nutrition Plans</span>
+        </div>
+        <div className="quick-action-card" onClick={() => navigate('/recipes')}>
+          <div className="quick-card-icon">🍲</div>
+          <span>Recipes</span>
+        </div>
+        <div className="quick-action-card" onClick={() => navigate('/grocery')}>
+          <div className="quick-card-icon">🛒</div>
+          <span>Grocery List</span>
+        </div>
+        <div className="quick-action-card" onClick={() => navigate('/tips')}>
+          <div className="quick-card-icon">💡</div>
+          <span>Tips</span>
+        </div>
+      </div>
+
       {/* ── 02. FITNESS PLUS NUTRITION EQUALS TRANSFORMATION (RECIPES SECTION) ── */}
       <section className="section-main-wrapper">
         <div className="fitness-header-center">
@@ -776,6 +796,70 @@ export default function HomePage() {
 
         .view-reviews-link:hover {
           text-decoration: underline;
+        }
+
+        /* QUICK ACTION CARDS MATCHING REFERENCE IMAGE 2 */
+        .quick-action-cards-container {
+          max-width: 1200px;
+          margin: -24px auto 36px auto;
+          padding: 0 24px;
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 16px;
+          position: relative;
+          z-index: 10;
+        }
+
+        .quick-action-card {
+          background: ${isDark ? '#1E293B' : '#FFFFFF'};
+          border-radius: 20px;
+          padding: 20px 16px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          cursor: pointer;
+          box-shadow: ${isDark ? '0 4px 16px rgba(0,0,0,0.3)' : '0 4px 20px rgba(0,0,0,0.04)'};
+          border: 1px solid ${isDark ? '#334155' : '#F0EFE9'};
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .quick-action-card:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+
+        .quick-card-icon {
+          font-size: 26px;
+        }
+
+        .quick-action-card span {
+          font-size: 13px;
+          font-weight: 700;
+          color: ${isDark ? '#F8FAFC' : '#2D3A20'};
+          text-align: center;
+          font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        @media (max-width: 640px) {
+          .quick-action-cards-container {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            padding: 0 12px;
+            margin-top: -18px;
+            margin-bottom: 24px;
+          }
+          .quick-action-card {
+            padding: 12px 6px;
+            border-radius: 16px;
+          }
+          .quick-card-icon {
+            font-size: 22px;
+          }
+          .quick-action-card span {
+            font-size: 11px;
+          }
         }
 
         /* CURATED PLANS */

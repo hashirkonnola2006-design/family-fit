@@ -1,92 +1,114 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Home, UtensilsCrossed, ShoppingBag, Lightbulb, User } from 'lucide-react'
 import { useTheme } from '../context/ThemeContext'
-import { Dock, DockIcon, DockItem, DockLabel } from './ui/dock'
 
 const NAV_ITEMS = [
-  {
-    path: '/',
-    label: 'Home',
-    icon: Home,
-  },
-  {
-    path: '/recipes',
-    label: 'Recipes',
-    icon: UtensilsCrossed,
-  },
-  {
-    path: '/grocery',
-    label: 'Grocery',
-    icon: ShoppingBag,
-  },
-  {
-    path: '/tips',
-    label: 'Tips',
-    icon: Lightbulb,
-  },
-  {
-    path: '/profile',
-    label: 'Profile',
-    icon: User,
-  },
+  { path: '/', label: 'Home', icon: Home },
+  { path: '/recipes', label: 'Recipes', icon: UtensilsCrossed },
+  { path: '/grocery', label: 'Grocery', icon: ShoppingBag },
+  { path: '/tips', label: 'Tips', icon: Lightbulb },
+  { path: '/profile', label: 'Profile', icon: User },
 ]
 
 export default function BottomNav() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
+  const { isDark } = useTheme()
+
+  const activeColor = '#2E7D32'
+  const inactiveColor = isDark ? '#94A3B8' : '#718096'
+  const bgColor = isDark ? 'rgba(15, 23, 42, 0.96)' : '#FFFFFF'
+  const borderColor = isDark ? '#1E293B' : '#F0EFE9'
 
   return (
-    <div
-      className="mobile-bottom-dock-wrapper"
-      style={{
-        position: 'fixed',
-        bottom: 16,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        zIndex: 2000,
-        width: 'auto',
-        maxWidth: '100vw',
-      }}
-    >
-      <Dock className="items-center">
+    <div className="mobile-bottom-nav-container">
+      <nav
+        style={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 2000,
+          background: bgColor,
+          borderTop: `1px solid ${borderColor}`,
+          boxShadow: '0 -4px 20px rgba(0,0,0,0.06)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-around',
+          paddingTop: 8,
+          paddingBottom: 'max(10px, env(safe-area-inset-bottom, 10px))',
+          paddingLeft: 12,
+          paddingRight: 12,
+        }}
+      >
         {NAV_ITEMS.map((item) => {
           const isActive = pathname === item.path
           const IconComponent = item.icon
 
           return (
-            <DockItem
+            <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              className={`aspect-square rounded-full transition-all duration-200 ${
-                isActive
-                  ? 'bg-[#3D4A2E] text-white shadow-md'
-                  : 'bg-transparent text-[#6B7364] hover:bg-[#F2EFE9] dark:hover:bg-neutral-800'
-              }`}
+              style={{
+                border: 'none',
+                background: 'transparent',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 4,
+                cursor: 'pointer',
+                padding: '4px 12px',
+                borderRadius: 16,
+                flex: 1,
+                maxWidth: 80,
+                transition: 'transform 0.15s ease',
+              }}
             >
-              <DockLabel>{item.label}</DockLabel>
-              <DockIcon>
+              <div
+                style={{
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: isActive ? activeColor : inactiveColor,
+                  transition: 'color 0.2s ease, transform 0.2s ease',
+                  transform: isActive ? 'scale(1.1)' : 'scale(1)',
+                }}
+              >
                 <IconComponent
-                  className={`h-5 w-5 ${
-                    isActive
-                      ? 'text-white'
-                      : 'text-[#6B7364] dark:text-neutral-300'
-                  }`}
-                  strokeWidth={isActive ? 2.3 : 1.9}
+                  size={22}
+                  strokeWidth={isActive ? 2.3 : 1.8}
                 />
-              </DockIcon>
-            </DockItem>
+              </div>
+
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: isActive ? 700 : 500,
+                  color: isActive ? activeColor : inactiveColor,
+                  letterSpacing: '-0.1px',
+                  lineHeight: 1,
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                }}
+              >
+                {item.label}
+              </span>
+            </button>
           )
         })}
-      </Dock>
+      </nav>
 
       <style>{`
-        /* Show dock on mobile/tablet view by default */
-        .mobile-bottom-dock-wrapper {
+        /* Show on mobile view, hide on desktop */
+        .mobile-bottom-nav-container {
           display: block;
         }
 
         @media (min-width: 768px) {
-          .mobile-bottom-dock-wrapper {
+          .mobile-bottom-nav-container {
             display: none;
           }
         }
