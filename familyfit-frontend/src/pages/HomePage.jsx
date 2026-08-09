@@ -6,7 +6,7 @@ import { useTheme } from '../context/ThemeContext'
 import TestimonialMarquee from '../components/ui/marquee-01'
 
 // ── ICONS ──
-const LeafIcon = ({ size = 20, color = "#3D4A2E" }) => (
+const LeafIcon = ({ size = 20, color = "#4D6241" }) => (
   <svg width={size} height={size} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M8 24C8 24 10 14 20 8C20 8 22 18 12 24C10.5 24.9 9 24.5 8 24Z" fill={color} />
     <path d="M6 18C6 18 12 10 24 6C24 6 22 18 14 20C10 21 7.5 19.5 6 18Z" fill="#81C784" />
@@ -106,7 +106,7 @@ const CURATED_PLANS = [
     sub: 'Balanced meals for healthy weight',
     image: '/kerala_vegetable_upma.png',
     iconBg: '#E8F0E3',
-    iconColor: '#3D4A2E',
+    iconColor: '#4D6241',
     type: 'shield',
   },
   {
@@ -126,24 +126,6 @@ const CURATED_PLANS = [
     iconBg: '#FFF3E0',
     iconColor: '#E65100',
     type: 'heart',
-  },
-]
-
-const TESTIMONIALS = [
-  {
-    name: 'Anitha Nair',
-    quote: 'FamilyFit has made our daily meals healthier and planning so easy.',
-    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
-  },
-  {
-    name: 'Rohit Menon',
-    quote: 'The recipes are delicious and my kids actually enjoy eating healthy now!',
-    avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80',
-  },
-  {
-    name: 'Priya Suresh',
-    quote: 'Personalized plans and grocery tips have saved us so much time.',
-    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
   },
 ]
 
@@ -175,7 +157,7 @@ export default function HomePage() {
 
   return (
     <div className="landing-page-root">
-      {/* ── 01. HERO SECTION (DARK OLIVE GREEN WITH DEEP CONCAVE SWOOP CURVE) ── */}
+      {/* ── 01. HERO SECTION (DARK DEEP SAGE GREEN WITH ORGANIC SWEEPING BOTTOM CURVE) ── */}
       <section className="hero-olive-container">
         <div className="hero-inner-content">
           {/* Left Column: Heading, Subheading, CTAs, Search */}
@@ -190,7 +172,7 @@ export default function HomePage() {
 
             <div className="hero-ctas-row">
               <button className="btn-solid-white-pill" onClick={() => navigate('/recipes')}>
-                <LeafIcon size={18} color="#3D4A2E" />
+                <LeafIcon size={18} color="#4D6241" />
                 <span>Let's eat healthy</span>
               </button>
               <button className="btn-plain-text-link" onClick={() => navigate('/recipes')}>
@@ -223,13 +205,20 @@ export default function HomePage() {
             />
           </div>
         </div>
+
+        {/* Organic Bottom Curve matching reference image */}
+        <div className="hero-bottom-curve-svg">
+          <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ width: '100%', height: '50px', display: 'block' }}>
+            <path d="M0,0 C380,56 760,58 1440,16 L1440,60 L0,60 Z" fill={isDark ? '#0A0F1D' : '#F5F3EE'} />
+          </svg>
+        </div>
       </section>
 
       {/* ── 02. FITNESS PLUS NUTRITION EQUALS TRANSFORMATION (RECIPES SECTION) ── */}
       <section className="section-main-wrapper">
         <div className="fitness-header-center">
           <div className="leaf-header-icon-wrap">
-            <LeafIcon size={20} color="#3D4A2E" />
+            <LeafIcon size={20} color="#4D6241" />
           </div>
           <h2 className="fitness-heading">
             Fitness plus Nutrition<br />
@@ -244,7 +233,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* 4 Recipe Cards Grid with tighter 20-24px gap */}
+        {/* 4 Recipe Cards Grid */}
         <div className="recipe-cards-grid">
           {filteredRecipes.map((recipe) => (
             <div key={recipe.id} className="recipe-card-clean">
@@ -279,12 +268,12 @@ export default function HomePage() {
           ))}
         </div>
 
-        {/* ── 03. LOVED BY FAMILIES (TESTIMONIALS SECTION) ── */}
+        {/* ── 03. LOVED BY FAMILIES (TESTIMONIAL MARQUEE SECTION) ── */}
         <div className="loved-by-families-container">
           <div className="loved-header-row">
             <div className="loved-header-left">
               <div className="heart-icon-badge">
-                <HeartIcon filled={false} size={20} color="#3D4A2E" />
+                <HeartIcon filled={false} size={20} color="#4D6241" />
               </div>
               <div>
                 <h3 className="loved-title">Loved by Families</h3>
@@ -293,7 +282,7 @@ export default function HomePage() {
             </div>
             <button className="view-reviews-link" onClick={() => navigate('/tips')}>
               <span>View all reviews</span>
-              <ArrowRight color="#3D4A2E" />
+              <ArrowRight color="#4D6241" />
             </button>
           </div>
 
@@ -310,7 +299,7 @@ export default function HomePage() {
             </div>
             <button className="view-reviews-link" onClick={() => navigate('/recipes')}>
               <span>Explore plans</span>
-              <ArrowRight color="#3D4A2E" />
+              <ArrowRight color="#4D6241" />
             </button>
           </div>
 
@@ -341,7 +330,7 @@ export default function HomePage() {
                   <p className="plan-card-sub">{plan.sub}</p>
 
                   <button className="plan-arrow-circle-btn" onClick={() => navigate('/recipes')}>
-                    <ArrowRight color="#3D4A2E" />
+                    <ArrowRight color="#4D6241" />
                   </button>
                 </div>
 
@@ -359,7 +348,7 @@ export default function HomePage() {
         <div className="footer-top-grid">
           <div className="footer-col-brand">
             <div className="footer-brand-row">
-              <LeafIcon size={24} color="#3D4A2E" />
+              <LeafIcon size={24} color="#4D6241" />
               <span className="footer-brand-name">FamilyFit</span>
             </div>
             <p className="footer-slogan">Wholesome Kerala meals and smart planning for a healthier family.</p>
@@ -433,14 +422,11 @@ export default function HomePage() {
           overflow-x: hidden;
         }
 
-        /* HERO SECTION WITH LARGE CONCAVE BOTTOM-LEFT SWOOP CURVE (95px) */
+        /* HERO SECTION WITH EXACT SAGE GREEN AND ORGANIC SWEEPING BOTTOM CURVE */
         .hero-olive-container {
-          background-color: #3D4A2E;
-          border-bottom-left-radius: 95px;
-          border-bottom-right-radius: 0px;
-          border-top-left-radius: 0px;
-          border-top-right-radius: 0px;
-          padding: 40px 80px 64px 80px;
+          background-color: #4D6241;
+          position: relative;
+          padding: 40px 80px 0 80px;
           color: #ffffff;
           width: 100%;
           box-sizing: border-box;
@@ -453,12 +439,12 @@ export default function HomePage() {
           grid-template-columns: 1.15fr 0.85fr;
           gap: 48px;
           align-items: center;
+          padding-bottom: 24px;
         }
 
         @media (max-width: 980px) {
           .hero-olive-container {
-            padding: 32px 24px 48px 24px;
-            border-bottom-left-radius: 60px;
+            padding: 32px 24px 0 24px;
           }
           .hero-inner-content {
             grid-template-columns: 1fr;
@@ -499,7 +485,7 @@ export default function HomePage() {
 
         .btn-solid-white-pill {
           background: #FFFFFF;
-          color: #3D4A2E;
+          color: #4D6241;
           border: none;
           padding: 14px 28px;
           border-radius: 9999px;
@@ -562,7 +548,7 @@ export default function HomePage() {
           width: 40px;
           height: 40px;
           border-radius: 50%;
-          background: #3D4A2E;
+          background: #3B4B32;
           border: none;
           display: flex;
           align-items: center;
@@ -582,7 +568,7 @@ export default function HomePage() {
 
         .hero-family-photo {
           width: 100%;
-          height: 400px;
+          height: 380px;
           border-radius: 24px;
           object-fit: cover;
           display: block;
@@ -596,11 +582,18 @@ export default function HomePage() {
           }
         }
 
+        .hero-bottom-curve-svg {
+          width: 100%;
+          overflow: hidden;
+          line-height: 0;
+          margin-top: 10px;
+        }
+
         /* MAIN CONTENT AREA WITH CONSISTENT 80px HORIZONTAL PADDING */
         .section-main-wrapper {
           max-width: 1320px;
           margin: 0 auto;
-          padding: 60px 80px 48px 80px;
+          padding: 48px 80px 48px 80px;
           box-sizing: border-box;
         }
 
@@ -622,7 +615,7 @@ export default function HomePage() {
         .fitness-heading {
           font-size: 32px;
           font-weight: 800;
-          color: ${isDark ? '#FFFFFF' : '#3D4A2E'};
+          color: ${isDark ? '#FFFFFF' : '#4D6241'};
           margin: 4px 0 6px 0;
           letter-spacing: -0.5px;
           line-height: 1.25;
@@ -634,7 +627,7 @@ export default function HomePage() {
           margin-top: 6px;
         }
 
-        /* RECIPE CARDS GRID - 20px TIGHT GAP & LANDSCAPE 4:3 ASPECT RATIO IMAGES */
+        /* RECIPE CARDS GRID */
         .recipe-cards-grid {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
@@ -723,7 +716,7 @@ export default function HomePage() {
         .recipe-card-tag-pill {
           display: inline-block;
           background: ${isDark ? '#166534' : '#E8F0E3'};
-          color: ${isDark ? '#DCFCE7' : '#3D4A2E'};
+          color: ${isDark ? '#DCFCE7' : '#4D6241'};
           font-size: 11px;
           font-weight: 700;
           padding: 4px 12px;
@@ -794,7 +787,7 @@ export default function HomePage() {
         .view-reviews-link {
           background: none;
           border: none;
-          color: ${isDark ? '#81C784' : '#3D4A2E'};
+          color: ${isDark ? '#81C784' : '#4D6241'};
           font-size: 14px;
           font-weight: 700;
           cursor: pointer;
@@ -805,77 +798,6 @@ export default function HomePage() {
 
         .view-reviews-link:hover {
           text-decoration: underline;
-        }
-
-        .testimonials-cards-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 20px;
-          margin-bottom: 20px;
-        }
-
-        @media (max-width: 860px) {
-          .testimonials-cards-grid {
-            grid-template-columns: 1fr;
-          }
-        }
-
-        .testimonial-card-clean {
-          background: ${isDark ? '#1E293B' : '#FFFFFF'};
-          border-radius: 16px;
-          padding: 20px;
-          border: 1px solid ${isDark ? '#334155' : '#EAEFE5'};
-          box-shadow: 0 2px 12px rgba(0, 0, 0, 0.02);
-        }
-
-        .t-user-row {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          margin-bottom: 10px;
-        }
-
-        .t-avatar {
-          width: 44px;
-          height: 44px;
-          border-radius: 50%;
-          object-fit: cover;
-        }
-
-        .t-name {
-          font-size: 14px;
-          font-weight: 700;
-          color: ${isDark ? '#F8FAFC' : '#1E293B'};
-          margin: 0 0 2px 0;
-        }
-
-        .t-quote {
-          font-size: 13px;
-          font-style: italic;
-          color: ${isDark ? '#CBD5E1' : '#475569'};
-          line-height: 1.5;
-          margin: 0;
-        }
-
-        .pagination-dots {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          margin-top: 20px;
-        }
-
-        .dot {
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          background: #CBD5E1;
-        }
-
-        .dot.active {
-          background: #3D4A2E;
-          width: 10px;
-          height: 10px;
         }
 
         /* CURATED PLANS */
@@ -1017,7 +939,7 @@ export default function HomePage() {
         .footer-brand-name {
           font-size: 22px;
           font-weight: 800;
-          color: ${isDark ? '#FFFFFF' : '#3D4A2E'};
+          color: ${isDark ? '#FFFFFF' : '#4D6241'};
         }
 
         .footer-slogan {
@@ -1074,7 +996,7 @@ export default function HomePage() {
         }
 
         .footer-links button:hover {
-          color: #3D4A2E;
+          color: #4D6241;
           text-decoration: underline;
         }
 
@@ -1099,7 +1021,7 @@ export default function HomePage() {
         }
 
         .btn-subscribe {
-          background: #3D4A2E;
+          background: #4D6241;
           color: #FFFFFF;
           border: none;
           padding: 10px 20px;

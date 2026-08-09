@@ -43,7 +43,7 @@ export default function Header() {
   return (
     <header
       style={{
-        background: isHomePage ? '#3D4A2E' : isDark ? '#141C2E' : '#FFFFFF',
+        background: isHomePage ? '#4D6241' : isDark ? '#141C2E' : '#FFFFFF',
         borderBottom: isHomePage ? 'none' : `1px solid ${isDark ? '#24324A' : '#EAECE5'}`,
         position: 'sticky',
         top: 0,
@@ -83,7 +83,7 @@ export default function Header() {
                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
               }}
             >
-              <LeafIcon size={20} color="#3D4A2E" />
+              <LeafIcon size={20} color="#4D6241" />
             </div>
           ) : (
             <LeafIcon size={28} color="#2E7D32" />
@@ -149,32 +149,32 @@ export default function Header() {
 
         {/* Right Controls */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-          {/* Notification Bell with Badge Dot */}
+          {/* Notification Bell (Dark Green Circle Button with White Bell & Orange Dot) */}
           <button
             onClick={() => alert('No new notifications')}
             style={{
-              width: 40,
-              height: 40,
+              width: 42,
+              height: 42,
               borderRadius: '50%',
-              background: isHomePage ? '#FFFFFF' : isDark ? '#1E293B' : '#F6F7F2',
+              background: isHomePage ? '#3B4B32' : isDark ? '#1E293B' : '#F6F7F2',
               border: 'none',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
               position: 'relative',
-              color: isHomePage ? '#3D4A2E' : isDark ? '#F8FAFC' : '#212121',
-              boxShadow: isHomePage ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
+              color: isHomePage ? '#FFFFFF' : isDark ? '#F8FAFC' : '#212121',
+              boxShadow: isHomePage ? '0 2px 8px rgba(0,0,0,0.12)' : 'none',
             }}
           >
-            <BellIcon color={isHomePage ? '#3D4A2E' : 'currentColor'} />
+            <BellIcon color={isHomePage ? '#FFFFFF' : 'currentColor'} />
             <span
               style={{
                 position: 'absolute',
-                top: 8,
-                right: 8,
-                width: 9,
-                height: 9,
+                top: 9,
+                right: 9,
+                width: 8,
+                height: 8,
                 borderRadius: '50%',
                 background: '#FF8A00',
                 border: '1.5px solid #FFFFFF',
@@ -182,7 +182,7 @@ export default function Header() {
             />
           </button>
 
-          {/* Profile Pill Badge (Light Mint #E8F0E3) */}
+          {/* Profile Pill Badge (White Pill Background, Light Mint Circle Avatar) */}
           <div
             onClick={() => navigate('/profile')}
             style={{
@@ -192,8 +192,8 @@ export default function Header() {
               cursor: 'pointer',
               padding: '4px 14px 4px 5px',
               borderRadius: 30,
-              background: isHomePage ? '#E8F0E3' : isDark ? '#1E293B' : '#F6F7F2',
-              boxShadow: isHomePage ? '0 2px 8px rgba(0,0,0,0.06)' : 'none',
+              background: isHomePage ? '#FFFFFF' : isDark ? '#1E293B' : '#F6F7F2',
+              boxShadow: isHomePage ? '0 2px 10px rgba(0,0,0,0.1)' : 'none',
             }}
           >
             <div
@@ -201,27 +201,26 @@ export default function Header() {
                 width: 32,
                 height: 32,
                 borderRadius: '50%',
-                background: '#FFFFFF',
-                color: '#3D4A2E',
+                background: '#E8F0E3',
+                color: '#4D6241',
                 fontWeight: 700,
                 fontSize: 14,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
               }}
             >
-              {isHomePage ? <LeafIcon size={16} color="#3D4A2E" /> : initial}
+              {isHomePage ? <LeafIcon size={16} color="#4D6241" /> : initial}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
               <span style={{ fontSize: 13, fontWeight: 700, color: '#1E293B', lineHeight: 1.1 }}>
-                {displayName} Family
+                Healthy Family
               </span>
-              <span style={{ fontSize: 10, color: '#55654B', fontWeight: 500 }}>
+              <span style={{ fontSize: 10, color: '#64748B', fontWeight: 500 }}>
                 Family Admin
               </span>
             </div>
-            <span style={{ fontSize: 11, color: '#55654B', marginLeft: 2 }}>▾</span>
+            <span style={{ fontSize: 11, color: '#64748B', marginLeft: 2 }}>▾</span>
           </div>
         </div>
       </div>
