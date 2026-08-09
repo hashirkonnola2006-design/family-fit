@@ -1,14 +1,20 @@
 import { useState } from 'react'
 import { useTheme } from '../context/ThemeContext'
+import { useFamily } from '../context/FamilyContext'
+import { evaluateRecipeHealth } from '../utils/healthEvaluation'
 
 /**
  * RecipeCard — exact match to screenshot specification.
  */
-export default function RecipeCard({ recipe: initialRecipe, onClick, onToggleSaved }) {
+export default function RecipeCard({ recipe: initialRecipe, onClick, onToggleSaved, activeMember: passedMember }) {
   const [recipe, setRecipe] = useState(initialRecipe)
   const { isDark } = useTheme()
+  const { activeMember: contextMember } = useFamily()
+  const member = passedMember || contextMember
 
   if (!recipe) return null
+
+  const health = evaluateRecipeHealth(recipe, member)
 
   const getSavedIds = () => {
     try {
@@ -74,7 +80,7 @@ export default function RecipeCard({ recipe: initialRecipe, onClick, onToggleSav
       {/* Recipe Image */}
       <div style={{ position: 'relative', width: '100%', height: 145, overflow: 'hidden' }}>
         <img
-          src={recipe.imageUrl || 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&q=80'}
+          src={recipe.imageUrl || recipe.image || 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&q=80'}
           alt={recipe.name}
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           loading="lazy"
@@ -168,11 +174,33 @@ export default function RecipeCard({ recipe: initialRecipe, onClick, onToggleSav
           </div>
         </div>
 
-        {/* Calories & Prep Time */}
-        <div style={{ fontSize: 11.5, color: isDark ? '#94a3b8' : '#4b5563', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 12 }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <span style={{ color: '#f97316' }}>🔥</span> {recipe.kcal} kcal
-          </span>
+        {/* Calories & Health Indicator */}
+        <div style={{ fontSize: 11.5, color: isDark ? '#94a3b8' : '#4b5563', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ color: '#f97316' }}>🔥</span> {recipe.kcal || recipe.calories || 300} kcal
+            </span>
+
+            {/* Red / Green Health Badge near kcal */}
+            <span
+              style={{
+                fontSize: 10.5,
+                fontWeight: 800,
+                color: health.color,
+                background: isDark ? (health.status === 'bad' ? 'rgba(220,38,38,0.2)' : 'rgba(22,163,74,0.2)') : health.bg,
+                padding: '2px 7px',
+                borderRadius: 8,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 4,
+                border: `1px solid ${health.color}33`,
+              }}
+            >
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: health.color, display: 'inline-block' }} />
+              {health.status === 'bad' ? (health.text.includes('Allergy') ? 'Unhealthy (Allergy)' : 'Unhealthy') : 'Very Healthy'}
+            </span>
+          </div>
+
           <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
             <span style={{ color: '#6b7280' }}>⏱️</span> {recipe.prepTimeMinutes || 20} mins
           </span>

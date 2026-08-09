@@ -5,6 +5,7 @@ import { useFamily } from '../context/FamilyContext'
 import { useTheme } from '../context/ThemeContext'
 import { RECIPE_DATABASE } from '../data/recipeDatabase'
 import { getAllRecipes } from '../api/recipes'
+import { evaluateRecipeHealth } from '../utils/healthEvaluation'
 
 // ── FILTER TABS ──
 const FILTER_TABS = [
@@ -85,11 +86,12 @@ function ChevronDown({ color = '#374151' }) {
 }
 
 // ── RECIPE CARD ──
-function RecipeCard({ recipe, onFavorite, isFavorited, onClick }) {
+function RecipeCard({ recipe, onFavorite, isFavorited, onClick, activeMember }) {
   const tag = recipe.category || recipe.tags?.[0] || 'Vegetarian'
   const tagStyle = getTagColor(tag)
-  const kcal = recipe.calories || recipe.macros?.calories || 300
+  const kcal = recipe.kcal || recipe.calories || recipe.macros?.calories || 300
   const time = recipe.prepTimeMinutes || recipe.totalTime || 25
+  const health = evaluateRecipeHealth(recipe, activeMember)
 
   return (
     <div
@@ -144,11 +146,33 @@ function RecipeCard({ recipe, onFavorite, isFavorited, onClick }) {
         <h3 style={{ fontSize: 14, fontWeight: 700, color: '#111827', margin: '0 0 10px 0', lineHeight: 1.35, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
           {recipe.name}
         </h3>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 12, color: '#6B7280', fontWeight: 500 }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <FlameIcon />
-            <span>{kcal} kcal</span>
-          </span>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6, fontSize: 12, color: '#6B7280', fontWeight: 500, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <FlameIcon />
+              <span>{kcal} kcal</span>
+            </span>
+
+            {/* Red / Green Health Badge near kcal */}
+            <span
+              style={{
+                fontSize: 10.5,
+                fontWeight: 800,
+                color: health.color,
+                background: health.bg,
+                padding: '2px 8px',
+                borderRadius: 8,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 4,
+                border: `1px solid ${health.color}33`,
+              }}
+            >
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: health.color, display: 'inline-block' }} />
+              {health.status === 'bad' ? (health.text.includes('Allergy') ? 'Unhealthy (Allergy)' : 'Unhealthy') : 'Very Healthy'}
+            </span>
+          </div>
+
           <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
             <ClockIcon />
             <span>{time} mins</span>
@@ -162,7 +186,7 @@ function RecipeCard({ recipe, onFavorite, isFavorited, onClick }) {
 // ── MAIN COMPONENT ──
 export default function RecipesPage() {
   const { user } = useAuth()
-  const { family } = useFamily()
+  const { family, activeMember } = useFamily()
   const { isDark } = useTheme()
   const navigate = useNavigate()
 
@@ -373,6 +397,7 @@ export default function RecipesPage() {
                   isFavorited={favorites.includes(String(r.id))}
                   onFavorite={toggleFavorite}
                   onClick={() => navigate(`/recipes/${r.id}`)}
+                  activeMember={activeMember}
                 />
               ))}
             </div>
