@@ -12,6 +12,7 @@ import ProfilePage  from './pages/ProfilePage'
 import AuthPage     from './pages/AuthPage'
 import RecipeDetailPage from './pages/RecipeDetailPage'
 import OnboardingPage   from './pages/OnboardingPage'
+import AboutPage        from './pages/AboutPage'
 import ResponsiveLayout from './components/ResponsiveLayout'
 
 /** Protected route — redirects to /auth if no JWT found */
@@ -34,6 +35,7 @@ function AppRoutes() {
       <Route path="/tips"     element={<PrivateRoute><TipsPage /></PrivateRoute>} />
       <Route path="/progress" element={<Navigate to="/tips" replace />} />
       <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+      <Route path="/about"   element={<PrivateRoute><AboutPage /></PrivateRoute>} />
       {/* Catch-all */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
