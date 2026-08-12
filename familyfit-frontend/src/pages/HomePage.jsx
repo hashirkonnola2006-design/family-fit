@@ -58,6 +58,45 @@ const ArrowRight = ({ color = "currentColor" }) => (
   </svg>
 )
 
+const NavLeafIcon = ({ isDark }) => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={isDark ? "#81C784" : "#4F6343"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.1 2 7 0 6-4.5 11-10 11z" />
+    <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+  </svg>
+)
+
+const NavBowlIcon = ({ isDark }) => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={isDark ? "#81C784" : "#4F6343"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 11h16a1 1 0 0 1 1 1 9 9 0 0 1-9 9 9 9 0 0 1-9-9 1 1 0 0 1 1-1z" />
+    <path d="M8 4c0 1.5-1 2.5-1 3.5" />
+    <path d="M12 3c0 1.5-1 2.5-1 3.5" />
+    <path d="M16 4c0 1.5-1 2.5-1 3.5" />
+  </svg>
+)
+
+const NavCartIcon = ({ isDark }) => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={isDark ? "#81C784" : "#4F6343"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="9" cy="20" r="1" />
+    <circle cx="20" cy="20" r="1" />
+    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+  </svg>
+)
+
+const NavBulbIcon = ({ isDark }) => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={isDark ? "#81C784" : "#4F6343"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 18h6" />
+    <path d="M10 22h4" />
+    <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1.55.59 2.97 1.5 4 .76.76 1.23 1.52 1.41 2.5" />
+  </svg>
+)
+
+const NavArrowIcon = ({ isDark }) => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={isDark ? "#CBD5E1" : "#1E293B"} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="quick-nav-arrow">
+    <line x1="5" y1="12" x2="19" y2="12" />
+    <polyline points="12 5 19 12 12 19" />
+  </svg>
+)
+
 // ── DATA ──
 const RECIPES = [
   {
@@ -198,44 +237,46 @@ export default function HomePage() {
 
       </section>
 
-      {/* ── 01.5 QUICK ACTION CARDS (4 CARDS MATCHING REFERENCE IMAGE 2) ── */}
-      <div className="quick-action-cards-container">
-        <div className="quick-action-card" onClick={() => navigate('/recipes')}>
-          <div className="quick-card-icon">🍃</div>
-          <span>Nutrition Plans</span>
-        </div>
-        <div className="quick-action-card" onClick={() => navigate('/recipes')}>
-          <div className="quick-card-icon">🍲</div>
-          <span>Recipes</span>
-        </div>
-        <div className="quick-action-card" onClick={() => navigate('/grocery')}>
-          <div className="quick-card-icon">🛒</div>
-          <span>Grocery List</span>
-        </div>
-        <div className="quick-action-card" onClick={() => navigate('/tips')}>
-          <div className="quick-card-icon">💡</div>
-          <span>Tips</span>
-        </div>
-      </div>
-
-      {/* ── 02. FITNESS PLUS NUTRITION EQUALS TRANSFORMATION (RECIPES SECTION) ── */}
-      <section className="section-main-wrapper">
-        <div className="fitness-header-center">
-          <div className="leaf-header-icon-wrap">
-            <LeafIcon size={20} color="#4F6343" />
+      {/* ── 01.5 REDESIGNED QUICK NAV STRIP & QUOTE (EXACT MATCH FOR REFERENCE IMAGE 1) ── */}
+      <section className="quick-nav-section-wrapper">
+        <div className="quick-nav-strip">
+          <div className="quick-nav-item" onClick={() => navigate('/recipes')}>
+            <NavLeafIcon isDark={isDark} />
+            <span>Nutrition Plans</span>
+            <NavArrowIcon isDark={isDark} />
           </div>
-          <h2 className="fitness-heading">
+          <div className="quick-nav-divider" />
+          <div className="quick-nav-item" onClick={() => navigate('/recipes')}>
+            <NavBowlIcon isDark={isDark} />
+            <span>Recipes</span>
+            <NavArrowIcon isDark={isDark} />
+          </div>
+          <div className="quick-nav-divider" />
+          <div className="quick-nav-item" onClick={() => navigate('/grocery')}>
+            <NavCartIcon isDark={isDark} />
+            <span>Grocery List</span>
+            <NavArrowIcon isDark={isDark} />
+          </div>
+          <div className="quick-nav-divider" />
+          <div className="quick-nav-item" onClick={() => navigate('/tips')}>
+            <NavBulbIcon isDark={isDark} />
+            <span>Tips</span>
+            <NavArrowIcon isDark={isDark} />
+          </div>
+        </div>
+
+        {/* Centered quote with solid green line underneath */}
+        <div className="quick-nav-quote-wrap">
+          <h2 className="quick-nav-quote">
             Small changes at the table,<br />
             big changes in life.
           </h2>
-
-          {/* Hand-drawn style short wavy SVG line (~80px wide) */}
-          <div className="squiggle-line-wrap">
-            <svg width="80" height="8" viewBox="0 0 80 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M2 4 C 15 1, 25 7, 40 4 C 55 1, 65 7, 78 4" stroke="#81C784" strokeWidth="1.8" strokeLinecap="round" />
-            </svg>
-          </div>
+          <div className="quick-nav-quote-line" />
         </div>
+      </section>
+
+      {/* ── 02. RECIPES SECTION ── */}
+      <section className="section-main-wrapper">
 
         {/* 4 Recipe Cards Grid */}
         <div className="recipe-cards-grid">
@@ -811,67 +852,123 @@ export default function HomePage() {
           text-decoration: underline;
         }
 
-        /* QUICK ACTION CARDS MATCHING REFERENCE IMAGE 2 */
-        .quick-action-cards-container {
-          max-width: 1200px;
-          margin: -24px auto 36px auto;
-          padding: 0 24px;
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 16px;
-          position: relative;
-          z-index: 10;
+        /* REDESIGNED QUICK NAV STRIP & QUOTE (REFERENCE IMAGE 1) */
+        .quick-nav-section-wrapper {
+          max-width: 1320px;
+          margin: 0 auto;
+          padding: 48px 80px 10px 80px;
+          box-sizing: border-box;
         }
 
-        .quick-action-card {
-          background: ${isDark ? '#1E293B' : '#FFFFFF'};
-          border-radius: 20px;
-          padding: 20px 16px;
+        .quick-nav-strip {
           display: flex;
-          flex-direction: column;
           align-items: center;
           justify-content: center;
+          gap: 0;
+          padding: 12px 16px;
+          margin-bottom: 40px;
+          flex-wrap: wrap;
+        }
+
+        .quick-nav-item {
+          display: flex;
+          align-items: center;
           gap: 10px;
+          padding: 10px 20px;
           cursor: pointer;
-          box-shadow: ${isDark ? '0 4px 16px rgba(0,0,0,0.3)' : '0 4px 20px rgba(0,0,0,0.04)'};
-          border: 1px solid ${isDark ? '#334155' : '#F0EFE9'};
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
+          border-radius: 9999px;
+          transition: background-color 0.2s ease, transform 0.2s ease;
         }
 
-        .quick-action-card:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        .quick-nav-item:hover {
+          background-color: ${isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(79, 99, 67, 0.08)'};
+          transform: translateY(-1px);
         }
 
-        .quick-card-icon {
-          font-size: 26px;
+        .quick-nav-item:hover .quick-nav-arrow {
+          transform: translateX(4px);
         }
 
-        .quick-action-card span {
-          font-size: 13px;
+        .quick-nav-arrow {
+          transition: transform 0.2s ease;
+        }
+
+        .quick-nav-item span {
+          font-size: 15px;
           font-weight: 700;
-          color: ${isDark ? '#F8FAFC' : '#2D3A20'};
-          text-align: center;
+          color: ${isDark ? '#F8FAFC' : '#1E293B'};
           font-family: 'Plus Jakarta Sans', sans-serif;
+          letter-spacing: -0.2px;
+        }
+
+        .quick-nav-divider {
+          width: 1px;
+          height: 24px;
+          background-color: ${isDark ? '#334155' : '#D5DDD1'};
+          margin: 0 12px;
+        }
+
+        .quick-nav-quote-wrap {
+          text-align: center;
+          margin-bottom: 24px;
+        }
+
+        .quick-nav-quote {
+          font-size: 28px;
+          font-weight: 800;
+          color: ${isDark ? '#FFFFFF' : '#4F6343'};
+          margin: 0 0 14px 0;
+          letter-spacing: -0.5px;
+          line-height: 1.25;
+        }
+
+        .quick-nav-quote-line {
+          width: 44px;
+          height: 3px;
+          background-color: ${isDark ? '#81C784' : '#4F6343'};
+          border-radius: 99px;
+          margin: 0 auto;
+        }
+
+        @media (max-width: 980px) {
+          .quick-nav-section-wrapper {
+            padding: 32px 24px 10px 24px;
+          }
+          .quick-nav-quote {
+            font-size: 24px;
+          }
+          .quick-nav-strip {
+            gap: 12px;
+            padding: 12px 8px;
+            margin-bottom: 32px;
+          }
+          .quick-nav-divider {
+            display: none;
+          }
+          .quick-nav-item {
+            padding: 8px 16px;
+            background: ${isDark ? '#1E293B' : '#FFFFFF'};
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border-radius: 12px;
+          }
         }
 
         @media (max-width: 640px) {
-          .quick-action-cards-container {
-            grid-template-columns: repeat(4, 1fr);
+          .quick-nav-strip {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+          }
+          .quick-nav-item {
+            justify-content: center;
+            padding: 10px 12px;
             gap: 8px;
-            padding: 0 12px;
-            margin-top: -18px;
-            margin-bottom: 24px;
           }
-          .quick-action-card {
-            padding: 12px 6px;
-            border-radius: 16px;
+          .quick-nav-item span {
+            font-size: 13px;
           }
-          .quick-card-icon {
-            font-size: 22px;
-          }
-          .quick-action-card span {
-            font-size: 11px;
+          .quick-nav-quote {
+            font-size: 20px;
           }
         }
 
