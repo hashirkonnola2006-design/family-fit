@@ -58,10 +58,12 @@ const ArrowRight = ({ color = "currentColor" }) => (
   </svg>
 )
 
-const NavLeafIcon = ({ isDark }) => (
+const NavFamilyIcon = ({ isDark }) => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={isDark ? "#81C784" : "#4F6343"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.1 2 7 0 6-4.5 11-10 11z" />
-    <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+    <circle cx="9" cy="7" r="4" />
+    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
   </svg>
 )
 
@@ -240,9 +242,9 @@ export default function HomePage() {
       {/* ── 01.5 REDESIGNED QUICK NAV STRIP & QUOTE (EXACT MATCH FOR REFERENCE IMAGE 1) ── */}
       <section className="quick-nav-section-wrapper">
         <div className="quick-nav-strip">
-          <div className="quick-nav-item" onClick={() => navigate('/recipes')}>
-            <NavLeafIcon isDark={isDark} />
-            <span>Nutrition Plans</span>
+          <div className="quick-nav-item" onClick={() => navigate('/profile')}>
+            <NavFamilyIcon isDark={isDark} />
+            <span>Family</span>
             <NavArrowIcon isDark={isDark} />
           </div>
           <div className="quick-nav-divider" />
