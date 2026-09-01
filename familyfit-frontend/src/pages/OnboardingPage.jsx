@@ -281,7 +281,6 @@ export default function OnboardingPage() {
                   gap: 8,
                 }}
               >
-                <span style={{ fontSize: 18 }}>🌿</span>
                 <span style={{ fontSize: 13, fontWeight: 800, color: '#2e5b12' }}>Welcome to Family Fit</span>
               </div>
             </div>

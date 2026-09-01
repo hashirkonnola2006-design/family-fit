@@ -12,13 +12,6 @@ const NAV_LINKS = [
   { path: '/profile',  label: 'Profile' },
 ]
 
-const LeafIcon = ({ size = 26, color = '#2E7D32' }) => (
-  <svg width={size} height={size} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M8 24C8 24 10 14 20 8C20 8 22 18 12 24C10.5 24.9 9 24.5 8 24Z" fill={color} />
-    <path d="M6 18C6 18 12 10 24 6C24 6 22 18 14 20C10 21 7.5 19.5 6 18Z" fill="#81C784" />
-    <path d="M9 23C13 17 18 13 24 6" stroke="#EBF5E1" strokeWidth="1.8" strokeLinecap="round" />
-  </svg>
-)
 
 export default function Header() {
   const { user } = useAuth()
@@ -155,15 +148,8 @@ export default function Header() {
           <div
             className="ff-logo"
             onClick={() => navigate('/')}
-            style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', flexShrink: 0 }}
+            style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', flexShrink: 0 }}
           >
-            <div style={{
-              width: 40, height: 40, borderRadius: '50%',
-              background: isHome ? 'rgba(255,255,255,0.15)' : '#EBF5E1',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              <LeafIcon size={22} color={isHome ? '#FFFFFF' : '#2E7D32'} />
-            </div>
             <span style={{
               fontSize: 24,
               fontWeight: 800,

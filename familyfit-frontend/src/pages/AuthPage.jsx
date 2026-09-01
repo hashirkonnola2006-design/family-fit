@@ -111,7 +111,6 @@ export default function AuthPage() {
         {/* ── LEFT PANEL: BRANDING & FAMILY PHOTO ── */}
         <div className="auth-left-panel">
           <div className="auth-brand">
-            <LeafBrandIcon />
             <span className="brand-name">
               Family <span className="brand-accent">Fit</span>
             </span>

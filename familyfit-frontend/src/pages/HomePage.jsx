@@ -395,7 +395,6 @@ export default function HomePage() {
         <div className="footer-top-grid">
           <div className="footer-col-brand">
             <div className="footer-brand-row">
-              <LeafIcon size={24} color="#4F6343" />
               <span className="footer-brand-name">FamilyFit</span>
             </div>
             <p className="footer-slogan">Wholesome Kerala meals and smart planning for a healthier family.</p>
