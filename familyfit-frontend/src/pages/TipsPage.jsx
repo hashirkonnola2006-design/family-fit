@@ -1,662 +1,835 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { 
+  Sparkles, 
+  RotateCw, 
+  ShieldAlert, 
+  ShieldCheck, 
+  Bookmark, 
+  Clock, 
+  ChevronRight, 
+  User, 
+  ArrowRight,
+  Flame,
+  Search,
+  Check
+} from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useFamily } from '../context/FamilyContext'
 import { useTheme } from '../context/ThemeContext'
 import BottomNav from '../components/BottomNav'
-import MemberAvatar from '../components/MemberAvatar'
 
-// ── SVG & ICON HELPERS ──
-const LightbulbIcon = () => (
-  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFD700" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M9 18h6" />
-    <path d="M10 22h4" />
-    <path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7z" fill="#FACC15" fillOpacity="0.2" />
-  </svg>
-)
+// ── CURATED KERALA NUTRITION & WELLNESS DATASET ──
+const CURATED_KERALA_TIPS = [
+  {
+    id: 'tip-1',
+    category: 'Daily Habits',
+    tag: 'Digestion Ritual',
+    title: 'Start Morning With Warm Jeera & Chukku Water',
+    summary: 'Drinking water boiled with cumin seeds and dry ginger awakens digestive enzymes and reduces morning sluggishness.',
+    detail: 'In traditional Kerala households, warm jeera (cumin) water is consumed throughout the day. Cumin contains thymol, which stimulates the secretion of pancreatic enzymes, bile, and gastric juices to maximize nutrient absorption.',
+    benefit: 'Reduces morning bloating & jumpstarts metabolism',
+    readTime: '2 min read',
+    accent: '#2E7D32',
+  },
+  {
+    id: 'tip-2',
+    category: 'Kerala Superfoods',
+    tag: 'Superfood',
+    title: 'The Unmatched Power of Moringa Leaves (Muringayila)',
+    summary: 'Moringa is a nutritional powerhouse loaded with iron, bio-available calcium, and 46 distinct antioxidants.',
+    detail: 'Muringayila thoran with minimal coconut oil is a staple of Kerala longevity. Research shows moringa contains 7x more vitamin C than oranges and 4x more calcium than cow milk gram-for-gram.',
+    benefit: 'Boosts red blood cell count & bone density',
+    readTime: '3 min read',
+    accent: '#15803D',
+  },
+  {
+    id: 'tip-3',
+    category: 'Kerala Superfoods',
+    tag: 'Blood Sugar',
+    title: 'Why Unpolished Kerala Matta Rice Excels for Blood Sugar',
+    summary: 'Unlike polished white rice, parboiled Red Matta rice preserves its nutrient-dense bran layer and germ.',
+    detail: 'Matta rice has a lower glycemic index than polished long-grain rice. Its complex carbohydrates release glucose gradually into the bloodstream, preventing energy crashes and insulin spikes after meals.',
+    benefit: 'Sustained energy & balanced insulin response',
+    readTime: '2 min read',
+    accent: '#C2410C',
+  },
+  {
+    id: 'tip-4',
+    category: 'Daily Habits',
+    tag: 'Micronutrients',
+    title: 'Never Discard Cooked Curry Leaves (Kariveppila)',
+    summary: 'Chewing cooked curry leaves provides rich lutein, beta-carotene, and plant iron that support eye health and hair roots.',
+    detail: 'Pairing curry leaves with a squeeze of fresh lemon juice or tomato rasam increases non-heme iron absorption by up to 300% due to the natural ascorbic acid (vitamin C) synergy.',
+    benefit: 'Enhances natural iron uptake & eyesight',
+    readTime: '2 min read',
+    accent: '#047857',
+  },
+  {
+    id: 'tip-5',
+    category: 'Immunity & Herbs',
+    tag: 'Hydration',
+    title: 'Tender Coconut Water (Elaneer) as Nature’s Electrolyte',
+    summary: 'A potassium-rich isotonic drink straight from nature without the synthetic dyes or corn syrups of sports beverages.',
+    detail: 'One glass of Elaneer provides more potassium than a medium banana, alongside natural magnesium, calcium, and sodium in bio-identical proportions that rehydrate tired muscles swiftly in tropical heat.',
+    benefit: 'Rapid cellular hydration & kidney stone prevention',
+    readTime: '2 min read',
+    accent: '#0284C7',
+  },
+  {
+    id: 'tip-6',
+    category: 'Kids & Seniors',
+    tag: 'Easy Digestion',
+    title: 'Steamed Dinner Rule: Appam or Idiyappam With Light Stew',
+    summary: 'Ending the day with steamed rice flour and mild vegetable broth prevents nighttime acid reflux and promotes restorative sleep.',
+    detail: 'Fermented batters (like Appam) contain natural lactic acid probiotics that soothe intestinal microbiota before bed, freeing your body to focus energy on cellular repair rather than heavy digestion.',
+    benefit: 'Deeper sleep & optimal gut recovery',
+    readTime: '3 min read',
+    accent: '#7C3AED',
+  },
+  {
+    id: 'tip-7',
+    category: 'Immunity & Herbs',
+    tag: 'Ayurveda',
+    title: 'Turmeric & Black Pepper Golden Milk (Manjal Paal)',
+    summary: 'Piperine in black pepper amplifies curcumin absorption by up to 2000%, offering potent anti-inflammatory relief.',
+    detail: 'A warm cup of milk (dairy or almond) simmered with fresh ground turmeric, crushed peppercorns, and a hint of cardamom supports respiratory resilience during seasonal weather changes in monsoon and winter.',
+    benefit: 'Soothes inflammation & respiratory pathways',
+    readTime: '2 min read',
+    accent: '#D97706',
+  },
+  {
+    id: 'tip-8',
+    category: 'Daily Habits',
+    tag: 'Post-Meal',
+    title: 'The 100-Step Gentle Post-Meal Stroll (Shatapadi)',
+    summary: 'A slow 10–15 minute walk after lunch or dinner accelerates gastric emptying and moderates glucose absorption.',
+    detail: 'Light post-meal muscle contractions draw glucose directly out of the blood without requiring extra insulin, effectively flattening postprandial glucose curves by up to 25%.',
+    benefit: 'Flattens glucose spikes & aids digestion',
+    readTime: '2 min read',
+    accent: '#475569',
+  },
+  {
+    id: 'tip-9',
+    category: 'Kids & Seniors',
+    tag: 'Snack Health',
+    title: 'Steamed Nendran Bananas for Healthy Gut Bacteria',
+    summary: 'Steamed ripe or half-ripe plantains deliver prebiotic resistant starch that feeds beneficial Bifidobacteria.',
+    detail: 'A classic Kerala tea-time treat, Pazham Puzhingiyathu is naturally sweet, potassium-dense, gentle on toddler tummies, and requires zero added refined sugars or cooking oils.',
+    benefit: 'Nourishes microbiome without sugar crashes',
+    readTime: '2 min read',
+    accent: '#B45309',
+  },
+]
 
-const RefreshIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="23 4 23 10 17 10" />
-    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
-  </svg>
-)
-
-const WarningIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" fill="#FEF2F2" />
-    <line x1="12" y1="9" x2="12" y2="13" />
-    <line x1="12" y1="17" x2="12.01" y2="17" />
-  </svg>
-)
-
-const ChevronRightIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8C95A3" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="9 18 15 12 9 6" />
-  </svg>
-)
-
-const ArrowRightRed = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="5" y1="12" x2="19" y2="12" />
-    <polyline points="12 5 19 12 12 19" />
-  </svg>
-)
-
-// ── PERSONALIZED MEMBER NUDGES GENERATOR ──
-function getPersonalizedMemberTips(member) {
-  if (!member) return []
-
-  const tips = []
-  const age = Number(member.age) || 30
-  const gender = (member.gender || '').toUpperCase()
-  const goal = (member.fitnessGoal || '').toUpperCase()
-  const conditions = (member.healthConditions || []).map((c) => c.toUpperCase())
-
-  // Senior (60+)
-  if (age >= 60) {
-    tips.push({
-      id: 'senior_walk',
-      icon: '🍵',
-      category: 'SENIOR WELLNESS',
-      title: 'Gentle Post-Dinner Stroll',
-      text: 'Enjoy a slow 10–15 minute walk after dinner to improve evening digestion and sleep quality.',
-      accent: '#2F6B1F',
-      bgLight: '#FAFCF5',
-      iconBg: '#E8F5E9',
-    })
-    tips.push({
-      id: 'senior_warm',
-      icon: '🥣',
-      category: 'EASY DIGESTION',
-      title: 'Comforting Warm Meals',
-      text: 'Opt for steamed Appam with mild vegetable stew or warm Matta rice kanji in the evenings.',
-      accent: '#0284C7',
-      bgLight: '#F0F9FF',
-      iconBg: '#E0F2FE',
-    })
-    tips.push({
-      id: 'senior_gi',
-      icon: '🌾',
-      category: 'BLOOD SUGAR HARMONY',
-      title: 'Balanced Low-GI Choices',
-      text: 'Choose whole grains, leafy greens & lentils to maintain steady energy levels.',
-      accent: '#F97316',
-      bgLight: '#FFF7ED',
-      iconBg: '#FFEDD5',
-    })
-  } else if (age <= 12) {
-    // Child
-    tips.push({
-      id: 'child_snack',
-      icon: '🍎',
-      category: 'GROWTH & ENERGY',
-      title: 'Colorful Snack Plate',
-      text: 'Serve a vibrant afternoon snack with sliced papaya, bananas, and a handful of roasted makhana.',
-      accent: '#F97316',
-      bgLight: '#FFF7ED',
-      iconBg: '#FFEDD5',
-    })
-    tips.push({
-      id: 'child_play',
-      icon: '⚽',
-      category: 'ACTIVE PLAY',
-      title: '60 Minutes of Fun Play',
-      text: 'Encourage outdoor games, cycling, or dancing to build strong bones and healthy stamina.',
-      accent: '#2F6B1F',
-      bgLight: '#FAFCF5',
-      iconBg: '#E8F5E9',
-    })
-    tips.push({
-      id: 'child_digest',
-      icon: '🥣',
-      category: 'EASY DIGESTION',
-      title: 'Mild Stew & Steamed Appam',
-      text: 'Soft steamed rice hoppers with vegetable stew offer gentle digestion for growing bellies.',
-      accent: '#0284C7',
-      bgLight: '#F0F9FF',
-      iconBg: '#E0F2FE',
-    })
-  } else if (age <= 19) {
-    // Teen
-    tips.push({
-      id: 'teen_protein',
-      icon: '⚡',
-      category: 'TEEN VITALITY',
-      title: 'Iron & Protein Boost',
-      text: 'Include iron and protein rich foods like country eggs, dates, and sprouted green gram (cherupayar).',
-      accent: '#8B5CF6',
-      bgLight: '#FAF5FF',
-      iconBg: '#F3E8FF',
-    })
-    tips.push({
-      id: 'teen_hydration',
-      icon: '💧',
-      category: 'RECOVERY',
-      title: 'Post-Activity Refuel',
-      text: 'Rehydrate after sports with fresh tender coconut water (Elaneer) for natural electrolytes.',
-      accent: '#0284C7',
-      bgLight: '#F0F9FF',
-      iconBg: '#E0F2FE',
-    })
-    tips.push({
-      id: 'teen_balance',
-      icon: '🥗',
-      category: 'MEAL BALANCE',
-      title: 'Balanced Complex Carbs',
-      text: 'Pair main meals with unpolished Matta rice and fresh salads for sustained study energy.',
-      accent: '#2F6B1F',
-      bgLight: '#FAFCF5',
-      iconBg: '#E8F5E9',
-    })
-  } else {
-    // Adults (20-59)
-    tips.push({
-      id: 'adult_stroll',
-      icon: '🍵',
-      category: 'SENIOR WELLNESS',
-      title: 'Gentle Post-Dinner Stroll',
-      text: 'Enjoy a slow 10–15 minute walk after dinner to improve evening digestion and sleep quality.',
-      accent: '#2F6B1F',
-      bgLight: '#FAFCF5',
-      iconBg: '#E8F5E9',
-    })
-    tips.push({
-      id: 'adult_warm',
-      icon: '🥣',
-      category: 'EASY DIGESTION',
-      title: 'Comforting Warm Meals',
-      text: 'Opt for steamed Appam with mild vegetable stew or warm Matta rice kanji in the evenings.',
-      accent: '#0284C7',
-      bgLight: '#F0F9FF',
-      iconBg: '#E0F2FE',
-    })
-    tips.push({
-      id: 'adult_sugar',
-      icon: '🌾',
-      category: 'BLOOD SUGAR HARMONY',
-      title: 'Balanced Low-GI Choices',
-      text: 'Choose whole grains, leafy greens & lentils to maintain steady energy levels.',
-      accent: '#F97316',
-      bgLight: '#FFF7ED',
-      iconBg: '#FFEDD5',
-    })
-  }
-
-  // Health Conditions
-  if (conditions.some((c) => c.includes('DIABETES') || c.includes('SUGAR')) || goal.includes('MANAGE')) {
-    tips.push({
-      id: 'cond_sugar',
-      icon: '🌾',
-      category: 'BLOOD SUGAR HARMONY',
-      title: 'Choose Unpolished Red Matta Rice',
-      text: 'Swap refined white rice for coarse Kerala Red Matta rice or barley to maintain steady blood glucose.',
-      accent: '#D97706',
-      bgLight: '#FFF7ED',
-      iconBg: '#FFEDD5',
-    })
-  }
-
-  return tips
-}
+const CATEGORIES = [
+  'All Tips',
+  'Daily Habits',
+  'Kerala Superfoods',
+  'Immunity & Herbs',
+  'Kids & Seniors',
+]
 
 export default function TipsPage() {
-  const { user } = useAuth()
-  const { family, setActiveMember } = useFamily()
+  const { family } = useFamily()
   const { isDark } = useTheme()
   const navigate = useNavigate()
 
   const members = family?.members || []
+  const membersWithAllergies = members.filter(
+    (m) => Array.isArray(m.allergies) && m.allergies.length > 0
+  )
+
+  const [activeCategory, setActiveCategory] = useState('All Tips')
+  const [searchQuery, setSearchQuery] = useState('')
   const [selectedMemberId, setSelectedMemberId] = useState('ALL')
-  const [refreshSeed, setRefreshSeed] = useState(0)
+  const [bookmarkedIds, setBookmarkedIds] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('familyfit_bookmarked_tips') || '[]')
+    } catch {
+      return []
+    }
+  })
+  const [toast, setToast] = useState('')
 
-  const familyName = user?.familyName || family?.name || 'Family'
+  const toggleBookmark = (id) => {
+    setBookmarkedIds((prev) => {
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+      localStorage.setItem('familyfit_bookmarked_tips', JSON.stringify(next))
+      setToast(prev.includes(id) ? 'Removed from saved tips' : 'Tip saved to your reading list! 🌿')
+      setTimeout(() => setToast(''), 2500)
+      return next
+    })
+  }
 
-  // Determine member for single selection view
-  const activeMember = selectedMemberId === 'ALL'
-    ? null
-    : members.find((m) => String(m.id) === String(selectedMemberId))
-
-  // Find family members with allergies for "Things to Avoid"
-  const membersWithAllergies = members.filter((m) => Array.isArray(m.allergies) && m.allergies.length > 0)
+  // Filter tips
+  const filteredTips = useMemo(() => {
+    let list = CURATED_KERALA_TIPS
+    if (activeCategory !== 'All Tips') {
+      list = list.filter((t) => t.category === activeCategory)
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase()
+      list = list.filter(
+        (t) =>
+          t.title.toLowerCase().includes(q) ||
+          t.summary.toLowerCase().includes(q) ||
+          t.tag.toLowerCase().includes(q)
+      )
+    }
+    return list
+  }, [activeCategory, searchQuery])
 
   return (
-    <div
-      className="page-responsive-container"
-      style={{
-        background: isDark ? '#0A0F1D' : '#FAFAF7',
-        fontFamily: "'Plus Jakarta Sans', sans-serif",
-        color: isDark ? '#F8FAFC' : '#121826',
-        position: 'relative',
-        WebkitFontSmoothing: 'antialiased',
-      }}
-    >
-
-
-      <div style={{ padding: '16px 16px 0 16px' }}>
-
-        {/* ── 1. TOP BANNER / HEADER CARD ("Tips & Suggestions") ── */}
-        <div
-          style={{
-            position: 'relative',
-            borderRadius: 32,
-            overflow: 'hidden',
-            background: isDark
-              ? 'linear-gradient(135deg, #1E3A1A 0%, #153413 50%, #0F260E 100%)'
-              : 'linear-gradient(135deg, #1E4D18 0%, #2F6B1F 55%, #163A12 100%)',
-            color: 'white',
-            padding: '24px 20px',
-            boxShadow: '0 20px 40px rgba(30,77,24,0.22)',
-            marginBottom: 20,
-          }}
-        >
-          {/* Decorative Leaf Art on Bottom Right */}
-          <div
-            style={{
-              position: 'absolute',
-              bottom: -10,
-              right: -10,
-              width: 140,
-              height: 140,
-              opacity: 0.25,
-              pointerEvents: 'none',
-            }}
-          >
-            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M20 90C20 90 40 40 90 20C90 20 80 80 20 90Z" fill="#CFE8A9" />
-              <path d="M10 70C10 70 30 30 70 10C70 10 60 60 10 70Z" fill="#7DAA4B" />
-            </svg>
-          </div>
-
-          <div style={{ position: 'relative', zIndex: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              {/* Circular Lightbulb Badge */}
-              <div
-                style={{
-                  width: 58,
-                  height: 58,
-                  borderRadius: '50%',
-                  background: 'rgba(0, 0, 0, 0.25)',
-                  border: '1.5px solid rgba(255, 255, 255, 0.2)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
-                  flexShrink: 0,
-                }}
-              >
-                <LightbulbIcon />
-              </div>
-
-              <div>
-                <h1 style={{ fontSize: 24, fontWeight: 800, margin: 0, letterSpacing: '-0.4px', lineHeight: 1.2 }}>
-                  Tips &amp; Suggestions
-                </h1>
-                <p style={{ fontSize: 13, color: '#CFE8A9', margin: '4px 0 0 0', fontWeight: 500 }}>
-                  Everyday nudges for your family
-                </p>
-              </div>
-            </div>
-
-            {/* Refresh Pill Button */}
-            <button
-              onClick={() => setRefreshSeed((prev) => prev + 1)}
-              style={{
-                background: 'rgba(255, 255, 255, 0.18)',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                color: 'white',
-                borderRadius: 999,
-                padding: '8px 16px',
-                fontSize: 13,
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-                backdropFilter: 'blur(8px)',
-                flexShrink: 0,
-                transition: 'background 0.2s ease',
-              }}
-            >
-              <RefreshIcon />
-              <span>Refresh</span>
-            </button>
-          </div>
+    <div className="ff-tips-root">
+      {/* Toast alert */}
+      {toast && (
+        <div className="ff-toast-bar">
+          <Check size={16} />
+          <span>{toast}</span>
         </div>
+      )}
 
-        {/* ── 2. "THINGS TO AVOID" CARD (ALLERGY & HEALTH WARNINGS) ── */}
-        <div
-          style={{
-            background: isDark ? '#141C2E' : '#FFFFFF',
-            borderRadius: 24,
-            padding: '20px 18px',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
-            border: isDark ? '1px solid #24324A' : '1px solid #F4F5EF',
-            borderLeft: '4px solid #EF4444',
-            marginBottom: 20,
-          }}
-        >
-          {/* Header Row */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+      <div className="ff-tips-container">
+        {/* ── 1. MINIMAL EDITORIAL HEADER ── */}
+        <header className="ff-tips-header">
+          <div className="ff-header-top-row">
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ width: 26, height: 26, borderRadius: 8, background: '#FEF2F2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <WarningIcon />
-                </div>
-                <h2 style={{ fontSize: 18, fontWeight: 800, margin: 0, color: isDark ? '#F8FAFC' : '#121826', letterSpacing: '-0.3px' }}>
-                  Things to Avoid
-                </h2>
+              <div className="ff-header-badge">
+                <Sparkles size={13} />
+                <span>Dietitian-Curated Wellness</span>
               </div>
-              <p style={{ fontSize: 12, color: isDark ? '#94A3B8' : '#5B6472', margin: '4px 0 0 34px', fontWeight: 500 }}>
-                Severe health &amp; allergy warnings for your family.
+              <h1 className="ff-header-title">Nutrition &amp; Health Tips</h1>
+              <p className="ff-header-subtitle">
+                Time-tested Kerala food wisdom, daily metabolic habits, and personalized household nutrition.
               </p>
             </div>
 
-            <button
-              onClick={() => navigate('/profile')}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: '#EF4444',
-                fontSize: 14,
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 4,
-                padding: 0,
-              }}
-            >
-              Manage <ArrowRightRed />
-            </button>
+            <div className="ff-header-controls">
+              <div className="ff-search-capsule">
+                <Search size={15} className="ff-search-icon" />
+                <input
+                  type="text"
+                  placeholder="Search tips, jeera, moringa..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="ff-search-input"
+                />
+                {searchQuery && (
+                  <button onClick={() => setSearchQuery('')} className="ff-search-clear">
+                    ×
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
+        </header>
 
-          {/* Member Warning Box */}
+        {/* ── 2. ALLERGEN SAFETY STATUS BAR ── */}
+        <section className="ff-allergy-bar-section">
           {membersWithAllergies.length > 0 ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {membersWithAllergies.map((m) => {
-                const totalAllergies = (m.allergies || []).length
-
-                return (
-                  <div
-                    key={m.id || m.name}
-                    style={{
-                      background: isDark ? '#261719' : '#FFF5F5',
-                      borderRadius: 20,
-                      padding: '16px',
-                      border: isDark ? '1px solid #4C1D24' : '1px solid #FFE2E2',
-                    }}
-                  >
-                    {/* Top row: Avatar + Name + Allergies Count + Profile Link */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <MemberAvatar member={m} size={42} />
-                        <div>
-                          <div style={{ fontSize: 16, fontWeight: 800, color: isDark ? '#FCA5A5' : '#121826' }}>
-                            {m.name}
-                          </div>
-                          <div style={{ fontSize: 12, color: '#DC2626', fontWeight: 600, marginTop: 2, display: 'flex', alignItems: 'center', gap: 4 }}>
-                            <span>⚠️</span>
-                            <span>{totalAllergies} {totalAllergies === 1 ? 'allergy' : 'allergies'} listed</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <button
-                        onClick={() => {
-                          setActiveMember(m)
-                          navigate('/profile')
-                        }}
-                        style={{
-                          background: isDark ? '#3D1B20' : '#FFFFFF',
-                          color: '#DC2626',
-                          border: isDark ? '1px solid #5C232B' : '1px solid #FEE2E2',
-                          borderRadius: 999,
-                          padding: '6px 14px',
-                          fontSize: 12,
-                          fontWeight: 700,
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 4,
-                          boxShadow: '0 2px 6px rgba(220,38,38,0.06)',
-                        }}
-                      >
-                        Profile &rsaquo;
-                      </button>
-                    </div>
-
-                    {/* Allergy Pills Row */}
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                      {(m.allergies || []).map((allergy) => (
-                        <div
-                          key={allergy}
-                          style={{
-                            background: isDark ? '#4A1D24' : '#FEE2E2',
-                            color: isDark ? '#FCA5A5' : '#991B1B',
-                            borderRadius: 999,
-                            padding: '6px 14px',
-                            fontSize: 12,
-                            fontWeight: 700,
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 6,
-                          }}
-                        >
-                          <span>⛔</span>
-                          <span>{allergy}</span>
-                          <span style={{ fontSize: 12, opacity: 0.7 }}>ⓘ</span>
-                        </div>
-                      ))}
-                    </div>
+            <div className="ff-allergy-alert-card">
+              <div className="ff-alert-left">
+                <div className="ff-alert-icon-wrap">
+                  <ShieldAlert size={18} />
+                </div>
+                <div>
+                  <div className="ff-alert-heading">
+                    Active Household Allergen Screening
                   </div>
-                )
-              })}
+                  <div className="ff-alert-text">
+                    Monitoring allergies for {membersWithAllergies.map((m) => m.name).join(', ')}. All recipe suggestions automatically screen for conflicts.
+                  </div>
+                </div>
+              </div>
+              <button onClick={() => navigate('/profile')} className="ff-alert-manage-btn">
+                <span>Manage</span>
+                <ChevronRight size={14} />
+              </button>
             </div>
           ) : (
-            /* Fallback clean state if no member has allergies listed */
-            <div
-              style={{
-                background: isDark ? '#1E293B' : '#F4F5EF',
-                borderRadius: 20,
-                padding: '14px 16px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 10,
-              }}
-            >
-              <div style={{ fontSize: 18 }}>✅</div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: isDark ? '#94A3B8' : '#5B6472' }}>
-                No severe allergy warnings listed for your family members.
-              </div>
+            <div className="ff-allergy-shield-pill">
+              <ShieldCheck size={16} className="text-emerald-600 dark:text-emerald-400" />
+              <span>
+                <strong>Allergy Shield Active:</strong> No critical family allergies flagged. Daily tips and recipes are safe for all members.
+              </span>
             </div>
           )}
-        </div>
+        </section>
 
-        {/* ── 3. FAMILY MEMBER FILTER PILLS ── */}
+        {/* ── 3. FAMILY MEMBER FILTER (IF MEMBERS EXIST) ── */}
         {members.length > 0 && (
-          <div style={{ marginBottom: 20 }}>
-            <div style={{ display: 'flex', gap: 10, overflowX: 'auto', paddingBottom: 6, scrollbarWidth: 'none' }}>
-              {/* "All Family" Pill */}
+          <section className="ff-member-filter-section">
+            <span className="ff-filter-label">Filter for:</span>
+            <div className="ff-member-pill-row">
               <button
                 onClick={() => setSelectedMemberId('ALL')}
-                style={{
-                  background: selectedMemberId === 'ALL' ? '#2F6B1F' : isDark ? '#1E293B' : '#FFFFFF',
-                  color: selectedMemberId === 'ALL' ? '#FFFFFF' : isDark ? '#F8FAFC' : '#121826',
-                  border: selectedMemberId === 'ALL' ? 'none' : `1px solid ${isDark ? '#334155' : '#E8E8E3'}`,
-                  borderRadius: 999,
-                  padding: '8px 18px',
-                  fontWeight: 700,
-                  fontSize: 13,
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  boxShadow: selectedMemberId === 'ALL' ? '0 4px 14px rgba(47,107,31,0.25)' : 'none',
-                  transition: 'all 0.2s ease',
-                  flexShrink: 0,
-                }}
+                className={`ff-member-pill ${selectedMemberId === 'ALL' ? 'active' : ''}`}
               >
-                <span>👥</span>
-                <span>All Family ({members.length})</span>
+                <span>Entire Family ({members.length})</span>
               </button>
-
-              {/* Member Pills */}
-              {members.map((m) => {
-                const active = String(m.id) === String(selectedMemberId)
-                return (
-                  <button
-                    key={m.id}
-                    onClick={() => setSelectedMemberId(m.id)}
-                    style={{
-                      background: active ? '#2F6B1F' : isDark ? '#1E293B' : '#FFFFFF',
-                      color: active ? '#FFFFFF' : isDark ? '#F8FAFC' : '#121826',
-                      border: active ? 'none' : `1px solid ${isDark ? '#334155' : '#E8E8E3'}`,
-                      borderRadius: 999,
-                      padding: '6px 14px 6px 8px',
-                      fontWeight: 700,
-                      fontSize: 13,
-                      cursor: 'pointer',
-                      whiteSpace: 'nowrap',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 8,
-                      boxShadow: active ? '0 4px 14px rgba(47,107,31,0.25)' : 'none',
-                      transition: 'all 0.2s ease',
-                      flexShrink: 0,
-                    }}
-                  >
-                    <MemberAvatar member={m} size={26} />
-                    <span>{m.name.toLowerCase()}</span>
-                  </button>
-                )
-              })}
+              {members.map((m) => (
+                <button
+                  key={m.id}
+                  onClick={() => setSelectedMemberId(m.id)}
+                  className={`ff-member-pill ${String(selectedMemberId) === String(m.id) ? 'active' : ''}`}
+                >
+                  <span className="ff-member-dot" />
+                  <span>{m.name}</span>
+                </button>
+              ))}
             </div>
-          </div>
+          </section>
         )}
 
-        {/* ── 4. MEMBER SUGGESTIONS LIST ── */}
-        <div className="tips-responsive-grid" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          {(selectedMemberId === 'ALL' ? members : [activeMember]).map((member) => {
-            if (!member) return null
-            const memberTips = getPersonalizedMemberTips(member)
-
-            return (
-              <div
-                key={member.id}
-                style={{
-                  background: isDark ? '#141C2E' : '#FFFFFF',
-                  borderRadius: 24,
-                  padding: '20px 18px',
-                  boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
-                  border: isDark ? '1px solid #24324A' : '1px solid #F4F5EF',
-                }}
+        {/* ── 4. CATEGORY SELECTOR TABS ── */}
+        <div className="ff-category-tabs-row">
+          <div className="ff-tabs-scrollable">
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`ff-cat-tab-btn ${activeCategory === cat ? 'active' : ''}`}
               >
-                {/* Member Title Header */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <MemberAvatar member={member} size={44} />
-                    <div>
-                      <div style={{ fontSize: 18, fontWeight: 800, color: isDark ? '#F8FAFC' : '#121826' }}>
-                        {member.name.toLowerCase()}
-                      </div>
-                      <div style={{ fontSize: 12, color: isDark ? '#94A3B8' : '#5B6472', fontWeight: 600, marginTop: 2 }}>
-                        {(member.role || 'PARENT').toUpperCase()} &bull; {member.age ? `${member.age} yrs` : '30 yrs'}
-                      </div>
+                {cat}
+              </button>
+            ))}
+          </div>
+          <div className="ff-tips-count-indicator">
+            {filteredTips.length} {filteredTips.length === 1 ? 'tip' : 'tips'}
+          </div>
+        </div>
+
+        {/* ── 5. CLEAN EDITORIAL TIPS GRID ── */}
+        {filteredTips.length === 0 ? (
+          <div className="ff-tips-empty-box">
+            <div className="ff-empty-icon">🍃</div>
+            <h3>No matching wellness tips found</h3>
+            <p>Try searching for a different ingredient like "matta", "cumin", or select "All Tips".</p>
+            <button
+              onClick={() => { setActiveCategory('All Tips'); setSearchQuery('') }}
+              className="ff-btn-reset-filters"
+            >
+              Reset Filters
+            </button>
+          </div>
+        ) : (
+          <div className="ff-tips-grid">
+            {filteredTips.map((tip) => {
+              const isSaved = bookmarkedIds.includes(tip.id)
+
+              return (
+                <article key={tip.id} className="ff-tip-card">
+                  {/* Card Header Meta */}
+                  <div className="ff-tip-meta-row">
+                    <span className="ff-tip-tag" style={{ color: tip.accent }}>
+                      {tip.tag}
+                    </span>
+                    <div className="ff-tip-meta-right">
+                      <span className="ff-tip-read-time">
+                        <Clock size={12} />
+                        <span>{tip.readTime}</span>
+                      </span>
+                      <button
+                        onClick={() => toggleBookmark(tip.id)}
+                        className={`ff-tip-bookmark-btn ${isSaved ? 'saved' : ''}`}
+                        title={isSaved ? 'Remove bookmark' : 'Bookmark tip'}
+                        aria-label="Save tip"
+                      >
+                        <Bookmark size={15} fill={isSaved ? '#2E7D32' : 'none'} />
+                      </button>
                     </div>
                   </div>
 
-                  <span
-                    style={{
-                      background: '#CFE8A9',
-                      color: '#1E4D18',
-                      fontSize: 12,
-                      fontWeight: 700,
-                      padding: '5px 12px',
-                      borderRadius: 999,
-                    }}
-                  >
-                    {memberTips.length} Suggestions
-                  </span>
-                </div>
+                  {/* Title & Summary */}
+                  <h3 className="ff-tip-title">{tip.title}</h3>
+                  <p className="ff-tip-summary">{tip.summary}</p>
 
-                {/* Suggestions List */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  {memberTips.map((tip) => (
-                    <div
-                      key={tip.id}
-                      style={{
-                        background: isDark ? '#1E293B' : tip.bgLight,
-                        borderRadius: 20,
-                        padding: '16px 16px',
-                        borderLeft: `4px solid ${tip.accent}`,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        gap: 12,
-                        cursor: 'pointer',
-                        transition: 'transform 0.2s ease',
-                      }}
-                      onMouseEnter={(e) => (e.currentTarget.style.transform = 'translateX(2px)')}
-                      onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateX(0)')}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, flex: 1 }}>
-                        {/* Circular Category Icon */}
-                        <div
-                          style={{
-                            width: 44,
-                            height: 44,
-                            borderRadius: '50%',
-                            background: isDark ? '#334155' : tip.iconBg,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: 22,
-                            flexShrink: 0,
-                          }}
-                        >
-                          {tip.icon}
-                        </div>
+                  {/* Science / Why It Works Box */}
+                  <div className="ff-tip-detail-box">
+                    <p>{tip.detail}</p>
+                  </div>
 
-                        {/* Text details */}
-                        <div>
-                          <div style={{ fontSize: 11, fontWeight: 800, color: tip.accent, letterSpacing: '0.6px', marginBottom: 3 }}>
-                            {tip.category}
-                          </div>
-                          <div style={{ fontSize: 15, fontWeight: 700, color: isDark ? '#F8FAFC' : '#121826', marginBottom: 4, lineHeight: 1.25 }}>
-                            {tip.title}
-                          </div>
-                          <div style={{ fontSize: 13, color: isDark ? '#CBD5E1' : '#5B6472', lineHeight: 1.45, fontWeight: 500 }}>
-                            {tip.text}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Right Chevron */}
-                      <ChevronRightIcon />
+                  {/* Card Footer / Benefit Callout */}
+                  <div className="ff-tip-footer">
+                    <div className="ff-tip-benefit">
+                      <Flame size={14} className="text-amber-500" />
+                      <span>{tip.benefit}</span>
                     </div>
-                  ))}
-                </div>
-              </div>
-            )
-          })}
-        </div>
+                  </div>
+                </article>
+              )
+            })}
+          </div>
+        )}
       </div>
 
-      {/* ── UNTOUCHED BOTTOM NAVIGATION BAR ── */}
       <BottomNav />
 
-      {/* Responsive styles */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        @media (min-width: 1024px) {
-          .tips-responsive-grid {
-            display: grid !important;
-            grid-template-columns: repeat(2, 1fr) !important;
-            gap: 28px !important;
+      {/* ── EMBEDDED CLEAN STYLING ── */}
+      <style>{`
+        .ff-tips-root {
+          min-height: 100vh;
+          background-color: ${isDark ? '#0A0F1D' : '#F8FAF6'};
+          color: ${isDark ? '#F1F5F9' : '#1A2E16'};
+          font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+        }
+
+        .ff-tips-container {
+          max-width: 1040px;
+          margin: 0 auto;
+          padding: 36px 24px 80px 24px;
+        }
+
+        /* TOAST */
+        .ff-toast-bar {
+          position: fixed;
+          top: 24px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: #1A2E16;
+          color: #FFFFFF;
+          padding: 10px 22px;
+          border-radius: 9999px;
+          font-size: 13.5px;
+          font-weight: 700;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          z-index: 3000;
+          box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+        }
+
+        /* HEADER */
+        .ff-tips-header {
+          margin-bottom: 24px;
+        }
+
+        .ff-header-top-row {
+          display: flex;
+          align-items: flex-end;
+          justify-content: space-between;
+          gap: 20px;
+          flex-wrap: wrap;
+        }
+
+        .ff-header-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 12px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          color: ${isDark ? '#34D399' : '#2E7D32'};
+          margin-bottom: 8px;
+        }
+
+        .ff-header-title {
+          font-size: 32px;
+          font-weight: 900;
+          letter-spacing: -0.6px;
+          margin: 0 0 6px 0;
+          color: ${isDark ? '#FFFFFF' : '#112210'};
+          line-height: 1.15;
+        }
+
+        .ff-header-subtitle {
+          font-size: 14.5px;
+          color: ${isDark ? '#94A3B8' : '#5E6E5B'};
+          margin: 0;
+          max-width: 580px;
+          line-height: 1.5;
+        }
+
+        /* SEARCH CAPSULE */
+        .ff-search-capsule {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          background: ${isDark ? '#141E30' : '#FFFFFF'};
+          border: 1px solid ${isDark ? '#23324C' : '#DFE7DC'};
+          padding: 8px 14px;
+          border-radius: 9999px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+          width: 260px;
+          transition: border-color 0.15s ease;
+        }
+
+        .ff-search-capsule:focus-within {
+          border-color: #2E7D32;
+        }
+
+        .ff-search-icon {
+          color: #94A3B8;
+          flex-shrink: 0;
+        }
+
+        .ff-search-input {
+          border: none;
+          background: transparent;
+          font-size: 13px;
+          color: ${isDark ? '#F8FAFC' : '#1A2E16'};
+          outline: none;
+          width: 100%;
+          font-family: inherit;
+        }
+
+        .ff-search-clear {
+          background: none;
+          border: none;
+          color: #94A3B8;
+          font-size: 16px;
+          cursor: pointer;
+          padding: 0 4px;
+        }
+
+        /* ALLERGEN BAR */
+        .ff-allergy-bar-section {
+          margin-bottom: 20px;
+        }
+
+        .ff-allergy-alert-card {
+          background: ${isDark ? '#201316' : '#FEF2F2'};
+          border: 1px solid ${isDark ? '#4A1D24' : '#FEE2E2'};
+          border-radius: 16px;
+          padding: 14px 18px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16px;
+        }
+
+        .ff-alert-left {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .ff-alert-icon-wrap {
+          width: 32px;
+          height: 32px;
+          border-radius: 8px;
+          background: #FEE2E2;
+          color: #DC2626;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+
+        .ff-alert-heading {
+          font-size: 13.5px;
+          font-weight: 800;
+          color: ${isDark ? '#FCA5A5' : '#991B1B'};
+        }
+
+        .ff-alert-text {
+          font-size: 12.5px;
+          color: ${isDark ? '#F87171' : '#B91C1C'};
+          margin-top: 2px;
+        }
+
+        .ff-alert-manage-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          background: transparent;
+          border: 1px solid ${isDark ? '#5C232B' : '#FCA5A5'};
+          color: ${isDark ? '#FCA5A5' : '#DC2626'};
+          padding: 6px 12px;
+          border-radius: 9999px;
+          font-size: 12px;
+          font-weight: 700;
+          cursor: pointer;
+          white-space: nowrap;
+          transition: background 0.15s;
+        }
+
+        .ff-alert-manage-btn:hover {
+          background: rgba(220, 38, 38, 0.1);
+        }
+
+        .ff-allergy-shield-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: ${isDark ? 'rgba(16, 185, 129, 0.12)' : '#EFF7EE'};
+          border: 1px solid ${isDark ? '#1E3A2F' : '#DCEBD9'};
+          padding: 8px 16px;
+          border-radius: 9999px;
+          font-size: 12.5px;
+          color: ${isDark ? '#CBD5E1' : '#3E5039'};
+        }
+
+        /* MEMBER FILTER ROW */
+        .ff-member-filter-section {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-bottom: 20px;
+          flex-wrap: wrap;
+        }
+
+        .ff-filter-label {
+          font-size: 12px;
+          font-weight: 700;
+          color: #94A3B8;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .ff-member-pill-row {
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+
+        .ff-member-pill {
+          background: ${isDark ? '#141E30' : '#FFFFFF'};
+          border: 1px solid ${isDark ? '#23324C' : '#DFE7DC'};
+          color: ${isDark ? '#CBD5E1' : '#475643'};
+          padding: 6px 14px;
+          border-radius: 9999px;
+          font-size: 12.5px;
+          font-weight: 600;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          transition: all 0.15s ease;
+        }
+
+        .ff-member-pill.active {
+          background: #2E7D32;
+          color: #FFFFFF;
+          border-color: #2E7D32;
+        }
+
+        .ff-member-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #10B981;
+        }
+
+        /* CATEGORY TABS */
+        .ff-category-tabs-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          border-bottom: 1px solid ${isDark ? '#1E293B' : '#E8EFE5'};
+          padding-bottom: 12px;
+          margin-bottom: 28px;
+          gap: 16px;
+        }
+
+        .ff-tabs-scrollable {
+          display: flex;
+          gap: 6px;
+          overflow-x: auto;
+          scrollbar-width: none;
+        }
+
+        .ff-cat-tab-btn {
+          border: none;
+          background: transparent;
+          color: ${isDark ? '#94A3B8' : '#5E6E5B'};
+          padding: 8px 16px;
+          border-radius: 9999px;
+          font-size: 13.5px;
+          font-weight: 600;
+          cursor: pointer;
+          white-space: nowrap;
+          transition: all 0.15s ease;
+        }
+
+        .ff-cat-tab-btn:hover {
+          color: #2E7D32;
+          background: ${isDark ? 'rgba(16, 185, 129, 0.1)' : '#EDF5EB'};
+        }
+
+        .ff-cat-tab-btn.active {
+          background: #2E7D32;
+          color: #FFFFFF;
+          font-weight: 700;
+        }
+
+        .ff-tips-count-indicator {
+          font-size: 12px;
+          font-weight: 700;
+          color: #94A3B8;
+          white-space: nowrap;
+        }
+
+        /* TIPS GRID */
+        .ff-tips-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 20px;
+        }
+
+        @media (max-width: 960px) {
+          .ff-tips-grid {
+            grid-template-columns: repeat(2, 1fr);
           }
         }
-      `}} />
+
+        @media (max-width: 620px) {
+          .ff-tips-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+
+        .ff-tip-card {
+          background: ${isDark ? '#111A2B' : '#FFFFFF'};
+          border: 1px solid ${isDark ? '#1E2D44' : '#E2EBE0'};
+          border-radius: 18px;
+          padding: 22px;
+          display: flex;
+          flex-direction: column;
+          box-shadow: ${isDark ? '0 4px 16px rgba(0,0,0,0.3)' : '0 4px 14px rgba(47,107,31,0.04)'};
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .ff-tip-card:hover {
+          transform: translateY(-3px);
+          box-shadow: ${isDark ? '0 10px 24px rgba(0,0,0,0.45)' : '0 8px 24px rgba(47,107,31,0.09)'};
+        }
+
+        .ff-tip-meta-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 12px;
+        }
+
+        .ff-tip-tag {
+          font-size: 11px;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .ff-tip-meta-right {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .ff-tip-read-time {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          font-size: 11px;
+          color: #94A3B8;
+          font-weight: 600;
+        }
+
+        .ff-tip-bookmark-btn {
+          border: none;
+          background: transparent;
+          color: #94A3B8;
+          cursor: pointer;
+          padding: 2px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: transform 0.15s;
+        }
+
+        .ff-tip-bookmark-btn:hover {
+          transform: scale(1.15);
+          color: #2E7D32;
+        }
+
+        .ff-tip-bookmark-btn.saved {
+          color: #2E7D32;
+        }
+
+        .ff-tip-title {
+          font-size: 16px;
+          font-weight: 800;
+          color: ${isDark ? '#FFFFFF' : '#142612'};
+          line-height: 1.35;
+          margin: 0 0 10px 0;
+        }
+
+        .ff-tip-summary {
+          font-size: 13.5px;
+          line-height: 1.55;
+          color: ${isDark ? '#CBD5E1' : '#455642'};
+          margin: 0 0 14px 0;
+        }
+
+        .ff-tip-detail-box {
+          background: ${isDark ? '#142138' : '#F6FAF4'};
+          border: 1px solid ${isDark ? '#1E3254' : '#E2EFE0'};
+          border-radius: 12px;
+          padding: 12px 14px;
+          margin-bottom: 16px;
+          flex: 1;
+        }
+
+        .ff-tip-detail-box p {
+          font-size: 12.5px;
+          line-height: 1.5;
+          color: ${isDark ? '#94A3B8' : '#556551'};
+          margin: 0;
+        }
+
+        .ff-tip-footer {
+          margin-top: auto;
+          padding-top: 10px;
+          border-top: 1px solid ${isDark ? '#1C293E' : '#EDF4EB'};
+        }
+
+        .ff-tip-benefit {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 12px;
+          font-weight: 700;
+          color: ${isDark ? '#F1F5F9' : '#1E3219'};
+        }
+
+        /* EMPTY STATE */
+        .ff-tips-empty-box {
+          text-align: center;
+          padding: 60px 24px;
+          background: ${isDark ? '#111A2B' : '#FFFFFF'};
+          border: 1px solid ${isDark ? '#1E2D44' : '#E2EBE0'};
+          border-radius: 20px;
+        }
+
+        .ff-empty-icon {
+          font-size: 36px;
+          margin-bottom: 12px;
+        }
+
+        .ff-tips-empty-box h3 {
+          font-size: 18px;
+          font-weight: 800;
+          margin: 0 0 6px 0;
+        }
+
+        .ff-tips-empty-box p {
+          font-size: 13.5px;
+          color: #94A3B8;
+          margin: 0 0 20px 0;
+        }
+
+        .ff-btn-reset-filters {
+          background: #2E7D32;
+          color: #FFFFFF;
+          border: none;
+          padding: 10px 20px;
+          border-radius: 9999px;
+          font-size: 13px;
+          font-weight: 700;
+          cursor: pointer;
+        }
+      `}</style>
     </div>
   )
 }

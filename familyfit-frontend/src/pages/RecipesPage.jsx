@@ -87,81 +87,107 @@ function ChevronDown({ color = '#374151' }) {
 }
 
 // ── RECIPE CARD ──
-function RecipeCard({ recipe, onFavorite, isFavorited, onClick, activeMember }) {
+function RecipeCard({ recipe, onFavorite, isFavorited, onClick, activeMember, isDark }) {
   const tag = recipe.category || recipe.tags?.[0] || 'Vegetarian'
   const tagStyle = getTagColor(tag)
   const kcal = recipe.kcal || recipe.calories || recipe.macros?.calories || 300
   const time = recipe.prepTimeMinutes || recipe.totalTime || 25
   const health = evaluateRecipeHealth(recipe, activeMember)
 
+  const cardBg = isDark ? '#141C2E' : '#FFFFFF'
+  const cardBorder = isDark ? '1px solid #1E2D45' : '1px solid #E8EFE5'
+  const titleColor = isDark ? '#F8FAFC' : '#111827'
+  const subColor = isDark ? '#94A3B8' : '#5E6D5B'
+
   return (
     <div
       onClick={onClick}
       style={{
-        background: '#FFFFFF',
-        borderRadius: 16,
+        background: cardBg,
+        borderRadius: 20,
         overflow: 'hidden',
         cursor: 'pointer',
-        boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-        transition: 'transform 0.18s ease, box-shadow 0.18s ease',
-        border: '1px solid #F3F4F6',
+        boxShadow: isDark ? '0 4px 20px rgba(0,0,0,0.3)' : '0 4px 16px rgba(47,107,31,0.06)',
+        transition: 'all 0.22s cubic-bezier(0.16, 1, 0.3, 1)',
+        border: cardBorder,
+        display: 'flex',
+        flexDirection: 'column',
       }}
-      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)' }}
-      onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.06)' }}
+      onMouseEnter={e => { 
+        e.currentTarget.style.transform = 'translateY(-4px)'; 
+        e.currentTarget.style.boxShadow = isDark ? '0 12px 28px rgba(0,0,0,0.45)' : '0 10px 26px rgba(47,107,31,0.12)';
+      }}
+      onMouseLeave={e => { 
+        e.currentTarget.style.transform = 'translateY(0)'; 
+        e.currentTarget.style.boxShadow = isDark ? '0 4px 20px rgba(0,0,0,0.3)' : '0 4px 16px rgba(47,107,31,0.06)';
+      }}
     >
-      {/* Image */}
-      <div style={{ position: 'relative', width: '100%', height: 200, overflow: 'hidden', background: '#F9FAFB' }}>
+      {/* Image Wrap */}
+      <div style={{ position: 'relative', width: '100%', height: 200, overflow: 'hidden', background: isDark ? '#0A0F1D' : '#F4F7F2' }}>
         <img
           src={recipe.image || recipe.imageUrl || `https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=400&q=75`}
           alt={recipe.name}
-          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.3s ease' }}
           onError={e => { e.target.src = 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=400&q=75' }}
         />
-        {/* Category tag pill - bottom left of image */}
+        {/* Category tag pill - bottom left */}
         <div style={{
           position: 'absolute', bottom: 10, left: 10,
           background: tagStyle.bg, color: tagStyle.text,
           fontSize: 11, fontWeight: 700,
-          padding: '4px 10px', borderRadius: 9999,
+          padding: '4px 12px', borderRadius: 9999,
           letterSpacing: 0.2,
+          boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
         }}>
           {tag}
         </div>
-        {/* Favorite button - top right */}
+        {/* Favorite heart button - top right */}
         <button
           onClick={e => { e.stopPropagation(); onFavorite(recipe.id) }}
+          aria-label={isFavorited ? "Remove from saved" : "Save recipe"}
           style={{
             position: 'absolute', top: 10, right: 10,
-            width: 32, height: 32, borderRadius: '50%',
-            background: '#FFFFFF', border: 'none',
+            width: 34, height: 34, borderRadius: '50%',
+            background: isDark ? 'rgba(15, 23, 42, 0.85)' : 'rgba(255, 255, 255, 0.94)',
+            backdropFilter: 'blur(8px)',
+            border: isDark ? '1px solid #334155' : '1px solid rgba(255,255,255,0.7)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
-            transition: 'transform 0.15s',
+            cursor: 'pointer',
+            boxShadow: '0 3px 10px rgba(0,0,0,0.12)',
+            transition: 'transform 0.18s ease',
           }}
+          onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.14)'}
+          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
         >
-          <HeartIcon filled={isFavorited} size={15} />
+          <HeartIcon filled={isFavorited} size={16} />
         </button>
       </div>
-      {/* Body */}
-      <div style={{ padding: '14px 14px 16px 14px' }}>
-        <h3 style={{ fontSize: 14, fontWeight: 700, color: '#111827', margin: '0 0 10px 0', lineHeight: 1.35, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+
+      {/* Body Content */}
+      <div style={{ padding: '16px 16px 18px 16px', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between' }}>
+        <h3 style={{ 
+          fontSize: 15, fontWeight: 700, color: titleColor, margin: '0 0 10px 0', 
+          lineHeight: 1.35, display: '-webkit-box', WebkitLineClamp: 2, 
+          WebkitBoxOrient: 'vertical', overflow: 'hidden', minHeight: 40 
+        }}>
           {recipe.name}
         </h3>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6, fontSize: 12, color: '#6B7280', fontWeight: 500, flexWrap: 'wrap' }}>
+
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6, fontSize: 12, color: subColor, fontWeight: 600, flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
               <FlameIcon />
               <span>{kcal} kcal</span>
             </span>
 
-            {/* Red / Green Health Badge near kcal */}
+            {/* Health Suitability Badge */}
             <span
               style={{
                 fontSize: 10.5,
                 fontWeight: 800,
                 color: health.color,
                 background: health.bg,
-                padding: '2px 8px',
+                padding: '2.5px 8px',
                 borderRadius: 8,
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -170,13 +196,13 @@ function RecipeCard({ recipe, onFavorite, isFavorited, onClick, activeMember }) 
               }}
             >
               <span style={{ width: 6, height: 6, borderRadius: '50%', background: health.color, display: 'inline-block' }} />
-              {health.status === 'bad' ? (health.text.includes('Allergy') ? 'Unhealthy (Allergy)' : 'Unhealthy') : 'Very Healthy'}
+              {health.status === 'bad' ? (health.text.includes('Allergy') ? 'Allergy Conflict' : 'Caution') : 'Wholesome'}
             </span>
           </div>
 
           <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
             <ClockIcon />
-            <span>{time} mins</span>
+            <span>{time}m</span>
           </span>
         </div>
       </div>
@@ -399,6 +425,7 @@ export default function RecipesPage() {
                   onFavorite={toggleFavorite}
                   onClick={() => navigate(`/recipes/${r.id}`)}
                   activeMember={activeMember}
+                  isDark={isDark}
                 />
               ))}
             </div>

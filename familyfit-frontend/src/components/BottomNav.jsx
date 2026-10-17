@@ -44,13 +44,15 @@ export default function BottomNav() {
         }}
       >
         {NAV_ITEMS.map((item) => {
-          const isActive = pathname === item.path
+          const isActive = item.path === '/'
+            ? (pathname === '/' || pathname === '/dashboard' || pathname === '/home')
+            : pathname.startsWith(item.path)
           const IconComponent = item.icon
 
           return (
             <button
               key={item.path}
-              onClick={() => navigate(item.path)}
+              onClick={() => navigate(item.path === '/' ? '/dashboard' : item.path)}
               style={{
                 border: 'none',
                 background: 'transparent',

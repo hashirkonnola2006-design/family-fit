@@ -1,23 +1,26 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useEffect } from 'react'
 
-const ThemeContext = createContext()
+const ThemeContext = createContext({
+  theme: 'light',
+  setTheme: () => {},
+  toggleTheme: () => {},
+  isDark: false,
+})
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('familyfit_theme') || 'light'
-  })
-
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
-    localStorage.setItem('familyfit_theme', theme)
-  }, [theme])
-
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'))
-  }
+    // Permanently remove dark mode DOM attributes and local storage keys
+    document.documentElement.removeAttribute('data-theme')
+    document.documentElement.classList.remove('dark')
+    try {
+      localStorage.removeItem('familyfit_theme')
+    } catch {
+      // Ignore if localStorage unavailable
+    }
+  }, [])
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, toggleTheme, isDark: theme === 'dark' }}>
+    <ThemeContext.Provider value={{ theme: 'light', setTheme: () => {}, toggleTheme: () => {}, isDark: false }}>
       {children}
     </ThemeContext.Provider>
   )

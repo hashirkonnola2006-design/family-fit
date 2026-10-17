@@ -10,24 +10,35 @@ import GroceryPage  from './pages/GroceryPage'
 import TipsPage     from './pages/TipsPage'
 import ProfilePage  from './pages/ProfilePage'
 import AuthPage     from './pages/AuthPage'
+import LandingPage  from './pages/LandingPage'
 import RecipeDetailPage from './pages/RecipeDetailPage'
 import OnboardingPage   from './pages/OnboardingPage'
 import AboutPage        from './pages/AboutPage'
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
+import TermsConditionsPage from './pages/TermsConditionsPage'
 import ResponsiveLayout from './components/ResponsiveLayout'
 
-/** Protected route — redirects to /auth if no JWT found */
+/** Protected route — redirects to /login if no JWT found */
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth()
   if (loading) return <div className="spinner" style={{ marginTop: 80 }} />
-  return user ? <ResponsiveLayout>{children}</ResponsiveLayout> : <Navigate to="/auth" replace />
+  return user ? <ResponsiveLayout>{children}</ResponsiveLayout> : <Navigate to="/login" replace />
 }
 
 function AppRoutes() {
   return (
     <Routes>
-      <Route path="/auth" element={<AuthPage />} />
+      {/* ── Public Landing Route ── */}
+      <Route path="/" element={<LandingPage />} />
+
+      {/* ── Auth Routes ── */}
+      <Route path="/login" element={<AuthPage />} />
+      <Route path="/auth" element={<Navigate to="/login" replace />} />
+
+      {/* ── Protected Application Dashboard ── */}
+      <Route path="/dashboard" element={<PrivateRoute><HomePage /></PrivateRoute>} />
+      <Route path="/home" element={<Navigate to="/dashboard" replace />} />
       <Route path="/onboarding" element={<PrivateRoute><OnboardingPage /></PrivateRoute>} />
-      <Route path="/"        element={<PrivateRoute><HomePage /></PrivateRoute>} />
       <Route path="/plans"   element={<Navigate to="/recipes" replace />} />
       <Route path="/recipes" element={<PrivateRoute><RecipesPage /></PrivateRoute>} />
       <Route path="/recipes/:id" element={<PrivateRoute><RecipeDetailPage /></PrivateRoute>} />
@@ -36,6 +47,11 @@ function AppRoutes() {
       <Route path="/progress" element={<Navigate to="/tips" replace />} />
       <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
       <Route path="/about"   element={<PrivateRoute><AboutPage /></PrivateRoute>} />
+
+      {/* ── Legal & Policies ── */}
+      <Route path="/privacy" element={<PrivacyPolicyPage />} />
+      <Route path="/terms"   element={<TermsConditionsPage />} />
+
       {/* Catch-all */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

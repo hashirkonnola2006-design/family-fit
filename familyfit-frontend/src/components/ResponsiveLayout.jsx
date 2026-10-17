@@ -1,8 +1,12 @@
+import { useLocation } from 'react-router-dom'
 import { useTheme } from '../context/ThemeContext'
 import Header from './Header'
+import Footer from './Footer'
 
 export default function ResponsiveLayout({ children }) {
   const { isDark } = useTheme()
+  const { pathname } = useLocation()
+  const isDashboard = pathname === '/dashboard' || pathname === '/home'
 
   return (
     <div className="layout-root">
@@ -13,6 +17,9 @@ export default function ResponsiveLayout({ children }) {
       <div className="layout-content-wrapper">
         {children}
       </div>
+
+      {/* ── GLOBAL FOOTER (Excluded on Dashboard which has slim footer) ── */}
+      {!isDashboard && <Footer />}
 
       {/* Inject styling rules specifically for responsive layout */}
       <style dangerouslySetInnerHTML={{ __html: `

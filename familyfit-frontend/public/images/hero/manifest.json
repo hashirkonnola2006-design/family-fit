@@ -1,0 +1,189 @@
+{
+  "timeline": [
+    {
+      "id": "frame1-underground",
+      "index": 0,
+      "alt": "Underground soil cross-section with glowing sprout and roots",
+      "desktop": {
+        "src": "/images/hero/frame1-underground.webp",
+        "width": 1920,
+        "height": 1080,
+        "sizeBytes": 171540,
+        "sizeKB": 167.5
+      },
+      "mobile": {
+        "src": "/images/hero/frame1-underground-mobile.webp",
+        "width": 1080,
+        "height": 1920,
+        "sizeBytes": 172992,
+        "sizeKB": 168.9
+      }
+    },
+    {
+      "id": "t1a-soil-breaking",
+      "index": 1,
+      "alt": "Camera rising as the sprout emerges through soil surface into sunlight",
+      "desktop": {
+        "src": "/images/hero/t1a-soil-breaking.webp",
+        "width": 1920,
+        "height": 1080,
+        "sizeBytes": 149032,
+        "sizeKB": 145.5
+      },
+      "mobile": {
+        "src": "/images/hero/t1a-soil-breaking-mobile.webp",
+        "width": 1080,
+        "height": 1920,
+        "sizeBytes": 141590,
+        "sizeKB": 138.3
+      }
+    },
+    {
+      "id": "t1b-ground-surface",
+      "index": 2,
+      "alt": "Camera at ground level with roots below and garden above",
+      "desktop": {
+        "src": "/images/hero/t1b-ground-surface.webp",
+        "width": 1920,
+        "height": 1080,
+        "sizeBytes": 174512,
+        "sizeKB": 170.4
+      },
+      "mobile": {
+        "src": "/images/hero/t1b-ground-surface-mobile.webp",
+        "width": 1080,
+        "height": 1920,
+        "sizeBytes": 165768,
+        "sizeKB": 161.9
+      }
+    },
+    {
+      "id": "frame2-garden",
+      "index": 3,
+      "alt": "Lush Kerala vegetable garden with young plant at center against rolling hills",
+      "desktop": {
+        "src": "/images/hero/frame2-garden.webp",
+        "width": 1920,
+        "height": 1080,
+        "sizeBytes": 190440,
+        "sizeKB": 186.0
+      },
+      "mobile": {
+        "src": "/images/hero/frame2-garden-mobile.webp",
+        "width": 1080,
+        "height": 1920,
+        "sizeBytes": 170580,
+        "sizeKB": 166.6
+      }
+    },
+    {
+      "id": "t2a-garden-to-home",
+      "index": 4,
+      "alt": "Camera rising through garden looking toward Kerala home entrance and dining table",
+      "desktop": {
+        "src": "/images/hero/t2a-garden-to-home.webp",
+        "width": 1920,
+        "height": 1080,
+        "sizeBytes": 213132,
+        "sizeKB": 208.1
+      },
+      "mobile": {
+        "src": "/images/hero/t2a-garden-to-home-mobile.webp",
+        "width": 1080,
+        "height": 1920,
+        "sizeBytes": 243780,
+        "sizeKB": 238.1
+      }
+    },
+    {
+      "id": "t2b-home-approach",
+      "index": 5,
+      "alt": "Approaching the bright home interior with family seated at table",
+      "desktop": {
+        "src": "/images/hero/t2b-home-approach.webp",
+        "width": 1920,
+        "height": 1080,
+        "sizeBytes": 158618,
+        "sizeKB": 154.9
+      },
+      "mobile": {
+        "src": "/images/hero/t2b-home-approach-mobile.webp",
+        "width": 1080,
+        "height": 1920,
+        "sizeBytes": 182026,
+        "sizeKB": 177.8
+      }
+    },
+    {
+      "id": "frame3-family",
+      "index": 6,
+      "alt": "Kerala family of four enjoying a wholesome traditional Sadhya meal on banana leaves",
+      "desktop": {
+        "src": "/images/hero/frame3-family.webp",
+        "width": 1920,
+        "height": 1080,
+        "sizeBytes": 158978,
+        "sizeKB": 155.3
+      },
+      "mobile": {
+        "src": "/images/hero/frame3-family-mobile.webp",
+        "width": 1080,
+        "height": 1920,
+        "sizeBytes": 196984,
+        "sizeKB": 192.4
+      }
+    }
+  ],
+  "layers": [
+    {
+      "name": "layer-f1-left",
+      "alt": "Frame 1 Foreground Left Leaves & Golden Seeds",
+      "srcWebp": "/images/hero/layers/layer-f1-left.webp",
+      "srcPng": "/images/hero/layers/layer-f1-left.png",
+      "sizeWebpKB": 5.5,
+      "sizePngKB": 18.8
+    },
+    {
+      "name": "layer-f1-right",
+      "alt": "Frame 1 Foreground Right Leaves & Golden Seeds",
+      "srcWebp": "/images/hero/layers/layer-f1-right.webp",
+      "srcPng": "/images/hero/layers/layer-f1-right.png",
+      "sizeWebpKB": 64.5,
+      "sizePngKB": 203.1
+    },
+    {
+      "name": "layer-f2-left",
+      "alt": "Frame 2 Foreground Left Banana Fronds",
+      "srcWebp": "/images/hero/layers/layer-f2-left.webp",
+      "srcPng": "/images/hero/layers/layer-f2-left.png",
+      "sizeWebpKB": 60.9,
+      "sizePngKB": 616.3
+    },
+    {
+      "name": "layer-f2-right",
+      "alt": "Frame 2 Foreground Right Tomato Vines",
+      "srcWebp": "/images/hero/layers/layer-f2-right.webp",
+      "srcPng": "/images/hero/layers/layer-f2-right.png",
+      "sizeWebpKB": 57.4,
+      "sizePngKB": 639.4
+    },
+    {
+      "name": "layer-f3-left",
+      "alt": "Frame 3 Foreground Left Indoor Foliage",
+      "srcWebp": "/images/hero/layers/layer-f3-left.webp",
+      "srcPng": "/images/hero/layers/layer-f3-left.png",
+      "sizeWebpKB": 28.8,
+      "sizePngKB": 410.1
+    },
+    {
+      "name": "layer-f3-right",
+      "alt": "Frame 3 Foreground Right Garden Tomato Leaves",
+      "srcWebp": "/images/hero/layers/layer-f3-right.webp",
+      "srcPng": "/images/hero/layers/layer-f3-right.png",
+      "sizeWebpKB": 31.7,
+      "sizePngKB": 379.9
+    }
+  ],
+  "totalMobileWeightBytes": 1273720,
+  "totalDesktopWeightBytes": 1216252
+}

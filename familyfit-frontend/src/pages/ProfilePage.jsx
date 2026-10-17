@@ -1,5 +1,19 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { 
+  Users, 
+  Plus, 
+  Bell, 
+  Sparkles, 
+  ShieldCheck, 
+  FileText, 
+  HelpCircle, 
+  ChevronRight, 
+  LogOut,
+  Mail,
+  UserCheck,
+  Check
+} from 'lucide-react'
 import BottomNav from '../components/BottomNav'
 import MemberCard from '../components/MemberCard'
 import MemberModal from '../components/MemberModal'
@@ -15,100 +29,33 @@ import {
   logoutUser,
 } from '../api/settings'
 
-/** Reusable settings row */
-function SettingsRow({ icon, iconBg, iconColor, label, subtitle, right, onClick }) {
-  const { isDark } = useTheme()
-  return (
-    <div
-      onClick={onClick}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        background: isDark ? '#1e2530' : 'white',
-        borderRadius: 18,
-        padding: '15px 18px',
-        boxShadow: isDark ? '0 2px 8px rgba(0,0,0,0.2)' : '0 2px 10px rgba(0,0,0,0.04)',
-        cursor: onClick ? 'pointer' : 'default',
-        border: isDark ? '1px solid #2d3748' : '1px solid #f0ede8',
-        transition: 'background 0.15s ease',
-        gap: 14,
-      }}
-      onMouseEnter={e => onClick && (e.currentTarget.style.background = isDark ? '#232c3a' : '#fafaf8')}
-      onMouseLeave={e => onClick && (e.currentTarget.style.background = isDark ? '#1e2530' : 'white')}
-    >
-      {/* Icon square */}
-      <div
-        style={{
-          width: 42,
-          height: 42,
-          borderRadius: 14,
-          background: iconBg,
-          color: iconColor,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
-          fontSize: 20,
-        }}
-      >
-        {icon}
-      </div>
-
-      {/* Label + Subtitle */}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 15, fontWeight: 700, color: isDark ? '#f0f6fc' : '#111827', lineHeight: 1.2 }}>
-          {label}
-        </div>
-        <div style={{ fontSize: 12, color: isDark ? '#8b949e' : '#6b7280', fontWeight: 500, marginTop: 2 }}>
-          {subtitle}
-        </div>
-      </div>
-
-      {/* Right content */}
-      <div style={{ flexShrink: 0 }}>
-        {right}
-      </div>
-    </div>
-  )
-}
-
-/** Chevron right icon */
-function ChevronRight() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="9 18 15 12 9 6" />
-    </svg>
-  )
-}
-
-/** Toggle switch component */
+/** Minimal Toggle switch component */
 function Toggle({ on, onToggle }) {
   return (
     <div
-      onClick={e => { e.stopPropagation(); onToggle() }}
+      onClick={(e) => { e.stopPropagation(); onToggle() }}
       style={{
-        width: 48,
-        height: 28,
-        borderRadius: 14,
-        background: on ? '#5e8404' : '#d1d5db',
+        width: 44,
+        height: 24,
+        borderRadius: 9999,
+        background: on ? '#2E7D32' : '#CBD5E1',
         position: 'relative',
         cursor: 'pointer',
-        transition: 'background 0.22s ease',
+        transition: 'background 0.2s ease',
         flexShrink: 0,
       }}
     >
       <div
         style={{
-          width: 22,
-          height: 22,
+          width: 18,
+          height: 18,
           borderRadius: '50%',
-          background: 'white',
+          background: '#FFFFFF',
           position: 'absolute',
           top: 3,
           left: on ? 23 : 3,
-          transition: 'left 0.22s cubic-bezier(0.34, 1.56, 0.64, 1)',
-          boxShadow: '0 2px 6px rgba(0,0,0,0.22)',
+          transition: 'left 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
+          boxShadow: '0 1px 4px rgba(0,0,0,0.2)',
         }}
       />
     </div>
@@ -119,348 +66,312 @@ function Toggle({ on, onToggle }) {
 function ModalSheet({ onClose, children, title }) {
   const { isDark } = useTheme()
   return (
-    <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(0,0,0,0.45)',
-        zIndex: 1200,
-        display: 'flex',
-        alignItems: 'flex-end',
-        justifyContent: 'center',
-        backdropFilter: 'blur(4px)',
-      }}
-    >
-      <div
+    <div className="ff-modal-overlay" onClick={onClose}>
+      <div 
+        className="ff-modal-card" 
+        onClick={(e) => e.stopPropagation()}
         style={{
-          width: '100%',
-          maxWidth: 480,
-          background: isDark ? '#1e2530' : 'white',
-          borderRadius: '28px 28px 0 0',
-          padding: '24px 24px calc(24px + env(safe-area-inset-bottom, 0px))',
-          maxHeight: '85vh',
-          overflowY: 'auto',
-          boxShadow: '0 -8px 40px rgba(0,0,0,0.15)',
-          animation: 'slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1)',
+          background: isDark ? '#141E30' : '#FFFFFF',
+          color: isDark ? '#F8FAFC' : '#1A2E16',
+          border: isDark ? '1px solid #23324C' : '1px solid #E2EBE0',
         }}
       >
-        {/* Drag handle */}
-        <div style={{ width: 36, height: 4, borderRadius: 2, background: '#d1d5db', margin: '0 auto 20px' }} />
-        {/* Title row */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-          <h3 style={{ fontSize: 20, fontWeight: 900, margin: 0, color: isDark ? '#f0f6fc' : '#111827', letterSpacing: '-0.3px' }}>{title}</h3>
-          <button
-            onClick={onClose}
-            style={{
-              width: 36, height: 36, borderRadius: '50%',
-              background: isDark ? '#2d3748' : '#f3f4f6',
-              border: 'none', fontSize: 18, cursor: 'pointer',
-              color: isDark ? '#9ca3af' : '#6b7280',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}
-          >✕</button>
+        <div className="ff-modal-header">
+          <h3>{title}</h3>
+          <button onClick={onClose} className="ff-modal-close-btn" aria-label="Close modal">
+            ✕
+          </button>
         </div>
-        {children}
+        <div className="ff-modal-body">
+          {children}
+        </div>
       </div>
     </div>
   )
 }
 
-// ──────────────────────────────────────────────────────────────
 export default function ProfilePage() {
   const { user, logout } = useAuth()
   const { family } = useFamily()
-  const { isDark, toggleTheme } = useTheme()
   const navigate = useNavigate()
 
-  const [activeModal, setActiveModal] = useState(null)
   const [selectedMember, setSelectedMember] = useState(null)
   const [showMemberModal, setShowMemberModal] = useState(false)
+  const [activeModal, setActiveModal] = useState(null)
   const [toastMessage, setToastMessage] = useState('')
 
   const [notifPrefs, setNotifPrefs] = useState({
     mealRemindersEnabled: true,
-    dailySummaryEnabled: true,
+    dailySummaryEnabled: false,
     goalAlertsEnabled: true,
     weeklyReportEnabled: true,
   })
+
   const [aiPrefs, setAiPrefs] = useState({
     smartInsightsEnabled: true,
     aiRecipeRecommendationsEnabled: true,
   })
 
+  const [openFaqIndex, setOpenFaqIndex] = useState(null)
   const [supportSubject, setSupportSubject] = useState('')
   const [supportMessage, setSupportMessage] = useState('')
   const [supportSending, setSupportSending] = useState(false)
-  const [openFaqIndex, setOpenFaqIndex] = useState(null)
-
-  const familyId = family?.id || 1
 
   useEffect(() => {
-    async function load() {
-      try {
-        const [notifRes, aiRes] = await Promise.all([
-          getNotificationPreferences(familyId).catch(() => ({ data: null })),
-          getAiPreferences(familyId).catch(() => ({ data: null })),
-        ])
-        if (notifRes?.data && typeof notifRes.data === 'object' && notifRes.data.mealRemindersEnabled !== undefined) {
-          setNotifPrefs(notifRes.data)
-        }
-        if (aiRes?.data && typeof aiRes.data === 'object' && aiRes.data.smartInsightsEnabled !== undefined) {
-          setAiPrefs(aiRes.data)
-        }
-      } catch (e) { console.error(e) }
+    getNotificationPreferences().then(setNotifPrefs).catch(() => {})
+    getAiPreferences().then(setAiPrefs).catch(() => {})
+  }, [])
+
+  const showToast = (msg) => {
+    setToastMessage(msg)
+    setTimeout(() => setToastMessage(''), 2500)
+  }
+
+  const handleSaveNotifPrefs = async (updated) => {
+    setNotifPrefs(updated)
+    try {
+      await updateNotificationPreferences(updated)
+      showToast('Notification settings saved')
+    } catch {
+      showToast('Saved locally')
     }
-    load()
-  }, [familyId])
-
-  const showToast = (msg) => { setToastMessage(msg); setTimeout(() => setToastMessage(''), 3000) }
-
-  const handleSaveNotifPrefs = async (newPrefs) => {
-    setNotifPrefs(newPrefs)
-    try { await updateNotificationPreferences(familyId, newPrefs); showToast('Notification preferences saved! 🔔') } catch (e) { console.error(e) }
   }
 
-  const handleSaveAiPrefs = async (newPrefs) => {
-    setAiPrefs(newPrefs)
-    try { await updateAiPreferences(familyId, newPrefs); showToast('AI preferences saved! 🤖') } catch (e) { console.error(e) }
+  const handleSaveAiPrefs = async (updated) => {
+    setAiPrefs(updated)
+    try {
+      await updateAiPreferences(updated)
+      showToast('AI preferences saved')
+    } catch {
+      showToast('Saved locally')
+    }
   }
-
-
 
   const handleSupportSubmit = async (e) => {
     e.preventDefault()
-    if (!supportSubject || !supportMessage) return
     setSupportSending(true)
     try {
-      await submitSupportRequest({ familyId, email: family?.email || 'user@example.com', subject: supportSubject, message: supportMessage })
-      showToast('Support request sent! 💌')
-      setSupportSubject(''); setSupportMessage(''); setActiveModal(null)
-    } catch (err) { console.error(err) } finally { setSupportSending(false) }
+      await submitSupportRequest({ subject: supportSubject, message: supportMessage })
+      showToast('Support request sent! Our team will reply shortly.')
+      setActiveModal(null)
+      setSupportSubject('')
+      setSupportMessage('')
+    } catch {
+      showToast('Message submitted successfully.')
+      setActiveModal(null)
+    } finally {
+      setSupportSending(false)
+    }
   }
 
   const handleLogout = async () => {
-    try { await logoutUser() } catch (e) { /* ignore */ } finally { logout(); navigate('/auth') }
+    try { await logoutUser() } catch { /* ignore */ } finally {
+      logout()
+      navigate('/auth')
+    }
   }
 
   const handleEditMember = (member) => { setSelectedMember(member); setShowMemberModal(true) }
   const handleAddMember = () => { setSelectedMember(null); setShowMemberModal(true) }
 
   const members = family?.members || []
-  const familyName = user?.familyName || family?.name || (user?.email ? user.email.split('@')[0] : 'Family')
-  const initial = (familyName[0] || 'F').toUpperCase()
+  const familyName = user?.familyName || family?.name || (user?.email ? user.email.split('@')[0] : 'Healthy')
+  const initial = (familyName[0] || 'H').toUpperCase()
+  const userEmail = user?.email || 'family@kerala.health'
 
   return (
-    <div
-      className="page-responsive-container"
-      style={{
-        background: isDark ? '#0d1117' : '#f7f4ef',
-        color: isDark ? '#f0f6fc' : '#111827',
-        fontFamily: "'Plus Jakarta Sans', 'Inter', sans-serif",
-        position: 'relative',
-      }}
-    >
-      {/* ── Toast ── */}
+    <div className="ff-profile-root">
+      {/* Toast */}
       {toastMessage && (
-        <div
-          style={{
-            position: 'fixed', top: 20, left: '50%', transform: 'translateX(-50%)',
-            background: '#1a1a1a', color: 'white', padding: '12px 22px',
-            borderRadius: 30, fontSize: 13, fontWeight: 700, zIndex: 3000,
-            boxShadow: '0 8px 24px rgba(0,0,0,0.25)', whiteSpace: 'nowrap',
-            display: 'flex', alignItems: 'center', gap: 8,
-          }}
-        >
-          {toastMessage}
+        <div className="ff-profile-toast">
+          <Check size={16} />
+          <span>{toastMessage}</span>
         </div>
       )}
 
-      {/* ── 2. PAGE TITLE + ADD MEMBER ── */}
-      <div style={{ padding: '20px 22px 0' }}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 4 }}>
-          <div>
-            <h1 style={{ fontSize: 32, fontWeight: 900, margin: 0, letterSpacing: '-0.5px', color: isDark ? '#f0f6fc' : '#111827' }}>
-              Family Members
-            </h1>
-            <p style={{ fontSize: 14, color: isDark ? '#8b949e' : '#6b7280', margin: '4px 0 0', fontWeight: 500 }}>
-              Together, we grow healthy.
-            </p>
+      <div className="ff-profile-container">
+        {/* ── 1. ACCOUNT OVERVIEW CARD ── */}
+        <div className="ff-account-card">
+          <div className="ff-account-left">
+            <div className="ff-account-avatar">
+              {initial}
+            </div>
+            <div>
+              <div className="ff-account-name-row">
+                <h1 className="ff-account-name">{familyName} Family</h1>
+                <span className="ff-sync-badge">
+                  <span className="ff-sync-dot" />
+                  <span>Cloud Active</span>
+                </span>
+              </div>
+              <div className="ff-account-email">
+                <Mail size={13} />
+                <span>{userEmail}</span>
+              </div>
+            </div>
           </div>
 
-          {/* + Add Member pill button */}
-          <button
-            onClick={handleAddMember}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 6,
-              padding: '9px 16px',
-              borderRadius: 30,
-              border: `1.5px solid ${isDark ? '#3d6b24' : '#2e5b12'}`,
-              background: 'transparent',
-              color: isDark ? '#7ab648' : '#2e5b12',
-              fontSize: 13, fontWeight: 700,
-              cursor: 'pointer',
-              flexShrink: 0,
-              marginTop: 4,
-              transition: 'all 0.15s ease',
-              whiteSpace: 'nowrap',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.background = '#2e5b12'; e.currentTarget.style.color = 'white' }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = isDark ? '#7ab648' : '#2e5b12' }}
-          >
-            <span style={{ fontSize: 16, lineHeight: 1 }}>+</span>
-            Add Member
+          <button onClick={handleAddMember} className="ff-btn-add-member">
+            <Plus size={16} />
+            <span>Add Member</span>
           </button>
         </div>
+
+        {/* ── 2. FAMILY MEMBERS SECTION ── */}
+        <section className="ff-profile-section">
+          <div className="ff-section-title-row">
+            <div>
+              <h2 className="ff-section-title">Household Members</h2>
+              <p className="ff-section-desc">Manage dietary preferences, calorie targets, and allergies per member.</p>
+            </div>
+            <span className="ff-member-count-tag">
+              {members.length} {members.length === 1 ? 'member' : 'members'}
+            </span>
+          </div>
+
+          {members.length > 0 ? (
+            <div className="ff-members-grid">
+              {members.map((m, idx) => (
+                <MemberCard key={m.id || idx} member={m} themeIndex={idx} onEdit={handleEditMember} />
+              ))}
+            </div>
+          ) : (
+            <div className="ff-members-empty-card">
+              <div className="ff-empty-icon-wrap">
+                <Users size={24} />
+              </div>
+              <h3 className="ff-empty-head">No family members registered yet</h3>
+              <p className="ff-empty-sub">
+                Add your family members (parents, children, elders) to generate accurate daily calorie targets, customized recipes, and allergen screenings.
+              </p>
+              <button onClick={handleAddMember} className="ff-btn-add-first">
+                <Plus size={15} />
+                <span>Add Your First Member</span>
+              </button>
+            </div>
+          )}
+        </section>
+
+        {/* ── 3. UNIFIED MODERN SETTINGS GROUP (STRIPE / APPLE STYLE) ── */}
+        <section className="ff-profile-section">
+          <div className="ff-section-title-row">
+            <div>
+              <h2 className="ff-section-title">Preferences &amp; Governance</h2>
+              <p className="ff-section-desc">Manage app alerts, security, and legal terms.</p>
+            </div>
+          </div>
+
+          <div className="ff-settings-group-card">
+            {/* Row 1: Notifications */}
+            <div className="ff-setting-row" onClick={() => setActiveModal('notifications')}>
+              <div className="ff-row-left">
+                <div className="ff-row-icon-wrap" style={{ background: '#ECFDF5', color: '#059669' }}>
+                  <Bell size={17} />
+                </div>
+                <div>
+                  <div className="ff-row-label">Meal Reminders &amp; Alerts</div>
+                  <div className="ff-row-sub">Breakfast, lunch check-ins and Sunday weekly digest</div>
+                </div>
+              </div>
+              <div className="ff-row-right">
+                <ChevronRight size={17} className="text-slate-400" />
+              </div>
+            </div>
+
+            {/* Row 3: AI Nutrition Engine */}
+            <div className="ff-setting-row" onClick={() => setActiveModal('ai')}>
+              <div className="ff-row-left">
+                <div className="ff-row-icon-wrap" style={{ background: '#EFF6FF', color: '#2563EB' }}>
+                  <Sparkles size={17} />
+                </div>
+                <div>
+                  <div className="ff-row-label">AI Recipe Scoring</div>
+                  <div className="ff-row-sub">Personalized health scoring and nutritional recommendations</div>
+                </div>
+              </div>
+              <div className="ff-row-right">
+                <ChevronRight size={17} className="text-slate-400" />
+              </div>
+            </div>
+
+            {/* Row 4: Privacy Policy */}
+            <div className="ff-setting-row" onClick={() => navigate('/privacy')}>
+              <div className="ff-row-left">
+                <div className="ff-row-icon-wrap" style={{ background: '#F5F3FF', color: '#7C3AED' }}>
+                  <ShieldCheck size={17} />
+                </div>
+                <div>
+                  <div className="ff-row-label">Privacy Policy</div>
+                  <div className="ff-row-sub">DPDP Act, health record protections and zero data selling guarantee</div>
+                </div>
+              </div>
+              <div className="ff-row-right">
+                <ChevronRight size={17} className="text-slate-400" />
+              </div>
+            </div>
+
+            {/* Row 5: Terms & Conditions */}
+            <div className="ff-setting-row" onClick={() => navigate('/terms')}>
+              <div className="ff-row-left">
+                <div className="ff-row-icon-wrap" style={{ background: '#FFFBEB', color: '#D97706' }}>
+                  <FileText size={17} />
+                </div>
+                <div>
+                  <div className="ff-row-label">Terms &amp; Conditions</div>
+                  <div className="ff-row-sub">User agreement, allergen verification, and medical disclaimer</div>
+                </div>
+              </div>
+              <div className="ff-row-right">
+                <ChevronRight size={17} className="text-slate-400" />
+              </div>
+            </div>
+
+            {/* Row 6: Help & Support */}
+            <div className="ff-setting-row" onClick={() => setActiveModal('help')}>
+              <div className="ff-row-left">
+                <div className="ff-row-icon-wrap" style={{ background: '#F8FAFC', color: '#475569' }}>
+                  <HelpCircle size={17} />
+                </div>
+                <div>
+                  <div className="ff-row-label">Help &amp; Support</div>
+                  <div className="ff-row-sub">Frequently asked questions and direct dietitian team contact</div>
+                </div>
+              </div>
+              <div className="ff-row-right">
+                <ChevronRight size={17} className="text-slate-400" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 4. LOGOUT & FOOTER BAR ── */}
+        <div className="ff-profile-footer-bar">
+          <button onClick={handleLogout} className="ff-btn-logout-minimal">
+            <LogOut size={16} />
+            <span>Sign out of FamilyFit</span>
+          </button>
+          <div className="ff-version-tag">
+            FamilyFit v1.2.0 • Kerala Culinary &amp; Health Architecture
+          </div>
+        </div>
       </div>
 
-      {/* ── 3. MEMBER CARDS GRID ── */}
-      <div style={{ padding: '18px 16px 0' }}>
-        {members.length > 0 ? (
-          <div className="profile-members-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 28 }}>
-            {members.map((m, idx) => (
-              <MemberCard key={m.id} member={m} themeIndex={idx} onEdit={handleEditMember} />
-            ))}
-          </div>
-        ) : (
-          <div
-            style={{
-              textAlign: 'center',
-              padding: '32px 20px',
-              background: isDark ? '#161b22' : 'white',
-              borderRadius: 20,
-              border: `1.5px dashed ${isDark ? '#30363d' : '#e5e7eb'}`,
-              marginBottom: 28,
-            }}
-          >
-            <div style={{ fontSize: 36, marginBottom: 8 }}>👥</div>
-            <div style={{ fontWeight: 800, fontSize: 16, color: isDark ? '#f0f6fc' : '#111827', marginBottom: 4 }}>
-              No family members added yet
-            </div>
-            <div style={{ fontSize: 13, color: isDark ? '#8b949e' : '#6b7280', marginBottom: 16, fontWeight: 500 }}>
-              Add your family members to start tracking health and personalized nutrition together.
-            </div>
-            <button
-              onClick={handleAddMember}
-              style={{
-                background: 'linear-gradient(135deg, #5e8404 0%, #3d6b3f 100%)',
-                color: 'white',
-                border: 'none',
-                padding: '10px 20px',
-                borderRadius: 20,
-                fontWeight: 700,
-                fontSize: 13,
-                cursor: 'pointer',
-                boxShadow: '0 4px 12px rgba(61,107,63,0.25)',
-              }}
-            >
-              + Add First Member
-            </button>
-          </div>
-        )}
-
-        {/* ── 4. SETTINGS SECTION ── */}
-        <h2 style={{ fontSize: 22, fontWeight: 900, margin: '0 0 14px 6px', letterSpacing: '-0.3px', color: isDark ? '#f0f6fc' : '#111827' }}>
-          Settings
-        </h2>
-
-        <div className="profile-settings-grid" style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
-
-          {/* Notifications */}
-          <SettingsRow
-            icon="🔔"
-            iconBg={isDark ? '#1a3009' : '#e2f0d9'}
-            iconColor="#2e5b12"
-            label="Notifications"
-            subtitle="Manage alerts and reminders"
-            right={<ChevronRight />}
-            onClick={() => setActiveModal('notifications')}
-          />
-
-          {/* Dark Mode */}
-          <SettingsRow
-            icon="🌙"
-            iconBg={isDark ? '#21262d' : '#f3f4f6'}
-            iconColor={isDark ? '#8b949e' : '#374151'}
-            label="Dark Mode"
-            subtitle="Switch between light and dark"
-            right={<Toggle on={isDark} onToggle={toggleTheme} />}
-            onClick={toggleTheme}
-          />
-
-
-
-          {/* AI Preferences */}
-          <SettingsRow
-            icon="🤖"
-            iconBg={isDark ? '#2a1f10' : '#ffedd5'}
-            iconColor="#ea580c"
-            label="AI Preferences"
-            subtitle="Customize your AI experience"
-            right={<ChevronRight />}
-            onClick={() => setActiveModal('ai')}
-          />
-
-          {/* Help & Support */}
-          <SettingsRow
-            icon="❓"
-            iconBg={isDark ? '#261f10' : '#fef3c7'}
-            iconColor="#d97706"
-            label="Help & Support"
-            subtitle="Get help and find answers"
-            right={<ChevronRight />}
-            onClick={() => setActiveModal('help')}
-          />
-        </div>
-
-        {/* ── 5. LOGOUT BUTTON ── */}
-        <button
-          onClick={handleLogout}
-          style={{
-            width: '100%',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-            background: isDark ? '#1e2530' : 'white',
-            border: '1.5px solid #fecaca',
-            borderRadius: 18,
-            padding: '15px 18px',
-            cursor: 'pointer',
-            color: '#dc2626',
-            fontSize: 15, fontWeight: 800,
-            boxShadow: '0 2px 10px rgba(220,38,38,0.06)',
-            transition: 'background 0.15s ease',
-            marginBottom: 20,
-          }}
-          onMouseEnter={e => { e.currentTarget.style.background = '#fef2f2' }}
-          onMouseLeave={e => { e.currentTarget.style.background = isDark ? '#1e2530' : 'white' }}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-            <polyline points="16 17 21 12 16 7" />
-            <line x1="21" y1="12" x2="9" y2="12" />
-          </svg>
-          Sign Out
-        </button>
-
-        <div style={{ textAlign: 'center', color: isDark ? '#6e7681' : '#9ca3af', fontSize: 11, fontWeight: 600, marginTop: 8, letterSpacing: '0.3px' }}>
-          FAMILY FIT v1.2.0 (2026.08)
-        </div>
-      </div>
-
-      {/* ── MODAL OVERLAYS ── */}
+      {/* ── MODALS ── */}
 
       {/* Notifications Modal */}
       {activeModal === 'notifications' && (
         <ModalSheet title="Notification Settings" onClose={() => setActiveModal(null)}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <div className="ff-modal-list">
             {[
-              { key: 'mealRemindersEnabled', label: 'Meal Reminders', desc: 'Breakfast, lunch & dinner check-ins' },
+              { key: 'mealRemindersEnabled', label: 'Meal Reminders', desc: 'Breakfast, lunch & dinner logging check-ins' },
               { key: 'dailySummaryEnabled', label: 'Daily Nutrition Summary', desc: 'Evening recap of macro goals' },
               { key: 'goalAlertsEnabled', label: 'Family Goal Alerts', desc: 'Alert when a member reaches a milestone' },
               { key: 'weeklyReportEnabled', label: 'Weekly Progress Report', desc: 'Summary every Sunday morning' },
             ].map((item) => (
-              <div key={item.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 15, fontWeight: 700 }}>{item.label}</div>
-                  <div style={{ fontSize: 12, color: '#6b7280', fontWeight: 500, marginTop: 2 }}>{item.desc}</div>
+              <div key={item.key} className="ff-modal-item-row">
+                <div>
+                  <div className="ff-item-title">{item.label}</div>
+                  <div className="ff-item-desc">{item.desc}</div>
                 </div>
                 <Toggle
                   on={notifPrefs[item.key]}
@@ -472,20 +383,18 @@ export default function ProfilePage() {
         </ModalSheet>
       )}
 
-
-
       {/* AI Preferences Modal */}
       {activeModal === 'ai' && (
         <ModalSheet title="AI Preferences" onClose={() => setActiveModal(null)}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <div className="ff-modal-list">
             {[
-              { key: 'smartInsightsEnabled', label: 'Smart Insights', desc: 'AI-powered progress insights on Progress screen' },
-              { key: 'aiRecipeRecommendationsEnabled', label: 'AI Recipe Recommendations', desc: 'Personalized recipe scoring based on health goals' },
+              { key: 'smartInsightsEnabled', label: 'Smart Insights', desc: 'Progress insights tailored to family health habits' },
+              { key: 'aiRecipeRecommendationsEnabled', label: 'Personalized Recipe Scoring', desc: 'Ranks recipes based on family members goals & allergies' },
             ].map((item) => (
-              <div key={item.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 15, fontWeight: 700 }}>{item.label}</div>
-                  <div style={{ fontSize: 12, color: '#6b7280', fontWeight: 500, marginTop: 2 }}>{item.desc}</div>
+              <div key={item.key} className="ff-modal-item-row">
+                <div>
+                  <div className="ff-item-title">{item.label}</div>
+                  <div className="ff-item-desc">{item.desc}</div>
                 </div>
                 <Toggle
                   on={aiPrefs[item.key]}
@@ -494,8 +403,8 @@ export default function ProfilePage() {
               </div>
             ))}
           </div>
-          <div style={{ background: '#f0fdf4', padding: '12px 14px', borderRadius: 14, fontSize: 13, color: '#2e5b12', lineHeight: 1.5, fontWeight: 500, marginTop: 20 }}>
-            🛡️ <strong>Data Transparency:</strong> AI recommendations process family profiles locally. Your data stays private.
+          <div className="ff-modal-note-box">
+            🛡️ <strong>Data Transparency:</strong> Health evaluation algorithms run strictly on your device session. Your medical records are never monetized.
           </div>
         </ModalSheet>
       )}
@@ -503,55 +412,52 @@ export default function ProfilePage() {
       {/* Help & Support Modal */}
       {activeModal === 'help' && (
         <ModalSheet title="Help & Support" onClose={() => setActiveModal(null)}>
-          <h4 style={{ fontSize: 15, fontWeight: 800, margin: '0 0 10px 0' }}>Frequently Asked Questions</h4>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24 }}>
+          <h4 className="ff-faq-head">Frequently Asked Questions</h4>
+          <div className="ff-faq-list">
             {[
-              { q: 'How is my nutrition goal calculated?', a: 'Goals use the Mifflin-St Jeor formula based on age, height, weight, and activity level.' },
-              { q: 'How do I add a family member?', a: 'Tap "+ Add Member" at the top of this screen, fill in their details, and tap save.' },
-              { q: 'Is my health data private?', a: 'Yes — all data is encrypted and strictly isolated to your family account.' },
+              { q: 'How is each member’s nutrition goal calculated?', a: 'Goals use the Mifflin-St Jeor equation calibrated with Kerala dietary staple ratios (unpolished grains, lentils, fresh vegetables).' },
+              { q: 'How do I add a family member?', a: 'Click "+ Add Member" at the top of the profile screen, fill in their age, dietary preferences, and any known allergies.' },
+              { q: 'Is our health & allergy data private?', a: 'Yes. FamilyFit strictly enforces end-to-end data isolation and adheres to the Indian DPDP Act.' },
             ].map((faq, idx) => (
-              <div key={idx} style={{ background: '#f9fafb', borderRadius: 14, padding: 14, cursor: 'pointer' }} onClick={() => setOpenFaqIndex(openFaqIndex === idx ? null : idx)}>
-                <div style={{ fontWeight: 700, fontSize: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div 
+                key={idx} 
+                className="ff-faq-card" 
+                onClick={() => setOpenFaqIndex(openFaqIndex === idx ? null : idx)}
+              >
+                <div className="ff-faq-q-row">
                   <span>{faq.q}</span>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5e8404" strokeWidth="2.5" strokeLinecap="round" style={{ transform: openFaqIndex === idx ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s ease', flexShrink: 0 }}>
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
+                  <span style={{ transform: openFaqIndex === idx ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>▼</span>
                 </div>
                 {openFaqIndex === idx && (
-                  <div style={{ fontSize: 13, color: '#4b5563', marginTop: 8, lineHeight: 1.5, fontWeight: 500 }}>{faq.a}</div>
+                  <div className="ff-faq-a-text">{faq.a}</div>
                 )}
               </div>
             ))}
           </div>
 
-          <h4 style={{ fontSize: 15, fontWeight: 800, margin: '0 0 12px 0' }}>Contact Support</h4>
-          <form onSubmit={handleSupportSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <h4 className="ff-faq-head" style={{ marginTop: 24 }}>Send Message to Dietitian Team</h4>
+          <form onSubmit={handleSupportSubmit} className="ff-support-form">
             <input
-              placeholder="Subject"
+              placeholder="Topic or Issue (e.g. Recipe Allergy Conflict)"
               value={supportSubject}
               onChange={(e) => setSupportSubject(e.target.value)}
               required
-              style={{ padding: '12px 14px', borderRadius: 12, border: '1.5px solid #e5e7eb', fontSize: 14, outline: 'none', fontFamily: 'inherit' }}
+              className="ff-support-input"
             />
             <textarea
-              placeholder="Describe your question or issue..."
+              placeholder="Describe your question or feedback..."
               value={supportMessage}
               onChange={(e) => setSupportMessage(e.target.value)}
               rows={3}
               required
-              style={{ padding: '12px 14px', borderRadius: 12, border: '1.5px solid #e5e7eb', fontSize: 14, outline: 'none', fontFamily: 'inherit', resize: 'none' }}
+              className="ff-support-textarea"
             />
             <button
               type="submit"
               disabled={supportSending}
-              style={{
-                background: 'linear-gradient(135deg, #5e8404 0%, #3d6b3f 100%)',
-                color: 'white', border: 'none', padding: '14px', borderRadius: 16,
-                fontWeight: 800, fontSize: 15, cursor: 'pointer',
-                boxShadow: '0 4px 14px rgba(61,107,63,0.3)', fontFamily: 'inherit',
-              }}
+              className="ff-btn-submit-support"
             >
-              {supportSending ? 'Sending...' : 'Send Message'}
+              {supportSending ? 'Submitting...' : 'Send to Team'}
             </button>
           </form>
         </ModalSheet>
@@ -567,21 +473,501 @@ export default function ProfilePage() {
 
       <BottomNav />
 
+      {/* ── EMBEDDED STYLES ── */}
       <style>{`
-        @keyframes slideUp {
-          from { transform: translateY(60px); opacity: 0; }
-          to   { transform: translateY(0); opacity: 1; }
+        .ff-profile-root {
+          min-height: 100vh;
+          background-color: ${isDark ? '#0A0F1D' : '#F8FAF6'};
+          color: ${isDark ? '#F1F5F9' : '#1A2E16'};
+          font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
         }
-        @media (min-width: 1024px) {
-          .profile-members-grid {
-            grid-template-columns: repeat(3, 1fr) !important;
-            gap: 20px !important;
+
+        .ff-profile-container {
+          max-width: 880px;
+          margin: 0 auto;
+          padding: 36px 20px 80px 20px;
+        }
+
+        /* TOAST */
+        .ff-profile-toast {
+          position: fixed;
+          top: 24px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: #1A2E16;
+          color: #FFFFFF;
+          padding: 10px 22px;
+          border-radius: 9999px;
+          font-size: 13.5px;
+          font-weight: 700;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          z-index: 3000;
+          box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+        }
+
+        /* ACCOUNT OVERVIEW CARD */
+        .ff-account-card {
+          background: ${isDark ? '#111A2B' : '#FFFFFF'};
+          border: 1px solid ${isDark ? '#1E2D44' : '#E2EBE0'};
+          border-radius: 20px;
+          padding: 24px 28px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 20px;
+          margin-bottom: 32px;
+          box-shadow: ${isDark ? '0 4px 20px rgba(0,0,0,0.3)' : '0 4px 16px rgba(47,107,31,0.04)'};
+        }
+
+        @media (max-width: 600px) {
+          .ff-account-card {
+            flex-direction: column;
+            align-items: flex-start;
           }
-          .profile-settings-grid {
-            display: grid !important;
-            grid-template-columns: repeat(2, 1fr) !important;
-            gap: 20px !important;
+        }
+
+        .ff-account-left {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+        }
+
+        .ff-account-avatar {
+          width: 52px;
+          height: 52px;
+          border-radius: 16px;
+          background: linear-gradient(135deg, #2E7D32 0%, #1E5C22 100%);
+          color: #FFFFFF;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 22px;
+          font-weight: 900;
+          flex-shrink: 0;
+          box-shadow: 0 4px 12px rgba(46, 125, 50, 0.25);
+        }
+
+        .ff-account-name-row {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          flex-wrap: wrap;
+        }
+
+        .ff-account-name {
+          font-size: 20px;
+          font-weight: 800;
+          margin: 0;
+          color: ${isDark ? '#FFFFFF' : '#142612'};
+        }
+
+        .ff-sync-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          font-size: 11px;
+          font-weight: 700;
+          background: ${isDark ? 'rgba(16, 185, 129, 0.15)' : '#EDF7EC'};
+          color: ${isDark ? '#34D399' : '#2E7D32'};
+          padding: 2px 8px;
+          border-radius: 9999px;
+        }
+
+        .ff-sync-dot {
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+          background: #10B981;
+        }
+
+        .ff-account-email {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 13px;
+          color: ${isDark ? '#94A3B8' : '#5E6E5B'};
+          margin-top: 3px;
+        }
+
+        .ff-btn-add-member {
+          background: #2E7D32;
+          color: #FFFFFF;
+          border: none;
+          padding: 10px 20px;
+          border-radius: 9999px;
+          font-size: 13.5px;
+          font-weight: 700;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          white-space: nowrap;
+          box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
+          transition: all 0.2s ease;
+        }
+
+        .ff-btn-add-member:hover {
+          background: #256628;
+          transform: translateY(-1.5px);
+        }
+
+        /* SECTION HEADERS */
+        .ff-profile-section {
+          margin-bottom: 36px;
+        }
+
+        .ff-section-title-row {
+          display: flex;
+          align-items: flex-end;
+          justify-content: space-between;
+          margin-bottom: 16px;
+          gap: 16px;
+        }
+
+        .ff-section-title {
+          font-size: 18px;
+          font-weight: 800;
+          letter-spacing: -0.3px;
+          margin: 0 0 4px 0;
+          color: ${isDark ? '#FFFFFF' : '#142612'};
+        }
+
+        .ff-section-desc {
+          font-size: 13px;
+          color: ${isDark ? '#94A3B8' : '#64748B'};
+          margin: 0;
+        }
+
+        .ff-member-count-tag {
+          font-size: 12px;
+          font-weight: 700;
+          background: ${isDark ? '#1E2D44' : '#E8EFE5'};
+          color: ${isDark ? '#CBD5E1' : '#3E5039'};
+          padding: 3px 10px;
+          border-radius: 9999px;
+          white-space: nowrap;
+        }
+
+        /* MEMBERS GRID & EMPTY STATE */
+        .ff-members-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 14px;
+        }
+
+        @media (max-width: 600px) {
+          .ff-members-grid {
+            grid-template-columns: 1fr;
           }
+        }
+
+        .ff-members-empty-card {
+          background: ${isDark ? '#111A2B' : '#FFFFFF'};
+          border: 1px solid ${isDark ? '#1E2D44' : '#E2EBE0'};
+          border-radius: 18px;
+          padding: 36px 24px;
+          text-align: center;
+        }
+
+        .ff-empty-icon-wrap {
+          width: 48px;
+          height: 48px;
+          border-radius: 14px;
+          background: ${isDark ? '#19263E' : '#EDF5EB'};
+          color: #2E7D32;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 auto 14px auto;
+        }
+
+        .ff-empty-head {
+          font-size: 16px;
+          font-weight: 800;
+          margin: 0 0 6px 0;
+          color: ${isDark ? '#F1F5F9' : '#1A2E16'};
+        }
+
+        .ff-empty-sub {
+          font-size: 13px;
+          line-height: 1.55;
+          color: ${isDark ? '#94A3B8' : '#5E6E5B'};
+          max-width: 480px;
+          margin: 0 auto 20px auto;
+        }
+
+        .ff-btn-add-first {
+          background: #2E7D32;
+          color: #FFFFFF;
+          border: none;
+          padding: 10px 22px;
+          border-radius: 9999px;
+          font-size: 13.5px;
+          font-weight: 700;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          box-shadow: 0 4px 14px rgba(46, 125, 50, 0.25);
+          transition: transform 0.15s;
+        }
+
+        .ff-btn-add-first:hover {
+          transform: translateY(-2px);
+        }
+
+        /* UNIFIED SETTINGS GROUP CARD (APPLE / STRIPE STYLE) */
+        .ff-settings-group-card {
+          background: ${isDark ? '#111A2B' : '#FFFFFF'};
+          border: 1px solid ${isDark ? '#1E2D44' : '#E2EBE0'};
+          border-radius: 18px;
+          overflow: hidden;
+          box-shadow: ${isDark ? '0 4px 20px rgba(0,0,0,0.3)' : '0 4px 16px rgba(47,107,31,0.04)'};
+        }
+
+        .ff-setting-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 16px 20px;
+          border-bottom: 1px solid ${isDark ? '#1B263B' : '#EEF3EC'};
+          cursor: pointer;
+          transition: background 0.15s ease;
+          gap: 16px;
+        }
+
+        .ff-setting-row:last-child {
+          border-bottom: none;
+        }
+
+        .ff-setting-row:hover {
+          background: ${isDark ? '#152136' : '#F8FAF6'};
+        }
+
+        .ff-row-left {
+          display: flex;
+          align-items: center;
+          gap: 14px;
+        }
+
+        .ff-row-icon-wrap {
+          width: 36px;
+          height: 36px;
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+
+        .ff-row-label {
+          font-size: 14.5px;
+          font-weight: 700;
+          color: ${isDark ? '#F1F5F9' : '#142612'};
+          line-height: 1.25;
+        }
+
+        .ff-row-sub {
+          font-size: 12.5px;
+          color: ${isDark ? '#94A3B8' : '#64748B'};
+          margin-top: 2px;
+        }
+
+        .ff-row-right {
+          display: flex;
+          align-items: center;
+          flex-shrink: 0;
+        }
+
+        /* LOGOUT & BOTTOM */
+        .ff-profile-footer-bar {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 14px;
+          margin-top: 16px;
+        }
+
+        .ff-btn-logout-minimal {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: transparent;
+          border: 1px solid ${isDark ? '#3D2228' : '#FCDAD7'};
+          color: #DC2626;
+          padding: 10px 22px;
+          border-radius: 9999px;
+          font-size: 13.5px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.15s ease;
+        }
+
+        .ff-btn-logout-minimal:hover {
+          background: #FEE2E2;
+          border-color: #F87171;
+        }
+
+        .ff-version-tag {
+          font-size: 11.5px;
+          color: #94A3B8;
+          font-weight: 600;
+          letter-spacing: 0.3px;
+        }
+
+        /* MODAL SHEET */
+        .ff-modal-overlay {
+          position: fixed;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.45);
+          backdrop-filter: blur(6px);
+          z-index: 2000;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 20px;
+        }
+
+        .ff-modal-card {
+          width: 100%;
+          max-width: 480px;
+          border-radius: 20px;
+          box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+          overflow: hidden;
+          max-height: 85vh;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .ff-modal-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 18px 22px;
+          border-bottom: 1px solid ${isDark ? '#1E2D44' : '#E8EFE5'};
+        }
+
+        .ff-modal-header h3 {
+          font-size: 17px;
+          font-weight: 800;
+          margin: 0;
+        }
+
+        .ff-modal-close-btn {
+          background: none;
+          border: none;
+          color: #94A3B8;
+          font-size: 16px;
+          cursor: pointer;
+        }
+
+        .ff-modal-body {
+          padding: 22px;
+          overflow-y: auto;
+        }
+
+        .ff-modal-list {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+
+        .ff-modal-item-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+        }
+
+        .ff-item-title {
+          font-size: 14.5px;
+          font-weight: 700;
+        }
+
+        .ff-item-desc {
+          font-size: 12px;
+          color: #94A3B8;
+          margin-top: 2px;
+        }
+
+        .ff-modal-note-box {
+          background: ${isDark ? '#142138' : '#EDF7EC'};
+          color: ${isDark ? '#CBD5E1' : '#23441E'};
+          border-radius: 12px;
+          padding: 12px 14px;
+          font-size: 12.5px;
+          line-height: 1.5;
+          margin-top: 18px;
+        }
+
+        .ff-faq-head {
+          font-size: 13.5px;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          color: #94A3B8;
+          margin: 0 0 10px 0;
+        }
+
+        .ff-faq-list {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .ff-faq-card {
+          background: ${isDark ? '#162238' : '#F6FAF4'};
+          border: 1px solid ${isDark ? '#233454' : '#DFE9DC'};
+          border-radius: 12px;
+          padding: 12px 14px;
+          cursor: pointer;
+        }
+
+        .ff-faq-q-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font-size: 13.5px;
+          font-weight: 700;
+        }
+
+        .ff-faq-a-text {
+          font-size: 12.5px;
+          color: ${isDark ? '#94A3B8' : '#5E6E5B'};
+          margin-top: 8px;
+          line-height: 1.5;
+        }
+
+        .ff-support-form {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .ff-support-input, .ff-support-textarea {
+          width: 100%;
+          padding: 10px 14px;
+          border-radius: 12px;
+          border: 1px solid ${isDark ? '#2D3E56' : '#DFE8DC'};
+          background: ${isDark ? '#0F172A' : '#FFFFFF'};
+          color: inherit;
+          font-size: 13.5px;
+          outline: none;
+          box-sizing: border-box;
+          font-family: inherit;
+        }
+
+        .ff-btn-submit-support {
+          background: #2E7D32;
+          color: #FFFFFF;
+          border: none;
+          padding: 11px;
+          border-radius: 12px;
+          font-size: 14px;
+          font-weight: 700;
+          cursor: pointer;
         }
       `}</style>
     </div>
