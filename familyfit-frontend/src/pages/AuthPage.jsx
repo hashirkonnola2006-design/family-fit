@@ -24,9 +24,12 @@ export default function AuthPage() {
     }
   }, [user, navigate])
 
-  // Warm up backend
+  // Warm up backend on mount
   useEffect(() => {
-    client.get('/healthz').catch(() => {})
+    const rawUrl = import.meta.env.VITE_API_URL || ''
+    if (rawUrl) {
+      fetch(`${rawUrl}/healthz`, { mode: 'no-cors' }).catch(() => {})
+    }
   }, [])
 
   const handleSignIn = async ({ email, password, rememberMe }) => {
@@ -87,6 +90,14 @@ export default function AuthPage() {
     alert('A password reset link will be sent to your registered email address.')
   }
 
+  const handleUseDemo = async () => {
+    await handleSignIn({
+      email: 'healthyfamily@example.com',
+      password: 'password123',
+      rememberMe: true,
+    })
+  }
+
   return (
     <div className="relative">
       <AnimatePresence>
@@ -141,6 +152,7 @@ export default function AuthPage() {
             ? handleSignUpSubmit({ email, password, name })
             : handleSignIn({ email, password, rememberMe })
         }
+        onUseDemo={handleUseDemo}
         onGoogleSignIn={() => alert('Google sign in is coming soon.')}
         onForgotPassword={handleForgotPassword}
         backToHomeHref="/"

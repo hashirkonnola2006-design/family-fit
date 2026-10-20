@@ -80,10 +80,21 @@ export function AuthProvider({ children }) {
     // This prevents a flash of old members/recipes while the new API fetch is in-flight.
     clearFamilyCache()
 
-    // 1. Try Backend API login with retry logic (up to 2 retries, 3s delay)
+    // Fast path: Instant Demo Account login (0ms network latency, no server wait)
+    const isDemo =
+      (cleanEmail === DEMO_USER.email || cleanEmail === 'demo@familyfit.com') &&
+      (password === DEMO_USER.password || password === 'password123' || password === 'demo123')
+
+    if (isDemo) {
+      persistAuth(DEMO_USER)
+      setUser({ familyId: DEMO_USER.familyId, email: DEMO_USER.email, familyName: DEMO_USER.familyName })
+      return DEMO_USER
+    }
+
+    // 1. Try Backend API login with single quick retry for cold starts
     let lastError = null
-    const maxRetries = 2
-    const delayMs = 3000
+    const maxRetries = 1
+    const delayMs = 1200
 
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       if (attempt > 0) {
@@ -109,26 +120,24 @@ export function AuthProvider({ children }) {
       } catch (apiErr) {
         console.error(`Backend API login attempt ${attempt + 1} failed:`, apiErr)
         lastError = apiErr
-        // If it's an explicit response from backend (e.g., 400 Bad credentials, 401 Unauthorized), do not retry server errors
+
         const responseData = apiErr.response?.data
         const serverMsg = responseData?.message || (typeof responseData === 'string' ? responseData : null)
-        if (serverMsg && serverMsg !== 'Bad credentials' && !serverMsg.toLowerCase().includes('timeout') && !serverMsg.toLowerCase().includes('network error')) {
+
+        // If backend returned Bad credentials or 4xx, stop immediately - do not waste time retrying
+        if (
+          serverMsg === 'Bad credentials' ||
+          apiErr.response?.status === 400 ||
+          apiErr.response?.status === 401 ||
+          (apiErr.response?.status === 500 && serverMsg === 'Bad credentials')
+        ) {
+          throw new Error('Invalid email or password.')
+        }
+
+        if (serverMsg && !serverMsg.toLowerCase().includes('timeout') && !serverMsg.toLowerCase().includes('network error')) {
           throw new Error(serverMsg)
         }
-        if (apiErr.response?.status === 400 || apiErr.response?.status === 401) {
-          if (serverMsg === 'Bad credentials') {
-            throw new Error('Invalid email or password.')
-          }
-          throw new Error(serverMsg || 'Invalid email or password.')
-        }
       }
-    }
-
-    // Demo account fallback check
-    if (cleanEmail === DEMO_USER.email && (password === DEMO_USER.password || password === 'password123')) {
-      persistAuth(DEMO_USER)
-      setUser({ familyId: DEMO_USER.familyId, email: DEMO_USER.email, familyName: DEMO_USER.familyName })
-      return DEMO_USER
     }
 
     // If network/server connection completely failed after retries
