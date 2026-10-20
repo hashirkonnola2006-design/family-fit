@@ -21,6 +21,26 @@ import { useFamily } from '../context/FamilyContext'
 import MemberAvatar from './MemberAvatar'
 import { AVATAR_REGISTRY, AVATAR_KEYS, suggestAvatarKey } from '../config/avatars'
 
+const KEY_TO_ROLE = {
+  father: 'FATHER',
+  mother: 'MOTHER',
+  son: 'SON',
+  daughter: 'DAUGHTER',
+  grandfather: 'GRANDFATHER',
+  grandmother: 'GRANDMOTHER',
+  baby: 'BABY',
+  other: 'OTHER',
+}
+
+const KEY_TO_GENDER = {
+  father: 'MALE',
+  mother: 'FEMALE',
+  son: 'MALE',
+  daughter: 'FEMALE',
+  grandfather: 'MALE',
+  grandmother: 'FEMALE',
+}
+
 const ROLES = [
   { id: 'FATHER', label: 'Father' },
   { id: 'MOTHER', label: 'Mother' },
@@ -375,11 +395,11 @@ export default function MemberModal({ member, onClose, onSaved }) {
       onClick={handleAttemptClose}
     >
       <div
-        className="w-full max-w-3xl max-h-[92vh] sm:max-h-[88vh] bg-white rounded-3xl border-2 border-[#E5E5E5] border-b-6 border-b-[#D8D8D8] shadow-2xl flex flex-col overflow-hidden font-['Nunito',sans-serif] text-[#4B4B4B]"
+        className="w-full max-w-3xl max-h-[92vh] sm:max-h-[88vh] bg-[#FCFAF6] rounded-3xl border border-[#E3E0D3] shadow-2xl flex flex-col overflow-hidden font-['Nunito',sans-serif] text-[#1A2E22]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* ── STICKY HEADER ── */}
-        <div className="px-6 py-4 bg-[#F8FAFC] border-b-2 border-[#E5E5E5] flex items-center justify-between shrink-0">
+        <div className="px-6 py-4.5 bg-[#F8F6EF] border-b border-[#E3E0D3] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-4">
             {/* Live Avatar Preview */}
             <div className="relative group">
@@ -389,16 +409,16 @@ export default function MemberModal({ member, onClose, onSaved }) {
                 showBorder
                 className="shadow-sm transition-transform duration-200 group-hover:scale-105"
               />
-              <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#58CC02] border-2 border-white rounded-full flex items-center justify-center text-[10px] text-white font-black">
+              <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#1F5D3A] border-2 border-white rounded-full flex items-center justify-center text-[10px] text-white font-black shadow-xs">
                 ✓
               </span>
             </div>
 
             <div>
-              <h2 id="member-modal-title" className="text-xl sm:text-2xl font-black text-[#1F2A24] tracking-tight">
+              <h2 id="member-modal-title" className="text-xl sm:text-2xl font-bold font-['Fredoka',sans-serif] text-[#1A2E22] tracking-tight">
                 {isEdit ? `Edit ${member?.name || 'Member'}` : 'Add Family Member'}
               </h2>
-              <p className="text-xs sm:text-sm font-bold text-[#777777]">
+              <p className="text-xs sm:text-sm font-semibold text-[#4F6355]">
                 {STEPS.find((s) => s.id === step)?.title} &bull; Step {step} of 4
               </p>
             </div>
@@ -406,19 +426,19 @@ export default function MemberModal({ member, onClose, onSaved }) {
 
           <button
             onClick={handleAttemptClose}
-            className="w-10 h-10 rounded-2xl bg-white border-2 border-[#E5E5E5] border-b-4 border-b-[#D0D0D0] hover:bg-[#F7F7F7] active:translate-y-[2px] active:border-b-2 text-[#777777] hover:text-[#1F2A24] flex items-center justify-center font-black transition-all cursor-pointer"
+            className="w-9 h-9 rounded-full bg-white border border-[#E3E0D3] hover:bg-[#EAF3EC] text-[#4F6355] hover:text-[#1F5D3A] flex items-center justify-center transition-all cursor-pointer shadow-2xs"
             aria-label="Close modal"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
         {/* ── PROGRESS STEPPER ── */}
-        <div className="px-6 pt-3 pb-2 bg-[#FAFAF8] border-b border-[#EBEBEB] shrink-0">
-          {/* 16px Chunky Progress Bar with Glossy Highlight */}
-          <div className="duo-progress-track mb-3">
+        <div className="px-6 pt-3.5 pb-2.5 bg-[#FAF8F2] border-b border-[#E3E0D3] shrink-0">
+          {/* Progress Bar */}
+          <div className="w-full h-2.5 bg-[#E8ECE8] rounded-full overflow-hidden mb-3">
             <div
-              className="duo-progress-fill bg-[#58CC02]"
+              className="h-full bg-[#1F5D3A] rounded-full transition-all duration-300"
               style={{ width: `${(step / 4) * 100}%` }}
             />
           </div>
@@ -433,15 +453,25 @@ export default function MemberModal({ member, onClose, onSaved }) {
                   key={s.id}
                   type="button"
                   onClick={() => setStep(s.id)}
-                  className={`py-2 px-1 text-center font-extrabold text-xs sm:text-sm rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                  style={{
+                    backgroundColor: isCurrent ? '#1F5D3A' : isComplete ? '#EAF3EC' : '#FFFFFF',
+                    color: isCurrent ? '#FFFFFF' : isComplete ? '#1F5D3A' : '#5A6D5F',
+                  }}
+                  className={`py-2 px-1 text-center font-bold text-xs sm:text-sm rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 font-['Fredoka',sans-serif] ${
                     isCurrent
-                      ? 'bg-[#58CC02] text-white shadow-sm'
+                      ? 'shadow-xs'
                       : isComplete
-                      ? 'bg-[#EAF9DE] text-[#58A700] hover:bg-[#DCF5CA]'
-                      : 'bg-white text-[#8A8A8A] hover:bg-[#F5F5F5] border border-[#E5E5E5]'
+                      ? 'hover:bg-[#DDEBDE]'
+                      : 'hover:bg-[#F4F6F4] border border-[#E3E0D3]'
                   }`}
                 >
-                  <span className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-black bg-black/10">
+                  <span
+                    style={{
+                      backgroundColor: isCurrent ? 'rgba(255,255,255,0.25)' : isComplete ? 'rgba(31,93,58,0.15)' : 'rgba(0,0,0,0.05)',
+                      color: isCurrent ? '#FFFFFF' : isComplete ? '#1F5D3A' : '#5A6D5F',
+                    }}
+                    className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-black"
+                  >
                     {isComplete ? '✓' : s.id}
                   </span>
                   <span className="hidden sm:inline">{s.title}</span>
@@ -456,10 +486,10 @@ export default function MemberModal({ member, onClose, onSaved }) {
           {/* ════════ STEP 1: BASICS ════════ */}
           {step === 1 && (
             <div className="space-y-6">
-              {/* Avatar Selector Carousel */}
+              {/* Character Role Selector Carousel */}
               <div>
-                <label className="block text-xs font-black uppercase tracking-wider text-[#777777] mb-2.5">
-                  Choose Character Bust
+                <label className="block text-xs font-bold font-['Fredoka',sans-serif] uppercase tracking-wider text-[#4F6355] mb-2.5">
+                  Choose Character Role
                 </label>
                 <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
                   {AVATAR_KEYS.map((key) => {
@@ -472,19 +502,24 @@ export default function MemberModal({ member, onClose, onSaved }) {
                         onClick={() => {
                           setAvatarKey(key)
                           setAvatarOverridden(true)
+                          const nextRole = KEY_TO_ROLE[key] || 'OTHER'
+                          setRole(nextRole)
+                          if (KEY_TO_GENDER[key]) {
+                            setGender(KEY_TO_GENDER[key])
+                          }
                           markDirty()
                         }}
                         className={`flex flex-col items-center p-2 rounded-2xl border-2 transition-all cursor-pointer shrink-0 ${
                           isSelected
-                            ? 'border-[#58CC02] border-b-4 border-b-[#58A700] bg-[#EAF9DE] scale-105 shadow-sm'
-                            : 'border-[#E5E5E5] border-b-4 border-b-[#D8D8D8] bg-white hover:bg-[#F9F9F9]'
+                            ? 'border-[#1F5D3A] bg-[#EAF3EC] ring-2 ring-[#1F5D3A]/20 scale-105 shadow-sm'
+                            : 'border-[#E3E0D3] bg-white hover:bg-[#F8F6EF] hover:border-[#1F5D3A]/40'
                         }`}
                         style={{ width: '84px' }}
                       >
-                        <div className="w-14 h-14 rounded-full overflow-hidden bg-white mb-1.5 shadow-xs">
+                        <div className="w-14 h-14 rounded-full overflow-hidden bg-white mb-1.5 shadow-2xs">
                           <img src={meta.src} alt={meta.label} className="w-full h-full object-cover" />
                         </div>
-                        <span className={`text-[11px] font-extrabold text-center leading-tight ${isSelected ? 'text-[#3E7D00]' : 'text-[#666666]'}`}>
+                        <span className={`text-[11px] font-bold text-center leading-tight ${isSelected ? 'text-[#1F5D3A]' : 'text-[#4F6355]'}`}>
                           {meta.label.split('/')[0]}
                         </span>
                       </button>
@@ -495,8 +530,8 @@ export default function MemberModal({ member, onClose, onSaved }) {
 
               {/* Full Name Input */}
               <div>
-                <label htmlFor="member-name-input" className="block text-xs font-black uppercase tracking-wider text-[#777777] mb-1.5">
-                  Full Name <span className="text-[#FF4B4B]">*</span>
+                <label htmlFor="member-name-input" className="block text-xs font-bold font-['Fredoka',sans-serif] uppercase tracking-wider text-[#4F6355] mb-1.5">
+                  Full Name <span className="text-[#DC2626]">*</span>
                 </label>
                 <input
                   id="member-name-input"
@@ -508,55 +543,26 @@ export default function MemberModal({ member, onClose, onSaved }) {
                     if (errors.name) setErrors((prev) => ({ ...prev, name: null }))
                   }}
                   placeholder="e.g. Anand, Meera, Priya"
-                  className={`w-full h-12 px-4 rounded-xl border-2 text-base font-bold bg-[#FAF9F5] focus:bg-white outline-none transition-all ${
+                  className={`w-full h-12 px-4 rounded-xl border text-base font-bold bg-white focus:bg-white outline-none transition-all ${
                     errors.name
-                      ? 'border-[#FF4B4B] ring-2 ring-[#FF4B4B]/20'
-                      : 'border-[#E5E5E5] focus:border-[#58CC02] focus:ring-4 focus:ring-[#58CC02]/20'
+                      ? 'border-[#DC2626] ring-2 ring-[#DC2626]/20'
+                      : 'border-[#E3E0D3] focus:border-[#1F5D3A] focus:ring-4 focus:ring-[#1F5D3A]/15 text-[#1A2E22]'
                   }`}
                 />
                 {errors.name && (
-                  <p role="alert" className="mt-1 text-xs font-bold text-[#FF4B4B] flex items-center gap-1">
+                  <p role="alert" className="mt-1 text-xs font-bold text-[#DC2626] flex items-center gap-1">
                     <AlertCircle size={13} />
                     <span>{errors.name}</span>
                   </p>
                 )}
               </div>
 
-              {/* Role Chip Selector */}
-              <div>
-                <label className="block text-xs font-black uppercase tracking-wider text-[#777777] mb-2">
-                  Family Role
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {ROLES.map((r) => {
-                    const isSelected = role === r.id
-                    return (
-                      <button
-                        key={r.id}
-                        type="button"
-                        onClick={() => {
-                          setRole(r.id)
-                          markDirty()
-                        }}
-                        className={`duo-chip ${
-                          isSelected
-                            ? 'bg-[#58CC02] border-[#58A700] text-white shadow-xs'
-                            : 'bg-white border-[#E5E5E5] border-b-[#D0D0D0] text-[#4B4B4B] hover:bg-[#F7F7F7]'
-                        }`}
-                      >
-                        {r.label}
-                      </button>
-                    )
-                  })}
-                </div>
-              </div>
-
               {/* Gender Segmented Control */}
               <div>
-                <label className="block text-xs font-black uppercase tracking-wider text-[#777777] mb-2">
+                <label className="block text-xs font-bold font-['Fredoka',sans-serif] uppercase tracking-wider text-[#4F6355] mb-2">
                   Gender
                 </label>
-                <div className="grid grid-cols-3 gap-2 p-1.5 bg-[#F0F0F0] rounded-2xl border-2 border-[#E5E5E5]">
+                <div className="grid grid-cols-3 gap-2 p-1.5 bg-[#F1EFE6] rounded-2xl border border-[#E3E0D3]">
                   {GENDERS.map((g) => {
                     const isSelected = gender === g.id
                     return (
@@ -567,10 +573,10 @@ export default function MemberModal({ member, onClose, onSaved }) {
                           setGender(g.id)
                           markDirty()
                         }}
-                        className={`py-2 text-center text-sm font-extrabold rounded-xl transition-all cursor-pointer ${
+                        className={`py-2 text-center text-sm font-bold rounded-xl transition-all cursor-pointer font-['Fredoka',sans-serif] ${
                           isSelected
-                            ? 'bg-white text-[#1F2A24] shadow-xs border-2 border-[#E5E5E5] border-b-4 border-b-[#CCCCCC]'
-                            : 'text-[#777777] hover:text-[#1F2A24]'
+                            ? 'bg-white text-[#1F5D3A] shadow-xs border border-[#D5E7DA]'
+                            : 'text-[#4F6355] hover:text-[#1A2E22]'
                         }`}
                       >
                         {g.label}
@@ -583,15 +589,15 @@ export default function MemberModal({ member, onClose, onSaved }) {
               {/* Age, Height, Weight Stepper Inputs */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {/* Age */}
-                <div className="p-3.5 bg-[#FAFAF8] rounded-2xl border-2 border-[#E5E5E5]">
-                  <label htmlFor="member-age-input" className="block text-[11px] font-black uppercase tracking-wider text-[#777777] mb-1">
+                <div className="p-3.5 bg-white rounded-2xl border border-[#E3E0D3] shadow-2xs">
+                  <label htmlFor="member-age-input" className="block text-[11px] font-bold font-['Fredoka',sans-serif] uppercase tracking-wider text-[#4F6355] mb-1">
                     Age (Years)
                   </label>
                   <div className="flex items-center justify-between gap-2 mt-1">
                     <button
                       type="button"
                       onClick={() => { setAge((a) => Math.max(0, a - 1)); markDirty() }}
-                      className="w-9 h-9 rounded-xl bg-white border-2 border-[#E5E5E5] border-b-4 border-b-[#D0D0D0] active:translate-y-[1px] active:border-b-2 font-black flex items-center justify-center text-[#58CC02] cursor-pointer"
+                      className="w-9 h-9 rounded-xl bg-[#FAF8F2] border border-[#E3E0D3] hover:bg-[#EAF3EC] hover:border-[#1F5D3A]/40 text-[#1F5D3A] font-bold flex items-center justify-center transition-all cursor-pointer active:scale-95"
                     >
                       <Minus size={15} />
                     </button>
@@ -600,29 +606,29 @@ export default function MemberModal({ member, onClose, onSaved }) {
                       type="number"
                       value={age}
                       onChange={(e) => { setAge(Math.max(0, parseInt(e.target.value) || 0)); markDirty() }}
-                      className="w-16 text-center text-lg font-black bg-transparent outline-none"
+                      className="w-16 text-center text-lg font-bold font-['Fredoka',sans-serif] text-[#1A2E22] bg-transparent outline-none"
                     />
                     <button
                       type="button"
                       onClick={() => { setAge((a) => Math.min(120, a + 1)); markDirty() }}
-                      className="w-9 h-9 rounded-xl bg-white border-2 border-[#E5E5E5] border-b-4 border-b-[#D0D0D0] active:translate-y-[1px] active:border-b-2 font-black flex items-center justify-center text-[#58CC02] cursor-pointer"
+                      className="w-9 h-9 rounded-xl bg-[#FAF8F2] border border-[#E3E0D3] hover:bg-[#EAF3EC] hover:border-[#1F5D3A]/40 text-[#1F5D3A] font-bold flex items-center justify-center transition-all cursor-pointer active:scale-95"
                     >
                       <Plus size={15} />
                     </button>
                   </div>
-                  {errors.age && <p className="text-[10px] text-[#FF4B4B] mt-1 font-bold">{errors.age}</p>}
+                  {errors.age && <p className="text-[10px] text-[#DC2626] mt-1 font-bold">{errors.age}</p>}
                 </div>
 
                 {/* Height */}
-                <div className="p-3.5 bg-[#FAFAF8] rounded-2xl border-2 border-[#E5E5E5]">
-                  <label htmlFor="member-height-input" className="block text-[11px] font-black uppercase tracking-wider text-[#777777] mb-1">
+                <div className="p-3.5 bg-white rounded-2xl border border-[#E3E0D3] shadow-2xs">
+                  <label htmlFor="member-height-input" className="block text-[11px] font-bold font-['Fredoka',sans-serif] uppercase tracking-wider text-[#4F6355] mb-1">
                     Height (cm)
                   </label>
                   <div className="flex items-center justify-between gap-2 mt-1">
                     <button
                       type="button"
                       onClick={() => { setHeightCm((h) => Math.max(30, h - 1)); markDirty() }}
-                      className="w-9 h-9 rounded-xl bg-white border-2 border-[#E5E5E5] border-b-4 border-b-[#D0D0D0] active:translate-y-[1px] active:border-b-2 font-black flex items-center justify-center text-[#1CB0F6] cursor-pointer"
+                      className="w-9 h-9 rounded-xl bg-[#FAF8F2] border border-[#E3E0D3] hover:bg-[#EAF3EC] hover:border-[#1F5D3A]/40 text-[#1F5D3A] font-bold flex items-center justify-center transition-all cursor-pointer active:scale-95"
                     >
                       <Minus size={15} />
                     </button>
@@ -631,29 +637,29 @@ export default function MemberModal({ member, onClose, onSaved }) {
                       type="number"
                       value={heightCm}
                       onChange={(e) => { setHeightCm(parseInt(e.target.value) || 160); markDirty() }}
-                      className="w-16 text-center text-lg font-black bg-transparent outline-none"
+                      className="w-16 text-center text-lg font-bold font-['Fredoka',sans-serif] text-[#1A2E22] bg-transparent outline-none"
                     />
                     <button
                       type="button"
                       onClick={() => { setHeightCm((h) => Math.min(250, h + 1)); markDirty() }}
-                      className="w-9 h-9 rounded-xl bg-white border-2 border-[#E5E5E5] border-b-4 border-b-[#D0D0D0] active:translate-y-[1px] active:border-b-2 font-black flex items-center justify-center text-[#1CB0F6] cursor-pointer"
+                      className="w-9 h-9 rounded-xl bg-[#FAF8F2] border border-[#E3E0D3] hover:bg-[#EAF3EC] hover:border-[#1F5D3A]/40 text-[#1F5D3A] font-bold flex items-center justify-center transition-all cursor-pointer active:scale-95"
                     >
                       <Plus size={15} />
                     </button>
                   </div>
-                  {errors.height && <p className="text-[10px] text-[#FF4B4B] mt-1 font-bold">{errors.height}</p>}
+                  {errors.height && <p className="text-[10px] text-[#DC2626] mt-1 font-bold">{errors.height}</p>}
                 </div>
 
                 {/* Weight */}
-                <div className="p-3.5 bg-[#FAFAF8] rounded-2xl border-2 border-[#E5E5E5]">
-                  <label htmlFor="member-weight-input" className="block text-[11px] font-black uppercase tracking-wider text-[#777777] mb-1">
+                <div className="p-3.5 bg-white rounded-2xl border border-[#E3E0D3] shadow-2xs">
+                  <label htmlFor="member-weight-input" className="block text-[11px] font-bold font-['Fredoka',sans-serif] uppercase tracking-wider text-[#4F6355] mb-1">
                     Weight (kg)
                   </label>
                   <div className="flex items-center justify-between gap-2 mt-1">
                     <button
                       type="button"
                       onClick={() => { setWeightKg((w) => Math.max(2, w - 1)); markDirty() }}
-                      className="w-9 h-9 rounded-xl bg-white border-2 border-[#E5E5E5] border-b-4 border-b-[#D0D0D0] active:translate-y-[1px] active:border-b-2 font-black flex items-center justify-center text-[#FF9600] cursor-pointer"
+                      className="w-9 h-9 rounded-xl bg-[#FAF8F2] border border-[#E3E0D3] hover:bg-[#EAF3EC] hover:border-[#1F5D3A]/40 text-[#1F5D3A] font-bold flex items-center justify-center transition-all cursor-pointer active:scale-95"
                     >
                       <Minus size={15} />
                     </button>
@@ -662,23 +668,23 @@ export default function MemberModal({ member, onClose, onSaved }) {
                       type="number"
                       value={weightKg}
                       onChange={(e) => { setWeightKg(parseInt(e.target.value) || 60); markDirty() }}
-                      className="w-16 text-center text-lg font-black bg-transparent outline-none"
+                      className="w-16 text-center text-lg font-bold font-['Fredoka',sans-serif] text-[#1A2E22] bg-transparent outline-none"
                     />
                     <button
                       type="button"
                       onClick={() => { setWeightKg((w) => Math.min(300, w + 1)); markDirty() }}
-                      className="w-9 h-9 rounded-xl bg-white border-2 border-[#E5E5E5] border-b-4 border-b-[#D0D0D0] active:translate-y-[1px] active:border-b-2 font-black flex items-center justify-center text-[#FF9600] cursor-pointer"
+                      className="w-9 h-9 rounded-xl bg-[#FAF8F2] border border-[#E3E0D3] hover:bg-[#EAF3EC] hover:border-[#1F5D3A]/40 text-[#1F5D3A] font-bold flex items-center justify-center transition-all cursor-pointer active:scale-95"
                     >
                       <Plus size={15} />
                     </button>
                   </div>
-                  {errors.weight && <p className="text-[10px] text-[#FF4B4B] mt-1 font-bold">{errors.weight}</p>}
+                  {errors.weight && <p className="text-[10px] text-[#DC2626] mt-1 font-bold">{errors.weight}</p>}
                 </div>
               </div>
 
               {/* Activity Level Cards */}
               <div>
-                <label className="block text-xs font-black uppercase tracking-wider text-[#777777] mb-2.5">
+                <label className="block text-xs font-bold font-['Fredoka',sans-serif] uppercase tracking-wider text-[#4F6355] mb-2.5">
                   Daily Physical Activity Level
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -689,22 +695,22 @@ export default function MemberModal({ member, onClose, onSaved }) {
                       <div
                         key={lvl.id}
                         onClick={() => { setActivityLevel(lvl.id); markDirty() }}
-                        className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer flex items-center gap-3.5 ${
+                        className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center gap-3.5 ${
                           isSelected
-                            ? 'border-[#58CC02] border-b-4 border-b-[#58A700] bg-[#EAF9DE]'
-                            : 'border-[#E5E5E5] border-b-4 border-b-[#D8D8D8] bg-white hover:bg-[#FAFAF8]'
+                            ? 'border-[#1F5D3A] bg-[#EAF3EC] shadow-2xs'
+                            : 'border-[#E3E0D3] bg-white hover:bg-[#FAF8F2]'
                         }`}
                       >
                         <div
                           className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${
-                            isSelected ? 'bg-[#58CC02] text-white' : 'bg-[#F0F0F0] text-[#777777]'
+                            isSelected ? 'bg-[#1F5D3A] text-white' : 'bg-[#F1EFE6] text-[#4F6355]'
                           }`}
                         >
                           <Icon size={20} />
                         </div>
                         <div>
-                          <div className="text-sm font-extrabold text-[#1F2A24]">{lvl.label}</div>
-                          <div className="text-xs font-semibold text-[#777777]">{lvl.sub}</div>
+                          <div className="text-sm font-bold font-['Fredoka',sans-serif] text-[#1A2E22]">{lvl.label}</div>
+                          <div className="text-xs font-medium text-[#4F6355]">{lvl.sub}</div>
                         </div>
                       </div>
                     )
@@ -714,19 +720,19 @@ export default function MemberModal({ member, onClose, onSaved }) {
 
               {/* Pregnant/Breastfeeding Toggle (Female 15+ only) */}
               {isFemaleAge15Plus && (
-                <div className="p-4 bg-[#FDF2F8] rounded-2xl border-2 border-[#FBCFE8] border-b-4 border-b-[#F472B6] flex items-center justify-between">
+                <div className="p-4 bg-[#FFF5F5] rounded-2xl border border-[#FED7D7] flex items-center justify-between">
                   <div>
-                    <div className="text-sm font-extrabold text-[#9D174D]">Currently Pregnant or Breastfeeding?</div>
-                    <div className="text-xs text-[#BE185D]">Enables Kerala post-partum &amp; lactating nourishment rules.</div>
+                    <div className="text-sm font-bold font-['Fredoka',sans-serif] text-[#9B2C2C]">Currently Pregnant or Breastfeeding?</div>
+                    <div className="text-xs text-[#C53030]">Enables Kerala post-partum &amp; lactating nourishment rules.</div>
                   </div>
                   <div className="flex gap-2">
                     <button
                       type="button"
                       onClick={() => { setIsPregnantOrBreastfeeding(true); markDirty() }}
-                      className={`px-3.5 py-1.5 rounded-xl font-black text-xs border-2 transition-all cursor-pointer ${
+                      className={`px-4 py-2 rounded-xl font-bold text-xs transition-all cursor-pointer ${
                         isPregnantOrBreastfeeding
-                          ? 'bg-[#DB2777] text-white border-[#BE185D] border-b-4 border-b-[#9D174D]'
-                          : 'bg-white text-[#9D174D] border-[#FBCFE8]'
+                          ? 'bg-[#C53030] text-white shadow-xs'
+                          : 'bg-white text-[#9B2C2C] border border-[#FED7D7]'
                       }`}
                     >
                       Yes
@@ -734,10 +740,10 @@ export default function MemberModal({ member, onClose, onSaved }) {
                     <button
                       type="button"
                       onClick={() => { setIsPregnantOrBreastfeeding(false); markDirty() }}
-                      className={`px-3.5 py-1.5 rounded-xl font-black text-xs border-2 transition-all cursor-pointer ${
+                      className={`px-4 py-2 rounded-xl font-bold text-xs transition-all cursor-pointer ${
                         !isPregnantOrBreastfeeding
-                          ? 'bg-white text-[#4B4B4B] border-[#D0D0D0] border-b-4 border-b-[#AFAFAF]'
-                          : 'bg-white text-[#9D174D] border-[#FBCFE8]'
+                          ? 'bg-[#1F5D3A] text-white shadow-xs'
+                          : 'bg-white text-[#4F6355] border border-[#E3E0D3]'
                       }`}
                     >
                       No
@@ -751,12 +757,12 @@ export default function MemberModal({ member, onClose, onSaved }) {
           {/* ════════ STEP 2: HEALTH CONDITIONS ════════ */}
           {step === 2 && (
             <div className="space-y-4">
-              <div className="bg-[#EFF6FF] border-2 border-[#BFDBFE] border-b-4 border-b-[#93C5FD] p-4 rounded-2xl">
-                <h4 className="text-sm font-extrabold text-[#1E40AF] flex items-center gap-1.5">
+              <div className="bg-[#EAF3EC] border border-[#C2DFCA] p-4 rounded-2xl">
+                <h4 className="text-sm font-bold font-['Fredoka',sans-serif] text-[#1F5D3A] flex items-center gap-1.5">
                   <Shield size={16} />
                   Personalized Health Safeguards
                 </h4>
-                <p className="text-xs text-[#3B82F6] font-semibold mt-0.5">
+                <p className="text-xs text-[#2E7D4E] font-medium mt-0.5">
                   Select any diagnosed medical conditions. FamilyFit will dynamically adjust sodium, carbs, and cholesterol rules.
                 </p>
               </div>
@@ -772,38 +778,34 @@ export default function MemberModal({ member, onClose, onSaved }) {
                       key={cond.id}
                       type="button"
                       onClick={() => toggleCondition(cond.id)}
-                      className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer flex items-center justify-between text-left ${
-                        isSelected
-                          ? isNone
-                            ? 'bg-[#EAF9DE] border-[#58CC02] border-b-4 border-b-[#58A700] text-[#1F2A24]'
-                            : 'bg-[#FEF3C7] border-[#F59E0B] border-b-4 border-b-[#D97706] text-[#78350F]'
-                          : 'bg-white border-[#E5E5E5] border-b-4 border-b-[#D8D8D8] text-[#4B4B4B] hover:bg-[#FAFAF8]'
-                      }`}
+                      style={{
+                        backgroundColor: isSelected ? (isNone ? '#EAF3EC' : '#FEF9E7') : '#FFFFFF',
+                        borderColor: isSelected ? (isNone ? '#1F5D3A' : '#F39C12') : '#E3E0D3',
+                        color: isSelected ? (isNone ? '#1F5D3A' : '#7D4E00') : '#4F6355',
+                      }}
+                      className="p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between text-left"
                     >
                       <div className="flex items-center gap-3">
                         <div
-                          className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
-                            isSelected
-                              ? isNone
-                                ? 'bg-[#58CC02] text-white'
-                                : 'bg-[#F59E0B] text-white'
-                              : 'bg-[#F0F0F0] text-[#777777]'
-                          }`}
+                          style={{
+                            backgroundColor: isSelected ? (isNone ? '#1F5D3A' : '#F39C12') : '#F1EFE6',
+                            color: isSelected ? '#FFFFFF' : '#4F6355',
+                          }}
+                          className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
                         >
                           <Icon size={18} />
                         </div>
-                        <span className="text-sm font-extrabold">{cond.label}</span>
+                        <span className="text-sm font-bold font-['Fredoka',sans-serif]">{cond.label}</span>
                       </div>
                       <div
-                        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-black ${
-                          isSelected
-                            ? isNone
-                              ? 'bg-[#58CC02] border-[#58A700] text-white'
-                              : 'bg-[#F59E0B] border-[#D97706] text-white'
-                            : 'border-[#CCCCCC] bg-white'
-                        }`}
+                        style={{
+                          backgroundColor: isSelected ? (isNone ? '#1F5D3A' : '#F39C12') : '#FFFFFF',
+                          borderColor: isSelected ? (isNone ? '#1F5D3A' : '#F39C12') : '#CCD1D9',
+                          color: '#FFFFFF',
+                        }}
+                        className="w-6 h-6 rounded-full border flex items-center justify-center text-xs font-black transition-all"
                       >
-                        {isSelected && '✓'}
+                        {isSelected ? '✓' : ''}
                       </div>
                     </button>
                   )
@@ -815,8 +817,8 @@ export default function MemberModal({ member, onClose, onSaved }) {
           {/* ════════ STEP 3: ALLERGIES ════════ */}
           {step === 3 && (
             <div className="space-y-4">
-              <div className="bg-[#FEF2F2] border-2 border-[#FECACA] border-b-4 border-b-[#F87171] p-4 rounded-2xl">
-                <h4 className="text-sm font-extrabold text-[#991B1B] flex items-center gap-1.5">
+              <div className="bg-[#FEF2F2] border border-[#FECACA] p-4 rounded-2xl">
+                <h4 className="text-sm font-bold font-['Fredoka',sans-serif] text-[#991B1B] flex items-center gap-1.5">
                   <AlertCircle size={16} />
                   Household Allergy Screening
                 </h4>
@@ -835,38 +837,34 @@ export default function MemberModal({ member, onClose, onSaved }) {
                       key={alg.id}
                       type="button"
                       onClick={() => toggleAllergy(alg.id)}
-                      className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer flex items-center justify-between text-left ${
-                        isSelected
-                          ? isNone
-                            ? 'bg-[#EAF9DE] border-[#58CC02] border-b-4 border-b-[#58A700] text-[#1F2A24]'
-                            : 'bg-[#FEE2E2] border-[#EF4444] border-b-4 border-b-[#DC2626] text-[#991B1B]'
-                          : 'bg-white border-[#E5E5E5] border-b-4 border-b-[#D8D8D8] text-[#4B4B4B] hover:bg-[#FAFAF8]'
-                      }`}
+                      style={{
+                        backgroundColor: isSelected ? (isNone ? '#EAF3EC' : '#FEF2F2') : '#FFFFFF',
+                        borderColor: isSelected ? (isNone ? '#1F5D3A' : '#EF4444') : '#E3E0D3',
+                        color: isSelected ? (isNone ? '#1F5D3A' : '#991B1B') : '#4F6355',
+                      }}
+                      className="p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between text-left"
                     >
                       <div className="flex items-center gap-3">
                         <div
-                          className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
-                            isSelected
-                              ? isNone
-                                ? 'bg-[#58CC02] text-white'
-                                : 'bg-[#EF4444] text-white'
-                              : 'bg-[#F0F0F0] text-[#777777]'
-                          }`}
+                          style={{
+                            backgroundColor: isSelected ? (isNone ? '#1F5D3A' : '#EF4444') : '#F1EFE6',
+                            color: isSelected ? '#FFFFFF' : '#4F6355',
+                          }}
+                          className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
                         >
                           <AlertCircle size={17} />
                         </div>
-                        <span className="text-sm font-extrabold">{alg.label}</span>
+                        <span className="text-sm font-bold font-['Fredoka',sans-serif]">{alg.label}</span>
                       </div>
                       <div
-                        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-black ${
-                          isSelected
-                            ? isNone
-                              ? 'bg-[#58CC02] border-[#58A700] text-white'
-                              : 'bg-[#EF4444] border-[#DC2626] text-white'
-                            : 'border-[#CCCCCC] bg-white'
-                        }`}
+                        style={{
+                          backgroundColor: isSelected ? (isNone ? '#1F5D3A' : '#EF4444') : '#FFFFFF',
+                          borderColor: isSelected ? (isNone ? '#1F5D3A' : '#DC2626') : '#CCD1D9',
+                          color: '#FFFFFF',
+                        }}
+                        className="w-6 h-6 rounded-full border flex items-center justify-center text-xs font-black transition-all"
                       >
-                        {isSelected && '✓'}
+                        {isSelected ? '✓' : ''}
                       </div>
                     </button>
                   )
@@ -882,13 +880,13 @@ export default function MemberModal({ member, onClose, onSaved }) {
                       .map((custom) => (
                         <span
                           key={custom}
-                          className="px-3 py-1.5 rounded-xl bg-[#FEE2E2] border border-[#EF4444] text-[#991B1B] text-xs font-black flex items-center gap-2"
+                          className="px-3.5 py-1.5 rounded-full bg-[#FEF2F2] border border-[#EF4444] text-[#991B1B] text-xs font-bold flex items-center gap-2"
                         >
                           {custom}
                           <button
                             type="button"
                             onClick={() => toggleAllergy(custom)}
-                            className="hover:text-red-900 cursor-pointer font-bold"
+                            className="hover:text-red-900 cursor-pointer font-bold text-sm"
                           >
                             &times;
                           </button>
@@ -904,7 +902,7 @@ export default function MemberModal({ member, onClose, onSaved }) {
                       value={otherAllergyText}
                       onChange={(e) => setOtherAllergyText(e.target.value)}
                       placeholder="e.g. Sesame, Mustard, Brinjal"
-                      className="flex-1 h-11 px-3 rounded-xl border-2 border-[#E5E5E5] focus:border-[#58CC02] outline-none text-sm font-bold"
+                      className="flex-1 h-11 px-4 rounded-full border border-[#1F5D3A]/40 focus:border-[#1F5D3A] focus:ring-4 focus:ring-[#1F5D3A]/15 outline-none text-sm font-bold bg-white text-[#1A2E22]"
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') {
                           e.preventDefault()
@@ -915,14 +913,15 @@ export default function MemberModal({ member, onClose, onSaved }) {
                     <button
                       type="button"
                       onClick={handleAddOtherAllergy}
-                      className="duo-btn duo-btn-primary px-4 py-2 text-xs"
+                      style={{ backgroundColor: '#1F5D3A', color: '#FFFFFF' }}
+                      className="px-5 py-2 rounded-full hover:opacity-90 font-bold text-xs sm:text-sm transition-all cursor-pointer shadow-xs font-['Fredoka',sans-serif]"
                     >
                       Add
                     </button>
                     <button
                       type="button"
                       onClick={() => setShowOtherAllergyInput(false)}
-                      className="duo-btn duo-btn-secondary px-3 py-2 text-xs"
+                      className="px-4 py-2 rounded-full bg-white border border-[#E3E0D3] hover:bg-[#F3F4F6] text-[#4F6355] font-bold text-xs sm:text-sm transition-all cursor-pointer font-['Fredoka',sans-serif]"
                     >
                       Cancel
                     </button>
@@ -931,9 +930,10 @@ export default function MemberModal({ member, onClose, onSaved }) {
                   <button
                     type="button"
                     onClick={() => setShowOtherAllergyInput(true)}
-                    className="duo-chip bg-white border-[#E5E5E5] border-b-[#CCCCCC] text-[#58CC02] hover:bg-[#F9F9F9]"
+                    style={{ backgroundColor: '#EAF3EC', color: '#1F5D3A', borderColor: '#C2DFCA' }}
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-dashed hover:opacity-90 font-bold text-xs sm:text-sm transition-all cursor-pointer shadow-2xs font-['Fredoka',sans-serif]"
                   >
-                    <Plus size={14} />
+                    <Plus size={15} style={{ color: '#1F5D3A' }} />
                     <span>Add other allergy / intolerance</span>
                   </button>
                 )}
@@ -945,29 +945,29 @@ export default function MemberModal({ member, onClose, onSaved }) {
           {step === 4 && (
             <div className="space-y-6">
               {/* Computed Calorie Target Banner */}
-              <div className="p-4 bg-[#F0FDF4] border-2 border-[#86EFAC] border-b-4 border-b-[#4ADE80] rounded-2xl flex items-center justify-between flex-wrap gap-3">
+              <div className="p-4 bg-[#EAF3EC] border border-[#C2DFCA] rounded-2xl flex items-center justify-between flex-wrap gap-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-[#58CC02] text-white flex items-center justify-center font-black text-xl shadow-xs">
+                  <div className="w-12 h-12 rounded-2xl bg-[#1F5D3A] text-white flex items-center justify-center font-bold text-xl shadow-xs">
                     🔥
                   </div>
                   <div>
-                    <span className="text-xs font-black uppercase tracking-wider text-[#166534]">
+                    <span className="text-xs font-bold font-['Fredoka',sans-serif] uppercase tracking-wider text-[#1F5D3A]">
                       Computed Calorie Target
                     </span>
-                    <div className="text-2xl font-black text-[#14532D]">
-                      {computedCalories} <span className="text-sm font-bold text-[#166534]">kcal / day</span>
+                    <div className="text-2xl font-bold font-['Fredoka',sans-serif] text-[#1A2E22]">
+                      {computedCalories} <span className="text-sm font-bold text-[#4F6355]">kcal / day</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="text-xs font-bold text-[#166534] bg-white px-3 py-1.5 rounded-xl border border-[#BBF7D0]">
+                <div className="text-xs font-bold text-[#1F5D3A] bg-white px-3.5 py-1.5 rounded-full border border-[#C2DFCA] shadow-2xs">
                   Based on {age} yrs &bull; {heightCm} cm &bull; {weightKg} kg
                 </div>
               </div>
 
               {/* Goal Cards */}
               <div>
-                <label className="block text-xs font-black uppercase tracking-wider text-[#777777] mb-2.5">
+                <label className="block text-xs font-bold font-['Fredoka',sans-serif] uppercase tracking-wider text-[#4F6355] mb-2.5">
                   Nutritional Goal
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -977,22 +977,25 @@ export default function MemberModal({ member, onClose, onSaved }) {
                       <div
                         key={g.id}
                         onClick={() => { setFitnessGoal(g.id); markDirty() }}
-                        className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer flex items-center justify-between ${
-                          isSelected
-                            ? 'border-[#58CC02] border-b-4 border-b-[#58A700] bg-[#EAF9DE]'
-                            : 'border-[#E5E5E5] border-b-4 border-b-[#D8D8D8] bg-white hover:bg-[#FAFAF8]'
-                        }`}
+                        style={{
+                          backgroundColor: isSelected ? '#EAF3EC' : '#FFFFFF',
+                          borderColor: isSelected ? '#1F5D3A' : '#E3E0D3',
+                        }}
+                        className="p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between shadow-2xs"
                       >
                         <div>
-                          <div className="text-sm font-extrabold text-[#1F2A24]">{g.label}</div>
-                          <div className="text-xs font-semibold text-[#777777]">{g.sub}</div>
+                          <div className="text-sm font-bold font-['Fredoka',sans-serif] text-[#1A2E22]">{g.label}</div>
+                          <div className="text-xs font-medium text-[#4F6355]">{g.sub}</div>
                         </div>
                         <div
-                          className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-black ${
-                            isSelected ? 'bg-[#58CC02] border-[#58A700] text-white' : 'border-[#CCCCCC] bg-white'
-                          }`}
+                          style={{
+                            backgroundColor: isSelected ? '#1F5D3A' : '#FFFFFF',
+                            borderColor: isSelected ? '#1F5D3A' : '#CCD1D9',
+                            color: '#FFFFFF',
+                          }}
+                          className="w-6 h-6 rounded-full border flex items-center justify-center text-xs font-black transition-all"
                         >
-                          {isSelected && '✓'}
+                          {isSelected ? '✓' : ''}
                         </div>
                       </div>
                     )
@@ -1002,7 +1005,7 @@ export default function MemberModal({ member, onClose, onSaved }) {
 
               {/* Dietary Preference Chips */}
               <div>
-                <label className="block text-xs font-black uppercase tracking-wider text-[#777777] mb-2">
+                <label className="block text-xs font-bold font-['Fredoka',sans-serif] uppercase tracking-wider text-[#4F6355] mb-2">
                   Dietary Category
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -1013,11 +1016,12 @@ export default function MemberModal({ member, onClose, onSaved }) {
                         key={dp.id}
                         type="button"
                         onClick={() => { setDietPreference(dp.id); markDirty() }}
-                        className={`duo-chip ${
-                          isSelected
-                            ? 'bg-[#1CB0F6] border-[#1899D6] text-white shadow-xs'
-                            : 'bg-white border-[#E5E5E5] border-b-[#D0D0D0] text-[#4B4B4B] hover:bg-[#F7F7F7]'
-                        }`}
+                        style={{
+                          backgroundColor: isSelected ? '#1F5D3A' : '#FFFFFF',
+                          borderColor: isSelected ? '#1F5D3A' : '#E3E0D3',
+                          color: isSelected ? '#FFFFFF' : '#4F6355',
+                        }}
+                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full font-bold text-xs sm:text-sm border transition-all cursor-pointer font-['Fredoka',sans-serif]"
                       >
                         {dp.label}
                       </button>
@@ -1028,7 +1032,7 @@ export default function MemberModal({ member, onClose, onSaved }) {
 
               {/* Food Dislikes */}
               <div>
-                <label htmlFor="member-dislikes-input" className="block text-xs font-black uppercase tracking-wider text-[#777777] mb-1.5">
+                <label htmlFor="member-dislikes-input" className="block text-xs font-bold font-['Fredoka',sans-serif] uppercase tracking-wider text-[#4F6355] mb-1.5">
                   Food Dislikes (Comma-separated)
                 </label>
                 <input
@@ -1037,42 +1041,42 @@ export default function MemberModal({ member, onClose, onSaved }) {
                   value={dislikes}
                   onChange={(e) => { setDislikes(e.target.value); markDirty() }}
                   placeholder="e.g. Bitter gourd (Pavakka), Snake gourd, Okra"
-                  className="w-full h-11 px-3.5 rounded-xl border-2 border-[#E5E5E5] focus:border-[#58CC02] focus:ring-4 focus:ring-[#58CC02]/20 outline-none text-sm font-bold bg-[#FAF9F5] focus:bg-white"
+                  className="w-full h-11 px-4 rounded-xl border border-[#E3E0D3] focus:border-[#1F5D3A] focus:ring-4 focus:ring-[#1F5D3A]/15 outline-none text-sm font-bold bg-white text-[#1A2E22]"
                 />
               </div>
             </div>
           )}
         </div>
 
-        {/* ── STICKY FOOTER WITH 3D BUTTONS ── */}
-        <div className="px-6 py-4 bg-[#F8FAFC] border-t-2 border-[#E5E5E5] flex items-center justify-between shrink-0 flex-wrap gap-3">
+        {/* ── STICKY FOOTER ── */}
+        <div className="px-6 py-4 bg-[#F8F6EF] border-t border-[#E3E0D3] flex items-center justify-between shrink-0 flex-wrap gap-3">
           <div>
             {isEdit && !showDeleteConfirm && (
               <button
                 type="button"
                 onClick={() => setShowDeleteConfirm(true)}
-                className="duo-btn duo-btn-danger text-xs px-3.5 py-2.5"
+                className="px-4 py-2.5 rounded-full bg-[#FEF2F2] border border-[#FECACA] hover:bg-[#FEE2E2] active:scale-95 text-[#DC2626] font-bold text-xs sm:text-sm flex items-center gap-2 shadow-2xs transition-all cursor-pointer"
               >
-                <Trash2 size={15} />
-                <span>Remove</span>
+                <Trash2 size={16} className="text-[#DC2626]" />
+                <span>Delete Character</span>
               </button>
             )}
 
             {isEdit && showDeleteConfirm && (
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-extrabold text-[#DC2626]">Sure?</span>
+              <div className="flex items-center gap-2 bg-[#FEF2F2] p-1.5 px-3 rounded-full border border-[#FECACA] animate-in fade-in duration-150">
+                <span className="text-xs font-bold text-[#991B1B]">Delete {name || member?.name || 'character'}?</span>
                 <button
                   type="button"
                   onClick={handleDelete}
                   disabled={loading}
-                  className="duo-btn duo-btn-danger text-xs px-3 py-1.5"
+                  className="px-3.5 py-1.5 rounded-full bg-[#DC2626] hover:bg-[#B91C1C] text-white font-bold text-xs shadow-xs transition-all cursor-pointer"
                 >
-                  Confirm Delete
+                  {loading ? 'Deleting...' : 'Yes, Delete'}
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowDeleteConfirm(false)}
-                  className="duo-btn duo-btn-secondary text-xs px-2.5 py-1.5"
+                  className="px-3 py-1.5 rounded-full bg-white border border-[#E3E0D3] hover:bg-[#F3F4F6] text-[#4F6355] font-bold text-xs transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -1085,7 +1089,7 @@ export default function MemberModal({ member, onClose, onSaved }) {
               <button
                 type="button"
                 onClick={() => setStep((s) => Math.max(1, s - 1))}
-                className="duo-btn duo-btn-secondary text-xs px-4 py-2.5"
+                className="px-5 py-2.5 rounded-full bg-white border border-[#E3E0D3] hover:bg-[#F4F6F4] text-[#24402F] font-bold text-xs sm:text-sm shadow-2xs transition-all cursor-pointer"
               >
                 Back
               </button>
@@ -1098,16 +1102,19 @@ export default function MemberModal({ member, onClose, onSaved }) {
                   if (step === 1 && !validateForm()) return
                   setStep((s) => Math.min(4, s + 1))
                 }}
-                className="duo-btn duo-btn-primary px-6 py-2.5"
+                style={{ backgroundColor: '#1F5D3A', color: '#FFFFFF' }}
+                className="px-7 py-2.5 rounded-full hover:opacity-95 active:scale-[0.98] font-bold text-xs sm:text-sm shadow-sm hover:shadow-md transition-all cursor-pointer flex items-center gap-1.5 font-['Fredoka',sans-serif]"
               >
-                Continue &rarr;
+                <span>Continue</span>
+                <span>&rarr;</span>
               </button>
             ) : (
               <button
                 type="button"
                 onClick={handleSave}
                 disabled={loading || (name.trim().length === 0)}
-                className="duo-btn duo-btn-primary px-8 py-2.5"
+                style={{ backgroundColor: '#1F5D3A', color: '#FFFFFF' }}
+                className="px-8 py-2.5 rounded-full hover:opacity-95 active:scale-[0.98] font-bold text-xs sm:text-sm shadow-sm hover:shadow-md transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed font-['Fredoka',sans-serif]"
               >
                 {loading ? 'Saving...' : isEdit ? 'Save Changes' : 'Save Member'}
               </button>

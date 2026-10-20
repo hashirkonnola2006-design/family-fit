@@ -92,7 +92,7 @@ function ModalSheet({ onClose, children, title }) {
 
 export default function ProfilePage() {
   const { user, logout } = useAuth()
-  const { family } = useFamily()
+  const { family, refresh, deleteMemberFromContext } = useFamily()
   const { isDark } = useTheme() || {}
   const navigate = useNavigate()
 
@@ -174,6 +174,15 @@ export default function ProfilePage() {
 
   const handleEditMember = (member) => { setSelectedMember(member); setShowMemberModal(true) }
   const handleAddMember = () => { setSelectedMember(null); setShowMemberModal(true) }
+  const handleDeleteMember = (member) => {
+    if (!member) return
+    const confirmed = window.confirm(`Are you sure you want to delete ${member.name} from your family?`)
+    if (confirmed) {
+      deleteMemberFromContext(member.id)
+      showToast(`${member.name} removed from family.`)
+      if (refresh) refresh()
+    }
+  }
 
   const members = Array.isArray(family?.members) ? family.members.filter(Boolean) : []
   const familyName = user?.familyName || family?.name || (user?.email ? user.email.split('@')[0] : 'Healthy')
@@ -191,6 +200,13 @@ export default function ProfilePage() {
       )}
 
       <div className="ff-profile-container">
+        {/* Section Heading */}
+        <div style={{ marginBottom: 16 }}>
+          <span style={{ fontSize: 12, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#1F5D3A' }}>
+            Settings &bull; Family Profile
+          </span>
+        </div>
+
         {/* ── 1. ACCOUNT OVERVIEW CARD ── */}
         <div className="ff-account-card">
           <div className="ff-account-left">
@@ -233,7 +249,13 @@ export default function ProfilePage() {
           {members.length > 0 ? (
             <div className="ff-members-grid">
               {members.map((m, idx) => (
-                <MemberCard key={m.id || idx} member={m} themeIndex={idx} onEdit={handleEditMember} />
+                <MemberCard
+                  key={m.id || idx}
+                  member={m}
+                  themeIndex={idx}
+                  onEdit={handleEditMember}
+                  onDelete={handleDeleteMember}
+                />
               ))}
             </div>
           ) : (

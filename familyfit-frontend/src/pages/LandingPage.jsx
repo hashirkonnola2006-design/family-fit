@@ -28,7 +28,19 @@ export default function LandingPage() {
   const startHref = user ? '/dashboard' : '/login?mode=signup'
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' })
+    if (window.location.hash) {
+      const id = window.location.hash.replace('#', '')
+      setTimeout(() => {
+        const el = document.getElementById(id)
+        if (el) {
+          const yOffset = -76
+          const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset
+          window.scrollTo({ top: y, behavior: 'smooth' })
+        }
+      }, 150)
+    } else {
+      window.scrollTo({ top: 0, behavior: 'instant' })
+    }
   }, [])
 
   return (
@@ -60,10 +72,16 @@ export default function LandingPage() {
                   <ShieldCheck size={24} strokeWidth={2.2} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-extrabold text-[#1E3A20] tracking-tight">
+                  <h3
+                    style={{ fontFamily: 'var(--font-heading)' }}
+                    className="text-[18px] font-bold text-[#1E3A20] tracking-tight leading-snug"
+                  >
                     100% Allergy Shield
                   </h3>
-                  <p className="text-xs font-semibold text-[#55624F] mt-0.5">
+                  <p
+                    style={{ fontFamily: 'var(--font-body)' }}
+                    className="text-[16px] font-medium text-[#4F6355] mt-0.5 leading-normal"
+                  >
                     Zero ingredient conflict engine
                   </p>
                 </div>
@@ -75,10 +93,16 @@ export default function LandingPage() {
                   <Utensils size={24} strokeWidth={2.2} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-extrabold text-[#1E3A20] tracking-tight">
+                  <h3
+                    style={{ fontFamily: 'var(--font-heading)' }}
+                    className="text-[18px] font-bold text-[#1E3A20] tracking-tight leading-snug"
+                  >
                     500+ Kerala Recipes
                   </h3>
-                  <p className="text-xs font-semibold text-[#55624F] mt-0.5">
+                  <p
+                    style={{ fontFamily: 'var(--font-body)' }}
+                    className="text-[16px] font-medium text-[#4F6355] mt-0.5 leading-normal"
+                  >
                     Authentic home-cooked nutrition
                   </p>
                 </div>
@@ -90,10 +114,16 @@ export default function LandingPage() {
                   <Users size={24} strokeWidth={2.2} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-extrabold text-[#1E3A20] tracking-tight">
+                  <h3
+                    style={{ fontFamily: 'var(--font-heading)' }}
+                    className="text-[18px] font-bold text-[#1E3A20] tracking-tight leading-snug"
+                  >
                     Every Age, One Plan
                   </h3>
-                  <p className="text-xs font-semibold text-[#55624F] mt-0.5">
+                  <p
+                    style={{ fontFamily: 'var(--font-body)' }}
+                    className="text-[16px] font-medium text-[#4F6355] mt-0.5 leading-normal"
+                  >
                     Toddlers (1y+) to elders (80y+)
                   </p>
                 </div>
@@ -105,10 +135,16 @@ export default function LandingPage() {
                   <Sparkles size={24} strokeWidth={2.2} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-extrabold text-[#1E3A20] tracking-tight">
+                  <h3
+                    style={{ fontFamily: 'var(--font-heading)' }}
+                    className="text-[18px] font-bold text-[#1E3A20] tracking-tight leading-snug"
+                  >
                     Dietitian Approved
                   </h3>
-                  <p className="text-xs font-semibold text-[#55624F] mt-0.5">
+                  <p
+                    style={{ fontFamily: 'var(--font-body)' }}
+                    className="text-[16px] font-medium text-[#4F6355] mt-0.5 leading-normal"
+                  >
                     Ayurvedic & clinical balance
                   </p>
                 </div>
@@ -120,6 +156,7 @@ export default function LandingPage() {
         {/* ── 2. SECTION 1: HEALTHY ROUTINES, CRAFTED TOGETHER (3 STEPS) ── */}
         <section
           id="how-it-works"
+          style={{ scrollMarginTop: '80px' }}
           aria-labelledby="how-it-works-heading"
           className="py-16 sm:py-24 bg-[#FAF7F0] relative overflow-hidden select-none"
         >
@@ -127,18 +164,34 @@ export default function LandingPage() {
             {/* Section Header */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 sm:mb-16">
               <div className="max-w-xl">
-                <div className="text-[12px] font-bold tracking-[0.25em] uppercase mb-3 text-left">
+                <div
+                  style={{ fontFamily: 'var(--font-body)' }}
+                  className="text-[14px] font-bold tracking-[0.2em] uppercase mb-3 text-left"
+                >
                   <span className="text-[#1F5A3A]">HEALTHY </span>
                   <span className="text-[#B5541C]">ROUTINES</span>
                 </div>
                 <h2
                   id="how-it-works-heading"
-                  className="text-3xl sm:text-4xl lg:text-[42px] font-semibold text-[#1F5A3A] tracking-tight leading-[1.12]"
+                  style={{
+                    fontFamily: 'var(--font-heading)',
+                    fontSize: 'clamp(2rem, 4vw, 3.5rem)',
+                    fontWeight: 700,
+                    lineHeight: 1.1,
+                  }}
+                  className="text-[#1F5A3A] tracking-tight"
                 >
                   Healthy routines, crafted together.
                 </h2>
               </div>
-              <p className="text-[#5A6B5F] text-sm sm:text-base font-normal leading-relaxed max-w-md">
+              <p
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: '18px',
+                  lineHeight: 1.6,
+                }}
+                className="text-[#3D4D42] font-normal leading-relaxed max-w-md"
+              >
                 Family nutrition can feel like a lot to juggle. FamilyFit harmonizes preferences,
                 allergies, and market schedules into one calm, delightful kitchen routine.
               </p>
@@ -156,20 +209,36 @@ export default function LandingPage() {
                     className="w-full h-full object-cover"
                     loading="lazy"
                   />
-                  <div className="absolute bottom-3 left-3 bg-white/95 backdrop-blur-xs px-3 py-1 rounded-full border border-[#E8E2D3] text-[11px] font-semibold text-[#1F5A2E] shadow-2xs">
+                  <div
+                    style={{ fontFamily: 'var(--font-body)' }}
+                    className="absolute bottom-3 left-3 bg-white/95 backdrop-blur-xs px-3 py-1 rounded-full border border-[#E8E2D3] text-[12px] font-semibold text-[#1F5A2E] shadow-2xs"
+                  >
                     Peanut-safe for Ammu
                   </div>
                 </div>
 
                 {/* Card Content */}
                 <div className="p-6 sm:p-7 flex flex-col flex-1">
-                  <span className="text-[11px] font-bold tracking-[0.2em] text-[#B5541C] uppercase mb-2 block">
+                  <span
+                    style={{ fontFamily: 'var(--font-body)' }}
+                    className="text-[13px] font-bold tracking-[0.2em] text-[#B5541C] uppercase mb-2 block"
+                  >
                     STEP 1
                   </span>
-                  <h3 className="text-xl font-semibold text-[#1F5A3A] tracking-tight mb-2.5">
+                  <h3
+                    style={{ fontFamily: 'var(--font-heading)' }}
+                    className="text-2xl font-bold text-[#1F5A3A] tracking-tight mb-2.5"
+                  >
                     Bring your family together
                   </h3>
-                  <p className="text-xs sm:text-sm text-[#5A6B5F] font-normal leading-relaxed">
+                  <p
+                    style={{
+                      fontFamily: 'var(--font-body)',
+                      fontSize: '18px',
+                      lineHeight: 1.6,
+                    }}
+                    className="text-[#3D4D42] font-normal leading-relaxed"
+                  >
                     Add the people you cook for and record their allergies, medical guidelines,
                     and favorite Kerala comfort meals in seconds.
                   </p>
@@ -185,19 +254,35 @@ export default function LandingPage() {
                     className="w-full h-full object-cover"
                     loading="lazy"
                   />
-                  <div className="absolute bottom-3 left-3 bg-white/95 backdrop-blur-xs px-3 py-1 rounded-full border border-[#E8E2D3] text-[11px] font-semibold text-[#1F5A2E] shadow-2xs">
+                  <div
+                    style={{ fontFamily: 'var(--font-body)' }}
+                    className="absolute bottom-3 left-3 bg-white/95 backdrop-blur-xs px-3 py-1 rounded-full border border-[#E8E2D3] text-[12px] font-semibold text-[#1F5A2E] shadow-2xs"
+                  >
                     Low salt for Muthassi
                   </div>
                 </div>
 
                 <div className="p-6 sm:p-7 flex flex-col flex-1">
-                  <span className="text-[11px] font-bold tracking-[0.2em] text-[#B5541C] uppercase mb-2 block">
+                  <span
+                    style={{ fontFamily: 'var(--font-body)' }}
+                    className="text-[13px] font-bold tracking-[0.2em] text-[#B5541C] uppercase mb-2 block"
+                  >
                     STEP 2
                   </span>
-                  <h3 className="text-xl font-semibold text-[#1F5A3A] tracking-tight mb-2.5">
+                  <h3
+                    style={{ fontFamily: 'var(--font-heading)' }}
+                    className="text-2xl font-bold text-[#1F5A3A] tracking-tight mb-2.5"
+                  >
                     Find meals that truly fit
                   </h3>
-                  <p className="text-xs sm:text-sm text-[#5A6B5F] font-normal leading-relaxed">
+                  <p
+                    style={{
+                      fontFamily: 'var(--font-body)',
+                      fontSize: '18px',
+                      lineHeight: 1.6,
+                    }}
+                    className="text-[#3D4D42] font-normal leading-relaxed"
+                  >
                     Browse practical, dietitian-tested Kerala recipes that balance everyone's nutrition
                     without needing to cook separate pots.
                   </p>
@@ -213,19 +298,35 @@ export default function LandingPage() {
                     className="w-full h-full object-cover"
                     loading="lazy"
                   />
-                  <div className="absolute bottom-3 left-3 bg-white/95 backdrop-blur-xs px-3 py-1 rounded-full border border-[#E8E2D3] text-[11px] font-semibold text-[#1F5A2E] shadow-2xs">
+                  <div
+                    style={{ fontFamily: 'var(--font-body)' }}
+                    className="absolute bottom-3 left-3 bg-white/95 backdrop-blur-xs px-3 py-1 rounded-full border border-[#E8E2D3] text-[12px] font-semibold text-[#1F5A2E] shadow-2xs"
+                  >
                     ₹380 saved
                   </div>
                 </div>
 
                 <div className="p-6 sm:p-7 flex flex-col flex-1">
-                  <span className="text-[11px] font-bold tracking-[0.2em] text-[#B5541C] uppercase mb-2 block">
+                  <span
+                    style={{ fontFamily: 'var(--font-body)' }}
+                    className="text-[13px] font-bold tracking-[0.2em] text-[#B5541C] uppercase mb-2 block"
+                  >
                     STEP 3
                   </span>
-                  <h3 className="text-xl font-semibold text-[#1F5A3A] tracking-tight mb-2.5">
+                  <h3
+                    style={{ fontFamily: 'var(--font-heading)' }}
+                    className="text-2xl font-bold text-[#1F5A3A] tracking-tight mb-2.5"
+                  >
                     Make healthy feel simple
                   </h3>
-                  <p className="text-xs sm:text-sm text-[#5A6B5F] font-normal leading-relaxed">
+                  <p
+                    style={{
+                      fontFamily: 'var(--font-body)',
+                      fontSize: '18px',
+                      lineHeight: 1.6,
+                    }}
+                    className="text-[#3D4D42] font-normal leading-relaxed"
+                  >
                     Consolidate all ingredients into one organized supermarket checklist with
                     itemized Rupee budgeting and zero food waste.
                   </p>
@@ -235,26 +336,43 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── 3. SECTION 2: KERALA ON YOUR TABLE (PHOTO GALLERY BAND) ── */}
+        {/* ── 3. SECTION 2: FOR YOUR FAMILY / KERALA ON YOUR TABLE (PHOTO GALLERY BAND) ── */}
         <section
-          id="kerala-table"
+          id="family-care"
+          style={{ scrollMarginTop: '80px' }}
           aria-labelledby="kerala-table-heading"
           className="py-16 sm:py-24 bg-[#FAF7F0] border-y border-[#E8E2D3] relative overflow-hidden select-none"
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Section Header */}
             <div className="text-left mb-10 sm:mb-12">
-              <div className="text-[12px] font-bold tracking-[0.25em] uppercase mb-3">
+              <div
+                style={{ fontFamily: 'var(--font-body)' }}
+                className="text-[14px] font-bold tracking-[0.2em] uppercase mb-3"
+              >
                 <span className="text-[#1F5A3A]">EVERY MEAL, </span>
                 <span className="text-[#B5541C]">EVERY AGE</span>
               </div>
               <h2
                 id="kerala-table-heading"
-                className="text-3xl sm:text-4xl lg:text-[42px] font-semibold text-[#1F5A3A] tracking-tight leading-[1.12]"
+                style={{
+                  fontFamily: 'var(--font-heading)',
+                  fontSize: 'clamp(2rem, 4vw, 3.5rem)',
+                  fontWeight: 700,
+                  lineHeight: 1.1,
+                }}
+                className="text-[#1F5A3A] tracking-tight"
               >
                 Kerala on your table
               </h2>
-              <p className="text-[#5A6B5F] text-sm sm:text-base font-normal leading-relaxed mt-2.5 max-w-xl">
+              <p
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: '18px',
+                  lineHeight: 1.6,
+                }}
+                className="text-[#3D4D42] mt-3 max-w-xl"
+              >
                 Wholesome, traditional recipes tailored for every family member's health and taste.
               </p>
             </div>
@@ -272,10 +390,16 @@ export default function LandingPage() {
                   />
                 </div>
                 <div className="mt-3 text-left">
-                  <h4 className="font-semibold text-sm sm:text-base text-[#1F5A3A] tracking-tight leading-snug">
+                  <h4
+                    style={{ fontFamily: 'var(--font-heading)' }}
+                    className="font-bold text-lg text-[#1F5A3A] tracking-tight leading-snug"
+                  >
                     Puttu & Kadala Curry
                   </h4>
-                  <p className="text-xs font-medium text-[#B5541C] mt-0.5">
+                  <p
+                    style={{ fontFamily: 'var(--font-body)' }}
+                    className="text-[14px] font-semibold text-[#B5541C] mt-1"
+                  >
                     Toddler friendly
                   </p>
                 </div>
@@ -292,10 +416,16 @@ export default function LandingPage() {
                   />
                 </div>
                 <div className="mt-3 text-left">
-                  <h4 className="font-semibold text-sm sm:text-base text-[#1F5A3A] tracking-tight leading-snug">
+                  <h4
+                    style={{ fontFamily: 'var(--font-heading)' }}
+                    className="font-bold text-lg text-[#1F5A3A] tracking-tight leading-snug"
+                  >
                     Clay-Pot Fish Curry
                   </h4>
-                  <p className="text-xs font-medium text-[#B5541C] mt-0.5">
+                  <p
+                    style={{ fontFamily: 'var(--font-body)' }}
+                    className="text-[14px] font-semibold text-[#B5541C] mt-1"
+                  >
                     Heart healthy
                   </p>
                 </div>
@@ -312,10 +442,16 @@ export default function LandingPage() {
                   />
                 </div>
                 <div className="mt-3 text-left">
-                  <h4 className="font-semibold text-sm sm:text-base text-[#1F5A3A] tracking-tight leading-snug">
+                  <h4
+                    style={{ fontFamily: 'var(--font-heading)' }}
+                    className="font-bold text-lg text-[#1F5A3A] tracking-tight leading-snug"
+                  >
                     Idli & Sambar
                   </h4>
-                  <p className="text-xs font-medium text-[#B5541C] mt-0.5">
+                  <p
+                    style={{ fontFamily: 'var(--font-body)' }}
+                    className="text-[14px] font-semibold text-[#B5541C] mt-1"
+                  >
                     Low sodium
                   </p>
                 </div>
@@ -332,10 +468,16 @@ export default function LandingPage() {
                   />
                 </div>
                 <div className="mt-3 text-left">
-                  <h4 className="font-semibold text-sm sm:text-base text-[#1F5A3A] tracking-tight leading-snug">
+                  <h4
+                    style={{ fontFamily: 'var(--font-heading)' }}
+                    className="font-bold text-lg text-[#1F5A3A] tracking-tight leading-snug"
+                  >
                     Ada Pradhaman Payasam
                   </h4>
-                  <p className="text-xs font-medium text-[#B5541C] mt-0.5">
+                  <p
+                    style={{ fontFamily: 'var(--font-body)' }}
+                    className="text-[14px] font-semibold text-[#B5541C] mt-1"
+                  >
                     Naturally sweet
                   </p>
                 </div>
@@ -353,19 +495,31 @@ export default function LandingPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Section Header (Centered) */}
             <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-              <div className="text-[12px] font-bold tracking-[0.25em] uppercase mb-3">
+              <div
+                style={{ fontFamily: 'var(--font-body)' }}
+                className="text-[14px] font-bold tracking-[0.2em] uppercase mb-3"
+              >
                 <span className="text-[#1F5A3A]">LOVED BY </span>
                 <span className="text-[#B5541C]">FAMILIES</span>
               </div>
               <h2
                 id="reviews-heading"
-                className="text-3xl sm:text-4xl lg:text-[42px] font-semibold text-[#1F5A3A] tracking-tight leading-[1.12]"
+                style={{
+                  fontFamily: 'var(--font-heading)',
+                  fontSize: 'clamp(2rem, 4vw, 3.5rem)',
+                  fontWeight: 700,
+                  lineHeight: 1.1,
+                }}
+                className="text-[#1F5A3A] tracking-tight"
               >
                 Families are eating better, together.
               </h2>
 
               {/* Rating Summary Banner */}
-              <div className="mt-4 inline-flex items-center justify-center gap-2.5 text-sm sm:text-base flex-wrap">
+              <div
+                style={{ fontFamily: 'var(--font-body)' }}
+                className="mt-4 inline-flex items-center justify-center gap-2.5 text-base sm:text-lg flex-wrap"
+              >
                 <span className="font-bold text-[#1F5A3A]">4.9 / 5</span>
                 <div className="flex items-center gap-1 text-[#B5541C]" aria-label="5 out of 5 stars">
                   {[0, 1, 2, 3, 4].map((starIdx) => (
@@ -374,7 +528,7 @@ export default function LandingPage() {
                     </svg>
                   ))}
                 </div>
-                <span className="text-[#5A6B5F] font-normal">from 1,200+ families</span>
+                <span className="text-[#4F6355] font-normal">from 1,200+ families</span>
               </div>
             </div>
 
@@ -390,7 +544,14 @@ export default function LandingPage() {
                       </svg>
                     ))}
                   </div>
-                  <p className="text-sm sm:text-[15px] text-[#2C3E30] leading-relaxed font-normal mb-6">
+                  <p
+                    style={{
+                      fontFamily: 'var(--font-body)',
+                      fontSize: '18px',
+                      lineHeight: 1.6,
+                    }}
+                    className="text-[#2C3E30] font-normal mb-6"
+                  >
                     "My son has a peanut allergy and my mother-in-law needs low-salt food.
                     FamilyFit finally lets me cook one meal everyone can eat without stressing over
                     separate pots."
@@ -405,8 +566,18 @@ export default function LandingPage() {
                     loading="lazy"
                   />
                   <div className="text-left">
-                    <h4 className="font-semibold text-sm text-[#1F5A3A]">Anjali Menon</h4>
-                    <p className="text-xs text-[#5A6B5F] font-normal mt-0.5">Mother of two, Kozhikode</p>
+                    <h4
+                      style={{ fontFamily: 'var(--font-heading)' }}
+                      className="font-bold text-[18px] text-[#1F5A3A]"
+                    >
+                      Anjali Menon
+                    </h4>
+                    <p
+                      style={{ fontFamily: 'var(--font-body)' }}
+                      className="text-[14px] text-[#4F6355] font-normal mt-0.5"
+                    >
+                      Mother of two, Kozhikode
+                    </p>
                   </div>
                 </div>
               </div>
@@ -421,7 +592,14 @@ export default function LandingPage() {
                       </svg>
                     ))}
                   </div>
-                  <p className="text-sm sm:text-[15px] text-white/95 leading-relaxed font-normal mb-6">
+                  <p
+                    style={{
+                      fontFamily: 'var(--font-body)',
+                      fontSize: '18px',
+                      lineHeight: 1.6,
+                    }}
+                    className="text-white/95 font-normal mb-6"
+                  >
                     "Balancing toddler meals and diabetes-safe food for my father used to mean three
                     separate preparations. Now our whole household shares the same Kerala Sadhya
                     with total peace of mind."
@@ -436,8 +614,18 @@ export default function LandingPage() {
                     loading="lazy"
                   />
                   <div className="text-left">
-                    <h4 className="font-semibold text-sm text-white">Rahul Varma</h4>
-                    <p className="text-xs text-[#A9CBA1] font-normal mt-0.5">Father of three, Kochi</p>
+                    <h4
+                      style={{ fontFamily: 'var(--font-heading)' }}
+                      className="font-bold text-[18px] text-white"
+                    >
+                      Rahul Varma
+                    </h4>
+                    <p
+                      style={{ fontFamily: 'var(--font-body)' }}
+                      className="text-[14px] text-[#A9CBA1] font-normal mt-0.5"
+                    >
+                      Father of three, Kochi
+                    </p>
                   </div>
                 </div>
               </div>
@@ -452,7 +640,14 @@ export default function LandingPage() {
                       </svg>
                     ))}
                   </div>
-                  <p className="text-sm sm:text-[15px] text-[#2C3E30] leading-relaxed font-normal mb-6">
+                  <p
+                    style={{
+                      fontFamily: 'var(--font-body)',
+                      fontSize: '18px',
+                      lineHeight: 1.6,
+                    }}
+                    className="text-[#2C3E30] font-normal mb-6"
+                  >
                     "The weekly supermarket grocery list with exact Palakkad market prices saves us
                     ₹1,500 every month, and we haven't thrown away wilted vegetables or expired
                     spices once."
@@ -467,8 +662,18 @@ export default function LandingPage() {
                     loading="lazy"
                   />
                   <div className="text-left">
-                    <h4 className="font-semibold text-sm text-[#1F5A3A]">Deepa Nambiar</h4>
-                    <p className="text-xs text-[#5A6B5F] font-normal mt-0.5">Home chef & caregiver, Thrissur</p>
+                    <h4
+                      style={{ fontFamily: 'var(--font-heading)' }}
+                      className="font-bold text-[18px] text-[#1F5A3A]"
+                    >
+                      Deepa Nambiar
+                    </h4>
+                    <p
+                      style={{ fontFamily: 'var(--font-body)' }}
+                      className="text-[14px] text-[#4F6355] font-normal mt-0.5"
+                    >
+                      Home chef & caregiver, Thrissur
+                    </p>
                   </div>
                 </div>
               </div>

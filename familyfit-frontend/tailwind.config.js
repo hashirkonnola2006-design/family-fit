@@ -40,8 +40,10 @@ export default {
         },
       },
       fontFamily: {
-        display: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
-        body: ['Inter', 'system-ui', 'sans-serif'],
+        heading: ['var(--font-heading)', '"Fredoka"', '"Nunito"', 'system-ui', 'sans-serif'],
+        display: ['var(--font-heading)', '"Fredoka"', '"Nunito"', 'system-ui', 'sans-serif'],
+        body: ['var(--font-body)', '"Nunito"', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-body)', '"Nunito"', 'system-ui', 'sans-serif'],
         handwriting: ['Caveat', 'cursive'],
       },
     },

@@ -1,12 +1,12 @@
 import { useNavigate, useLocation } from 'react-router-dom'
-import { LayoutDashboard, Utensils, ShoppingCart, Sparkles, User } from 'lucide-react'
+import { LayoutDashboard, Utensils, ShoppingCart, Sparkles, Settings } from 'lucide-react'
 
 const NAV_ITEMS = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/recipes',   label: 'Recipes',   icon: Utensils },
   { path: '/grocery',   label: 'Grocery',   icon: ShoppingCart },
   { path: '/tips',      label: 'Tips',      icon: Sparkles },
-  { path: '/profile',   label: 'Profile',   icon: User },
+  { path: '/profile',   label: 'Settings',  icon: Settings },
 ]
 
 export default function BottomNav() {

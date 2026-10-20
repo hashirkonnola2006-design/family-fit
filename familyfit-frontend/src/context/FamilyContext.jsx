@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import { getFamily } from '../api/family'
+import { getFamily, deleteMember as apiDeleteMember } from '../api/family'
 import { useAuth } from './AuthContext'
 import { fetchCloudMembers, syncMembersToCloud } from '../utils/cloudSync'
 
@@ -104,26 +104,55 @@ const DEFAULT_SEEDED_MEMBERS = [
   },
 ]
 
+export function getDeletedMemberIds() {
+  try {
+    const raw = localStorage.getItem('familyfit_deleted_member_ids')
+    return raw ? JSON.parse(raw) : []
+  } catch {
+    return []
+  }
+}
+
+export function addDeletedMemberId(id) {
+  try {
+    const ids = getDeletedMemberIds()
+    const strId = String(id).toLowerCase()
+    if (!ids.includes(strId)) {
+      ids.push(strId)
+      localStorage.setItem('familyfit_deleted_member_ids', JSON.stringify(ids))
+    }
+  } catch {}
+}
+
+function isMemberDeleted(m, deletedIds) {
+  if (!m) return true
+  const idStr = String(m.id || '').toLowerCase()
+  const nameStr = String(m.name || '').toLowerCase()
+  return deletedIds.includes(idStr) || deletedIds.includes(nameStr)
+}
+
 function getSafeLocalMembers() {
+  const deletedIds = getDeletedMemberIds()
   try {
     const saved = localStorage.getItem('familyfit_members')
     if (saved) {
       const parsed = JSON.parse(saved)
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed.filter(Boolean)
+      if (Array.isArray(parsed)) {
+        return parsed.filter((m) => !isMemberDeleted(m, deletedIds))
       }
     }
   } catch (err) {
     console.warn('Could not read familyfit_members from localStorage:', err)
   }
-  return DEFAULT_SEEDED_MEMBERS
+  return DEFAULT_SEEDED_MEMBERS.filter((m) => !isMemberDeleted(m, deletedIds))
 }
 
-// Smart merger function to ensure no added member is ever lost
+// Smart merger function to ensure no added member is ever lost, while respecting deleted members
 function mergeMemberLists(listA = [], listB = []) {
+  const deletedIds = getDeletedMemberIds()
   const map = new Map()
-  const safeA = Array.isArray(listA) ? listA.filter(Boolean) : []
-  const safeB = Array.isArray(listB) ? listB.filter(Boolean) : []
+  const safeA = (Array.isArray(listA) ? listA : []).filter((m) => !isMemberDeleted(m, deletedIds))
+  const safeB = (Array.isArray(listB) ? listB : []).filter((m) => !isMemberDeleted(m, deletedIds))
 
   safeA.forEach((m) => {
     if (m && (m.id || m.name)) {
@@ -261,14 +290,20 @@ export function FamilyProvider({ children }) {
   }
 
   const deleteMemberFromContext = (memberId) => {
+    addDeletedMemberId(memberId)
+    apiDeleteMember(memberId).catch(() => {})
+
     setFamily((prev) => {
       const existing = prev?.members || []
-      const updatedMembers = existing.filter((m) => String(m.id) !== String(memberId))
+      const idStr = String(memberId).toLowerCase()
+      const updatedMembers = existing.filter(
+        (m) => String(m.id).toLowerCase() !== idStr && String(m.name).toLowerCase() !== idStr
+      )
 
       localStorage.setItem('familyfit_members', JSON.stringify(updatedMembers))
       syncMembersToCloud(updatedMembers)
 
-      if (String(activeMember?.id) === String(memberId)) {
+      if (String(activeMember?.id).toLowerCase() === idStr || String(activeMember?.name).toLowerCase() === idStr) {
         setActiveMember(updatedMembers[0] || null)
       }
       return { ...prev, members: updatedMembers }

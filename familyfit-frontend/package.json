@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "echo \"VITE_API_URL is: $VITE_API_URL\" && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "server": "node ../server/index.js",
+    "fetch-prices": "node ../scripts/fetch-prices.js"
   },
   "dependencies": {
     "@radix-ui/react-icons": "^1.3.2",

@@ -165,7 +165,19 @@ client.interceptors.response.use(
     if ((status === 401 || status === 403) && config && !config._authRetry) {
       config._authRetry = true
       const refreshToken = localStorage.getItem('refreshToken')
-      if (refreshToken && !refreshToken.startsWith('demo-')) {
+      const accessToken = localStorage.getItem('accessToken')
+
+      const isDemo =
+        (refreshToken && refreshToken.startsWith('demo-')) ||
+        (accessToken && accessToken.startsWith('demo-'))
+
+      // For demo / mock sessions, do NOT clear storage or try to refresh with backend
+      if (isDemo) {
+        onRequestFinished(config)
+        return Promise.reject(error)
+      }
+
+      if (refreshToken) {
         try {
           const { data } = await client.post('/auth/refresh', { refreshToken }, { notifyColdStart: false })
           if (data?.accessToken) {
@@ -174,12 +186,17 @@ client.interceptors.response.use(
             config._isRetryAttempt = true
             return client(config)
           }
-        } catch {
-          localStorage.removeItem('accessToken')
-          localStorage.removeItem('refreshToken')
+        } catch (refreshErr) {
+          // Only clear session if refresh endpoint explicitly rejected the refresh token (401/403)
+          if (refreshErr.response?.status === 401 || refreshErr.response?.status === 403) {
+            localStorage.removeItem('accessToken')
+            localStorage.removeItem('refreshToken')
+            localStorage.removeItem('familyId')
+            localStorage.removeItem('email')
+            localStorage.removeItem('familyName')
+            window.dispatchEvent(new Event('familyfit:auth-expired'))
+          }
         }
-      } else {
-        localStorage.removeItem('accessToken')
       }
     }
 

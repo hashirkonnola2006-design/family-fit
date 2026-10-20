@@ -64,7 +64,8 @@ function AppRoutes() {
       <Route path="/tips"     element={<PrivateRoute><TipsPage /></PrivateRoute>} />
       <Route path="/progress" element={<Navigate to="/tips" replace />} />
       <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
-      <Route path="/about"   element={<PrivateRoute><AboutPage /></PrivateRoute>} />
+      <Route path="/settings" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+      <Route path="/about"   element={<AboutPage />} />
 
       {/* ── Legal & Policies ── */}
       <Route path="/privacy" element={<PrivacyPolicyPage />} />

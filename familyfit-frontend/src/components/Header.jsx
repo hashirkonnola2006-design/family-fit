@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { useFamily } from '../context/FamilyContext'
-import { LayoutDashboard, Utensils, ShoppingCart, Sparkles, UserRound, Flame, Bell, LogOut, Menu, X, ChevronDown } from 'lucide-react'
+import { LayoutDashboard, Utensils, ShoppingCart, Sparkles, Settings, LogOut, Menu, X } from 'lucide-react'
 import { Logo } from './brand/Logo'
 
 const NAV_LINKS = [
@@ -10,19 +10,28 @@ const NAV_LINKS = [
   { path: '/recipes', label: 'Recipes', icon: Utensils },
   { path: '/grocery', label: 'Groceries', icon: ShoppingCart },
   { path: '/tips', label: 'Wellness', icon: Sparkles },
-  { path: '/profile', label: 'Family', icon: UserRound },
+  { path: '/profile', label: 'Settings', icon: Settings },
 ]
 
 export default function Header() {
-  const { user, logout } = useAuth()
-  const { family } = useFamily()
+  const { logout } = useAuth()
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const [mobileOpen, setMobileOpen] = useState(false)
-  const rawName = user?.familyName || family?.name || user?.name || 'Family'
-  const displayName = rawName.replace(/ family$/i, '').trim() || 'Family'
+  const [showLogoutModal, setShowLogoutModal] = useState(false)
 
-  const signOut = () => {
+  // Close modal on Escape key
+  useEffect(() => {
+    if (!showLogoutModal) return
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setShowLogoutModal(false)
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [showLogoutModal])
+
+  const confirmSignOut = () => {
+    setShowLogoutModal(false)
     logout()
     navigate('/login')
     setMobileOpen(false)
@@ -51,15 +60,23 @@ export default function Header() {
         </nav>
 
         <div className="app-header-actions">
-          <span className="streak-chip" title="Healthy meal logging streak"><Flame size={16} fill="currentColor" /> <span>3 day streak</span></span>
-          <button type="button" className="header-icon-button notification-button" onClick={() => alert('All family health alerts are up to date! 🌿')} aria-label="Notifications" title="Notifications"><Bell size={17} /><span className="notification-dot" /></button>
-          <Link to="/profile" className="user-chip" aria-label={`Open ${displayName} profile`}>
-            <span className="user-avatar">{displayName[0]?.toUpperCase() || 'H'}</span>
-            <span className="user-chip-name">{displayName === 'Family' ? 'Healthy Family' : displayName}</span>
-            <ChevronDown size={14} className="text-[#6f7b72] shrink-0" />
-          </Link>
-          <button type="button" className="header-icon-button signout-button" onClick={signOut} aria-label="Sign out" title="Sign out"><LogOut size={17} /></button>
-          <button type="button" className="header-icon-button mobile-menu-button" onClick={() => setMobileOpen(!mobileOpen)} aria-label={mobileOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={mobileOpen}>
+          <button
+            type="button"
+            className="header-signout-btn signout-button"
+            onClick={() => setShowLogoutModal(true)}
+            aria-label="Log out"
+            title="Log out"
+          >
+            <LogOut size={16} />
+            <span>Log out</span>
+          </button>
+          <button
+            type="button"
+            className="header-icon-button mobile-menu-button"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label={mobileOpen ? 'Close navigation' : 'Open navigation'}
+            aria-expanded={mobileOpen}
+          >
             {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
@@ -72,8 +89,73 @@ export default function Header() {
             <Icon size={18} /><span>{label}</span>
           </Link>
         })}
-        <button type="button" className="mobile-nav-link mobile-signout" onClick={signOut}><LogOut size={18} /><span>Sign out</span></button>
+        <button
+          type="button"
+          className="mobile-nav-link mobile-signout"
+          onClick={() => {
+            setMobileOpen(false)
+            setShowLogoutModal(true)
+          }}
+        >
+          <LogOut size={18} /><span>Log out</span>
+        </button>
       </nav>}
+
+      {/* Log Out Confirmation Pop-up Modal rendered via Portal */}
+      {showLogoutModal && typeof document !== 'undefined' && createPortal(
+        <div
+          className="logout-modal-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="logout-dialog-title"
+          onClick={() => setShowLogoutModal(false)}
+        >
+          <div
+            className="logout-modal-card"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="logout-modal-close"
+              onClick={() => setShowLogoutModal(false)}
+              aria-label="Close dialog"
+            >
+              <X size={18} />
+            </button>
+
+            <div className="logout-modal-icon-wrap">
+              <LogOut size={22} />
+            </div>
+
+            <h3 id="logout-dialog-title" className="logout-modal-title">
+              Are you sure you want to log out?
+            </h3>
+            <p className="logout-modal-desc">
+              You will need to log back in to access your family's meal plans, grocery recommendations, and recipes.
+            </p>
+
+            <div className="logout-modal-actions">
+              <button
+                type="button"
+                className="logout-btn-cancel"
+                onClick={() => setShowLogoutModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="logout-btn-confirm"
+                onClick={confirmSignOut}
+              >
+                <LogOut size={15} />
+                <span>Log Out</span>
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </header>
   )
 }
+

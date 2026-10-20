@@ -11,7 +11,8 @@ import {
   ChevronDown, 
   AlertCircle, 
   Loader2, 
-  Check 
+  Check,
+  ArrowLeft 
 } from 'lucide-react'
 import { Logo } from '../brand/Logo'
 
@@ -243,15 +244,16 @@ export function AuthUI({
           <FamilyFitLogo tone="white" height={34} />
         </div>
 
-        {/* Mobile Top-Right: Language / EN Pill dropdown */}
+        {/* Mobile Top-Right: Back to Home Link */}
         <div className="lg:hidden absolute top-6 right-6 z-20 flex items-center">
-          <button
-            type="button"
-            className="px-3 py-1 rounded-full bg-black/35 backdrop-blur-md text-white text-xs font-semibold flex items-center gap-1 border border-white/25 shadow-xs"
+          <Link
+            to={backToHomeHref || '/'}
+            className="px-3.5 py-1.5 rounded-full bg-black/40 backdrop-blur-md text-white text-xs font-bold flex items-center gap-1.5 border border-white/25 shadow-xs hover:bg-black/55 transition-all"
+            aria-label="Back to home page"
           >
-            <span>EN</span>
-            <ChevronDown size={13} />
-          </button>
+            <ArrowLeft size={13} strokeWidth={2.4} />
+            <span>Home</span>
+          </Link>
         </div>
 
         {/* Left-Center Typography Overlay (Pure HTML/CSS — Crisp and Legible) */}
@@ -308,31 +310,16 @@ export function AuthUI({
       {/* ─── RIGHT SECTION: 48% WARM CREAM (#FAF7F0) WITH CENTERED FLOATING LOGIN CARD ─── */}
       <div className="w-full lg:w-[48%] min-h-[calc(100vh-360px)] lg:h-screen overflow-y-auto flex flex-col justify-between items-center px-5 py-6 sm:px-8 sm:py-8 lg:px-10 xl:px-14 bg-[#FAF7F0] relative z-20">
         
-        {/* Desktop Top Header: Notification Bell, "Healthy Family ⌄" Dropdown, Dark Green Avatar */}
-        <div className="hidden lg:flex w-full items-center justify-end gap-3 mb-2 lg:mb-4 shrink-0">
-          
-          {/* Notification Bell with Orange Dot */}
-          <button
-            type="button"
-            className="w-9 h-9 rounded-full bg-white border border-[#EAE5D9] text-[#2F4A2E] hover:bg-[#F5F2E8] transition-all flex items-center justify-center relative cursor-pointer shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2F4A2E]"
-            aria-label="Notifications"
-            onClick={() => alert('All family nutrition alerts are up to date.')}
+        {/* Desktop Top Header: "Back to Home" Button (Replaced notification, dropdown & avatar buttons) */}
+        <div className="w-full flex items-center justify-end mb-2 lg:mb-4 shrink-0">
+          <Link
+            to={backToHomeHref || '/'}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white hover:bg-[#F5F2E8] active:scale-95 text-[#1F5D3A] border border-[#EAE5D9] text-xs sm:text-sm font-bold shadow-2xs transition-all cursor-pointer font-['Fredoka',sans-serif] hover:-translate-x-0.5"
+            aria-label="Back to home page"
           >
-            <Bell size={16} strokeWidth={2.2} />
-            {/* Orange notification badge dot #F5A623 */}
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#F5A623] ring-2 ring-white" />
-          </button>
-
-          {/* Profile Menu Dropdown Pill ("FamilyFit ⌄") */}
-          <div className="px-3.5 py-1.5 rounded-full bg-white border border-[#EAE5D9] text-xs font-semibold text-[#2F4A2E] flex items-center gap-1.5 hover:bg-[#F5F2E8] transition-all cursor-pointer shadow-xs">
-            <span>FamilyFit</span>
-            <ChevronDown size={14} className="text-[#667085]" />
-          </div>
-
-          {/* Dark Green User Avatar */}
-          <div className="w-9 h-9 rounded-full bg-[#2F4A2E] text-white flex items-center justify-center shadow-xs">
-            <User size={16} strokeWidth={2.2} />
-          </div>
+            <ArrowLeft size={15} strokeWidth={2.4} className="text-[#1F5D3A]" />
+            <span>Back to Home</span>
+          </Link>
         </div>
 
         {/* Centered Rounded Auth Card (~430px wide, radius ~32px, 1px soft border, light shadow) */}

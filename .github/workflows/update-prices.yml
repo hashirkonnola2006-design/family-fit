@@ -1,0 +1,36 @@
+name: Daily Agmarknet Mandi Price Sync
+
+on:
+  schedule:
+    # Runs daily at 06:00 UTC (11:30 AM IST)
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  update-prices:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch Live Agmarknet Prices
+        env:
+          DATA_GOV_API_KEY: ${{ secrets.DATA_GOV_API_KEY }}
+          RETAIL_MARKUP: '1.4'
+        run: |
+          node scripts/fetch-prices.js
+
+      - name: Commit & Push Updated Prices
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action [Price Bot]"
+          git add familyfit-frontend/public/data/prices.json familyfit-frontend/src/data/prices.json data/prices.json || true
+          git diff --staged --quiet || (git commit -m "chore(prices): automated daily Agmarknet Kerala mandi price update" && git push)

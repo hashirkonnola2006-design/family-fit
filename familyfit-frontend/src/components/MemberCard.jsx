@@ -38,7 +38,7 @@ const MEMBER_THEMES = [
 /**
  * MemberCard — Redesigned with demographic avatar icons (Child, Teenager, Adult, Elder).
  */
-export default function MemberCard({ member, onEdit, themeIndex }) {
+export default function MemberCard({ member, onEdit, onDelete, themeIndex }) {
   const { isDark } = useTheme()
   if (!member) return null
 
@@ -75,43 +75,76 @@ export default function MemberCard({ member, onEdit, themeIndex }) {
       onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)' }}
       onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = isDark ? '0 4px 16px rgba(0,0,0,0.25)' : '0 4px 16px rgba(0,0,0,0.06)' }}
     >
-      {/* Edit pencil button */}
-      {onEdit && (
-        <button
-          style={{
-            position: 'absolute',
-            top: 10,
-            right: 10,
-            width: 32,
-            height: 32,
-            borderRadius: '50%',
-            background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.9)',
-            color: isDark ? '#9ca3af' : '#6b7280',
-            border: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
-            zIndex: 2,
-            transition: 'background 0.15s ease',
-          }}
-          onClick={(e) => {
-            e.stopPropagation()
-            onEdit(member)
-          }}
-          title="Edit Member"
-        >
-          {/* Pencil icon */}
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-          </svg>
-        </button>
-      )}
+      {/* Action buttons (Delete & Edit) */}
+      <div style={{ position: 'absolute', top: 10, right: 10, display: 'flex', alignItems: 'center', gap: 6, zIndex: 2 }}>
+        {onDelete && (
+          <button
+            type="button"
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: '50%',
+              background: isDark ? 'rgba(239, 68, 68, 0.15)' : '#FFF1F2',
+              color: '#E11D48',
+              border: `1px solid ${isDark ? 'rgba(239, 68, 68, 0.3)' : '#FECDD3'}`,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              boxShadow: '0 2px 6px rgba(225, 29, 72, 0.12)',
+              transition: 'all 0.15s ease',
+            }}
+            onClick={(e) => {
+              e.stopPropagation()
+              onDelete(member)
+            }}
+            title={`Delete ${member.name}`}
+            aria-label={`Delete ${member.name}`}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+              <line x1="10" y1="11" x2="10" y2="17" />
+              <line x1="14" y1="11" x2="14" y2="17" />
+            </svg>
+          </button>
+        )}
+
+        {onEdit && (
+          <button
+            type="button"
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: '50%',
+              background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.9)',
+              color: isDark ? '#9ca3af' : '#6b7280',
+              border: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
+              transition: 'background 0.15s ease',
+            }}
+            onClick={(e) => {
+              e.stopPropagation()
+              onEdit(member)
+            }}
+            title={`Edit ${member.name}`}
+            aria-label={`Edit ${member.name}`}
+          >
+            {/* Pencil icon */}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+            </svg>
+          </button>
+        )}
+      </div>
 
       {/* ── Top Row: Demographic Avatar + Name/Age ── */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingRight: 36 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingRight: 74 }}>
         <MemberAvatar member={member} size={42} />
 
         <div>

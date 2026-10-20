@@ -5,10 +5,14 @@
    ══════════════════════════════════════════════════════════════ */
 
 /* ─── Google Fonts ─────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Fredoka:wght@500;600;700&family=Nunito:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap');
 
 /* ─── Brand Design Tokens (FamilyFit Brand Sheet) ─────────── */
 :root {
+  /* Typography Variables */
+  --font-heading:         "Fredoka", "Nunito", system-ui, sans-serif;
+  --font-body:            "Nunito", system-ui, sans-serif;
+
   /* User requested variables */
   --green-900:            #24402F;
   --green-800:            #2F4A32;
@@ -17,7 +21,7 @@
   --sage-400:             #A9BC8A;
   --lime:                 #8DB445;
   --cream:                #F6F4E6;
-  --font-outfit:          'Outfit', system-ui, -apple-system, sans-serif;
+  --font-outfit:          var(--font-heading);
 
   /* Core Brand Palette */
   --forest:               #1F5D3A;  /* Primary: buttons, headings, links, active nav, focus rings */
@@ -44,8 +48,7 @@
   --water-blue-dark:      #1D4ED8;
 
   /* Typography */
-  --font-display:         'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  --font-body:            'Inter', system-ui, -apple-system, sans-serif;
+  --font-display:         var(--font-heading);
   --font-handwriting:     'Caveat', cursive;
   --font-family-base:     var(--font-body);
 
@@ -118,11 +121,21 @@
   box-sizing: border-box;
 }
 
+/* Remove ugly default browser scrollbar across website while preserving full scroll functionality */
 html {
   margin: 0;
   padding: 0;
   width: 100%;
   overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+html::-webkit-scrollbar {
+  display: none;
+  width: 0px;
+  height: 0px;
+  background: transparent;
 }
 
 body {
@@ -133,10 +146,38 @@ body {
   color: var(--charcoal);
   width: 100%;
   overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
 }
 
-h1, h2, h3, h4, h5, h6, .font-display, button {
-  font-family: var(--font-display);
+body::-webkit-scrollbar {
+  display: none;
+  width: 0px;
+  height: 0px;
+  background: transparent;
+}
+
+/* Global scrollbar hiding for clean app feel */
+::-webkit-scrollbar {
+  display: none;
+  width: 0px;
+  height: 0px;
+  background: transparent;
+}
+
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* Headings (h1-h4), section titles, card titles */
+h1, h2, h3, h4, h5, h6, .font-heading, .section-title, .card-title {
+  font-family: var(--font-heading);
+}
+
+/* Paragraphs, nav links, buttons, and labels */
+p, a, button, label, input, select, textarea, .font-body {
+  font-family: var(--font-body);
 }
 
 #root {
@@ -1978,7 +2019,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   backdrop-filter: blur(16px);
 }
 .app-header-inner {
-  max-width: 1440px;
+  max-width: 1800px;
+  width: 100%;
   min-height: 76px;
   margin: 0 auto;
   display: flex;
@@ -2017,6 +2059,164 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .notification-button { position: relative; }
 .notification-dot { position: absolute; top: 7px; right: 7px; width: 6px; height: 6px; background: #d8895e; border: 1.5px solid #fffefa; border-radius: 50%; }
 .mobile-menu-button, .mobile-nav-panel { display: none; }
+
+/* Header Sign Out Button */
+.header-signout-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  color: #55655a;
+  background: #f7f6f1;
+  border: 1px solid #e2e4da;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: all .18s ease;
+}
+.header-signout-btn:hover {
+  color: #c0392b;
+  background: #fdf2f2;
+  border-color: #f5c6cb;
+  box-shadow: 0 2px 8px rgba(192, 57, 43, 0.08);
+}
+.header-signout-btn:active {
+  transform: scale(0.97);
+}
+
+/* Logout Confirmation Modal */
+.logout-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(18, 30, 22, 0.45);
+  backdrop-filter: blur(5px);
+  animation: ffFadeIn 0.2s ease-out;
+}
+
+.logout-modal-card {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  background: #fffefa;
+  border: 1px solid #e7e7de;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 20px 48px rgba(25, 42, 31, 0.16);
+  animation: ffScaleUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.logout-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  color: #7b867e;
+  background: transparent;
+  border: 0;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease;
+}
+.logout-modal-close:hover {
+  color: #25352c;
+  background: #f0f2ec;
+}
+
+.logout-modal-icon-wrap {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: #fdf0f0;
+  color: #c0392b;
+  border: 1px solid #fadad7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.logout-modal-title {
+  font-size: 19px;
+  font-weight: 750;
+  color: #25352c;
+  margin: 0 0 8px;
+  letter-spacing: -0.3px;
+}
+
+.logout-modal-desc {
+  font-size: 14px;
+  color: #637267;
+  line-height: 1.5;
+  margin: 0 0 22px;
+}
+
+.logout-modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0e8;
+}
+
+.logout-btn-cancel {
+  padding: 9px 18px;
+  border-radius: 12px;
+  border: 1px solid #e4e4db;
+  background: #fffefa;
+  color: #4b584f;
+  font-size: 13.5px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+.logout-btn-cancel:hover {
+  background: #f5f5ee;
+  color: #25352c;
+}
+
+.logout-btn-confirm {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 20px;
+  border-radius: 12px;
+  border: 1px solid #bd3326;
+  background: #c0392b;
+  color: #fffefa;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(192, 57, 43, 0.22);
+  transition: all .15s ease;
+}
+.logout-btn-confirm:hover {
+  background: #a93226;
+  border-color: #962c21;
+  box-shadow: 0 6px 16px rgba(192, 57, 43, 0.28);
+}
+.logout-btn-confirm:active, .logout-btn-cancel:active {
+  transform: scale(0.98);
+}
+
+@keyframes ffFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes ffScaleUp {
+  from { opacity: 0; transform: scale(0.95) translateY(6px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
 
 .layout-root { background: #f7f6f1; }
 .layout-content-wrapper { background: #f7f6f1; }
@@ -2282,7 +2482,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .ff-tips-root, .ff-profile-root { --ff-green: var(--forest); --ff-primary: var(--forest); --ff-border: var(--border); }
 .ff-tips-root .ff-tip-card:hover, .ff-profile-root .ff-setting-row:hover { transform: translateY(-2px); }
 .familyfit-dashboard { background: var(--cream) !important; color: var(--charcoal) !important; }
-.familyfit-dashboard > main { max-width: 1320px !important; padding: 30px 34px 42px !important; gap: 24px !important; }
+.familyfit-dashboard > main { max-width: 1800px !important; width: 100% !important; padding: 24px 28px 36px !important; gap: 24px !important; }
 .familyfit-dashboard .family-member-tile { min-width: 136px; height: 188px; padding: 13px; border-radius: 17px !important; box-shadow: none !important; }
 .familyfit-dashboard .family-member-tile:hover { box-shadow: 0 8px 20px rgba(31,93,58,.08) !important; }
 .familyfit-dashboard .family-member-tile > div:first-of-type { width: 68px; height: 68px; }
@@ -2406,4 +2606,46 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .ffx-trust-row i { display: none; }.ffx-trust-row { justify-content: flex-start; padding-left: 24px; }
   .ffx-photo-caption { left: 15px; bottom: 15px; }.ffx-floating-note { right: -3px; }
   .recipes-page > div:nth-child(3) > div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+}
+
+/* ─── Dashboard Family Cards Horizontal Scrolling ─── */
+.horizontal-cards-row {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+}
+
+@media (max-width: 768px) {
+  .horizontal-cards-row {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .horizontal-cards-row::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (min-width: 769px) {
+  .horizontal-cards-row {
+    scrollbar-width: thin;
+    scrollbar-color: #D5E1D5 transparent;
+  }
+  .horizontal-cards-row::-webkit-scrollbar {
+    height: 6px;
+  }
+  .horizontal-cards-row::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .horizontal-cards-row::-webkit-scrollbar-thumb {
+    background-color: #D5E1D5;
+    border-radius: 9999px;
+  }
+  .horizontal-cards-row::-webkit-scrollbar-thumb:hover {
+    background-color: #A8C6AB;
+  }
 }

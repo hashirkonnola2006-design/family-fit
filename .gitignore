@@ -46,6 +46,12 @@ logs/
 *.mv.db
 *.trace.db
 
+# ─── AI / ML model weights ──────────────
+*.pth
+*.pt
+*.onnx
+*.bin
+
 # ─── Temporary test screenshots & renders ───
 familyfit-frontend/public/images/verify_*
 familyfit-frontend/public/images/check_*

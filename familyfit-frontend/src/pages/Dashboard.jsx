@@ -9,11 +9,10 @@ import MemberModal from '../components/MemberModal'
 import GreetingHeader from '../components/dashboard/GreetingHeader'
 import FamilyStrip from '../components/dashboard/FamilyStrip'
 import TodayMeals from '../components/dashboard/TodayMeals'
-import HealthAlerts from '../components/dashboard/HealthAlerts'
+import SevereAllergiesCard from '../components/dashboard/SevereAllergiesCard'
+import MemberConditionFoodsCard from '../components/dashboard/MemberConditionFoodsCard'
 import GrocerySnapshot from '../components/dashboard/GrocerySnapshot'
 import TipOfTheDay from '../components/dashboard/TipOfTheDay'
-import QuickActions from '../components/dashboard/QuickActions'
-import RecommendedRecipes from '../components/dashboard/RecommendedRecipes'
 import MealSwapModal from '../components/dashboard/MealSwapModal'
 import WeightLogModal from '../components/dashboard/WeightLogModal'
 import DashboardFooter from '../components/dashboard/DashboardFooter'
@@ -32,7 +31,7 @@ import { AlertCircle, RotateCw, CheckCircle2 } from 'lucide-react'
 export default function Dashboard() {
   const navigate = useNavigate()
   const { user } = useAuth()
-  const { family, loading: familyLoading, error: familyError, refresh: refreshFamily } = useFamily()
+  const { family, loading: familyLoading, error: familyError, refresh: refreshFamily, deleteMemberFromContext } = useFamily()
 
   // ── Household Members ──
   const members = useMemo(() => family?.members || [], [family?.members])
@@ -92,6 +91,16 @@ export default function Dashboard() {
     setIsMemberModalOpen(true)
   }, [])
 
+  const handleDeleteMember = useCallback((member) => {
+    if (!member) return
+    const confirmed = window.confirm(`Are you sure you want to delete ${member.name} from your family?`)
+    if (confirmed) {
+      deleteMemberFromContext(member.id)
+      showToast(`${member.name} removed from family.`)
+      if (refreshFamily) refreshFamily()
+    }
+  }, [deleteMemberFromContext, refreshFamily, showToast])
+
   const handleMemberSaved = useCallback(() => {
     showToast('Family member saved!')
     if (refreshFamily) refreshFamily()
@@ -149,7 +158,7 @@ export default function Dashboard() {
   // ── Loading Skeleton State ──
   if (familyLoading && members.length === 0) {
     return (
-      <div className="w-full min-h-screen bg-[#F7F7F7] px-4 sm:px-6 lg:px-10 py-6 sm:py-8 max-w-[1400px] mx-auto animate-pulse">
+      <div className="w-full min-h-screen bg-[#F7F7F7] px-4 sm:px-6 lg:px-8 xl:px-10 py-6 sm:py-8 max-w-[96vw] xl:max-w-[1920px] mx-auto animate-pulse">
         {/* Banner Skeleton */}
         <div className="h-40 w-full bg-white rounded-3xl mb-6 border-2 border-[#E5E5E5]" />
         {/* Family Strip Skeleton */}
@@ -203,7 +212,7 @@ export default function Dashboard() {
       )}
 
       {/* ── MAIN DASHBOARD CONTAINER ── */}
-      <main className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-8 space-y-6">
+      <main className="w-full max-w-[96vw] xl:max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 sm:py-8 space-y-6">
         {/* 1. GREETING BANNER */}
         <GreetingHeader
           familyName={familyName}
@@ -218,20 +227,22 @@ export default function Dashboard() {
           onSelectMember={handleSelectMember}
           onEditMember={handleEditMember}
           onAddMember={handleAddMember}
+          onDeleteMember={handleDeleteMember}
         />
 
-        {/* 3. ROW OF 3 SMALL CARDS (Allergy Shield, Grocery Snapshot, Tip of the Day) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <HealthAlerts
-            familyMembers={members}
-            mealPlan={mealPlan}
-            onFixConflict={handleFixConflict}
-          />
+        {/* 3. ROW OF HEALTH & ALLERGY SAFETY CARDS (Important Allergies & Good Foods For Health Conditions) */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <SevereAllergiesCard familyMembers={members} />
+          <MemberConditionFoodsCard familyMembers={members} />
+        </div>
+
+        {/* 4. ROW OF PANTRY & DAILY WISDOM CARDS */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <GrocerySnapshot />
           <TipOfTheDay selectedMember={selectedMember} />
         </div>
 
-        {/* 4. TODAY'S MEAL PLAN */}
+        {/* 5. TODAY'S MEAL PLAN */}
         <div id="today-meals-card" className="w-full">
           <TodayMeals
             mealPlan={mealPlan}
@@ -243,18 +254,7 @@ export default function Dashboard() {
           />
         </div>
 
-        {/* 5. QUICK ACTIONS */}
-        <div className="w-full">
-          <QuickActions
-            onPlanMeal={handlePlanMealClick}
-            onOpenWeightLog={() => setIsWeightModalOpen(true)}
-          />
-        </div>
-
-        {/* 6. RECOMMENDED FOR YOU */}
-        <RecommendedRecipes onAddDishToPlan={handleAddDishToPlan} />
-
-        {/* 7. DASHBOARD FOOTER */}
+        {/* 6. DASHBOARD FOOTER */}
         <DashboardFooter />
       </main>
 

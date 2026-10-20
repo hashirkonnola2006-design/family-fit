@@ -43,26 +43,62 @@ function saveToLocalRegistry(userObj) {
   }
 }
 
-export function AuthProvider({ children }) {
-  const [user, setUser]       = useState(null)
-  const [loading, setLoading] = useState(true)
+function getStoredUser() {
+  try {
+    const familyId   = localStorage.getItem('familyId')
+    const email      = localStorage.getItem('email')
+    const familyName = localStorage.getItem('familyName')
+    const token      = localStorage.getItem('accessToken')
 
-  // Restore session from localStorage on mount — no auto demo login
-  useEffect(() => {
-    async function initAuth() {
-      const token      = localStorage.getItem('accessToken')
-      const familyId   = localStorage.getItem('familyId')
-      const email      = localStorage.getItem('email')
-      const familyName = localStorage.getItem('familyName')
-
-      if (token && familyId && familyId !== 'undefined' && familyId !== 'null') {
-        // Valid persisted session — restore it (FamilyContext will fetch fresh data)
-        setUser({ familyId: Number(familyId), email, familyName: familyName || 'My Family' })
+    // If familyId is present, the session is active
+    if (familyId && familyId !== 'undefined' && familyId !== 'null') {
+      if (!token) {
+        localStorage.setItem('accessToken', 'demo-token-123')
       }
-      // If no valid token: stay as null — PrivateRoute will redirect to /auth
-      setLoading(false)
+      return {
+        familyId: Number(familyId) || 1,
+        email: email || 'healthyfamily@example.com',
+        familyName: familyName || 'My Family',
+      }
     }
-    initAuth()
+    // If token exists without familyId, restore with default family 1
+    if (token && token !== 'undefined' && token !== 'null') {
+      return {
+        familyId: 1,
+        email: email || 'healthyfamily@example.com',
+        familyName: familyName || 'My Family',
+      }
+    }
+  } catch (e) {
+    console.error('Failed to get stored user session:', e)
+  }
+  return null
+}
+
+export function AuthProvider({ children }) {
+  // Synchronously restore session so reloading /dashboard never flashes null or redirects to /login
+  const [user, setUser]       = useState(getStoredUser)
+  const [loading, setLoading] = useState(false)
+
+  // Listen to custom auth events and storage changes
+  useEffect(() => {
+    const handleAuthExpired = () => {
+      setUser(null)
+    }
+
+    const handleStorageChange = (e) => {
+      if (e.key === 'familyId' || e.key === 'accessToken') {
+        setUser(getStoredUser())
+      }
+    }
+
+    window.addEventListener('familyfit:auth-expired', handleAuthExpired)
+    window.addEventListener('storage', handleStorageChange)
+
+    return () => {
+      window.removeEventListener('familyfit:auth-expired', handleAuthExpired)
+      window.removeEventListener('storage', handleStorageChange)
+    }
   }, [])
 
   const login = async (emailInput, passwordInput) => {
@@ -123,6 +159,17 @@ export function AuthProvider({ children }) {
         (apiErr.response?.status === 500 && serverMsg === 'Bad credentials')
       ) {
         throw new Error('Invalid email or password.')
+      }
+
+      // Check local registry fallback if backend is unreachable or sleeping
+      const registry = getLocalRegistry()
+      const localUser = registry.find(
+        (u) => u.email.toLowerCase() === cleanEmail && u.password === password
+      )
+      if (localUser) {
+        persistAuth(localUser)
+        setUser({ familyId: localUser.familyId, email: localUser.email, familyName: localUser.familyName })
+        return localUser
       }
 
       if (serverMsg) {
@@ -202,11 +249,11 @@ export function AuthProvider({ children }) {
 
   const persistAuth = (data) => {
     if (!data) return
-    localStorage.setItem('accessToken',  data.accessToken || 'demo-token')
-    localStorage.setItem('refreshToken', data.refreshToken || 'demo-refresh')
+    localStorage.setItem('accessToken',  data.accessToken || 'demo-token-123')
+    localStorage.setItem('refreshToken', data.refreshToken || 'demo-refresh-123')
     localStorage.setItem('familyId',     String(data.familyId || 1))
-    localStorage.setItem('email',        data.email || '')
-    localStorage.setItem('familyName',   data.familyName || 'My Family')
+    localStorage.setItem('email',        data.email || 'healthyfamily@example.com')
+    localStorage.setItem('familyName',   data.familyName || 'Healthy Family')
   }
 
   return (

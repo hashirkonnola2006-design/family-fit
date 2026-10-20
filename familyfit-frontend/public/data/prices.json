@@ -1,0 +1,167 @@
+{
+  "last_updated": "2026-10-20T12:00:00.000Z",
+  "source": "data.gov.in Agmarknet Mandi Daily Prices",
+  "resource_id": "9ef84268-d588-465a-a308-a864a43d0070",
+  "state": "Kerala",
+  "retail_markup": 1.4,
+  "items": {
+    "Ethakka / Nendran Plantain (1 kg)": {
+      "commodity": "Banana - Green",
+      "wholesale_median_per_kg": 42,
+      "retail_price_per_kg": 59,
+      "unit": "kg",
+      "markets_reporting": 18,
+      "last_arrival_date": "20/10/2026"
+    },
+    "Tapioca / Kappa (1 kg)": {
+      "commodity": "Tapioca",
+      "wholesale_median_per_kg": 25,
+      "retail_price_per_kg": 35,
+      "unit": "kg",
+      "markets_reporting": 16,
+      "last_arrival_date": "20/10/2026"
+    },
+    "Chena / Elephant Foot Yam (1 kg)": {
+      "commodity": "Elephant Yam (Suran)",
+      "wholesale_median_per_kg": 35,
+      "retail_price_per_kg": 49,
+      "unit": "kg",
+      "markets_reporting": 12,
+      "last_arrival_date": "20/10/2026"
+    },
+    "Capsicum Yellow (1 kg)": {
+      "commodity": "Capsicum",
+      "wholesale_median_per_kg": 55,
+      "retail_price_per_kg": 77,
+      "unit": "kg",
+      "markets_reporting": 9,
+      "last_arrival_date": "20/10/2026"
+    },
+    "Beans (1 kg)": {
+      "commodity": "Beans",
+      "wholesale_median_per_kg": 42,
+      "retail_price_per_kg": 59,
+      "unit": "kg",
+      "markets_reporting": 14,
+      "last_arrival_date": "20/10/2026"
+    },
+    "Muringakka / Drumsticks (Pack of 3)": {
+      "commodity": "Drumstick",
+      "wholesale_median_per_kg": 28,
+      "retail_price_per_kg": 39,
+      "unit": "kg",
+      "markets_reporting": 15,
+      "last_arrival_date": "20/10/2026"
+    },
+    "Fresh Grated Coconut (Pack of 2)": {
+      "commodity": "Coconut",
+      "wholesale_median_per_kg": 22,
+      "retail_price_per_kg": 31,
+      "unit": "kg",
+      "markets_reporting": 21,
+      "last_arrival_date": "20/10/2026"
+    },
+    "Small Onions / Shallots (500g)": {
+      "commodity": "Shallot (Small Onion)",
+      "wholesale_median_per_kg": 68,
+      "retail_price_per_kg": 95,
+      "unit": "kg",
+      "markets_reporting": 19,
+      "last_arrival_date": "20/10/2026"
+    },
+    "Kerala Matta Rice (5 kg)": {
+      "commodity": "Rice",
+      "wholesale_median_per_kg": 44,
+      "retail_price_per_kg": 62,
+      "unit": "kg",
+      "markets_reporting": 11,
+      "last_arrival_date": "20/10/2026"
+    },
+    "Cold-Pressed Coconut Oil (1L)": {
+      "commodity": "Coconut Oil",
+      "wholesale_median_per_kg": 150,
+      "retail_price_per_kg": 210,
+      "unit": "L",
+      "markets_reporting": 10,
+      "last_arrival_date": "20/10/2026"
+    }
+  },
+  "raw_commodities": {
+    "Banana - Green": {
+      "wholesale_median_per_kg": 42,
+      "retail_price_per_kg": 59,
+      "markets_reporting": 18,
+      "last_arrival_date": "20/10/2026"
+    },
+    "Tapioca": {
+      "wholesale_median_per_kg": 25,
+      "retail_price_per_kg": 35,
+      "markets_reporting": 16,
+      "last_arrival_date": "20/10/2026"
+    },
+    "Elephant Yam (Suran)": {
+      "wholesale_median_per_kg": 35,
+      "retail_price_per_kg": 49,
+      "markets_reporting": 12,
+      "last_arrival_date": "20/10/2026"
+    },
+    "Capsicum": {
+      "wholesale_median_per_kg": 55,
+      "retail_price_per_kg": 77,
+      "markets_reporting": 9,
+      "last_arrival_date": "20/10/2026"
+    },
+    "Beans": {
+      "wholesale_median_per_kg": 42,
+      "retail_price_per_kg": 59,
+      "markets_reporting": 14,
+      "last_arrival_date": "20/10/2026"
+    },
+    "Drumstick": {
+      "wholesale_median_per_kg": 28,
+      "retail_price_per_kg": 39,
+      "markets_reporting": 15,
+      "last_arrival_date": "20/10/2026"
+    },
+    "Coconut": {
+      "wholesale_median_per_kg": 22,
+      "retail_price_per_kg": 31,
+      "markets_reporting": 21,
+      "last_arrival_date": "20/10/2026"
+    },
+    "Shallot (Small Onion)": {
+      "wholesale_median_per_kg": 68,
+      "retail_price_per_kg": 95,
+      "markets_reporting": 19,
+      "last_arrival_date": "20/10/2026"
+    },
+    "Rice": {
+      "wholesale_median_per_kg": 44,
+      "retail_price_per_kg": 62,
+      "markets_reporting": 11,
+      "last_arrival_date": "20/10/2026"
+    },
+    "Coconut Oil": {
+      "wholesale_median_per_kg": 150,
+      "retail_price_per_kg": 210,
+      "markets_reporting": 10,
+      "last_arrival_date": "20/10/2026"
+    }
+  },
+  "unmapped_commodities": [
+    { "commodity": "Amaranthus", "wholesale_median_per_kg": 30, "retail_price_per_kg": 42, "markets_reporting": 8 },
+    { "commodity": "Bitter gourd", "wholesale_median_per_kg": 45, "retail_price_per_kg": 63, "markets_reporting": 14 },
+    { "commodity": "Bottle gourd", "wholesale_median_per_kg": 24, "retail_price_per_kg": 34, "markets_reporting": 10 },
+    { "commodity": "Brinjal", "wholesale_median_per_kg": 32, "retail_price_per_kg": 45, "markets_reporting": 16 },
+    { "commodity": "Cabbage", "wholesale_median_per_kg": 26, "retail_price_per_kg": 36, "markets_reporting": 18 },
+    { "commodity": "Carrot", "wholesale_median_per_kg": 48, "retail_price_per_kg": 67, "markets_reporting": 17 },
+    { "commodity": "Colocasia", "wholesale_median_per_kg": 40, "retail_price_per_kg": 56, "markets_reporting": 7 },
+    { "commodity": "Cucumber(Kheera)", "wholesale_median_per_kg": 22, "retail_price_per_kg": 31, "markets_reporting": 13 },
+    { "commodity": "Green Chilli", "wholesale_median_per_kg": 52, "retail_price_per_kg": 73, "markets_reporting": 19 },
+    { "commodity": "Ladies Finger", "wholesale_median_per_kg": 38, "retail_price_per_kg": 53, "markets_reporting": 18 },
+    { "commodity": "Potato", "wholesale_median_per_kg": 32, "retail_price_per_kg": 45, "markets_reporting": 20 },
+    { "commodity": "Pumpkin", "wholesale_median_per_kg": 18, "retail_price_per_kg": 25, "markets_reporting": 12 },
+    { "commodity": "Snakeguard", "wholesale_median_per_kg": 28, "retail_price_per_kg": 39, "markets_reporting": 11 },
+    { "commodity": "Tomato", "wholesale_median_per_kg": 34, "retail_price_per_kg": 48, "markets_reporting": 22 }
+  ]
+}

@@ -1,32 +1,77 @@
-import React, { useState } from 'react'
-import { Users, Plus, ChevronRight, ShoppingBag, List } from 'lucide-react'
-import { suggestAvatarKey, AVATAR_REGISTRY } from '../../config/avatars'
+import React, { useState, useRef, useCallback, useEffect } from 'react'
+import {
+  Users,
+  Plus,
+  ChevronRight,
+  ChevronLeft,
+  List,
+  Droplets,
+  Heart,
+  TrendingDown,
+  Scale,
+  Dumbbell,
+  Sprout,
+  Activity,
+  Trash2,
+} from 'lucide-react'
 
-function get3dAvatarPath(member) {
+function get3dAvatarKey(member) {
+  const name = (member?.name || '').toLowerCase()
   const role = (member?.role || '').toUpperCase()
   const key = (member?.avatarKey || '').toLowerCase()
   const gender = (member?.gender || '').toUpperCase()
   const age = Number(member?.age)
 
-  if (key === 'grandfather' || role === 'GRANDFATHER' || (age >= 60 && gender === 'MALE')) {
-    return '/images/avatars-3d/grandfather.png'
+  if (name.includes('madhavan') || key === 'grandfather' || role === 'GRANDFATHER' || (age >= 60 && gender === 'MALE')) {
+    return 'grandfather'
   }
-  if (key === 'grandmother' || role === 'GRANDMOTHER' || (age >= 60 && gender === 'FEMALE')) {
-    return '/images/avatars-3d/grandmother.png'
+  if (name.includes('sarada') || key === 'grandmother' || role === 'GRANDMOTHER' || (age >= 60 && gender === 'FEMALE')) {
+    return 'grandmother'
   }
-  if (key === 'father' || role === 'FATHER' || (age >= 25 && gender === 'MALE')) {
-    return '/images/avatars-3d/father.png'
+  if (name.includes('rajesh') || key === 'father' || role === 'FATHER' || (age >= 25 && gender === 'MALE')) {
+    return 'father'
   }
-  if (key === 'mother' || role === 'MOTHER' || (age >= 25 && gender === 'FEMALE')) {
-    return '/images/avatars-3d/mother.png'
+  if (name.includes('deepa') || key === 'mother' || role === 'MOTHER' || (age >= 25 && gender === 'FEMALE')) {
+    return 'mother'
   }
-  if (key === 'son' || role === 'SON' || (age < 25 && gender === 'MALE')) {
-    return '/images/avatars-3d/son.png'
+  if (name.includes('rahul') || key === 'son' || role === 'SON' || (age < 25 && gender === 'MALE')) {
+    return 'son'
   }
-  if (key === 'daughter' || role === 'DAUGHTER' || (age < 25 && gender === 'FEMALE')) {
-    return '/images/avatars-3d/daughter.png'
+  if (name.includes('ananya') || key === 'daughter' || role === 'DAUGHTER' || (age < 25 && gender === 'FEMALE')) {
+    return 'daughter'
   }
-  return '/images/avatars-3d/father.png'
+  return 'father'
+}
+
+/**
+ * Resolves tailored wellness badge matching reference layout:
+ * Low sugar, Heart care, Lose weight, Maintain weight, Gain muscle, Grow healthy
+ */
+function getMemberBadge(member) {
+  const name = (member?.name || '').toLowerCase()
+  const role = (member?.role || '').toUpperCase()
+  const rawGoal = (member?.goal || member?.healthGoal || '').toLowerCase()
+  const age = Number(member?.age)
+
+  if (rawGoal.includes('sugar') || rawGoal.includes('diabet') || name.includes('madhavan') || role === 'GRANDFATHER') {
+    return { label: member?.goal || 'Low sugar', Icon: Droplets }
+  }
+  if (rawGoal.includes('heart') || rawGoal.includes('bp') || rawGoal.includes('cardio') || name.includes('sarada') || role === 'GRANDMOTHER') {
+    return { label: member?.goal || 'Heart care', Icon: Heart }
+  }
+  if (rawGoal.includes('lose') || rawGoal.includes('loss') || name.includes('rajesh') || (role === 'FATHER' && !rawGoal.includes('maintain'))) {
+    return { label: member?.goal || 'Lose weight', Icon: TrendingDown }
+  }
+  if (rawGoal.includes('muscle') || rawGoal.includes('gain') || name.includes('rahul') || role === 'SON') {
+    return { label: member?.goal || 'Gain muscle', Icon: Dumbbell }
+  }
+  if (rawGoal.includes('grow') || name.includes('ananya') || role === 'DAUGHTER' || (age > 0 && age <= 12)) {
+    return { label: member?.goal || 'Grow healthy', Icon: Sprout }
+  }
+  if (rawGoal.includes('energy') || rawGoal.includes('active')) {
+    return { label: member?.goal || 'Stay active', Icon: Activity }
+  }
+  return { label: member?.goal || 'Maintain weight', Icon: Scale }
 }
 
 export default function FamilyStrip({
@@ -35,17 +80,100 @@ export default function FamilyStrip({
   onSelectMember,
   onEditMember,
   onAddMember,
+  onDeleteMember,
 }) {
   const [activeView, setActiveView] = useState('family') // 'family' | 'list'
   const safeMembers = Array.isArray(members) && members.length > 0 ? members.filter(Boolean) : []
 
+  // Horizontal Scroll & Drag-to-Scroll State
+  const scrollContainerRef = useRef(null)
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(false)
+
+  const isDraggingRef = useRef(false)
+  const [isDragging, setIsDragging] = useState(false)
+  const dragStartXRef = useRef(0)
+  const dragStartScrollLeftRef = useRef(0)
+  const hasDraggedRef = useRef(false)
+
+  const updateScrollState = useCallback(() => {
+    const el = scrollContainerRef.current
+    if (!el) return
+    const { scrollLeft, scrollWidth, clientWidth } = el
+    setCanScrollLeft(scrollLeft > 6)
+    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 6)
+  }, [])
+
+  useEffect(() => {
+    updateScrollState()
+    const handleResize = () => updateScrollState()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [updateScrollState, safeMembers.length, activeView])
+
+  const handleScroll = () => {
+    updateScrollState()
+  }
+
+  const scrollByAmount = (direction) => {
+    const el = scrollContainerRef.current
+    if (!el) return
+    // Scroll by approximately one card width + gap (approx 236px)
+    const cardWidth = window.innerWidth < 640 ? window.innerWidth * 0.44 + 16 : 236
+    el.scrollBy({
+      left: direction * cardWidth,
+      behavior: 'smooth',
+    })
+  }
+
+  // Mouse Drag-to-Scroll handlers
+  const handleMouseDown = (e) => {
+    if (e.button !== 0) return // primary click only
+    const el = scrollContainerRef.current
+    if (!el) return
+    isDraggingRef.current = true
+    setIsDragging(true)
+    hasDraggedRef.current = false
+    dragStartXRef.current = e.pageX - el.offsetLeft
+    dragStartScrollLeftRef.current = el.scrollLeft
+  }
+
+  const handleMouseMove = (e) => {
+    if (!isDraggingRef.current) return
+    const el = scrollContainerRef.current
+    if (!el) return
+    e.preventDefault()
+    const x = e.pageX - el.offsetLeft
+    const walk = (x - dragStartXRef.current) * 1.3
+    if (Math.abs(walk) > 6) {
+      hasDraggedRef.current = true
+    }
+    el.scrollLeft = dragStartScrollLeftRef.current - walk
+  }
+
+  const handleMouseUp = () => {
+    isDraggingRef.current = false
+    setIsDragging(false)
+    setTimeout(() => {
+      hasDraggedRef.current = false
+    }, 50)
+  }
+
+  const handleMouseLeave = () => {
+    isDraggingRef.current = false
+    setIsDragging(false)
+    setTimeout(() => {
+      hasDraggedRef.current = false
+    }, 50)
+  }
+
   return (
-    <div className="w-full bg-white rounded-[28px] sm:rounded-[32px] p-6 sm:p-8 border border-[#E8ECE8] shadow-[0_4px_24px_rgba(0,0,0,0.02)] select-none">
+    <div className="w-full bg-white rounded-[28px] sm:rounded-[32px] p-6 sm:p-8 xl:p-9 border border-[#E8ECE8] shadow-[0_4px_24px_rgba(0,0,0,0.02)] select-none">
       {/* ── CARD HEADER ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-[#E5EFE6] text-[#2E5F3E] flex items-center justify-center shrink-0">
-            <Users size={18} strokeWidth={2.2} />
+          <div className="w-10 h-10 rounded-full bg-[#E5EFE6] text-[#2E5F3E] flex items-center justify-center shrink-0">
+            <Users size={20} strokeWidth={2.2} />
           </div>
           <div className="flex items-center gap-2.5">
             <h2 className="text-xl sm:text-2xl font-bold text-[#1A3826] tracking-tight">
@@ -57,8 +185,40 @@ export default function FamilyStrip({
           </div>
         </div>
 
-        {/* View Toggle Group */}
+        {/* View Toggle Group & Desktop Carousel Navigation Arrows */}
         <div className="flex items-center gap-2">
+          {/* Desktop Carousel Navigation Arrows (visible in family view) */}
+          {activeView === 'family' && (
+            <div className="hidden sm:flex items-center gap-1.5 mr-1">
+              <button
+                type="button"
+                onClick={() => scrollByAmount(-1)}
+                disabled={!canScrollLeft}
+                aria-label="Scroll family cards left"
+                className={`w-8 h-8 rounded-full border flex items-center justify-center transition-all ${
+                  canScrollLeft
+                    ? 'text-[#2E5F3E] border-[#D5E1D5] hover:bg-[#EBF3EC] cursor-pointer'
+                    : 'text-[#BAC7BA] border-[#E8ECE8] cursor-not-allowed opacity-35'
+                }`}
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollByAmount(1)}
+                disabled={!canScrollRight}
+                aria-label="Scroll family cards right"
+                className={`w-8 h-8 rounded-full border flex items-center justify-center transition-all ${
+                  canScrollRight
+                    ? 'text-[#2E5F3E] border-[#D5E1D5] hover:bg-[#EBF3EC] cursor-pointer'
+                    : 'text-[#BAC7BA] border-[#E8ECE8] cursor-not-allowed opacity-35'
+                }`}
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          )}
+
           <button
             type="button"
             onClick={() => setActiveView('family')}
@@ -67,7 +227,7 @@ export default function FamilyStrip({
               color: activeView === 'family' ? '#FFFFFF' : '#4A6353',
               borderColor: activeView === 'family' ? '#2E5F3E' : '#D5E1D5',
             }}
-            className="px-3.5 sm:px-4 py-2 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-semibold flex items-center gap-2 transition-all cursor-pointer border shadow-2xs"
+            className="px-4 py-2 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-semibold flex items-center gap-2 transition-all cursor-pointer border shadow-2xs"
           >
             <Users size={15} />
             <span>Family View</span>
@@ -81,7 +241,7 @@ export default function FamilyStrip({
               color: activeView === 'list' ? '#FFFFFF' : '#4A6353',
               borderColor: activeView === 'list' ? '#2E5F3E' : '#D5E1D5',
             }}
-            className="px-3.5 sm:px-4 py-2 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-semibold flex items-center gap-2 transition-all cursor-pointer border"
+            className="px-4 py-2 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-semibold flex items-center gap-2 transition-all cursor-pointer border"
           >
             <List size={15} />
             <span>List View</span>
@@ -89,103 +249,208 @@ export default function FamilyStrip({
         </div>
       </div>
 
-      {/* ── FAMILY VIEW: ROW OF 7 ARCHED CAPSULE CARDS (6 MEMBERS + ADD MEMBER) ── */}
+      {/* ── FAMILY VIEW: HORIZONTAL SCROLLING ROW (Never wraps, page height stays constant) ── */}
       {activeView === 'family' ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3.5 sm:gap-4 items-stretch">
-          {safeMembers.map((m) => {
-            const isSelected = String(selectedMemberId) === String(m.id)
-            const avatar3dPath = get3dAvatarPath(m)
+        <div className="relative w-full overflow-hidden">
+          {/* Left Fade Overlay (shows when scrolled horizontally to indicate left items) */}
+          {canScrollLeft && (
+            <div
+              aria-hidden="true"
+              className="hidden sm:block absolute left-0 top-0 bottom-2 w-10 sm:w-16 pointer-events-none z-20 transition-opacity duration-300"
+              style={{
+                background: 'linear-gradient(to right, #FFFFFF 15%, transparent 100%)',
+              }}
+            />
+          )}
 
-            return (
-              <div
-                key={m.id || m.name}
-                onClick={() => {
-                  onSelectMember(m.id)
-                  if (onEditMember) onEditMember(m)
-                }}
-                className={`rounded-[24px] bg-white p-2.5 sm:p-3 border transition-all duration-200 cursor-pointer flex flex-col justify-between group ${
-                  isSelected
-                    ? 'border-[#2E5F3E] ring-2 ring-[#2E5F3E]/40 shadow-md scale-[1.02]'
-                    : 'border-[#E8ECE8] shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-[#D5E2D5]'
-                }`}
-              >
-                {/* 1. Arched Pill Aperture with 3D Avatar (Taller, Prominent & Bigger People) */}
-                <div className="relative w-full h-[205px] sm:h-[225px] rounded-t-[76px] rounded-b-[20px] bg-[#E4EEE5] overflow-hidden flex items-end justify-center group-hover:bg-[#DEEADC] transition-colors pt-2">
-                  {/* Subtle ground oval shadow */}
-                  <div className="absolute bottom-1 w-2/3 h-2 rounded-full bg-[#1A3826]/12 blur-[2px] pointer-events-none" />
+          {/* Right Fade Overlay (signals that user can scroll sideways) */}
+          {canScrollRight && (
+            <div
+              aria-hidden="true"
+              className="absolute right-0 top-0 bottom-2 w-12 sm:w-20 pointer-events-none z-20 transition-opacity duration-300"
+              style={{
+                background: 'linear-gradient(to left, #FFFFFF 15%, transparent 100%)',
+              }}
+            />
+          )}
 
-                  {/* 3D Character (Bigger Scale: h-full + scale-112 to make the people prominent) */}
-                  <img
-                    src={avatar3dPath}
-                    alt={m.name || 'Family member'}
-                    className="relative z-10 h-full w-auto max-w-none object-contain object-bottom scale-112 origin-bottom filter drop-shadow-[0_8px_14px_rgba(31,60,40,0.18)] transition-transform duration-300 group-hover:scale-120 pointer-events-none"
-                    loading="lazy"
-                  />
-                </div>
+          {/* Single horizontal scroll row */}
+          <div
+            ref={scrollContainerRef}
+            onScroll={handleScroll}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseLeave}
+            className="horizontal-cards-row select-none"
+            style={{
+              cursor: isDragging ? 'grabbing' : 'grab',
+            }}
+          >
+            {safeMembers.map((m) => {
+              const isSelected = String(selectedMemberId) === String(m.id)
+              const avatarKey = get3dAvatarKey(m)
+              const badge = getMemberBadge(m)
+              const BadgeIcon = badge.Icon
 
-                {/* 2. Member Info Below Arch */}
-                <div className="pt-3 px-1 flex flex-col flex-1 justify-between">
-                  <div>
-                    {/* Name + Chevron Button */}
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="font-bold text-sm sm:text-base text-[#1A3826] tracking-tight truncate">
-                        {m.name}
-                      </span>
-                      <span className="w-6 h-6 rounded-full bg-[#EDF3ED] text-[#4A6353] flex items-center justify-center shrink-0 group-hover:bg-[#2E5F3E] group-hover:text-white transition-colors">
-                        <ChevronRight size={13} />
-                      </span>
+              return (
+                <div
+                  key={m.id || m.name}
+                  onClick={(e) => {
+                    if (hasDraggedRef.current) {
+                      e.preventDefault()
+                      return
+                    }
+                    onSelectMember(m.id)
+                    if (onEditMember) onEditMember(m)
+                  }}
+                  className={`shrink-0 w-[44vw] max-w-[180px] sm:w-[210px] md:w-[220px] rounded-[26px] sm:rounded-[30px] bg-white p-3.5 sm:p-4 border transition-all duration-300 cursor-pointer flex flex-col justify-between group ${
+                    isSelected
+                      ? 'border-[#2E5F3E] ring-2 ring-[#2E5F3E]/40 shadow-lg scale-[1.01]'
+                      : 'border-[#E8ECE8] shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-xl hover:border-[#D5E2D5]'
+                  }`}
+                  style={{
+                    flex: '0 0 auto',
+                    scrollSnapAlign: 'start',
+                  }}
+                >
+                  {/* 1. High Resolution Photo Stage with Ayurvedic Backdrop & CSS Ellipse Ground Shadow */}
+                  <div className="relative w-full h-[280px] sm:h-[310px] md:h-[330px] lg:h-[340px] xl:h-[350px] rounded-[22px] sm:rounded-[24px] bg-[#EBF2EB] overflow-hidden flex items-end justify-center group-hover:bg-[#E3EDE3] transition-colors p-2.5 sm:p-3 border border-[#DFE7DF]/90">
+                    {/* Soft Kerala Ayurvedic organic leaf watercolor wash backdrop */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-45">
+                      <svg width="100%" height="100%" viewBox="0 0 200 320" fill="none" preserveAspectRatio="none">
+                        <path
+                          d="M25 70C65 45 135 65 170 120C195 165 180 240 135 275C90 300 35 270 15 210C-5 155 5 80 25 70Z"
+                          fill="#D9E6DA"
+                        />
+                        <path
+                          d="M178 200C168 180 152 175 136 180C130 195 142 215 162 225C172 220 178 210 178 200Z"
+                          stroke="#9EBFA0"
+                          strokeWidth="1.6"
+                          strokeDasharray="2 2"
+                          fill="none"
+                          opacity="0.7"
+                        />
+                      </svg>
                     </div>
 
-                    {/* Age */}
-                    {m.age && (
-                      <div className="text-xs text-[#5A6B5F] font-normal mt-0.5 mb-2">
-                        {m.age} yrs
-                      </div>
-                    )}
+                    {/* Ground shadow drawn in CSS (sharp radial-gradient ellipse under the feet, no baked blurry shadow) */}
+                    <div
+                      aria-hidden="true"
+                      className="absolute bottom-2.5 left-1/2 -translate-x-1/2 w-[68%] h-3 rounded-full pointer-events-none z-[5]"
+                      style={{
+                        background: 'radial-gradient(ellipse at center, rgba(26, 56, 38, 0.28) 0%, rgba(26, 56, 38, 0.12) 45%, transparent 72%)',
+                      }}
+                    />
+
+                    {/* 3D Character: Full Standing View (Head to Toe) served with high-res WebP / srcset */}
+                    <picture className="relative z-10 h-full w-full flex items-end justify-center pointer-events-none">
+                      <source
+                        type="image/webp"
+                        srcSet={`/images/avatars-3d/${avatarKey}.webp 1200w, /images/avatars-3d/${avatarKey}@2x.webp 600w, /images/avatars-3d/${avatarKey}@1x.webp 300w`}
+                        sizes="(max-width: 640px) 180px, 220px"
+                      />
+                      <img
+                        src={`/images/avatars-3d/${avatarKey}.webp`}
+                        alt={m.name || 'Family member'}
+                        width={400}
+                        height={1200}
+                        loading="lazy"
+                        decoding="async"
+                        className="h-full w-full object-contain object-bottom pointer-events-none select-none transition-transform duration-300 group-hover:scale-[1.03]"
+                        style={{
+                          imageRendering: 'auto',
+                        }}
+                      />
+                    </picture>
                   </div>
 
-                  {/* Goal Badge (Maintain weight style) */}
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#EBF3EC] text-[#2E5F3E] text-[11px] font-semibold border border-[#D5E4D6]/60 w-fit mt-auto">
-                    <ShoppingBag size={11} className="shrink-0 text-[#2E5F3E]" />
-                    <span className="truncate">
-                      {m.goal || 'Maintain weight'}
-                    </span>
+                  {/* 2. Member Info Below Photo */}
+                  <div className="pt-3.5 px-1 flex flex-col flex-1 justify-between">
+                    <div>
+                      {/* Name + Circular Action Buttons */}
+                      <div className="flex items-center justify-between gap-1">
+                        <span className="font-bold text-base sm:text-[17px] text-[#1A3826] tracking-tight truncate">
+                          {m.name}
+                        </span>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {onDeleteMember && (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                onDeleteMember(m)
+                              }}
+                              className="w-7 h-7 rounded-full bg-[#FEE2E2]/60 hover:bg-[#FEE2E2] text-[#DC2626] flex items-center justify-center transition-all cursor-pointer opacity-80 hover:opacity-100 hover:scale-105"
+                              title={`Delete ${m.name}`}
+                              aria-label={`Delete ${m.name}`}
+                            >
+                              <Trash2 size={13} strokeWidth={2.2} />
+                            </button>
+                          )}
+                          <span className="w-6 h-6 rounded-full bg-[#EDF3ED] text-[#4A6353] flex items-center justify-center shrink-0 group-hover:bg-[#2E5F3E] group-hover:text-white transition-colors">
+                            <ChevronRight size={13} />
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Age */}
+                      <div className="text-xs text-[#5A6B5F] font-normal mt-0.5 mb-2">
+                        {m.age ? `${m.age} yrs` : 'Member'}
+                      </div>
+                    </div>
+
+                    {/* Health Goal Pill Badge */}
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EBF3EC] text-[#2E5F3E] text-[11px] sm:text-xs font-semibold border border-[#D5E4D6]/70 w-fit mt-1">
+                      <BadgeIcon size={12} className="shrink-0 text-[#2E5F3E]" />
+                      <span className="truncate">{badge.label}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )
-          })}
+              )
+            })}
 
-          {/* 7th Card: Add Member Card */}
-          <div
-            onClick={onAddMember}
-            className="rounded-[24px] bg-[#EAF1EA]/70 p-2.5 sm:p-3 border border-[#E0EBE0] hover:bg-[#E4EDE4] transition-all duration-200 cursor-pointer flex flex-col justify-between group"
-          >
-            {/* Arched Dashed Outline Area */}
-            <div className="relative w-full h-[205px] sm:h-[225px] rounded-t-[76px] rounded-b-[20px] border-2 border-dashed border-[#A8C6AB] flex items-center justify-center overflow-hidden">
-              {/* Circular + button */}
-              <div className="w-12 h-12 rounded-full bg-[#3D774D] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
-                <Plus size={22} strokeWidth={2.5} />
+            {/* Last Item in Row: "Add Member" Card (Matching Dimensions & Height) */}
+            <div
+              onClick={(e) => {
+                if (hasDraggedRef.current) {
+                  e.preventDefault()
+                  return
+                }
+                if (onAddMember) onAddMember()
+              }}
+              className="shrink-0 w-[44vw] max-w-[180px] sm:w-[210px] md:w-[220px] rounded-[26px] sm:rounded-[30px] bg-[#F7FAF7] p-3.5 sm:p-4 border border-[#DFE8DF] hover:bg-[#EEF5EE] transition-all duration-300 cursor-pointer flex flex-col justify-between group"
+              style={{
+                flex: '0 0 auto',
+                scrollSnapAlign: 'start',
+              }}
+            >
+              {/* Dashed Border Stage Matching Avatar Box Height */}
+              <div className="relative w-full h-[280px] sm:h-[310px] md:h-[330px] lg:h-[340px] xl:h-[350px] rounded-[22px] sm:rounded-[24px] border-2 border-dashed border-[#A4C2A7] bg-[#F1F6F1]/70 flex items-center justify-center overflow-hidden group-hover:border-[#2E5F3E] transition-colors">
+                {/* Circular + button */}
+                <div className="w-16 h-16 rounded-full bg-[#2E5F3E] text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                  <Plus size={26} strokeWidth={2.4} />
+                </div>
+
+                {/* Sprout leaf accent in corner */}
+                <div className="absolute bottom-3 right-3 opacity-60 text-[#2E5F3E]">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 22v-8m0 0a5 5 0 0 1 5-5h2a5 5 0 0 1-5 5h-2zm0 0a5 5 0 0 0-5-5H5a5 5 0 0 0 5 5h2z" />
+                  </svg>
+                </div>
               </div>
 
-              {/* Delicate sprout leaf accents in corner */}
-              <div className="absolute bottom-2 right-2 opacity-60 text-[#3D774D]">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 22v-8m0 0a5 5 0 0 1 5-5h2a5 5 0 0 1-5 5h-2zm0 0a5 5 0 0 0-5-5H5a5 5 0 0 0 5 5h2z" />
-                </svg>
-              </div>
-            </div>
+              {/* Add Member Details Below */}
+              <div className="pt-3.5 px-1 text-center flex flex-col flex-1 justify-between">
+                <div>
+                  <div className="font-bold text-base text-[#1A3826]">Add Member</div>
+                  <div className="text-xs text-[#5A6B5F] mt-0.5">New profile</div>
+                </div>
 
-            {/* Add Member Details */}
-            <div className="pt-3 px-1 text-center flex flex-col flex-1 justify-between">
-              <div>
-                <div className="font-bold text-sm text-[#1A3826]">Add Member</div>
-                <div className="text-xs text-[#5A6B5F] mt-0.5">New profile</div>
-              </div>
-
-              {/* Bottom Chevron Circle */}
-              <div className="w-6 h-6 rounded-full bg-[#EDF3ED] text-[#4A6353] flex items-center justify-center mx-auto mt-2.5 group-hover:bg-[#2E5F3E] group-hover:text-white transition-colors">
-                <ChevronRight size={13} />
+                {/* Bottom Chevron Circle */}
+                <div className="w-6 h-6 rounded-full bg-[#EDF3ED] text-[#4A6353] flex items-center justify-center mx-auto mt-2.5 group-hover:bg-[#2E5F3E] group-hover:text-white transition-colors">
+                  <ChevronRight size={13} />
+                </div>
               </div>
             </div>
           </div>
@@ -194,8 +459,10 @@ export default function FamilyStrip({
         /* ── LIST VIEW: COMPACT ACCORDION / ROWS ── */
         <div className="space-y-3">
           {safeMembers.map((m) => {
-            const avatar3dPath = get3dAvatarPath(m)
+            const avatarKey = get3dAvatarKey(m)
             const isSelected = String(selectedMemberId) === String(m.id)
+            const badge = getMemberBadge(m)
+            const BadgeIcon = badge.Icon
 
             return (
               <div
@@ -213,9 +480,12 @@ export default function FamilyStrip({
                 <div className="flex items-center gap-3.5">
                   <div className="w-12 h-12 rounded-full bg-[#E4EEE5] overflow-hidden flex items-end justify-center shrink-0 border border-[#D5E1D5]">
                     <img
-                      src={avatar3dPath}
+                      src={`/images/avatars-3d/${avatarKey}.webp`}
                       alt={m.name}
+                      width={48}
+                      height={48}
                       className="h-full w-auto object-contain object-bottom"
+                      style={{ imageRendering: 'auto' }}
                     />
                   </div>
                   <div>
@@ -226,11 +496,25 @@ export default function FamilyStrip({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <span className="hidden sm:inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#EBF3EC] text-[#2E5F3E] text-xs font-semibold">
-                    <ShoppingBag size={12} />
-                    <span>{m.goal || 'Maintain weight'}</span>
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EBF3EC] text-[#2E5F3E] text-xs font-semibold">
+                    <BadgeIcon size={12} />
+                    <span>{badge.label}</span>
                   </span>
+                  {onDeleteMember && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onDeleteMember(m)
+                      }}
+                      className="w-8 h-8 rounded-full bg-[#FEE2E2]/60 hover:bg-[#FEE2E2] text-[#DC2626] flex items-center justify-center transition-all cursor-pointer"
+                      title={`Delete ${m.name}`}
+                      aria-label={`Delete ${m.name}`}
+                    >
+                      <Trash2 size={14} strokeWidth={2.2} />
+                    </button>
+                  )}
                   <div className="w-7 h-7 rounded-full bg-[#EDF3ED] text-[#4A6353] flex items-center justify-center">
                     <ChevronRight size={15} />
                   </div>

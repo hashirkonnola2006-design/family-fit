@@ -1,9 +1,17 @@
 {
+  "name": "family-fit",
+  "type": "module",
   "scripts": {
     "dev": "npm --prefix familyfit-frontend run dev",
-    "build": "npm --prefix familyfit-frontend run build"
+    "build": "npm --prefix familyfit-frontend run build",
+    "server": "node server/index.js",
+    "start": "node server/index.js",
+    "fetch-prices": "node scripts/fetch-prices.js"
   },
   "dependencies": {
-    "cors": "^2.8.6"
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.8",
+    "express": "^5.3.0",
+    "node-cron": "^4.6.0"
   }
 }

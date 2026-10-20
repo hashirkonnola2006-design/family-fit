@@ -1,27 +1,131 @@
-import { useState } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import {
+  ShoppingCart,
+  X,
+  Plus,
+  Minus,
+  Check,
+  Heart,
+  Sparkles,
+  AlertTriangle,
+  ArrowRight,
+  Trash2,
+  Copy,
+  Info,
+  CheckCircle2,
+  ExternalLink,
+} from 'lucide-react'
 import BottomNav from '../components/BottomNav'
 import MemberAvatar from '../components/MemberAvatar'
 import { useFamily } from '../context/FamilyContext'
 import { useGrocery, KERALA_GROCERY_DATASET } from '../context/GroceryContext'
 import { useTheme } from '../context/ThemeContext'
-
-const BUDGET_PRESETS = [500, 1000, 1500, 2500, 3500, 5000]
+import {
+  RETAIL_MARKUP,
+  mapApiPricesToGroceryItems,
+  formatArrivalDate,
+} from '../utils/commodityMap'
 
 export default function GroceryPage() {
   const { family } = useFamily()
   const { isDark } = useTheme()
-  const { budget, setBudget, budgetPeriod, setBudgetPeriod } = useGrocery()
-  const navigate = useNavigate()
+  const {
+    cart,
+    cartItemsArray,
+    cartCount,
+    cartSubtotal,
+    addToCart,
+    updateCartQuantity,
+    removeFromCart,
+    clearCart,
+  } = useGrocery()
 
+  const navigate = useNavigate()
   const members = Array.isArray(family?.members) ? family.members.filter(Boolean) : []
 
+  // ── States ──
   const [selectedMemberId, setSelectedMemberId] = useState('ALL')
-  const [showBudgetModal, setShowBudgetModal] = useState(false)
-  const [tempBudget, setTempBudget] = useState(budget || 1500)
-  const [toast, setToast] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('ALL')
+  const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState('Recommended')
-  const [favorites, setFavorites] = useState([201]) // default favorite items
+  const [favorites, setFavorites] = useState([201, 212])
+  const [toast, setToast] = useState('')
+  const [isCartOpen, setIsCartOpen] = useState(false)
+  const [onlyBeneficialFilter, setOnlyBeneficialFilter] = useState(true)
+
+  // ── Live Mandi Prices State ──
+  const [rawApiResponse, setRawApiResponse] = useState(null)
+  const [mappedPrices, setMappedPrices] = useState({})
+  const [isLoadingPrices, setIsLoadingPrices] = useState(true)
+  const [priceError, setPriceError] = useState(null)
+
+  // Fetch /api/prices on load from backend proxy
+  useEffect(() => {
+    let isMounted = true
+    setIsLoadingPrices(true)
+    setPriceError(null)
+
+    fetch('/api/prices')
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        return res.json()
+      })
+      .then((data) => {
+        if (!isMounted) return
+        if (data && Array.isArray(data.items)) {
+          setRawApiResponse(data)
+          const mapped = mapApiPricesToGroceryItems(data.items, RETAIL_MARKUP)
+          setMappedPrices(mapped)
+          if (data.stale) {
+            console.info('[PRICES] Serving cached Kerala mandi data')
+          }
+        } else {
+          setPriceError(data?.error || 'No mandi records returned')
+        }
+      })
+      .catch((err) => {
+        if (!isMounted) return
+        console.warn('[PRICES] Proxy fetch failed:', err.message)
+        setPriceError('Could not connect to live prices server')
+      })
+      .finally(() => {
+        if (isMounted) setIsLoadingPrices(false)
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  // ── Helper: Price Lookup ──
+  const getItemPriceInfo = (item) => {
+    if (!item) return { priceText: '₹0', rawPrice: 0, marketDateText: null, isLive: false }
+
+    const liveMatch = mappedPrices[item.name]
+
+    if (liveMatch) {
+      return {
+        priceText: `~₹${liveMatch.finalItemPrice}`,
+        unitText: liveMatch.unit || '1 kg',
+        rawPrice: liveMatch.finalItemPrice,
+        wholesalePrice: liveMatch.wholesalePerKg,
+        marketDateText: liveMatch.smallPriceText,
+        isLive: true,
+        marketsCount: liveMatch.marketsReporting,
+      }
+    }
+
+    return {
+      priceText: item.price ? `₹${item.price}` : 'Market Price',
+      unitText: item.unit || '1 kg',
+      rawPrice: item.price || 0,
+      wholesalePrice: null,
+      marketDateText: null,
+      isLive: false,
+      marketsCount: 0,
+    }
+  }
 
   const showToastMsg = (msg) => {
     setToast(msg)
@@ -34,48 +138,163 @@ export default function GroceryPage() {
     )
   }
 
-  const selectedMember =
-    selectedMemberId === 'ALL'
-      ? null
-      : members.find((m) => m && String(m.id) === String(selectedMemberId)) || null
+  // ── Member Selection ──
+  const selectedMember = useMemo(() => {
+    if (selectedMemberId === 'ALL') return null
+    return members.find((m) => m && String(m.id) === String(selectedMemberId)) || null
+  }, [members, selectedMemberId])
 
-  const rawRecommendations = KERALA_GROCERY_DATASET
+  // ── Allergy Matching Function ──
+  const checkMemberAllergyMatch = (itemAllergies, memberAllergies) => {
+    if (!itemAllergies?.length || !memberAllergies) return false
+    const memList = Array.isArray(memberAllergies)
+      ? memberAllergies
+      : typeof memberAllergies === 'string'
+      ? memberAllergies.split(',').map((s) => s.trim())
+      : []
 
-  // Filter produce items for primary view (Produce category first)
-  const produceItems = rawRecommendations.filter(
-    (item) => item.category === 'Produce'
-  )
-  const otherItems = rawRecommendations.filter(
-    (item) => item.category !== 'Produce'
-  )
-
-  const handlePeriodChange = (period) => {
-    setBudgetPeriod(period)
-    if (period === 'Daily' && budget > 1000) setBudget(300)
-    else if (period === 'Weekly' && (budget < 500 || budget > 3000))
-      setBudget(1500)
-    else if (period === '2-Week') setBudget(1500)
-    showToastMsg(`Recommendations scaled to ${period} budget!`)
+    return memList.some((m) => {
+      const cleanM = (m || '').toLowerCase().trim()
+      if (!cleanM || cleanM === 'none') return false
+      return itemAllergies.some((i) => {
+        const cleanI = (i || '').toLowerCase().trim()
+        return cleanM.includes(cleanI) || cleanI.includes(cleanM)
+      })
+    })
   }
 
-  const handleSaveBudget = (e) => {
-    e.preventDefault()
-    setBudget(Math.max(10, parseFloat(tempBudget) || 1500))
-    setShowBudgetModal(false)
-    showToastMsg('Target budget updated! 💰')
+  // Find all family members who have an allergy conflict with this item
+  const getConflictingMembers = (item) => {
+    if (!item?.allergies || item.allergies.length === 0) return []
+    return members.filter((m) => checkMemberAllergyMatch(item.allergies, m.allergies))
+  }
+
+  // ── Health Benefit Match for Selected Member ──
+  const checkIsGoodForMember = (item, member) => {
+    if (!item || !member) return false
+
+    // Check conditions
+    const memberConditions = Array.isArray(member.healthConditions)
+      ? member.healthConditions.map((c) => (c || '').toLowerCase().trim())
+      : typeof member.healthConditions === 'string'
+      ? member.healthConditions.split(',').map((c) => c.toLowerCase().trim())
+      : []
+
+    const matchesCondition = (item.goodForConditions || []).some((itemCond) =>
+      memberConditions.some((mCond) => mCond.includes(itemCond) || itemCond.includes(mCond))
+    )
+
+    // Check goals
+    const memberGoal = (member.goal || '').toLowerCase().trim()
+    const matchesGoal = (item.goodForGoals || []).some((itemGoal) =>
+      memberGoal.includes(itemGoal) || itemGoal.includes(memberGoal)
+    )
+
+    return matchesCondition || matchesGoal
+  }
+
+  // ── Filter and Sort Groceries ──
+  const processedItems = useMemo(() => {
+    let items = [...KERALA_GROCERY_DATASET]
+
+    // 1. Category Filter
+    if (selectedCategory !== 'ALL') {
+      items = items.filter((item) => item.category === selectedCategory)
+    }
+
+    // 2. Search Query
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim()
+      items = items.filter(
+        (item) =>
+          item.name.toLowerCase().includes(q) ||
+          item.whyBuy.toLowerCase().includes(q) ||
+          item.category.toLowerCase().includes(q)
+      )
+    }
+
+    // 3. Member Filter / Sorting ("if u click a person, it will show foods that are good for that person")
+    if (selectedMember) {
+      if (onlyBeneficialFilter) {
+        // Show foods that are good for this person (excluding unsafe allergic foods)
+        items = items.filter((item) => {
+          const isGood = checkIsGoodForMember(item, selectedMember)
+          const isAllergic = checkMemberAllergyMatch(item.allergies, selectedMember.allergies)
+          return isGood && !isAllergic
+        })
+      } else {
+        // Prioritize beneficial foods first, then safe foods, and unsafe at the very end
+        items.sort((a, b) => {
+          const aGood = checkIsGoodForMember(a, selectedMember)
+          const bGood = checkIsGoodForMember(b, selectedMember)
+          const aAllergic = checkMemberAllergyMatch(a.allergies, selectedMember.allergies)
+          const bAllergic = checkMemberAllergyMatch(b.allergies, selectedMember.allergies)
+
+          if (aAllergic && !bAllergic) return 1
+          if (!aAllergic && bAllergic) return -1
+          if (aGood && !bGood) return -1
+          if (!aGood && bGood) return 1
+          return 0
+        })
+      }
+    }
+
+    // 4. Sort Filter
+    if (sortBy === 'PriceLowHigh') {
+      items.sort(
+        (a, b) => (getItemPriceInfo(a).rawPrice || 0) - (getItemPriceInfo(b).rawPrice || 0)
+      )
+    } else if (sortBy === 'PriceHighLow') {
+      items.sort(
+        (a, b) => (getItemPriceInfo(b).rawPrice || 0) - (getItemPriceInfo(a).rawPrice || 0)
+      )
+    }
+
+    return items
+  }, [
+    selectedCategory,
+    searchQuery,
+    selectedMember,
+    onlyBeneficialFilter,
+    sortBy,
+    mappedPrices,
+    members,
+  ])
+
+  // ── Copy Shopping List ──
+  const handleCopyCart = () => {
+    if (cartItemsArray.length === 0) {
+      showToastMsg('Your cart is empty!')
+      return
+    }
+
+    const lines = [
+      '🛒 FamilyFit Kerala Grocery Shopping List:',
+      ...cartItemsArray.map(
+        (it, idx) =>
+          `${idx + 1}. ${it.name} - ${it.quantity} × ₹${it.price} = ₹${it.quantity * it.price}`
+      ),
+      `\nTotal Estimated Cost: ₹${cartSubtotal}`,
+      'Prices verified with Kerala Mandi Agmarknet data.',
+    ]
+
+    navigator.clipboard.writeText(lines.join('\n')).then(() => {
+      showToastMsg('Shopping list copied to clipboard! 📋')
+    })
   }
 
   const orangeColor = '#F4511E'
+  const greenColor = '#10B981'
 
   return (
     <div
       className="grocery-page-root"
       style={{
-        background: isDark ? '#0A0F1D' : '#FAFAFA',
-        fontFamily: "'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif",
+        background: isDark ? '#0A0F1D' : '#F8FAF9',
+        fontFamily: "'Nunito', 'Plus Jakarta Sans', sans-serif",
         color: isDark ? '#F8FAFC' : '#111827',
         minHeight: '100vh',
-        paddingBottom: 80,
+        paddingBottom: 90,
       }}
     >
       {/* Toast Notification */}
@@ -86,17 +305,34 @@ export default function GroceryPage() {
             top: 24,
             left: '50%',
             transform: 'translateX(-50%)',
-            background: orangeColor,
+            background: '#1F2937',
             color: 'white',
             padding: '12px 24px',
             borderRadius: 30,
             fontSize: 14,
-            fontWeight: 700,
-            zIndex: 3000,
-            boxShadow: '0 8px 24px rgba(244,81,30,0.3)',
+            fontWeight: 800,
+            zIndex: 4000,
+            boxShadow: '0 10px 30px rgba(0,0,0,0.35)',
+            border: '2px solid rgba(255,255,255,0.15)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
           }}
         >
-          {toast}
+          <div
+            style={{
+              width: 22,
+              height: 22,
+              borderRadius: '50%',
+              background: '#58CC02',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Check size={14} strokeWidth={3} color="#FFFFFF" />
+          </div>
+          <span>{toast}</span>
         </div>
       )}
 
@@ -106,56 +342,76 @@ export default function GroceryPage() {
           width: '100%',
           position: 'relative',
           background: `${orangeColor} url('/grocery_user_hero.jpg') no-repeat right center / cover`,
-          minHeight: 330,
+          minHeight: 250,
           boxSizing: 'border-box',
           overflow: 'hidden',
         }}
       >
-        {/* Inner Centered Content Container */}
         <div
           style={{
-            maxWidth: 1380,
+            maxWidth: 1440,
             margin: '0 auto',
-            padding: '56px 32px 80px 32px',
+            padding: '44px 32px 48px 32px',
             display: 'flex',
             alignItems: 'center',
+            justifyContent: 'space-between',
             boxSizing: 'border-box',
+            flexWrap: 'wrap',
+            gap: 20,
           }}
         >
-          {/* Hero Left Writings */}
-          <div style={{ position: 'relative', zIndex: 2, maxWidth: 560 }}>
-            <h1
+          {/* Hero Left Content */}
+          <div style={{ position: 'relative', zIndex: 2, maxWidth: 640 }}>
+            <span
               style={{
-                fontSize: 54,
-                fontWeight: 900,
+                display: 'inline-block',
+                background: 'rgba(255, 255, 255, 0.25)',
+                backdropFilter: 'blur(8px)',
                 color: '#FFFFFF',
-                margin: '0 0 14px 0',
-                letterSpacing: '-1.2px',
-                lineHeight: 1.05,
+                padding: '4px 12px',
+                borderRadius: 20,
+                fontSize: 12,
+                fontWeight: 900,
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
+                marginBottom: 10,
               }}
             >
-              Grocery Advisory
+              Kerala Smart Grocery Advisory
+            </span>
+
+            <h1
+              style={{
+                fontSize: 44,
+                fontWeight: 900,
+                color: '#FFFFFF',
+                margin: '0 0 10px 0',
+                letterSpacing: '-1px',
+                lineHeight: 1.1,
+              }}
+            >
+              Fresh Groceries &amp; Prices
             </h1>
 
             <p
               style={{
-                fontSize: 16.5,
+                fontSize: 15.5,
                 color: 'rgba(255, 255, 255, 0.95)',
-                margin: '0 0 32px 0',
-                fontWeight: 500,
-                maxWidth: 460,
-                lineHeight: 1.45,
+                margin: '0 0 20px 0',
+                fontWeight: 600,
+                maxWidth: 520,
+                lineHeight: 1.4,
               }}
             >
-              Personalized ingredient recommendations for a healthier Kerala lifestyle.
+              Live Kerala Mandi prices, member-tailored superfoods, and active allergen safety screening.
             </p>
 
-            {/* 3 Feature Pills */}
+            {/* 3 Badges */}
             <div
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 24,
+                gap: 20,
                 flexWrap: 'wrap',
               }}
             >
@@ -163,984 +419,1377 @@ export default function GroceryPage() {
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 8,
-                  fontSize: 13.5,
-                  fontWeight: 600,
+                  gap: 6,
+                  fontSize: 13,
+                  fontWeight: 700,
                   color: '#FFFFFF',
                 }}
               >
-                <span style={{ fontSize: 18 }}>🍃</span> Personalized for your family
+                <span>🍃</span> Personalized Health
               </div>
-
               <div
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 8,
-                  fontSize: 13.5,
-                  fontWeight: 600,
+                  gap: 6,
+                  fontSize: 13,
+                  fontWeight: 700,
                   color: '#FFFFFF',
                 }}
               >
-                <span style={{ fontSize: 18 }}>🍲</span> Kerala ingredients
+                <span>🛡️</span> Severe Allergy Screening
               </div>
-
               <div
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 8,
-                  fontSize: 13.5,
-                  fontWeight: 600,
+                  gap: 6,
+                  fontSize: 13,
+                  fontWeight: 700,
                   color: '#FFFFFF',
                 }}
               >
-                <span style={{ fontSize: 18 }}>🧡</span> Nutrition focused
+                <span>🛒</span> Direct Cart Checkout
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Main Page Body Content Container */}
-      <div
-        style={{
-          maxWidth: 1380,
-          margin: '0 auto',
-          padding: '0 32px 32px 32px',
-        }}
-      >
-
-        {/* ── FLOATING TARGET FAMILY BUDGET BAR ── */}
-        <div
-          style={{
-            background: isDark ? '#1E293B' : '#FFFFFF',
-            borderRadius: 20,
-            padding: '20px 28px',
-            marginTop: -32,
-            marginBottom: 32,
-            position: 'relative',
-            zIndex: 10,
-            boxShadow: isDark
-              ? '0 8px 30px rgba(0,0,0,0.3)'
-              : '0 8px 30px rgba(0,0,0,0.08)',
-            border: isDark ? '1px solid #334155' : '1px solid #EFECE6',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 24,
-            flexWrap: 'wrap',
-          }}
-        >
-          {/* Section 1: Wallet & Budget Amount */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          {/* Quick Cart Status Button in Hero */}
+          <button
+            onClick={() => setIsCartOpen(true)}
+            style={{
+              background: '#FFFFFF',
+              color: orangeColor,
+              border: 'none',
+              padding: '16px 24px',
+              borderRadius: 22,
+              fontSize: 15,
+              fontWeight: 900,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+              transition: 'transform 0.15s ease',
+              zIndex: 2,
+            }}
+          >
             <div
               style={{
-                width: 48,
-                height: 48,
-                borderRadius: 14,
-                background: '#FFF3E0',
+                width: 38,
+                height: 38,
+                borderRadius: '50%',
+                background: '#FBE9E7',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: 22,
-                flexShrink: 0,
+                color: orangeColor,
               }}
             >
-              👛
+              <ShoppingCart size={20} strokeWidth={2.5} />
             </div>
+            <div style={{ textAlign: 'left' }}>
+              <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 700, textTransform: 'uppercase' }}>
+                Your Grocery Cart
+              </div>
+              <div style={{ fontSize: 16, fontWeight: 900, color: '#1F2937' }}>
+                {cartCount} Items • ₹{cartSubtotal}
+              </div>
+            </div>
+            <span
+              style={{
+                background: orangeColor,
+                color: 'white',
+                padding: '3px 9px',
+                borderRadius: 12,
+                fontSize: 12,
+                fontWeight: 900,
+              }}
+            >
+              View Cart
+            </span>
+          </button>
+        </div>
+      </div>
 
+      {/* ── MAIN CONTENT CONTAINER ── */}
+      <div
+        style={{
+          maxWidth: 1440,
+          margin: '0 auto',
+          padding: '28px 24px 32px 24px',
+        }}
+      >
+        {/* ── SECTION 1: FILTER BY FAMILY MEMBER (Click to sort / see foods good for that person) ── */}
+        <div
+          style={{
+            background: isDark ? '#1E293B' : '#FFFFFF',
+            borderRadius: 24,
+            padding: '20px 24px',
+            marginBottom: 24,
+            boxShadow: isDark
+              ? '0 6px 24px rgba(0,0,0,0.25)'
+              : '0 4px 20px rgba(0,0,0,0.04)',
+            border: isDark ? '1px solid #334155' : '1px solid #EAE6DF',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: 12,
+              marginBottom: 14,
+            }}
+          >
             <div>
-              <div
+              <span
                 style={{
-                  fontSize: 12,
-                  fontWeight: 600,
-                  color: isDark ? '#94A3B8' : '#6B7280',
-                  lineHeight: 1.2,
+                  fontSize: 11,
+                  fontWeight: 900,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.8px',
+                  color: isDark ? '#94A3B8' : '#78716C',
+                  display: 'block',
+                  marginBottom: 2,
                 }}
               >
-                Family Budget ({budgetPeriod})
+                Sort &amp; Personalize
+              </span>
+              <h2
+                style={{
+                  fontSize: 18,
+                  fontWeight: 900,
+                  margin: 0,
+                  color: isDark ? '#F8FAFC' : '#1F2937',
+                }}
+              >
+                Filter Groceries By Family Member
+              </h2>
+            </div>
+
+            {selectedMember && (
+              <button
+                onClick={() => setSelectedMemberId('ALL')}
+                style={{
+                  background: 'transparent',
+                  border: `1px solid ${isDark ? '#475569' : '#D1D5DB'}`,
+                  borderRadius: 16,
+                  padding: '6px 14px',
+                  fontSize: 12,
+                  fontWeight: 800,
+                  color: isDark ? '#CBD5E1' : '#4B5563',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                }}
+              >
+                <X size={14} /> Reset to All Family
+              </button>
+            )}
+          </div>
+
+          {/* Member Selection Chips */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+              flexWrap: 'wrap',
+            }}
+          >
+            {/* All Members Button */}
+            <button
+              onClick={() => setSelectedMemberId('ALL')}
+              style={{
+                background:
+                  selectedMemberId === 'ALL'
+                    ? orangeColor
+                    : isDark
+                    ? '#0F172A'
+                    : '#F3F4F6',
+                color:
+                  selectedMemberId === 'ALL'
+                    ? '#FFFFFF'
+                    : isDark
+                    ? '#F8FAFC'
+                    : '#374151',
+                border: `1.5px solid ${
+                  selectedMemberId === 'ALL'
+                    ? orangeColor
+                    : isDark
+                    ? '#334155'
+                    : '#E5E7EB'
+                }`,
+                padding: '8px 18px',
+                borderRadius: 20,
+                fontSize: 13.5,
+                fontWeight: 900,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                transition: 'all 0.15s ease',
+              }}
+            >
+              <span>👥 All Family Members</span>
+            </button>
+
+            {/* Individual Member Pills */}
+            {members.map((m) => {
+              const active = selectedMemberId === String(m.id)
+              const conditionBadge =
+                Array.isArray(m.healthConditions) && m.healthConditions.length > 0
+                  ? m.healthConditions[0]
+                  : m.goal || null
+
+              return (
+                <button
+                  key={m.id}
+                  onClick={() => setSelectedMemberId(String(m.id))}
+                  style={{
+                    border: `1.5px solid ${
+                      active ? orangeColor : isDark ? '#334155' : '#E5E7EB'
+                    }`,
+                    background: active
+                      ? '#FBE9E7'
+                      : isDark
+                      ? '#0F172A'
+                      : '#FFFFFF',
+                    color: active
+                      ? orangeColor
+                      : isDark
+                      ? '#F8FAFC'
+                      : '#1F2937',
+                    padding: '6px 14px 6px 8px',
+                    borderRadius: 20,
+                    fontSize: 13.5,
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    boxShadow: active ? '0 4px 12px rgba(244,81,30,0.2)' : 'none',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  <MemberAvatar member={m} size={24} />
+                  <span>{m.name}</span>
+                  {conditionBadge && (
+                    <span
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 900,
+                        padding: '2px 8px',
+                        borderRadius: 12,
+                        background: active
+                          ? orangeColor
+                          : isDark
+                          ? '#334155'
+                          : '#F3F4F6',
+                        color: active ? '#FFFFFF' : isDark ? '#94A3B8' : '#6B7280',
+                      }}
+                    >
+                      {conditionBadge}
+                    </span>
+                  )}
+                </button>
+              )
+            })}
+          </div>
+
+          {/* Member Specific Beneficial Banner */}
+          {selectedMember && (
+            <div
+              style={{
+                marginTop: 18,
+                padding: '12px 18px',
+                borderRadius: 16,
+                background: isDark ? 'rgba(16, 185, 129, 0.1)' : '#ECFDF5',
+                border: `1.5px solid ${isDark ? 'rgba(16, 185, 129, 0.3)' : '#A7F3D0'}`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: 12,
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div
+                  style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: '50%',
+                    background: '#10B981',
+                    color: '#FFFFFF',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Sparkles size={16} />
+                </div>
+                <div>
+                  <div
+                    style={{
+                      fontSize: 13.5,
+                      fontWeight: 900,
+                      color: isDark ? '#6EE7B7' : '#065F46',
+                    }}
+                  >
+                    Showing therapeutic foods for {selectedMember.name} (
+                    {selectedMember.healthConditions?.join(', ') ||
+                      selectedMember.goal ||
+                      'General Wellness'}
+                    )
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 12,
+                      color: isDark ? '#A7F3D0' : '#047857',
+                      fontWeight: 600,
+                    }}
+                  >
+                    Items are filtered to reduce disease markers (e.g. lowering blood sugar, hypertension) and meet daily fitness goals.
+                  </div>
+                </div>
               </div>
 
-              <div
+              {/* Beneficial Only Toggle */}
+              <label
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 10,
-                  marginTop: 2,
+                  gap: 8,
+                  fontSize: 12.5,
+                  fontWeight: 800,
+                  color: isDark ? '#A7F3D0' : '#065F46',
+                  cursor: 'pointer',
+                  userSelect: 'none',
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={onlyBeneficialFilter}
+                  onChange={(e) => setOnlyBeneficialFilter(e.target.checked)}
+                  style={{ accentColor: '#10B981', width: 16, height: 16, cursor: 'pointer' }}
+                />
+                <span>Only show foods beneficial for {selectedMember.name}</span>
+              </label>
+            </div>
+          )}
+        </div>
+
+        {/* ── SECTION 2: CATEGORY TABS, SEARCH, AND MANDI LIVE BADGE ── */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 16,
+            marginBottom: 20,
+          }}
+        >
+          {/* Category Tabs */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              flexWrap: 'wrap',
+            }}
+          >
+            {[
+              { id: 'ALL', label: 'All Items', count: KERALA_GROCERY_DATASET.length },
+              {
+                id: 'Produce',
+                label: '🥬 Fresh Produce',
+                count: KERALA_GROCERY_DATASET.filter((i) => i.category === 'Produce').length,
+              },
+              {
+                id: 'Protein',
+                label: '🍗 Protein & Fish',
+                count: KERALA_GROCERY_DATASET.filter((i) => i.category === 'Protein').length,
+              },
+              {
+                id: 'Dairy',
+                label: '🥛 Dairy',
+                count: KERALA_GROCERY_DATASET.filter((i) => i.category === 'Dairy').length,
+              },
+              {
+                id: 'Pantry',
+                label: '🌾 Pantry & Grains',
+                count: KERALA_GROCERY_DATASET.filter((i) => i.category === 'Pantry').length,
+              },
+            ].map((cat) => {
+              const active = selectedCategory === cat.id
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  style={{
+                    background: active
+                      ? isDark
+                        ? '#334155'
+                        : '#1F2937'
+                      : isDark
+                      ? '#1E293B'
+                      : '#FFFFFF',
+                    color: active ? '#FFFFFF' : isDark ? '#94A3B8' : '#4B5563',
+                    border: `1px solid ${
+                      active
+                        ? 'transparent'
+                        : isDark
+                        ? '#334155'
+                        : '#E5E7EB'
+                    }`,
+                    padding: '8px 16px',
+                    borderRadius: 16,
+                    fontSize: 13,
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                    boxShadow: active ? '0 4px 12px rgba(0,0,0,0.1)' : 'none',
+                  }}
+                >
+                  {cat.label} ({cat.count})
+                </button>
+              )
+            })}
+          </div>
+
+          {/* Right Controls: Sort & Live Mandi Badge */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+            {/* Live Agmarknet Badge */}
+            {isLoadingPrices ? (
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  background: isDark ? 'rgba(59, 130, 246, 0.15)' : '#EFF6FF',
+                  border: `1px solid ${isDark ? 'rgba(59, 130, 246, 0.3)' : '#BFDBFE'}`,
+                  padding: '5px 12px',
+                  borderRadius: 20,
+                  fontSize: 11.5,
+                  fontWeight: 800,
+                  color: isDark ? '#93C5FD' : '#1D4ED8',
                 }}
               >
                 <span
                   style={{
-                    fontSize: 28,
-                    fontWeight: 900,
-                    color: isDark ? '#FF7043' : orangeColor,
-                    letterSpacing: '-0.5px',
-                  }}
-                >
-                  ₹{budget}
-                </span>
-
-                <button
-                  onClick={() => {
-                    setTempBudget(budget)
-                    setShowBudgetModal(true)
-                  }}
-                  style={{
-                    width: 28,
-                    height: 28,
+                    width: 7,
+                    height: 7,
                     borderRadius: '50%',
-                    background: '#FBE9E7',
-                    border: 'none',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    color: orangeColor,
+                    background: '#3B82F6',
+                    animation: 'pulse 1.5s infinite',
                   }}
-                  title="Edit Budget"
-                >
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                  </svg>
-                </button>
+                />
+                Fetching Live Kerala Mandi Prices...
               </div>
-            </div>
-          </div>
-
-          {/* Section 2: Scale Duration Selector */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 16,
-              borderLeft: isDark ? '1px solid #334155' : '1px solid #F0EFE9',
-              borderRight: isDark ? '1px solid #334155' : '1px solid #F0EFE9',
-              paddingLeft: 24,
-              paddingRight: 24,
-            }}
-          >
-            <div
-              style={{
-                fontSize: 13,
-                fontWeight: 600,
-                color: isDark ? '#94A3B8' : '#4B5563',
-                maxWidth: 160,
-                lineHeight: 1.3,
-              }}
-            >
-              {budgetPeriod.toLowerCase()} personalized recommendations
-            </div>
-
-            <div
-              style={{
-                background: isDark ? '#0F172A' : '#F3F4F6',
-                borderRadius: 24,
-                padding: 4,
-                display: 'flex',
-                gap: 4,
-              }}
-            >
-              {['Daily', 'Weekly', '2-Week'].map((period) => {
-                const active = budgetPeriod === period
-                return (
-                  <button
-                    key={period}
-                    onClick={() => handlePeriodChange(period)}
-                    style={{
-                      border: 'none',
-                      background: active ? orangeColor : 'transparent',
-                      color: active
-                        ? '#FFFFFF'
-                        : isDark
-                        ? '#94A3B8'
-                        : '#4B5563',
-                      padding: '6px 14px',
-                      borderRadius: 20,
-                      fontSize: 12,
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
-                    }}
-                  >
-                    {period}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* Section 3: Target Status Pill */}
-          <div
-            style={{
-              background: '#FFF3E0',
-              border: '1px solid #FFE0B2',
-              borderRadius: 16,
-              padding: '10px 18px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 14,
-              cursor: 'pointer',
-            }}
-            onClick={() => showToastMsg('Target budget is optimally balanced!')}
-          >
-            <div
-              style={{
-                width: 34,
-                height: 34,
-                borderRadius: 10,
-                background: '#FFE0B2',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: 18,
-              }}
-            >
-              📋
-            </div>
-
-            <div>
+            ) : rawApiResponse?.items?.length > 0 ? (
               <div
                 style={{
-                  fontSize: 13,
-                  fontWeight: 800,
-                  color: orangeColor,
-                  lineHeight: 1.2,
-                }}
-              >
-                On track for your target
-              </div>
-              <div
-                style={{
-                  fontSize: 11,
-                  color: '#D84315',
-                  fontWeight: 500,
-                }}
-              >
-                You're all set! Let's keep it healthy.
-              </div>
-            </div>
-
-            <span
-              style={{
-                fontSize: 16,
-                color: orangeColor,
-                marginLeft: 4,
-              }}
-            >
-              ›
-            </span>
-          </div>
-        </div>
-
-        {/* ── FILTER & SORT BAR ── */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: 20,
-            flexWrap: 'wrap',
-            gap: 16,
-          }}
-        >
-          <div>
-            <div
-              style={{
-                fontSize: 13,
-                fontWeight: 700,
-                color: isDark ? '#94A3B8' : '#6B7280',
-                marginBottom: 8,
-              }}
-            >
-              Filter recommendations by family member
-            </div>
-
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 10,
-                flexWrap: 'wrap',
-              }}
-            >
-              {/* All Members Dropdown Button */}
-              <button
-                onClick={() => setSelectedMemberId('ALL')}
-                style={{
-                  background:
-                    selectedMemberId === 'ALL'
-                      ? orangeColor
-                      : isDark
-                      ? '#1E293B'
-                      : '#FFFFFF',
-                  color:
-                    selectedMemberId === 'ALL'
-                      ? '#FFFFFF'
-                      : isDark
-                      ? '#F8FAFC'
-                      : '#374151',
-                  padding: '8px 16px',
-                  borderRadius: 20,
-                  fontSize: 13,
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  display: 'flex',
+                  display: 'inline-flex',
                   alignItems: 'center',
-                  gap: 8,
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                  border: `1px solid ${
-                    selectedMemberId === 'ALL'
-                      ? 'transparent'
-                      : isDark
-                      ? '#334155'
-                      : '#E5E7EB'
-                  }`,
+                  gap: 6,
+                  background: isDark ? 'rgba(16, 185, 129, 0.15)' : '#ECFDF5',
+                  border: `1px solid ${isDark ? 'rgba(16, 185, 129, 0.3)' : '#A7F3D0'}`,
+                  padding: '5px 14px',
+                  borderRadius: 20,
+                  fontSize: 11.5,
+                  fontWeight: 800,
+                  color: isDark ? '#6EE7B7' : '#047857',
                 }}
               >
-                <span>👥 All Members</span>
-                <span style={{ fontSize: 10 }}>▾</span>
-              </button>
+                <span
+                  style={{
+                    width: 7,
+                    height: 7,
+                    borderRadius: '50%',
+                    background: '#10B981',
+                    boxShadow: '0 0 8px rgba(16, 185, 129, 0.6)',
+                  }}
+                />
+                Live Kerala Mandi Prices (Agmarknet) • {formatArrivalDate(rawApiResponse.updatedAt)}
+              </div>
+            ) : null}
 
-              {/* Individual Member Filter Pills */}
-              {members.map((m) => {
-                const active = selectedMemberId === String(m.id)
-                return (
-                  <button
-                    key={m.id}
-                    onClick={() => setSelectedMemberId(String(m.id))}
-                    style={{
-                      border: `1px solid ${
-                        active ? orangeColor : isDark ? '#334155' : '#E5E7EB'
-                      }`,
-                      background: active
-                        ? '#FBE9E7'
-                        : isDark
-                        ? '#1E293B'
-                        : '#FFFFFF',
-                      color: active ? orangeColor : isDark ? '#F8FAFC' : '#111827',
-                      padding: '6px 14px 6px 8px',
-                      borderRadius: 20,
-                      fontSize: 13,
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 8,
-                    }}
-                  >
-                    <MemberAvatar member={m} size={22} />
-                    <span>{m.name}</span>
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* Sort Selector */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span
-              style={{
-                fontSize: 13,
-                fontWeight: 600,
-                color: isDark ? '#94A3B8' : '#6B7280',
-              }}
-            >
-              Sort by:
-            </span>
-
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              style={{
-                background: isDark ? '#1E293B' : '#FFFFFF',
-                color: isDark ? '#F8FAFC' : '#111827',
-                border: `1px solid ${isDark ? '#334155' : '#E5E7EB'}`,
-                borderRadius: 12,
-                padding: '8px 14px',
-                fontSize: 13,
-                fontWeight: 700,
-                outline: 'none',
-                cursor: 'pointer',
-              }}
-            >
-              <option value="Recommended">Recommended</option>
-              <option value="PriceLowHigh">Price: Low to High</option>
-              <option value="PriceHighLow">Price: High to Low</option>
-            </select>
-          </div>
-        </div>
-
-        {/* ── CATEGORY HEADER: Produce (8) ── */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
-            marginBottom: 20,
-            marginTop: 10,
-          }}
-        >
-          <span style={{ fontSize: 20, color: orangeColor }}>🍃</span>
-          <h2
-            style={{
-              fontSize: 20,
-              fontWeight: 800,
-              margin: 0,
-              color: isDark ? '#F8FAFC' : '#111827',
-            }}
-          >
-            Produce{' '}
-            <span
-              style={{
-                fontSize: 16,
-                fontWeight: 600,
-                color: isDark ? '#94A3B8' : '#6B7280',
-              }}
-            >
-              ({produceItems.length})
-            </span>
-          </h2>
-        </div>
-
-        {/* ── 5-COLUMN GROCERY GRID ── */}
-        <div className="grocery-5col-grid">
-          {produceItems.map((item) => {
-            const isFav = favorites.includes(item.id)
-            return (
-              <div
-                key={item.id}
+            {/* Sort Selector */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 13, fontWeight: 700, color: isDark ? '#94A3B8' : '#6B7280' }}>
+                Sort:
+              </span>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
                 style={{
                   background: isDark ? '#1E293B' : '#FFFFFF',
-                  borderRadius: 20,
-                  border: `1px solid ${isDark ? '#334155' : '#ECEAE3'}`,
-                  overflow: 'hidden',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  boxShadow: isDark
-                    ? '0 4px 16px rgba(0,0,0,0.2)'
-                    : '0 2px 12px rgba(0,0,0,0.03)',
-                  transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                  color: isDark ? '#F8FAFC' : '#111827',
+                  border: `1px solid ${isDark ? '#334155' : '#E5E7EB'}`,
+                  borderRadius: 14,
+                  padding: '7px 12px',
+                  fontSize: 12.5,
+                  fontWeight: 800,
+                  outline: 'none',
+                  cursor: 'pointer',
                 }}
               >
-                {/* Image Box */}
+                <option value="Recommended">Recommended</option>
+                <option value="PriceLowHigh">Price: Low to High</option>
+                <option value="PriceHighLow">Price: High to Low</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* ── SECTION 3: 5-COLUMN GROCERY GRID ── */}
+        {processedItems.length === 0 ? (
+          <div
+            style={{
+              background: isDark ? '#1E293B' : '#FFFFFF',
+              borderRadius: 24,
+              padding: '60px 24px',
+              textAlign: 'center',
+              border: `1px solid ${isDark ? '#334155' : '#E5E7EB'}`,
+            }}
+          >
+            <div style={{ fontSize: 48, marginBottom: 16 }}>🥗</div>
+            <h3 style={{ fontSize: 20, fontWeight: 900, marginBottom: 8 }}>
+              No matching groceries found
+            </h3>
+            <p style={{ fontSize: 14, color: '#6B7280', maxWidth: 440, margin: '0 auto 20px auto' }}>
+              {selectedMember
+                ? `No specific foods marked for ${selectedMember.name} in this category.`
+                : 'Try adjusting your search query or category filters.'}
+            </p>
+            {selectedMember && (
+              <button
+                onClick={() => setOnlyBeneficialFilter(false)}
+                style={{
+                  background: orangeColor,
+                  color: 'white',
+                  border: 'none',
+                  padding: '10px 20px',
+                  borderRadius: 14,
+                  fontSize: 13,
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                }}
+              >
+                Show All Groceries with Highlights
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="grocery-5col-grid">
+            {processedItems.map((item) => {
+              const isFav = favorites.includes(item.id)
+              const priceInfo = getItemPriceInfo(item)
+              const cartItem = cart[item.id]
+              const itemQuantity = cartItem?.quantity || 0
+
+              // Allergy calculations:
+              // 1. When NOT sorted (selectedMemberId === 'ALL'), check if ANY family member is allergic
+              const conflictingMembers = getConflictingMembers(item)
+              const hasGeneralAllergyConflict =
+                selectedMemberId === 'ALL' && conflictingMembers.length > 0
+
+              // 2. When sorted by a specific person, check if that person is allergic
+              const isSelectedMemberAllergic =
+                Boolean(selectedMember) &&
+                checkMemberAllergyMatch(item.allergies, selectedMember.allergies)
+
+              // 3. Check if food is beneficial for the selected person
+              const isBeneficialForSelected =
+                Boolean(selectedMember) && checkIsGoodForMember(item, selectedMember)
+
+              return (
                 <div
+                  key={item.id}
                   style={{
-                    height: 170,
-                    width: '100%',
-                    background: isDark ? '#0F172A' : item.bgTint || '#F6F7F2',
-                    position: 'relative',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    background: isDark ? '#1E293B' : '#FFFFFF',
+                    borderRadius: 22,
+                    border: hasGeneralAllergyConflict || isSelectedMemberAllergic
+                      ? '2px solid #EF4444'
+                      : isBeneficialForSelected
+                      ? '2px solid #10B981'
+                      : isDark
+                      ? '1px solid #334155'
+                      : '1px solid #EAE6DF',
                     overflow: 'hidden',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    boxShadow: isBeneficialForSelected
+                      ? '0 6px 20px rgba(16, 185, 129, 0.12)'
+                      : hasGeneralAllergyConflict
+                      ? '0 6px 20px rgba(239, 68, 68, 0.12)'
+                      : isDark
+                      ? '0 4px 16px rgba(0,0,0,0.2)'
+                      : '0 2px 12px rgba(0,0,0,0.03)',
+                    transition: 'all 0.2s ease',
+                    position: 'relative',
                   }}
                 >
-                  <img
-                    src={item.imageUrl}
-                    alt={item.name}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                    }}
-                  />
+                  {/* ── ALLERGEN "X" HEADER DIRECTLY ABOVE THE GROCERY ── */}
+                  {/* (Requirement: "and if not sorted it will show and x above the grocery indicating severe allergy") */}
+                  {hasGeneralAllergyConflict && (
+                    <div
+                      style={{
+                        background: '#FEF2F2',
+                        borderBottom: '1.5px solid #FECACA',
+                        padding: '8px 12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 8,
+                        color: '#DC2626',
+                        fontSize: 11.5,
+                        fontWeight: 900,
+                        lineHeight: 1.25,
+                      }}
+                    >
+                      <span
+                        style={{
+                          width: 20,
+                          height: 20,
+                          borderRadius: '50%',
+                          background: '#DC2626',
+                          color: '#FFFFFF',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: 11,
+                          fontWeight: 900,
+                          flexShrink: 0,
+                          boxShadow: '0 2px 5px rgba(220,38,38,0.3)',
+                        }}
+                      >
+                        ✕
+                      </span>
+                      <span>
+                        Severe Allergy:{' '}
+                        <strong>{conflictingMembers.map((m) => m.name).join(', ')}</strong>
+                      </span>
+                    </div>
+                  )}
 
-                  {/* Heart / Favorite Button */}
-                  <button
-                    onClick={() => toggleFavorite(item.id)}
+                  {/* Allergen Warning when sorted by specific person */}
+                  {isSelectedMemberAllergic && (
+                    <div
+                      style={{
+                        background: '#FEF2F2',
+                        borderBottom: '1.5px solid #FECACA',
+                        padding: '8px 12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 8,
+                        color: '#DC2626',
+                        fontSize: 11.5,
+                        fontWeight: 900,
+                        lineHeight: 1.25,
+                      }}
+                    >
+                      <span
+                        style={{
+                          width: 20,
+                          height: 20,
+                          borderRadius: '50%',
+                          background: '#DC2626',
+                          color: '#FFFFFF',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: 11,
+                          fontWeight: 900,
+                          flexShrink: 0,
+                        }}
+                      >
+                        ✕
+                      </span>
+                      <span>
+                        Unsafe for {selectedMember.name} (Severe Allergy)
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Beneficial Highlight Banner when sorted by specific person */}
+                  {isBeneficialForSelected && !isSelectedMemberAllergic && (
+                    <div
+                      style={{
+                        background: '#ECFDF5',
+                        borderBottom: '1.5px solid #A7F3D0',
+                        padding: '7px 12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 6,
+                        color: '#065F46',
+                        fontSize: 11,
+                        fontWeight: 900,
+                        lineHeight: 1.2,
+                      }}
+                    >
+                      <Sparkles size={13} color="#10B981" />
+                      <span>Recommended for {selectedMember.name}</span>
+                    </div>
+                  )}
+
+                  {/* Image Container */}
+                  <div
                     style={{
-                      position: 'absolute',
-                      top: 10,
-                      right: 10,
-                      width: 32,
-                      height: 32,
-                      borderRadius: '50%',
-                      background: 'rgba(255, 255, 255, 0.9)',
-                      backdropFilter: 'blur(4px)',
-                      border: 'none',
+                      height: 165,
+                      width: '100%',
+                      background: isDark ? '#0F172A' : item.bgTint || '#F6F7F2',
+                      position: 'relative',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      cursor: 'pointer',
-                      boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-                      color: isFav ? orangeColor : '#9CA3AF',
+                      overflow: 'hidden',
                     }}
                   >
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill={isFav ? orangeColor : 'none'}
-                      stroke="currentColor"
-                      strokeWidth="2.2"
-                    >
-                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                    </svg>
-                  </button>
-                </div>
-
-                {/* Content Details */}
-                <div
-                  style={{
-                    padding: '16px 16px 18px 16px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    flex: 1,
-                    justifyContent: 'space-between',
-                    gap: 12,
-                  }}
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: 8,
-                    }}
-                  >
-                    <h3
-                      style={{
-                        fontSize: 14.5,
-                        fontWeight: 800,
-                        margin: 0,
-                        color: isDark ? '#F8FAFC' : '#111827',
-                        lineHeight: 1.3,
+                    <img
+                      src={item.imageUrl}
+                      alt={item.name}
+                      onError={(e) => {
+                        e.currentTarget.onerror = null
+                        e.currentTarget.src = '/images/tapioca_kappa.jpg'
                       }}
-                    >
-                      {item.name}
-                    </h3>
-
-                    <div>
-                      <span
-                        style={{
-                          background: '#FBE9E7',
-                          color: orangeColor,
-                          fontSize: 11,
-                          fontWeight: 700,
-                          padding: '4px 10px',
-                          borderRadius: 12,
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: 4,
-                        }}
-                      >
-                        <span style={{ fontSize: 10 }}>♥</span> Great for Whole
-                        Family
-                      </span>
-                    </div>
-
-                    <p
                       style={{
-                        fontSize: 12,
-                        color: isDark ? '#94A3B8' : '#6B7280',
-                        fontWeight: 500,
-                        margin: 0,
-                        lineHeight: 1.35,
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
                       }}
-                    >
-                      {item.whyBuy}
-                    </p>
-                  </div>
+                    />
 
-                  {/* Bottom Row: Price + Orange Cart Icon */}
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      marginTop: 4,
-                    }}
-                  >
+                    {/* Category Tag on Image */}
                     <span
                       style={{
-                        fontSize: 20,
-                        fontWeight: 900,
-                        color: isDark ? '#F8FAFC' : '#111827',
+                        position: 'absolute',
+                        top: 10,
+                        left: 10,
+                        background: 'rgba(0,0,0,0.6)',
+                        backdropFilter: 'blur(4px)',
+                        color: 'white',
+                        fontSize: 10,
+                        fontWeight: 800,
+                        padding: '3px 8px',
+                        borderRadius: 10,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
                       }}
                     >
-                      ₹{item.price}
+                      {item.category}
                     </span>
 
+                    {/* Favorite Button */}
                     <button
-                      onClick={() =>
-                        showToastMsg(`Added ${item.name} to grocery list! 🛒`)
-                      }
+                      onClick={() => toggleFavorite(item.id)}
                       style={{
-                        width: 36,
-                        height: 36,
-                        borderRadius: 12,
-                        background: '#FFFFFF',
-                        border: `1.5px solid ${orangeColor}`,
+                        position: 'absolute',
+                        top: 10,
+                        right: 10,
+                        width: 32,
+                        height: 32,
+                        borderRadius: '50%',
+                        background: 'rgba(255, 255, 255, 0.92)',
+                        backdropFilter: 'blur(4px)',
+                        border: 'none',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         cursor: 'pointer',
-                        color: orangeColor,
-                        transition: 'transform 0.15s ease',
+                        boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+                        color: isFav ? orangeColor : '#9CA3AF',
                       }}
-                      title="Add to List"
                     >
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                      >
-                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                        <line x1="3" y1="6" x2="21" y2="6" />
-                        <path d="M16 10a4 4 0 0 1-8 0" />
-                      </svg>
+                      <Heart
+                        size={16}
+                        fill={isFav ? orangeColor : 'none'}
+                        color={isFav ? orangeColor : '#9CA3AF'}
+                      />
                     </button>
                   </div>
+
+                  {/* Content Details */}
+                  <div
+                    style={{
+                      padding: '14px 14px 16px 14px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      flex: 1,
+                      justifyContent: 'space-between',
+                      gap: 12,
+                    }}
+                  >
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      <h3
+                        style={{
+                          fontSize: 14.5,
+                          fontWeight: 900,
+                          margin: 0,
+                          color: isDark ? '#F8FAFC' : '#111827',
+                          lineHeight: 1.3,
+                        }}
+                      >
+                        {item.name}
+                      </h3>
+
+                      {/* Direct Health Action Callout */}
+                      {item.healthHighlight && (
+                        <div
+                          style={{
+                            background: isBeneficialForSelected
+                              ? '#ECFDF5'
+                              : isDark
+                              ? '#0F172A'
+                              : '#F9FAFB',
+                            border: `1px solid ${
+                              isBeneficialForSelected
+                                ? '#A7F3D0'
+                                : isDark
+                                ? '#334155'
+                                : '#E5E7EB'
+                            }`,
+                            padding: '6px 9px',
+                            borderRadius: 10,
+                            fontSize: 11,
+                            fontWeight: 700,
+                            color: isBeneficialForSelected
+                              ? '#065F46'
+                              : isDark
+                              ? '#94A3B8'
+                              : '#4B5563',
+                            lineHeight: 1.3,
+                          }}
+                        >
+                          {item.healthHighlight}
+                        </div>
+                      )}
+
+                      <p
+                        style={{
+                          fontSize: 11.5,
+                          color: isDark ? '#94A3B8' : '#6B7280',
+                          fontWeight: 600,
+                          margin: 0,
+                          lineHeight: 1.35,
+                        }}
+                      >
+                        {item.whyBuy}
+                      </p>
+                    </div>
+
+                    {/* Price & Add to Cart Controls */}
+                    <div
+                      style={{
+                        borderTop: `1px solid ${isDark ? '#334155' : '#F3F4F6'}`,
+                        paddingTop: 10,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 10,
+                      }}
+                    >
+                      {/* Price Section */}
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'baseline',
+                          justifyContent: 'space-between',
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: 18,
+                            fontWeight: 900,
+                            color: isDark ? '#F8FAFC' : '#111827',
+                            letterSpacing: '-0.5px',
+                          }}
+                        >
+                          {priceInfo.priceText}
+                          <span
+                            style={{
+                              fontSize: 11,
+                              fontWeight: 700,
+                              color: isDark ? '#94A3B8' : '#6B7280',
+                              marginLeft: 4,
+                            }}
+                          >
+                            / {priceInfo.unitText}
+                          </span>
+                        </div>
+
+                        {priceInfo.isLive && (
+                          <span
+                            style={{
+                              fontSize: 10,
+                              fontWeight: 800,
+                              color: '#10B981',
+                              background: '#ECFDF5',
+                              padding: '2px 6px',
+                              borderRadius: 8,
+                            }}
+                          >
+                            Live Mandi
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Add to Cart Button or Stepper */}
+                      {itemQuantity === 0 ? (
+                        <button
+                          onClick={() => {
+                            addToCart({
+                              id: item.id,
+                              name: item.name,
+                              price: priceInfo.rawPrice || item.price,
+                              unit: priceInfo.unitText,
+                              category: item.category,
+                              imageUrl: item.imageUrl,
+                            })
+                            showToastMsg(`Added ${item.name} to cart! 🛒`)
+                          }}
+                          style={{
+                            width: '100%',
+                            background: orangeColor,
+                            color: '#FFFFFF',
+                            border: 'none',
+                            padding: '10px 14px',
+                            borderRadius: 14,
+                            fontSize: 13,
+                            fontWeight: 900,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: 8,
+                            boxShadow: '0 4px 12px rgba(244,81,30,0.25)',
+                            transition: 'transform 0.15s ease',
+                          }}
+                        >
+                          <Plus size={16} strokeWidth={3} />
+                          <span>Add to Cart</span>
+                        </button>
+                      ) : (
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            background: isDark ? '#0F172A' : '#FBE9E7',
+                            border: `1.5px solid ${orangeColor}`,
+                            borderRadius: 14,
+                            padding: '4px 6px',
+                          }}
+                        >
+                          <button
+                            onClick={() => updateCartQuantity(item.id, itemQuantity - 1)}
+                            style={{
+                              width: 30,
+                              height: 30,
+                              borderRadius: 10,
+                              background: '#FFFFFF',
+                              border: 'none',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              cursor: 'pointer',
+                              color: orangeColor,
+                              boxShadow: '0 1px 4px rgba(0,0,0,0.1)',
+                            }}
+                          >
+                            <Minus size={15} strokeWidth={3} />
+                          </button>
+
+                          <span
+                            style={{
+                              fontSize: 13,
+                              fontWeight: 900,
+                              color: orangeColor,
+                            }}
+                          >
+                            {itemQuantity} in Cart
+                          </span>
+
+                          <button
+                            onClick={() => updateCartQuantity(item.id, itemQuantity + 1)}
+                            style={{
+                              width: 30,
+                              height: 30,
+                              borderRadius: 10,
+                              background: orangeColor,
+                              border: 'none',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              cursor: 'pointer',
+                              color: '#FFFFFF',
+                              boxShadow: '0 1px 4px rgba(244,81,30,0.3)',
+                            }}
+                          >
+                            <Plus size={15} strokeWidth={3} />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            )
-          })}
-        </div>
-
-        {/* ── BOTTOM FEATURE RIBBON (5 Features) ── */}
-        <div
-          style={{
-            background: isDark ? '#1E293B' : '#FFFFFF',
-            borderRadius: 20,
-            padding: '24px 32px',
-            marginTop: 40,
-            border: `1px solid ${isDark ? '#334155' : '#ECEAE3'}`,
-            display: 'grid',
-            gridTemplateColumns: 'repeat(5, 1fr)',
-            gap: 20,
-            boxShadow: '0 4px 18px rgba(0,0,0,0.03)',
-          }}
-        >
-          {/* Feature 1 */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                background: '#FBE9E7',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: 18,
-                color: orangeColor,
-                flexShrink: 0,
-              }}
-            >
-              🍃
-            </div>
-            <div>
-              <div style={{ fontSize: 13, fontWeight: 800, color: isDark ? '#F8FAFC' : '#111827' }}>
-                Fresh & Local
-              </div>
-              <div style={{ fontSize: 11, color: isDark ? '#94A3B8' : '#6B7280' }}>
-                Locally sourced, always fresh
-              </div>
-            </div>
+              )
+            })}
           </div>
-
-          {/* Feature 2 */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                background: '#FBE9E7',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: 18,
-                color: orangeColor,
-                flexShrink: 0,
-              }}
-            >
-              🛡️
-            </div>
-            <div>
-              <div style={{ fontSize: 13, fontWeight: 800, color: isDark ? '#F8FAFC' : '#111827' }}>
-                Quality Assured
-              </div>
-              <div style={{ fontSize: 11, color: isDark ? '#94A3B8' : '#6B7280' }}>
-                Handpicked for your family
-              </div>
-            </div>
-          </div>
-
-          {/* Feature 3 */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                background: '#FBE9E7',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: 18,
-                color: orangeColor,
-                flexShrink: 0,
-              }}
-            >
-              🚚
-            </div>
-            <div>
-              <div style={{ fontSize: 13, fontWeight: 800, color: isDark ? '#F8FAFC' : '#111827' }}>
-                Fast Delivery
-              </div>
-              <div style={{ fontSize: 11, color: isDark ? '#94A3B8' : '#6B7280' }}>
-                On time, every time
-              </div>
-            </div>
-          </div>
-
-          {/* Feature 4 */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                background: '#FBE9E7',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: 18,
-                color: orangeColor,
-                flexShrink: 0,
-              }}
-            >
-              🧡
-            </div>
-            <div>
-              <div style={{ fontSize: 13, fontWeight: 800, color: isDark ? '#F8FAFC' : '#111827' }}>
-                Healthy Choices
-              </div>
-              <div style={{ fontSize: 11, color: isDark ? '#94A3B8' : '#6B7280' }}>
-                Nutritionist recommended
-              </div>
-            </div>
-          </div>
-
-          {/* Feature 5 */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                background: '#FBE9E7',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: 18,
-                color: orangeColor,
-                flexShrink: 0,
-              }}
-            >
-              ₹
-            </div>
-            <div>
-              <div style={{ fontSize: 13, fontWeight: 800, color: isDark ? '#F8FAFC' : '#111827' }}>
-                Budget Friendly
-              </div>
-              <div style={{ fontSize: 11, color: isDark ? '#94A3B8' : '#6B7280' }}>
-                Best value for your budget
-              </div>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
 
-      {/* ── EDIT BUDGET MODAL ── */}
-      {showBudgetModal && (
+      {/* ── CART SLIDE-OVER DRAWER / MODAL ── */}
+      {isCartOpen && (
         <div
           style={{
             position: 'fixed',
             inset: 0,
             background: 'rgba(0,0,0,0.5)',
             backdropFilter: 'blur(4px)',
-            zIndex: 2000,
+            zIndex: 3500,
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 16,
+            justifyContent: 'flex-end',
           }}
+          onClick={() => setIsCartOpen(false)}
         >
           <div
             style={{
               width: '100%',
-              maxWidth: 400,
-              background: isDark ? '#1E293B' : 'white',
-              borderRadius: 24,
-              padding: 24,
-              boxShadow: '0 8px 30px rgba(0,0,0,0.2)',
+              maxWidth: 440,
+              height: '100%',
+              background: isDark ? '#1E293B' : '#FFFFFF',
+              boxShadow: '-8px 0 30px rgba(0,0,0,0.25)',
+              display: 'flex',
+              flexDirection: 'column',
+              boxSizing: 'border-box',
             }}
+            onClick={(e) => e.stopPropagation()}
           >
+            {/* Drawer Header */}
             <div
               style={{
+                padding: '20px 24px',
+                borderBottom: `1px solid ${isDark ? '#334155' : '#E5E7EB'}`,
                 display: 'flex',
-                justifyContent: 'space-between',
                 alignItems: 'center',
-                marginBottom: 16,
+                justifyContent: 'space-between',
               }}
             >
-              <h3
-                style={{
-                  fontSize: 20,
-                  fontWeight: 800,
-                  margin: 0,
-                  color: isDark ? '#F8FAFC' : '#111827',
-                }}
-              >
-                Set Recommendation Budget (₹)
-              </h3>
-              <button
-                type="button"
-                onClick={() => setShowBudgetModal(false)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  fontSize: 18,
-                  color: '#9CA3AF',
-                  cursor: 'pointer',
-                }}
-              >
-                ✕
-              </button>
-            </div>
-
-            <form
-              onSubmit={handleSaveBudget}
-              style={{ display: 'flex', flexDirection: 'column', gap: 16 }}
-            >
-              <div>
-                <label
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 700,
-                    color: isDark ? '#94A3B8' : '#4B5563',
-                    display: 'block',
-                    marginBottom: 6,
-                  }}
-                >
-                  Target Budget Scale (₹)
-                </label>
-                <input
-                  type="number"
-                  step="1"
-                  min="1"
-                  value={tempBudget}
-                  onChange={(e) => setTempBudget(e.target.value)}
-                  required
-                  style={{
-                    width: '100%',
-                    padding: '14px',
-                    borderRadius: 14,
-                    border: `2px solid ${orangeColor}`,
-                    fontSize: 22,
-                    fontWeight: 900,
-                    outline: 'none',
-                    boxSizing: 'border-box',
-                    textAlign: 'center',
-                    color: isDark ? '#F8FAFC' : '#111827',
-                    background: isDark ? '#0F172A' : '#FFFFFF',
-                  }}
-                />
-              </div>
-
-              <div>
-                <label
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 700,
-                    color: isDark ? '#94A3B8' : '#4B5563',
-                    display: 'block',
-                    marginBottom: 6,
-                  }}
-                >
-                  Quick Presets (INR)
-                </label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <div
                   style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(3, 1fr)',
-                    gap: 8,
+                    width: 36,
+                    height: 36,
+                    borderRadius: 12,
+                    background: '#FBE9E7',
+                    color: orangeColor,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}
                 >
-                  {BUDGET_PRESETS.map((amt) => (
-                    <button
-                      key={amt}
-                      type="button"
-                      onClick={() => setTempBudget(amt)}
-                      style={{
-                        padding: '10px',
-                        borderRadius: 12,
-                        border:
-                          Number(tempBudget) === amt
-                            ? `2px solid ${orangeColor}`
-                            : `1px solid ${isDark ? '#334155' : '#E5E7EB'}`,
-                        background:
-                          Number(tempBudget) === amt
-                            ? '#FBE9E7'
-                            : 'transparent',
-                        color:
-                          Number(tempBudget) === amt
-                            ? orangeColor
-                            : isDark
-                            ? '#94A3B8'
-                            : '#374151',
-                        fontWeight: 800,
-                        fontSize: 14,
-                        cursor: 'pointer',
-                      }}
-                    >
-                      ₹{amt}
-                    </button>
-                  ))}
+                  <ShoppingCart size={18} strokeWidth={2.5} />
+                </div>
+                <div>
+                  <h3
+                    style={{
+                      fontSize: 17,
+                      fontWeight: 900,
+                      margin: 0,
+                      color: isDark ? '#F8FAFC' : '#111827',
+                    }}
+                  >
+                    Your Grocery Cart
+                  </h3>
+                  <span style={{ fontSize: 12, color: '#6B7280', fontWeight: 600 }}>
+                    {cartCount} total items selected
+                  </span>
                 </div>
               </div>
 
               <button
-                type="submit"
+                onClick={() => setIsCartOpen(false)}
                 style={{
-                  marginTop: 8,
-                  background: orangeColor,
-                  color: 'white',
+                  background: 'transparent',
                   border: 'none',
-                  padding: 14,
-                  borderRadius: 16,
-                  fontSize: 15,
-                  fontWeight: 800,
+                  color: '#9CA3AF',
                   cursor: 'pointer',
-                  boxShadow: '0 4px 14px rgba(244,81,30,0.3)',
+                  padding: 4,
                 }}
               >
-                Apply Recommendation Scale
+                <X size={20} />
               </button>
-            </form>
+            </div>
+
+            {/* Cart Items List */}
+            <div
+              style={{
+                flex: 1,
+                overflowY: 'auto',
+                padding: '16px 24px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 12,
+              }}
+            >
+              {cartItemsArray.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '60px 0', color: '#6B7280' }}>
+                  <div style={{ fontSize: 42, marginBottom: 12 }}>🛒</div>
+                  <h4 style={{ fontSize: 16, fontWeight: 800, margin: '0 0 6px 0' }}>
+                    Your cart is currently empty
+                  </h4>
+                  <p style={{ fontSize: 13, margin: 0 }}>
+                    Browse through live Mandi produce and health superfoods to add them to your list.
+                  </p>
+                </div>
+              ) : (
+                cartItemsArray.map((it) => (
+                  <div
+                    key={it.id}
+                    style={{
+                      background: isDark ? '#0F172A' : '#F9FAFB',
+                      border: `1px solid ${isDark ? '#334155' : '#E5E7EB'}`,
+                      borderRadius: 16,
+                      padding: '12px 14px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: 12,
+                    }}
+                  >
+                    {/* Item Thumbnail & Name */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1 }}>
+                      <img
+                        src={it.imageUrl}
+                        alt={it.name}
+                        onError={(e) => {
+                          e.currentTarget.onerror = null
+                          e.currentTarget.src = '/images/tapioca_kappa.jpg'
+                        }}
+                        style={{
+                          width: 44,
+                          height: 44,
+                          borderRadius: 10,
+                          objectFit: 'cover',
+                        }}
+                      />
+                      <div>
+                        <div
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 800,
+                            color: isDark ? '#F8FAFC' : '#111827',
+                            lineHeight: 1.25,
+                          }}
+                        >
+                          {it.name}
+                        </div>
+                        <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 600 }}>
+                          ₹{it.price} / {it.unit}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Stepper Controls */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <button
+                        onClick={() => updateCartQuantity(it.id, it.quantity - 1)}
+                        style={{
+                          width: 26,
+                          height: 26,
+                          borderRadius: 8,
+                          background: isDark ? '#334155' : '#FFFFFF',
+                          border: `1px solid ${isDark ? '#475569' : '#D1D5DB'}`,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          color: isDark ? '#FFFFFF' : '#1F2937',
+                        }}
+                      >
+                        <Minus size={12} />
+                      </button>
+
+                      <span style={{ fontSize: 13, fontWeight: 900, minWidth: 16, textAlign: 'center' }}>
+                        {it.quantity}
+                      </span>
+
+                      <button
+                        onClick={() => updateCartQuantity(it.id, it.quantity + 1)}
+                        style={{
+                          width: 26,
+                          height: 26,
+                          borderRadius: 8,
+                          background: orangeColor,
+                          border: 'none',
+                          color: '#FFFFFF',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <Plus size={12} />
+                      </button>
+                    </div>
+
+                    {/* Item Total */}
+                    <div
+                      style={{
+                        fontSize: 14,
+                        fontWeight: 900,
+                        color: isDark ? '#F8FAFC' : '#111827',
+                        minWidth: 50,
+                        textAlign: 'right',
+                      }}
+                    >
+                      ₹{it.price * it.quantity}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Drawer Footer */}
+            {cartItemsArray.length > 0 && (
+              <div
+                style={{
+                  padding: '20px 24px',
+                  borderTop: `1px solid ${isDark ? '#334155' : '#E5E7EB'}`,
+                  background: isDark ? '#1E293B' : '#FFFFFF',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 12,
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <span style={{ fontSize: 14, fontWeight: 700, color: '#6B7280' }}>
+                    Estimated Basket Subtotal:
+                  </span>
+                  <span
+                    style={{
+                      fontSize: 22,
+                      fontWeight: 900,
+                      color: orangeColor,
+                    }}
+                  >
+                    ₹{cartSubtotal}
+                  </span>
+                </div>
+
+                <button
+                  onClick={handleCopyCart}
+                  style={{
+                    width: '100%',
+                    background: '#10B981',
+                    color: '#FFFFFF',
+                    border: 'none',
+                    padding: '12px',
+                    borderRadius: 14,
+                    fontSize: 14,
+                    fontWeight: 900,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8,
+                    boxShadow: '0 4px 12px rgba(16,185,129,0.25)',
+                  }}
+                >
+                  <Copy size={16} /> Copy Grocery Checklist
+                </button>
+
+                <div style={{ display: 'flex', gap: 10 }}>
+                  <button
+                    onClick={() => {
+                      clearCart()
+                      showToastMsg('Cart cleared!')
+                    }}
+                    style={{
+                      flex: 1,
+                      background: 'transparent',
+                      border: `1px solid ${isDark ? '#475569' : '#D1D5DB'}`,
+                      color: '#EF4444',
+                      padding: '10px',
+                      borderRadius: 14,
+                      fontSize: 13,
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 6,
+                    }}
+                  >
+                    <Trash2 size={14} /> Clear Cart
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setIsCartOpen(false)
+                      showToastMsg('Groceries saved to meal plan basket!')
+                    }}
+                    style={{
+                      flex: 1,
+                      background: isDark ? '#334155' : '#1F2937',
+                      color: '#FFFFFF',
+                      border: 'none',
+                      padding: '10px',
+                      borderRadius: 14,
+                      fontSize: 13,
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Done
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
+        </div>
+      )}
+
+      {/* Floating Bottom Cart Badge on Mobile & Tablets */}
+      {cartCount > 0 && !isCartOpen && (
+        <div
+          onClick={() => setIsCartOpen(true)}
+          style={{
+            position: 'fixed',
+            bottom: 84,
+            right: 24,
+            background: orangeColor,
+            color: '#FFFFFF',
+            padding: '12px 20px',
+            borderRadius: 30,
+            boxShadow: '0 8px 24px rgba(244,81,30,0.4)',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            zIndex: 1000,
+            fontWeight: 900,
+            fontSize: 14,
+          }}
+        >
+          <ShoppingCart size={18} />
+          <span>Cart ({cartCount}) • ₹{cartSubtotal}</span>
         </div>
       )}
 
       {/* Bottom Navigation */}
       <BottomNav />
 
-      {/* CSS Styles for 5-column grid & responsive breakpoints */}
+      {/* CSS Styles for Responsive Grid */}
       <style>{`
         .grocery-5col-grid {
           display: grid;
@@ -1148,13 +1797,13 @@ export default function GroceryPage() {
           gap: 20px;
         }
 
-        @media (max-width: 1280px) {
+        @media (max-width: 1380px) {
           .grocery-5col-grid {
             grid-template-columns: repeat(4, 1fr);
           }
         }
 
-        @media (max-width: 1024px) {
+        @media (max-width: 1080px) {
           .grocery-5col-grid {
             grid-template-columns: repeat(3, 1fr);
           }
