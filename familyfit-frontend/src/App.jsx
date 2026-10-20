@@ -19,6 +19,7 @@ import TermsConditionsPage from './pages/TermsConditionsPage'
 import BrandShowcase from './pages/BrandShowcase'
 import ResponsiveLayout from './components/ResponsiveLayout'
 import ErrorBoundary from './components/ErrorBoundary'
+import ServerWakingBanner from './components/common/ServerWakingBanner'
 import { Logo } from './components/brand/Logo'
 
 function LoadingScreen() {
@@ -84,6 +85,7 @@ export default function App() {
             <FamilyProvider>
               <GroceryProvider>
                 <ErrorBoundary>
+                  <ServerWakingBanner />
                   <AppRoutes />
                 </ErrorBoundary>
               </GroceryProvider>

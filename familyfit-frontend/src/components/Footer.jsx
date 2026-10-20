@@ -49,22 +49,53 @@ export default function Footer() {
   return (
     <footer
       aria-label="Footer"
-      className="bg-[#143F27] text-[#F8F6EF] border-t-2 border-[#1F5D3A] pt-16 pb-12 select-none"
+      className="text-[#F8F6EF] pt-8 sm:pt-10 pb-12 select-none relative z-10"
+      style={{
+        background: 'linear-gradient(180deg, #2F4A32 0%, #24402F 100%)',
+      }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Brand Sheet Accent Line: "Small changes. Big health gains." */}
-        <div className="pb-10 mb-10 border-b border-white/10 flex flex-col items-center justify-center text-center">
-          <div className="relative inline-block">
-            <span className="font-['Caveat',cursive] text-2xl sm:text-3xl lg:text-4xl text-[#F8F6EF] font-semibold tracking-wide">
+        
+        {/* ── BRAND TAGLINE UNDER WAVE: LIME LEAF + CAVEAT HANDWRITTEN + LIME BRUSH WAVY UNDERLINE ── */}
+        <div className="pb-10 sm:pb-12 mb-10 border-b border-white/10 flex flex-col items-center justify-center text-center">
+          
+          {/* Lime leaf icon flanked by two thin horizontal lines */}
+          <div className="flex items-center gap-3 sm:gap-4 mb-2">
+            <div className="w-10 sm:w-16 h-[1px] bg-white/20" aria-hidden="true" />
+            <div className="w-7 h-7 rounded-full bg-[#8DB445]/15 flex items-center justify-center text-[#8DB445]">
+              <Leaf size={16} strokeWidth={2.4} className="rotate-12" />
+            </div>
+            <div className="w-10 sm:w-16 h-[1px] bg-white/20" aria-hidden="true" />
+          </div>
+
+          {/* Handwritten Tagline with -2deg tilt & lime wavy underline */}
+          <div className="relative inline-block -rotate-2 transform transition-transform hover:rotate-0 duration-300">
+            <span
+              className="text-2xl sm:text-3xl lg:text-[34px] text-white font-semibold tracking-wide drop-shadow-xs"
+              style={{ fontFamily: "'Caveat', cursive" }}
+            >
               Small changes. Big health gains.
             </span>
-            <svg className="w-full h-2.5 mt-0.5" viewBox="0 0 200 8" fill="none" preserveAspectRatio="none">
-              <path d="M2 5 Q 100 1 198 5" stroke="#F59E0B" strokeWidth="3.5" strokeLinecap="round" />
+            
+            {/* Hand-drawn lime green wavy underline SVG */}
+            <svg
+              className="w-full h-3 sm:h-3.5 mt-0.5"
+              viewBox="0 0 240 12"
+              fill="none"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M4 7 C 45 3, 85 9, 125 5 C 165 2, 205 8, 236 6"
+                stroke="#8DB445"
+                strokeWidth="3.2"
+                strokeLinecap="round"
+              />
             </svg>
           </div>
         </div>
 
-        {/* 4 Columns Grid */}
+        {/* ── 4 COLUMNS GRID (Existing content unchanged) ── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-white/15">
           {/* Column 1: Brand & Tagline */}
           <div className="space-y-4">
@@ -80,7 +111,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Instagram"
-                className="w-9 h-9 rounded-xl bg-white/10 hover:bg-[#7CB342] hover:text-white text-[#F8F6EF] flex items-center justify-center transition-all"
+                className="w-9 h-9 rounded-xl bg-white/10 hover:bg-[#8DB445] hover:text-white text-[#F8F6EF] flex items-center justify-center transition-all"
               >
                 <InstagramIcon />
               </a>
@@ -89,7 +120,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="YouTube"
-                className="w-9 h-9 rounded-xl bg-white/10 hover:bg-[#7CB342] hover:text-white text-[#F8F6EF] flex items-center justify-center transition-all"
+                className="w-9 h-9 rounded-xl bg-white/10 hover:bg-[#8DB445] hover:text-white text-[#F8F6EF] flex items-center justify-center transition-all"
               >
                 <YoutubeIcon />
               </a>
@@ -98,7 +129,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Facebook"
-                className="w-9 h-9 rounded-xl bg-white/10 hover:bg-[#7CB342] hover:text-white text-[#F8F6EF] flex items-center justify-center transition-all"
+                className="w-9 h-9 rounded-xl bg-white/10 hover:bg-[#8DB445] hover:text-white text-[#F8F6EF] flex items-center justify-center transition-all"
               >
                 <FacebookIcon />
               </a>
@@ -107,7 +138,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Twitter"
-                className="w-9 h-9 rounded-xl bg-white/10 hover:bg-[#7CB342] hover:text-white text-[#F8F6EF] flex items-center justify-center transition-all"
+                className="w-9 h-9 rounded-xl bg-white/10 hover:bg-[#8DB445] hover:text-white text-[#F8F6EF] flex items-center justify-center transition-all"
               >
                 <TwitterIcon />
               </a>
@@ -116,7 +147,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Website"
-                className="w-9 h-9 rounded-xl bg-white/10 hover:bg-[#7CB342] hover:text-white text-[#F8F6EF] flex items-center justify-center transition-all"
+                className="w-9 h-9 rounded-xl bg-white/10 hover:bg-[#8DB445] hover:text-white text-[#F8F6EF] flex items-center justify-center transition-all"
               >
                 <Globe size={16} />
               </a>
@@ -132,7 +163,7 @@ export default function Footer() {
               <li>
                 <button
                   onClick={() => scrollToSection('features')}
-                  className="hover:text-[#7CB342] transition-colors cursor-pointer"
+                  className="hover:text-[#8DB445] transition-colors cursor-pointer"
                 >
                   Features &amp; Allergy Shield
                 </button>
@@ -140,23 +171,23 @@ export default function Footer() {
               <li>
                 <button
                   onClick={() => scrollToSection('plans')}
-                  className="hover:text-[#7CB342] transition-colors cursor-pointer"
+                  className="hover:text-[#8DB445] transition-colors cursor-pointer"
                 >
                   Curated Health Plans
                 </button>
               </li>
               <li>
-                <Link to="/recipes" className="hover:text-[#7CB342] transition-colors">
+                <Link to="/recipes" className="hover:text-[#8DB445] transition-colors">
                   500+ Kerala Recipes
                 </Link>
               </li>
               <li>
-                <Link to="/grocery" className="hover:text-[#7CB342] transition-colors">
+                <Link to="/grocery" className="hover:text-[#8DB445] transition-colors">
                   Smart Grocery Budget
                 </Link>
               </li>
               <li>
-                <Link to="/tips" className="hover:text-[#7CB342] transition-colors">
+                <Link to="/tips" className="hover:text-[#8DB445] transition-colors">
                   Daily Ayurvedic Tips
                 </Link>
               </li>
@@ -170,20 +201,20 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2.5 text-xs sm:text-sm font-body font-bold text-[#F8F6EF]/80">
               <li>
-                <Link to="/about" className="hover:text-[#7CB342] transition-colors">
+                <Link to="/about" className="hover:text-[#8DB445] transition-colors">
                   About FamilyFit
                 </Link>
               </li>
               <li>
                 <button
                   onClick={() => scrollToSection('reviews')}
-                  className="hover:text-[#7CB342] transition-colors cursor-pointer"
+                  className="hover:text-[#8DB445] transition-colors cursor-pointer"
                 >
                   Stories From Kitchens
                 </button>
               </li>
               <li>
-                <Link to="/dashboard" className="hover:text-[#7CB342] transition-colors">
+                <Link to="/dashboard" className="hover:text-[#8DB445] transition-colors">
                   Family Dashboard
                 </Link>
               </li>
@@ -202,12 +233,12 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2.5 text-xs sm:text-sm font-body font-bold text-[#F8F6EF]/80">
               <li>
-                <Link to="/privacy" className="hover:text-[#7CB342] transition-colors">
+                <Link to="/privacy" className="hover:text-[#8DB445] transition-colors">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="hover:text-[#7CB342] transition-colors">
+                <Link to="/terms" className="hover:text-[#8DB445] transition-colors">
                   Terms &amp; Conditions
                 </Link>
               </li>
@@ -220,13 +251,13 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom Bar */}
+        {/* ── BOTTOM BAR ── */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-bold text-[#F8F6EF]/70">
           <p>© 2026 FamilyFit. Wholesome Kerala Family Nutrition.</p>
 
           <button
             onClick={scrollToTop}
-            className="inline-flex items-center gap-1.5 text-[#F8F6EF] hover:text-[#7CB342] font-black cursor-pointer transition-colors"
+            className="inline-flex items-center gap-1.5 text-[#F8F6EF] hover:text-[#8DB445] font-black cursor-pointer transition-colors"
           >
             <span>Back to top</span>
             <ArrowUp size={14} strokeWidth={2.5} />

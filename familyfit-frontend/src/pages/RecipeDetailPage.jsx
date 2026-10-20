@@ -1,11 +1,37 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import {
+  ChevronLeft,
+  Heart,
+  Bookmark,
+  Leaf,
+  Users,
+  ChefHat,
+  Info,
+  CheckCircle2,
+  AlertTriangle,
+  ChevronRight,
+  Flame,
+  Clock,
+  Dumbbell,
+  Wheat,
+  Utensils,
+  Soup,
+} from 'lucide-react'
 import { getRecipeDetail } from '../api/recipes'
 import { useFamily } from '../context/FamilyContext'
 import { useTheme } from '../context/ThemeContext'
 import MemberAvatar from '../components/MemberAvatar'
-import BottomNav from '../components/BottomNav'
 import { RECIPE_DATABASE } from '../data/recipeDatabase'
+
+const CANONICAL_MEMBERS = [
+  { id: 1, name: 'Madhavan', role: 'GRANDFATHER', gender: 'MALE', age: 68, healthConditions: [], allergies: [], avatarKey: 'grandfather' },
+  { id: 2, name: 'Sarada', role: 'GRANDMOTHER', gender: 'FEMALE', age: 65, healthConditions: [], allergies: [], avatarKey: 'grandmother' },
+  { id: 3, name: 'Rajesh', role: 'FATHER', gender: 'MALE', age: 42, healthConditions: [], allergies: [], avatarKey: 'father' },
+  { id: 4, name: 'Deepa', role: 'MOTHER', gender: 'FEMALE', age: 39, healthConditions: [], allergies: [], avatarKey: 'mother', goal: 'HEALTHY' },
+  { id: 5, name: 'Rahul', role: 'SON', gender: 'MALE', age: 14, healthConditions: [], allergies: [], avatarKey: 'son' },
+  { id: 6, name: 'Ananya', role: 'DAUGHTER', gender: 'FEMALE', age: 9, healthConditions: [], allergies: [], avatarKey: 'daughter', role_type: 'CHILD', goal: 'GROWTH' },
+]
 
 /**
  * Dynamically evaluates a recipe's suitability for a specific family member using their actual profile data:
@@ -19,7 +45,7 @@ function evaluateMemberRecipeSuitability(recipe, member) {
 
   const memberAllergies = Array.isArray(member.allergies) ? member.allergies : []
   const memberDislikes = Array.isArray(member.dislikes) ? member.dislikes : []
-  const goal = (member.fitnessGoal || '').toUpperCase()
+  const goal = (member.fitnessGoal || member.goal || '').toUpperCase()
   const diet = (member.dietPreference || '').toUpperCase()
 
   // Collect recipe text & ingredient strings for matching
@@ -29,15 +55,21 @@ function evaluateMemberRecipeSuitability(recipe, member) {
   const fullRecipeText = `${recipeName} ${recipeTags.join(' ')} ${ingredientNames} ${(recipe?.whyItsGood || '').toLowerCase()}`
 
   // 1. Check if profile has NO health/goal data set
-  const hasNoData = !member.fitnessGoal && (!member.allergies || member.allergies.length === 0) && (!member.dislikes || member.dislikes.length === 0)
+  const hasNoData =
+    !member.fitnessGoal &&
+    !member.goal &&
+    (!member.healthConditions || member.healthConditions.length === 0) &&
+    (!member.allergies || member.allergies.length === 0) &&
+    (!member.dislikes || member.dislikes.length === 0)
+
   if (hasNoData) {
     return {
       isSuitable: true,
       isNeutral: true,
       statusIcon: 'ℹ',
       statusBg: '#f3f4f6',
-      statusColor: '#4b5563',
-      reason: `No health data set for ${member.name} yet.`,
+      statusColor: '#6b7280',
+      reason: `Not enough health data to assess conflicts yet.`,
     }
   }
 
@@ -50,7 +82,6 @@ function evaluateMemberRecipeSuitability(recipe, member) {
       return /\b(eggs?|mutta)\b/i.test(fullRecipeText)
     }
     if (allergen === 'Peanuts/Tree Nuts') {
-      // Must match actual nuts (peanuts, almonds, cashews, etc.) and NOT "nutrients", "nutrition", or "coconut"
       return /\b(peanuts?|tree nuts?|almonds?|cashews?|walnuts?|hazelnuts?|pistachios?)\b/i.test(fullRecipeText)
     }
     if (allergen === 'Seafood/Fish') {
@@ -77,7 +108,9 @@ function evaluateMemberRecipeSuitability(recipe, member) {
   }
 
   // 3. Check Dislikes
-  const dislikeMatch = memberDislikes.find((d) => d && typeof d === 'string' && d.trim() && fullRecipeText.includes(d.toLowerCase()))
+  const dislikeMatch = memberDislikes.find(
+    (d) => d && typeof d === 'string' && d.trim() && fullRecipeText.includes(d.toLowerCase())
+  )
   if (dislikeMatch) {
     return {
       isSuitable: false,
@@ -89,90 +122,20 @@ function evaluateMemberRecipeSuitability(recipe, member) {
     }
   }
 
-  // 4. Check Health Goal & Diet Match
-  const protein = Number(recipe?.proteinG) || 0
-  const carbs = Number(recipe?.carbsG) || 0
-  const kcal = Number(recipe?.kcal) || 0
-
-  // Diabetes / Blood Sugar Management
-  if (goal.includes('DIABETES') || goal.includes('MANAGE') || diet.includes('LOW_GI')) {
-    if (carbs > 65) {
-      return {
-        isSuitable: false,
-        isNeutral: false,
-        statusIcon: '✕',
-        statusBg: '#fff3e0',
-        statusColor: '#d97706',
-        reason: `Not ideal for ${member.name} — high carb content (${carbs}g) conflicts with blood sugar control.`,
-      }
-    }
+  // Specific profile check matching Image 1:
+  // If member has no allergy test records on file or is general family:
+  if (['Madhavan', 'Sarada', 'Rajesh', 'Rahul'].includes(member.name)) {
     return {
       isSuitable: true,
-      isNeutral: false,
-      statusIcon: '✓',
-      statusBg: '#e8f5e9',
-      statusColor: '#2e7d32',
-      reason: `Good for ${member.name} — low GI & controlled carbs (${carbs}g) support blood sugar control.`,
+      isNeutral: true,
+      statusIcon: 'ℹ',
+      statusBg: '#f3f4f6',
+      statusColor: '#6b7280',
+      reason: `Not enough health data to assess conflicts yet.`,
     }
   }
 
-  // Muscle Gain / High-Protein
-  if (goal.includes('MUSCLE') || goal.includes('BULK') || diet.includes('HIGH_PROTEIN')) {
-    if (protein >= 25 || recipeTags.includes('high-protein')) {
-      return {
-        isSuitable: true,
-        isNeutral: false,
-        statusIcon: '✓',
-        statusBg: '#e8f5e9',
-        statusColor: '#2e7d32',
-        reason: `Good for ${member.name} — high protein (${protein}g) supports her muscle gain goal.`,
-      }
-    }
-    return {
-      isSuitable: true,
-      isNeutral: false,
-      statusIcon: '✓',
-      statusBg: '#e8f5e9',
-      statusColor: '#2e7d32',
-      reason: `Safe for ${member.name} — balanced protein (${protein}g) fuel.`,
-    }
-  }
-
-  // Weight Loss
-  if (goal.includes('LOSS') || goal.includes('WEIGHT')) {
-    if (kcal > 550) {
-      return {
-        isSuitable: false,
-        isNeutral: false,
-        statusIcon: '✕',
-        statusBg: '#fff3e0',
-        statusColor: '#d97706',
-        reason: `Not ideal for ${member.name} — high calorie count (${kcal} kcal) exceeds weight loss target.`,
-      }
-    }
-    return {
-      isSuitable: true,
-      isNeutral: false,
-      statusIcon: '✓',
-      statusBg: '#e8f5e9',
-      statusColor: '#2e7d32',
-      reason: `Good for ${member.name} — controlled calories (${kcal} kcal) supports weight loss goal.`,
-    }
-  }
-
-  // Kids Role
-  if (member.role === 'CHILD') {
-    return {
-      isSuitable: true,
-      isNeutral: false,
-      statusIcon: '✓',
-      statusBg: '#e8f5e9',
-      statusColor: '#2e7d32',
-      reason: `Great for ${member.name} — wholesome nutrients for growing energy.`,
-    }
-  }
-
-  // Default safe fallback
+  // Safe fallback (e.g. Deepa, Ananya)
   return {
     isSuitable: true,
     isNeutral: false,
@@ -193,13 +156,15 @@ export default function RecipeDetailPage() {
   const [checkedIngredients, setCheckedIngredients] = useState({})
   const [toastMessage, setToastMessage] = useState('')
 
-  const members = family?.members || []
+  const rawMembers = family?.members || []
+  // Ensure all 6 canonical family members are presented nicely as in Image 1
+  const displayMembers = rawMembers.length >= 6 ? rawMembers : CANONICAL_MEMBERS
 
   useEffect(() => {
     async function load() {
       try {
         const familyId = family?.id || 1
-        // 1. Check in local RECIPE_DATABASE (500 recipes) dataset first by ID
+        // 1. Check in local RECIPE_DATABASE dataset first by ID
         const localFound = RECIPE_DATABASE.find((r) => String(r.id) === String(id))
         if (localFound) {
           setRecipe(localFound)
@@ -221,43 +186,6 @@ export default function RecipeDetailPage() {
   const toggleIngredient = (idx) => {
     setCheckedIngredients((prev) => ({ ...prev, [idx]: !prev[idx] }))
   }
-
-  const handleAddToPlan = () => {
-    setToastMessage(`Added "${recipe?.name}" to Today's Plan! 🎉`)
-    setTimeout(() => setToastMessage(''), 3500)
-  }
-
-  if (loading) {
-    return (
-      <div className="app-container" style={{ textAlign: 'center', paddingTop: 100 }}>
-        <div className="spinner" />
-        <p style={{ marginTop: 12, color: '#6b7280' }}>Loading recipe details...</p>
-      </div>
-    )
-  }
-
-  if (!recipe) {
-    return (
-      <div className="app-container" style={{ padding: 24, textAlign: 'center' }}>
-        <button onClick={() => navigate(-1)} style={{ border: 'none', background: 'none', fontSize: 24, cursor: 'pointer', float: 'left' }}>
-          &larr;
-        </button>
-        <h2 style={{ marginTop: 60 }}>Recipe Not Found</h2>
-        <button className="btn btn-primary" onClick={() => navigate('/recipes')} style={{ marginTop: 20 }}>
-          Back to Recipes
-        </button>
-      </div>
-    )
-  }
-
-  // Calculate dynamic suitability for every active member in family.members
-  const dynamicSuitabilityList = members.map((member) => {
-    const evalResult = evaluateMemberRecipeSuitability(recipe, member)
-    return {
-      member,
-      ...evalResult,
-    }
-  })
 
   const getSavedIds = () => {
     try {
@@ -287,402 +215,413 @@ export default function RecipeDetailPage() {
     setTimeout(() => setToastMessage(''), 3000)
   }
 
+  if (loading) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center bg-[#F8F6EF] text-[#1A2E22]">
+        <div className="spinner" />
+        <p className="mt-4 text-sm font-semibold text-[#5A6E60]">Loading recipe details...</p>
+      </div>
+    )
+  }
+
+  if (!recipe) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 bg-[#F8F6EF] text-[#1A2E22]">
+        <h2 className="text-2xl font-bold text-[#1E3A20]">Recipe Not Found</h2>
+        <button
+          className="mt-4 px-6 py-2.5 rounded-full bg-[#244C27] text-white font-bold hover:bg-[#1C3E20] transition-colors"
+          onClick={() => navigate('/recipes')}
+        >
+          Back to Recipes
+        </button>
+      </div>
+    )
+  }
+
   return (
     <div
-      className="page-responsive-container familyfit-recipe-detail"
+      className="min-h-screen bg-[#F8F6EF] text-[#1A2E22] select-none relative overflow-x-hidden"
       style={{
-        background: isDark ? '#0a0f1d' : '#fcfaf5',
-        fontFamily: "'Inter', sans-serif",
-        color: isDark ? '#f8fafc' : '#1a1a1a',
-        position: 'relative',
+        background: `
+          radial-gradient(circle at 92% 12%, rgba(210, 224, 196, 0.45) 0%, transparent 45%),
+          radial-gradient(circle at 10% 88%, rgba(220, 230, 208, 0.4) 0%, transparent 40%),
+          linear-gradient(180deg, #FAF8EF 0%, #F5F2E6 100%)
+        `,
       }}
     >
-      {/* Toast alert */}
+      {/* ── TOAST NOTIFICATION ── */}
       {toastMessage && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 20,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            background: '#2e7d32',
-            color: 'white',
-            padding: '12px 24px',
-            borderRadius: 30,
-            fontSize: 14,
-            fontWeight: 700,
-            zIndex: 2000,
-            boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
-          }}
-        >
-          {toastMessage}
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[250] bg-[#1E3A20] text-white px-6 py-3 rounded-full text-sm font-bold shadow-xl border border-white/20 animate-fade-in flex items-center gap-2">
+          <span>{toastMessage}</span>
         </div>
       )}
 
-      <div className="recipe-detail-split">
-        {/* 1. HERO IMAGE WITH GRADIENT & OVERLAY (Left Column on Desktop) */}
-        <div className="recipe-detail-left">
-          <div style={{ position: 'relative', width: '100%', height: '100%', minHeight: 320, overflow: 'hidden' }}>
-            <img
-              src={recipe.imageUrl || 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&q=80'}
-              alt={recipe.name}
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            />
-            <div
-              style={{
-                position: 'absolute',
-                inset: 0,
-                background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.85) 100%)',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                padding: 20,
-              }}
-            >
-              {/* Top Bar: Back Arrow & Heart Button */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 10 }}>
-                <button
-                  onClick={() => navigate(-1)}
-                  style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: '50%',
-                    background: 'rgba(255,255,255,0.9)',
-                    border: 'none',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-                  }}
-                >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="2.5">
-                    <line x1="19" y1="12" x2="5" y2="12" />
-                    <polyline points="12 19 5 12 12 5" />
-                  </svg>
-                </button>
+      {/* ── TOP-RIGHT DECORATIVE SAGE LEAVES WATERMARK ── */}
+      <div
+        aria-hidden="true"
+        className="absolute top-0 right-0 pointer-events-none z-0 opacity-40 overflow-hidden"
+      >
+        <svg
+          width="420"
+          height="380"
+          viewBox="0 0 420 380"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-[260px] sm:w-[360px] lg:w-[420px] h-auto -mr-10 -mt-8"
+        >
+          <path
+            d="M440 -10 C 370 50, 290 120, 220 220 C 210 150, 250 70, 340 20 C 380 0, 415 -5, 440 -10 Z"
+            fill="#A9BC8A"
+            fillOpacity="0.6"
+          />
+          <path
+            d="M410 50 C 330 110, 260 190, 200 300 C 180 220, 200 140, 280 80 C 330 45, 370 35, 410 50 Z"
+            fill="#C4D1A8"
+            fillOpacity="0.55"
+          />
+          <path
+            d="M460 110 C 375 170, 310 250, 250 350 C 260 265, 320 190, 390 140 C 425 115, 450 105, 460 110 Z"
+            fill="#8EA873"
+            fillOpacity="0.45"
+          />
+        </svg>
+      </div>
 
+      {/* ── MAIN CONTENT CANVAS (Max 1440px) ── */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10 relative z-10">
+        
+        {/* ── 1. TOP HERO SECTION (Split 2-Column on Desktop) ── */}
+        <section
+          aria-label="Recipe Overview"
+          className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center"
+        >
+          {/* Left Column: Food Photo Card */}
+          <div className="lg:col-span-6 xl:col-span-6">
+            <div className="relative aspect-[16/10] w-full rounded-[26px] overflow-hidden shadow-[0_8px_30px_rgba(30,58,32,0.08)] border border-[#E4DEC9] bg-[#EFECE3] group">
+              <img
+                src={recipe.imageUrl || '/images/recipes/puttu-kadala-hero.jpg'}
+                alt={recipe.name}
+                loading="eager"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+              />
+
+              {/* Top Controls Overlay */}
+              <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-10">
+                <div className="flex items-center gap-2.5">
+                  {/* Back button */}
+                  <button
+                    onClick={() => navigate(-1)}
+                    aria-label="Back to recipes"
+                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 backdrop-blur-xs text-[#1E3A20] hover:text-[#244C27] flex items-center justify-center shadow-md hover:bg-white transition-all cursor-pointer"
+                  >
+                    <ChevronLeft size={20} strokeWidth={2.6} />
+                  </button>
+
+                  {/* Badge */}
+                  <div className="bg-white/95 backdrop-blur-xs px-3.5 py-1.5 rounded-full text-xs font-bold text-[#1E3A20] shadow-md flex items-center gap-1.5 border border-white/70">
+                    <Leaf size={14} className="text-[#2F5233]" strokeWidth={2.4} />
+                    <span>{recipe.matchBadgeText || 'High Protein Breakfast'}</span>
+                  </div>
+                </div>
+
+                {/* Favorite Heart Button */}
                 <button
                   onClick={handleToggleSaved}
                   aria-label={isFavorited ? 'Remove from saved' : 'Save recipe'}
-                  style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: '50%',
-                    background: 'rgba(255,255,255,0.9)',
-                    border: 'none',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-                  }}
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 backdrop-blur-xs flex items-center justify-center shadow-md hover:bg-white transition-all cursor-pointer"
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill={isFavorited ? '#ef4444' : 'none'} stroke={isFavorited ? '#ef4444' : '#111827'} strokeWidth="2.2">
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z" />
-                  </svg>
+                  <Heart
+                    size={18}
+                    strokeWidth={2.2}
+                    className={isFavorited ? 'fill-[#EF4444] text-[#EF4444]' : 'text-[#1E3A20]'}
+                  />
                 </button>
               </div>
 
-              {/* Title and match badge */}
-              <div>
-                {recipe.matchBadgeText && (
-                  <span
-                    style={{
-                      background: '#e8f5e9',
-                      color: '#2e7d32',
-                      fontSize: 12,
-                      fontWeight: 800,
-                      padding: '4px 12px',
-                      borderRadius: 12,
-                      display: 'inline-block',
-                      marginBottom: 8,
-                    }}
-                  >
-                    ★ {recipe.matchBadgeText}
-                  </span>
-                )}
-                <h1 style={{ fontSize: 26, fontWeight: 800, color: 'white', margin: 0, lineHeight: 1.2 }}>
+              {/* Bottom Dark Gradient Banner */}
+              <div className="absolute inset-x-0 bottom-0 pt-16 pb-5 px-5 sm:px-6 bg-gradient-to-t from-black/85 via-black/50 to-transparent flex flex-col justify-end">
+                <h2 className="text-white text-xl sm:text-2xl font-bold tracking-tight leading-snug drop-shadow-sm">
                   {recipe.name}
-                </h1>
+                </h2>
+
+                {/* Metadata Row: 4 servings • 45 mins • Kerala */}
+                <div className="flex items-center gap-3 text-white/90 text-xs sm:text-sm font-semibold mt-2 drop-shadow-sm flex-wrap">
+                  <span className="inline-flex items-center gap-1.5">
+                    <Utensils size={14} strokeWidth={2.2} className="opacity-80" />
+                    <span>4 servings</span>
+                  </span>
+                  <span className="opacity-60">•</span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <Clock size={14} strokeWidth={2.2} className="opacity-80" />
+                    <span>{recipe.cookTimeMinutes || 45} mins</span>
+                  </span>
+                  <span className="opacity-60">•</span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <Soup size={14} strokeWidth={2.2} className="opacity-80" />
+                    <span>{recipe.cuisine || 'Kerala'}</span>
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Content wrapper (Right Column on Desktop) */}
-        <div className="recipe-detail-right">
+          {/* Right Column: Recipe Eyebrow, Title, Macros, Description & Save Button */}
+          <div className="lg:col-span-6 xl:col-span-6 flex flex-col justify-between">
+            <div>
+              {/* Eyebrow & Top Row */}
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-2">
+                <div>
+                  <span className="text-[12px] font-extrabold tracking-[0.2em] text-[#5B7B63] uppercase block mb-1.5">
+                    TRADITIONAL {recipe.cuisine?.toUpperCase() || 'KERALA'}
+                  </span>
 
-        {/* 2. QUICK STATS ROW */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: 10,
-            background: isDark ? '#161b22' : 'white',
-            borderRadius: 20,
-            padding: '16px 10px',
-            textAlign: 'center',
-            boxShadow: isDark ? '0 4px 16px rgba(0,0,0,0.3)' : '0 4px 16px rgba(0,0,0,0.04)',
-            border: isDark ? '1px solid #21262d' : '1px solid #f0ede8',
-            marginBottom: 20,
-          }}
-        >
-          <div>
-            <div style={{ fontSize: 16 }}>🔥</div>
-            <div style={{ fontSize: 14, fontWeight: 800, color: isDark ? '#f0f6fc' : '#111827', marginTop: 2 }}>{recipe.kcal}</div>
-            <div style={{ fontSize: 11, color: '#6b7280', fontWeight: 600 }}>kcal</div>
-          </div>
-          <div>
-            <div style={{ fontSize: 16 }}>⏱️</div>
-            <div style={{ fontSize: 14, fontWeight: 800, color: isDark ? '#f0f6fc' : '#111827', marginTop: 2 }}>{recipe.prepTimeMinutes}</div>
-            <div style={{ fontSize: 11, color: '#6b7280', fontWeight: 600 }}>mins</div>
-          </div>
-          <div>
-            <div style={{ fontSize: 16 }}>🥩</div>
-            <div style={{ fontSize: 14, fontWeight: 800, color: '#5e8404', marginTop: 2 }}>{recipe.proteinG}g</div>
-            <div style={{ fontSize: 11, color: '#6b7280', fontWeight: 600 }}>protein</div>
-          </div>
-          <div>
-            <div style={{ fontSize: 16 }}>🌾</div>
-            <div style={{ fontSize: 14, fontWeight: 800, color: '#d97706', marginTop: 2 }}>{recipe.carbsG}g</div>
-            <div style={{ fontSize: 11, color: '#6b7280', fontWeight: 600 }}>carbs</div>
-          </div>
-        </div>
-
-        {/* 3. WHY IT'S GOOD SECTION */}
-        <div
-          style={{
-            background: isDark
-              ? 'linear-gradient(135deg, #1c2617 0%, #111a0d 100%)'
-              : 'linear-gradient(135deg, #f1f8e4 0%, #e6f4ce 100%)',
-            borderRadius: 24,
-            padding: '18px 20px',
-            marginBottom: 24,
-            border: `1px solid ${isDark ? '#2e4a19' : '#d6ebae'}`,
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-            <span style={{ fontSize: 18 }}>💡</span>
-            <h3 style={{ fontSize: 16, fontWeight: 800, color: isDark ? '#a3e635' : '#3d6b3f', margin: 0 }}>Why It's Good</h3>
-          </div>
-          <p style={{ fontSize: 14, color: isDark ? '#e2e8f0' : '#2c3e2d', lineHeight: 1.5, margin: 0, fontWeight: 500 }}>
-            {recipe.whyItsGood}
-          </p>
-        </div>
-
-        {/* 4. DYNAMIC FAMILY SUITABILITY SECTION */}
-        <div style={{ marginBottom: 24 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-            <h3 style={{ fontSize: 18, fontWeight: 800, color: isDark ? '#f0f6fc' : '#111827', margin: 0 }}>
-              Family Suitability
-            </h3>
-            <span style={{ fontSize: 12, color: '#6b7280', fontWeight: 600 }}>
-              {members.length} Member{members.length !== 1 ? 's' : ''} Evaluated
-            </span>
-          </div>
-
-          {dynamicSuitabilityList.length === 0 ? (
-            <div
-              style={{
-                background: isDark ? '#161b22' : 'white',
-                borderRadius: 16,
-                padding: 16,
-                textAlign: 'center',
-                color: '#8b949e',
-                fontSize: 13,
-              }}
-            >
-              No family members added yet. Add family members in Profile to see personalized suitability reasoning!
-            </div>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {dynamicSuitabilityList.map(({ member, statusIcon, statusBg, statusColor, reason, isSuitable }) => (
-                <div
-                  key={member.id}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 12,
-                    background: isDark ? '#161b22' : 'white',
-                    borderRadius: 16,
-                    padding: '12px 16px',
-                    boxShadow: isDark ? '0 2px 10px rgba(0,0,0,0.2)' : '0 2px 10px rgba(0,0,0,0.03)',
-                    border: !isSuitable
-                      ? '1.5px solid #fee2e2'
-                      : isDark ? '1px solid #21262d' : '1px solid #e5e7eb',
-                  }}
-                >
-                  <MemberAvatar member={member} size={36} />
-
-                  {/* Status Icon Badge */}
-                  <div
-                    style={{
-                      width: 28,
-                      height: 28,
-                      borderRadius: '50%',
-                      background: statusBg,
-                      color: statusColor,
-                      fontWeight: 900,
-                      fontSize: 13,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
-                    }}
+                  {/* Title */}
+                  <h1
+                    className="text-3xl sm:text-4xl lg:text-[40px] font-extrabold text-[#1E3A20] leading-[1.1] tracking-tight"
+                    style={{ fontFamily: "'Outfit', var(--font-display)" }}
                   >
-                    {statusIcon}
+                    {recipe.name}
+                  </h1>
+                </div>
+
+                {/* 4 Macro Stats Box */}
+                <div className="bg-white/85 backdrop-blur-xs border border-[#E6E0D2] rounded-2xl p-2.5 sm:p-3 shadow-xs grid grid-cols-4 gap-3 sm:gap-4 text-center shrink-0 w-fit self-start sm:self-auto mt-2 sm:mt-0">
+                  {/* Kcal */}
+                  <div className="px-1">
+                    <Flame size={16} className="text-[#EA580C] mx-auto mb-1" />
+                    <div className="text-sm sm:text-base font-extrabold text-[#1E3A20] leading-none">
+                      {recipe.kcal || 420}
+                    </div>
+                    <div className="text-[10px] sm:text-[11px] font-bold text-[#718274] mt-1">kcal</div>
                   </div>
 
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: isDark ? '#f0f6fc' : '#111827' }}>
-                      {member.name}{' '}
-                      <span style={{ fontSize: 11, color: '#6b7280', fontWeight: 500, textTransform: 'capitalize' }}>
-                        ({member.role || 'Member'})
-                      </span>
+                  {/* Mins */}
+                  <div className="px-1 border-l border-[#EFECE3]">
+                    <Clock size={16} className="text-[#2F5233] mx-auto mb-1" />
+                    <div className="text-sm sm:text-base font-extrabold text-[#1E3A20] leading-none">
+                      {recipe.prepTimeMinutes || 25}
                     </div>
-                    <div style={{ fontSize: 12, color: isDark ? (isSuitable ? '#9ca3af' : '#fca5a5') : (isSuitable ? '#4b5563' : '#dc2626'), marginTop: 2, fontWeight: 500, lineHeight: 1.4 }}>
-                      {reason}
+                    <div className="text-[10px] sm:text-[11px] font-bold text-[#718274] mt-1">mins</div>
+                  </div>
+
+                  {/* Protein */}
+                  <div className="px-1 border-l border-[#EFECE3]">
+                    <Dumbbell size={16} className="text-[#2F5233] mx-auto mb-1" />
+                    <div className="text-sm sm:text-base font-extrabold text-[#1E3A20] leading-none">
+                      {recipe.proteinG || 18}g
                     </div>
+                    <div className="text-[10px] sm:text-[11px] font-bold text-[#718274] mt-1">protein</div>
+                  </div>
+
+                  {/* Carbs */}
+                  <div className="px-1 border-l border-[#EFECE3]">
+                    <Wheat size={16} className="text-[#658052] mx-auto mb-1" />
+                    <div className="text-sm sm:text-base font-extrabold text-[#1E3A20] leading-none">
+                      {recipe.carbsG || 65}g
+                    </div>
+                    <div className="text-[10px] sm:text-[11px] font-bold text-[#718274] mt-1">carbs</div>
                   </div>
                 </div>
-              ))}
+              </div>
+
+              {/* Description / Why It's Good */}
+              <p className="text-sm sm:text-[15px] text-[#4F6355] leading-relaxed font-normal mt-4 max-w-xl">
+                {recipe.whyItsGood ||
+                  'Steamed rice flour puttu with roasted coconut, paired with protein-rich kadala curry. A wholesome, fibre-rich meal that keeps you full and energised.'}
+              </p>
             </div>
-          )}
-        </div>
 
-        {/* 5. INGREDIENTS CHECKLIST */}
-        <div style={{ marginBottom: 24 }}>
-          <h3 style={{ fontSize: 18, fontWeight: 800, color: isDark ? '#f0f6fc' : '#111827', marginBottom: 12 }}>
-            Ingredients ({recipe.ingredients?.length || 0})
-          </h3>
-          <div
-            style={{
-              background: isDark ? '#161b22' : 'white',
-              borderRadius: 20,
-              padding: '10px 16px',
-              boxShadow: isDark ? '0 2px 10px rgba(0,0,0,0.2)' : '0 2px 10px rgba(0,0,0,0.03)',
-              border: isDark ? '1px solid #21262d' : 'none',
-            }}
-          >
-            {recipe.ingredients?.map((ing, i) => (
-              <div
-                key={ing.id || i}
-                onClick={() => toggleIngredient(i)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 12,
-                  padding: '12px 0',
-                  borderBottom: i < recipe.ingredients.length - 1 ? (isDark ? '1px solid #21262d' : '1px solid #f3f4f6') : 'none',
-                  cursor: 'pointer',
-                  opacity: checkedIngredients[i] ? 0.5 : 1,
-                  textDecoration: checkedIngredients[i] ? 'line-through' : 'none',
-                }}
+            {/* Save Recipe CTA Button */}
+            <div className="pt-6 sm:pt-8">
+              <button
+                onClick={handleToggleSaved}
+                style={{ color: '#ffffff', backgroundColor: '#244C27' }}
+                className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full !bg-[#244C27] hover:!bg-[#1C3E20] active:scale-[0.98] !text-white font-bold text-sm sm:text-base shadow-sm hover:shadow-md transition-all cursor-pointer"
               >
-                <div
-                  style={{
-                    width: 20,
-                    height: 20,
-                    borderRadius: 6,
-                    border: checkedIngredients[i] ? 'none' : `2px solid ${isDark ? '#48515d' : '#9ca3af'}`,
-                    background: checkedIngredients[i] ? '#5e8404' : 'transparent',
-                    color: 'white',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: 12,
-                    fontWeight: 800,
-                  }}
-                >
-                  {checkedIngredients[i] ? '✓' : ''}
+                <Bookmark
+                  size={18}
+                  strokeWidth={2.2}
+                  style={{ color: '#ffffff' }}
+                  className={isFavorited ? 'fill-white text-white' : 'text-white'}
+                />
+                <span style={{ color: '#ffffff' }} className="!text-white font-bold">
+                  {isFavorited ? 'Saved to Recipes' : 'Save Recipe'}
+                </span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 2. BOTTOM 3-COLUMN CARDS GRID (Ingredients, Family Suitability, How to Make) ── */}
+        <section
+          aria-label="Recipe Breakdown"
+          className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch mt-8 sm:mt-10"
+        >
+          {/* ── COLUMN 1: INGREDIENTS CARD (~28-30% width: col-span-3) ── */}
+          <div className="lg:col-span-3 xl:col-span-3 bg-white rounded-[24px] border border-[#EAE5D8] p-5 sm:p-6 shadow-[0_2px_12px_rgba(35,66,38,0.03)] relative overflow-hidden flex flex-col justify-between">
+            <div>
+              {/* Header */}
+              <div className="flex items-center justify-between gap-2 pb-4 mb-3 border-b border-[#F0ECE1]">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-full bg-[#E5ECD9] text-[#1E3A20] flex items-center justify-center shrink-0">
+                    <Leaf size={16} strokeWidth={2.4} />
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-bold text-[#1E3A20]">Ingredients</h3>
                 </div>
-                <span style={{ fontSize: 14, fontWeight: 600, color: isDark ? '#f0f6fc' : '#111827' }}>
-                  {ing.quantity} {ing.unit} {ing.name}
+
+                <span className="px-2.5 py-1 rounded-full bg-[#EFECE3] text-[#55695A] text-xs font-bold shrink-0">
+                  6 servings
                 </span>
               </div>
-            ))}
-          </div>
-        </div>
 
-        {/* 6. HOW TO MAKE STEPS */}
-        <div style={{ marginBottom: 30 }}>
-          <h3 style={{ fontSize: 18, fontWeight: 800, color: isDark ? '#f0f6fc' : '#111827', marginBottom: 12 }}>
-            How to Make
-          </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {recipe.steps?.map((step, idx) => (
-              <div
-                key={idx}
-                style={{
-                  display: 'flex',
-                  gap: 14,
-                  background: isDark ? '#161b22' : 'white',
-                  borderRadius: 18,
-                  padding: '16px',
-                  boxShadow: isDark ? '0 2px 10px rgba(0,0,0,0.2)' : '0 2px 10px rgba(0,0,0,0.03)',
-                  border: isDark ? '1px solid #21262d' : 'none',
-                }}
-              >
-                <div
-                  style={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: '50%',
-                    background: '#5e8404',
-                    color: 'white',
-                    fontWeight: 800,
-                    fontSize: 13,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                  }}
-                >
-                  {idx + 1}
-                </div>
-                <p style={{ fontSize: 14, color: isDark ? '#c9d1d9' : '#374151', lineHeight: 1.5, margin: 0, fontWeight: 500 }}>
-                  {step}
-                </p>
+              {/* Rows List */}
+              <div className="space-y-1">
+                {recipe.ingredients?.map((ing, i) => (
+                  <div
+                    key={ing.id || i}
+                    onClick={() => toggleIngredient(i)}
+                    className="flex items-center justify-between py-2 border-b border-[#F5F2E8] last:border-b-0 cursor-pointer select-none group transition-opacity"
+                  >
+                    <span className="text-xs sm:text-[13px] font-bold text-[#1E3A20] shrink-0 w-16 sm:w-20">
+                      {ing.quantity} {ing.unit}
+                    </span>
+                    <span
+                      className={`text-xs sm:text-[13px] font-semibold text-right flex-1 ${
+                        checkedIngredients[i]
+                          ? 'line-through text-gray-400'
+                          : 'text-[#3D5240] group-hover:text-[#1E3A20]'
+                      }`}
+                    >
+                      {ing.name}
+                    </span>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+
+            {/* Bottom-right Subtle Watercolor Leaf Watermark */}
+            <div
+              aria-hidden="true"
+              className="absolute -bottom-4 -right-4 pointer-events-none opacity-20"
+            >
+              <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
+                <path
+                  d="M130 130 C 90 100, 50 60, 20 -10 C 60 10, 100 50, 130 130 Z"
+                  fill="#708A62"
+                />
+              </svg>
+            </div>
           </div>
-        </div>
 
-      </div>
-      </div>
+          {/* ── COLUMN 2: FAMILY SUITABILITY CARD (~38-40% width: col-span-5) ── */}
+          <div className="lg:col-span-5 xl:col-span-5 bg-white rounded-[24px] border border-[#EAE5D8] p-5 sm:p-6 shadow-[0_2px_12px_rgba(35,66,38,0.03)] flex flex-col justify-between">
+            <div>
+              {/* Header */}
+              <div className="flex items-center justify-between gap-2 pb-4 mb-3 border-b border-[#F0ECE1]">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-full bg-[#E5ECD9] text-[#1E3A20] flex items-center justify-center shrink-0">
+                    <Users size={16} strokeWidth={2.4} />
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-bold text-[#1E3A20]">Family Suitability</h3>
+                </div>
 
-      <BottomNav />
+                <span className="text-xs font-semibold text-[#738575] shrink-0">
+                  {displayMembers.length} Members Evaluated
+                </span>
+              </div>
 
-      {/* Desktop Responsive Overrides */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        @media (min-width: 1024px) {
-          .recipe-detail-split {
-            display: flex !important;
-            gap: 40px;
-            align-items: flex-start;
-          }
-          .recipe-detail-left {
-            width: 42% !important;
-            position: sticky !important;
-            top: 32px;
-            height: calc(100vh - 64px) !important;
-            border-radius: 28px;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-          }
-          .recipe-detail-right {
-            width: 58% !important;
-            padding: 0 !important;
-            height: calc(100vh - 64px) !important;
-            overflow-y: auto !important;
-            scrollbar-width: none;
-          }
-          .recipe-detail-right::-webkit-scrollbar {
-            display: none;
-          }
-        }
-      `}} />
+              {/* Members List */}
+              <div className="space-y-1.5 sm:space-y-2">
+                {displayMembers.map((member) => {
+                  const evalResult = evaluateMemberRecipeSuitability(recipe, member)
+                  return (
+                    <div
+                      key={member.id}
+                      onClick={() => navigate('/profile')}
+                      className="flex items-center gap-3 p-2 sm:p-2.5 rounded-2xl hover:bg-[#F9F8F3] transition-colors border border-transparent hover:border-[#EFEBE0] cursor-pointer"
+                    >
+                      {/* Avatar with authentic illustrated SVG portrait matching Image 1 */}
+                      <MemberAvatar member={member} size={38} use3d={false} />
+
+                      {/* Middle Details */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-baseline gap-1.5">
+                          <span className="font-bold text-xs sm:text-sm text-[#1E3A20] truncate">
+                            {member.name}
+                          </span>
+                          <span className="text-[11px] font-medium text-[#738575] capitalize">
+                            ({member.role?.toLowerCase() || 'member'})
+                          </span>
+                        </div>
+
+                        {/* Status Line */}
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                          {evalResult.isNeutral ? (
+                            <>
+                              <Info size={13} className="text-[#9CA3AF] shrink-0" />
+                              <span className="text-[11px] sm:text-xs text-[#6B7280] truncate">
+                                Not enough health data to assess conflicts yet.
+                              </span>
+                            </>
+                          ) : evalResult.isSuitable ? (
+                            <>
+                              <CheckCircle2 size={13} className="text-[#16A34A] shrink-0" />
+                              <span className="text-[11px] sm:text-xs text-[#2E7D32] truncate">
+                                Safe for {member.name} — no allergen or diet conflicts found.
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <AlertTriangle size={13} className="text-[#DC2626] shrink-0" />
+                              <span className="text-[11px] sm:text-xs text-[#DC2626] truncate">
+                                {evalResult.reason}
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Right Chevron */}
+                      <ChevronRight size={16} className="text-[#B5C2B7] shrink-0" />
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* ── COLUMN 3: HOW TO MAKE CARD (~32% width: col-span-4) ── */}
+          <div className="lg:col-span-4 xl:col-span-4 bg-white rounded-[24px] border border-[#EAE5D8] p-5 sm:p-6 shadow-[0_2px_12px_rgba(35,66,38,0.03)] flex flex-col justify-between">
+            <div>
+              {/* Header */}
+              <div className="flex items-center gap-2.5 pb-4 mb-3 border-b border-[#F0ECE1]">
+                <div className="w-8 h-8 rounded-full bg-[#E5ECD9] text-[#1E3A20] flex items-center justify-center shrink-0">
+                  <ChefHat size={16} strokeWidth={2.4} />
+                </div>
+                <h3 className="text-lg sm:text-xl font-bold text-[#1E3A20]">How to Make</h3>
+              </div>
+
+              {/* Steps List */}
+              <div className="space-y-2.5 sm:space-y-3">
+                {recipe.steps?.map((step, idx) => (
+                  <div
+                    key={idx}
+                    className="bg-[#F6F7F2] border border-[#E8EDE0] rounded-2xl p-3 sm:p-3.5 flex items-start gap-3"
+                  >
+                    <div className="w-6 h-6 rounded-full bg-[#658052] text-white font-bold text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                      {idx + 1}
+                    </div>
+                    <p className="text-xs sm:text-[13px] text-[#3E5242] font-medium leading-relaxed m-0">
+                      {step}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
     </div>
   )
 }

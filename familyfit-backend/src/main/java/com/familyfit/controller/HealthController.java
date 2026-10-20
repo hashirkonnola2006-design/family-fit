@@ -1,24 +1,28 @@
 package com.familyfit.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
- * Lightweight health-check endpoint used by Render (and any other platform)
- * to verify the service is running.
+ * Lightweight public health endpoint used by external keep-alive pingers (e.g. UptimeRobot)
+ * and the frontend wake-up trigger.
  *
- * GET /healthz → 200 {"status":"UP"}
- *
- * This endpoint is explicitly permitted without authentication in SecurityConfig.
+ * Route: GET /health (also /api/health and /healthz)
+ * Returns HTTP 200 with {"status": "ok"}
+ * Excluded from authentication, session checks, and CORS restrictions.
+ * Performs zero database queries, zero external API calls, and zero heavy logic.
  */
+@CrossOrigin(origins = "*")
 @RestController
 public class HealthController {
 
-    @GetMapping("/healthz")
+    @GetMapping(value = {"/health", "/api/health", "/healthz"}, produces = "application/json")
     public ResponseEntity<Map<String, String>> healthCheck() {
-        return ResponseEntity.ok(Map.of("status", "UP"));
+        return ResponseEntity.ok(Collections.singletonMap("status", "ok"));
     }
 }

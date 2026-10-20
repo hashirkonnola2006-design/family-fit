@@ -5,10 +5,20 @@
    ══════════════════════════════════════════════════════════════ */
 
 /* ─── Google Fonts ─────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 /* ─── Brand Design Tokens (FamilyFit Brand Sheet) ─────────── */
 :root {
+  /* User requested variables */
+  --green-900:            #24402F;
+  --green-800:            #2F4A32;
+  --green-600:            #2D4F36;
+  --sage-300:             #C4D1A8;
+  --sage-400:             #A9BC8A;
+  --lime:                 #8DB445;
+  --cream:                #F6F4E6;
+  --font-outfit:          'Outfit', system-ui, -apple-system, sans-serif;
+
   /* Core Brand Palette */
   --forest:               #1F5D3A;  /* Primary: buttons, headings, links, active nav, focus rings */
   --forest-hover:         #174A2E;

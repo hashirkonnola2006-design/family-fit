@@ -91,61 +91,45 @@ export function AuthProvider({ children }) {
       return DEMO_USER
     }
 
-    // 1. Try Backend API login with single quick retry for cold starts
-    let lastError = null
-    const maxRetries = 1
-    const delayMs = 1200
-
-    for (let attempt = 0; attempt <= maxRetries; attempt++) {
-      if (attempt > 0) {
-        await new Promise((resolve) => setTimeout(resolve, delayMs))
+    // 1. Try Backend API login (client.js automatically retries network errors 3 times with 5s delay)
+    try {
+      const res = await apiLogin({ email: cleanEmail, password })
+      if (res?.data && res.data.familyId) {
+        const data = res.data
+        saveToLocalRegistry({
+          familyId: data.familyId,
+          email: cleanEmail,
+          familyName: data.familyName || 'My Family',
+          password,
+          accessToken: data.accessToken || `token_${Date.now()}`,
+          refreshToken: data.refreshToken || `ref_${Date.now()}`,
+        })
+        persistAuth(data)
+        setUser({ familyId: data.familyId, email: cleanEmail, familyName: data.familyName || 'My Family' })
+        return data
       }
-      try {
-        const res = await apiLogin({ email: cleanEmail, password })
-        if (res?.data && res.data.familyId) {
-          const data = res.data
-          saveToLocalRegistry({
-            familyId: data.familyId,
-            email: cleanEmail,
-            familyName: data.familyName || 'My Family',
-            password,
-            accessToken: data.accessToken || `token_${Date.now()}`,
-            refreshToken: data.refreshToken || `ref_${Date.now()}`,
-          })
-          persistAuth(data)
-          setUser({ familyId: data.familyId, email: cleanEmail, familyName: data.familyName || 'My Family' })
-          return data
-        }
-        throw new Error('Invalid login credentials')
-      } catch (apiErr) {
-        console.error(`Backend API login attempt ${attempt + 1} failed:`, apiErr)
-        lastError = apiErr
+      throw new Error('Invalid login credentials')
+    } catch (apiErr) {
+      console.error('Backend API login failed:', apiErr)
 
-        const responseData = apiErr.response?.data
-        const serverMsg = responseData?.message || (typeof responseData === 'string' ? responseData : null)
+      const responseData = apiErr.response?.data
+      const serverMsg = responseData?.message || (typeof responseData === 'string' ? responseData : null)
 
-        // If backend returned Bad credentials or 4xx, stop immediately - do not waste time retrying
-        if (
-          serverMsg === 'Bad credentials' ||
-          apiErr.response?.status === 400 ||
-          apiErr.response?.status === 401 ||
-          (apiErr.response?.status === 500 && serverMsg === 'Bad credentials')
-        ) {
-          throw new Error('Invalid email or password.')
-        }
-
-        if (serverMsg && !serverMsg.toLowerCase().includes('timeout') && !serverMsg.toLowerCase().includes('network error')) {
-          throw new Error(serverMsg)
-        }
+      // If backend returned Bad credentials or 4xx, display immediate friendly auth message
+      if (
+        serverMsg === 'Bad credentials' ||
+        apiErr.response?.status === 400 ||
+        apiErr.response?.status === 401 ||
+        (apiErr.response?.status === 500 && serverMsg === 'Bad credentials')
+      ) {
+        throw new Error('Invalid email or password.')
       }
-    }
 
-    // If network/server connection completely failed after retries
-    const lastServerMsg = lastError?.response?.data?.message
-    if (lastServerMsg) {
-      throw new Error(lastServerMsg)
+      if (serverMsg) {
+        throw new Error(serverMsg)
+      }
+      throw new Error('Login failed: could not reach the server. Please try again in a moment.')
     }
-    throw new Error('Login failed: could not reach the server. Please try again in a moment (the server may be waking up).')
   }
 
   const register = async (familyNameInput, emailInput, passwordInput) => {

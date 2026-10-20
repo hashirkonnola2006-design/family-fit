@@ -43,7 +43,7 @@ public class SecurityConfig {
                 resp.getWriter().write("{\"status\":401,\"error\":\"Unauthorized\",\"message\":\"Authentication token missing or expired\"}");
             }))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/healthz").permitAll()
+                .requestMatchers("/health", "/api/health", "/healthz", "/api/auth/**").permitAll()
                 .anyRequest().authenticated()
             )
             .authenticationProvider(authenticationProvider())
