@@ -41,48 +41,6 @@ function FamilyFitLogo({ tone = "color", height = 32 }: { tone?: "color" | "whit
   )
 }
 
-// Yellow Radiance Rays (\ | /) for "Happy Kids"
-function DoodleRays({ side = "right" }: { side?: "left" | "right" }) {
-  if (side === "left") {
-    return (
-      <svg width="24" height="28" viewBox="0 0 24 28" fill="none" className="shrink-0 text-[#F5C242] drop-shadow-xs">
-        <line x1="20" y1="5" x2="4" y2="10" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" />
-        <line x1="22" y1="14" x2="2" y2="14" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" />
-        <line x1="20" y1="23" x2="4" y2="18" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" />
-      </svg>
-    )
-  }
-  return (
-    <svg width="24" height="28" viewBox="0 0 24 28" fill="none" className="shrink-0 text-[#F5C242] drop-shadow-xs">
-      <line x1="4" y1="5" x2="20" y2="10" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" />
-      <line x1="2" y1="14" x2="22" y2="14" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" />
-      <line x1="4" y1="23" x2="20" y2="18" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" />
-    </svg>
-  )
-}
-
-// Cute Hand-drawn Heart Doodle with Radiance
-function DoodleHeart() {
-  return (
-    <div className="relative inline-flex items-center justify-center">
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" className="text-white drop-shadow-xs">
-        {/* Rays above heart */}
-        <line x1="9" y1="3" x2="6" y2="7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        <line x1="14" y1="1" x2="14" y2="5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        <line x1="19" y1="3" x2="22" y2="7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        {/* Heart outline */}
-        <path 
-          d="M14 23C13.5 22.5 7 17.5 5 14C3 10.5 4 7 7.5 6.5C10 6 12.5 8 14 10C15.5 8 18 6 20.5 6.5C24 7 25 10.5 23 14C21 17.5 14.5 22.5 14 23Z" 
-          stroke="currentColor" 
-          strokeWidth="2.2" 
-          strokeLinecap="round" 
-          strokeLinejoin="round" 
-        />
-      </svg>
-    </div>
-  )
-}
-
 // Google "G" Icon
 function GoogleIcon() {
   return (
@@ -315,16 +273,6 @@ export function AuthUI({
                 <br />
                 Kids
               </span>
-
-              {/* Yellow Radiance Lines to the Right of "Kids" */}
-              <div className="absolute -right-8 bottom-3 flex items-center">
-                <DoodleRays side="right" />
-              </div>
-
-              {/* Doodle Heart with Radiance Floating Above "Kids" */}
-              <div className="absolute right-0 -top-1">
-                <DoodleHeart />
-              </div>
             </div>
           </div>
 
