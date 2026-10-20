@@ -93,6 +93,7 @@ function ModalSheet({ onClose, children, title }) {
 export default function ProfilePage() {
   const { user, logout } = useAuth()
   const { family } = useFamily()
+  const { isDark } = useTheme() || {}
   const navigate = useNavigate()
 
   const [selectedMember, setSelectedMember] = useState(null)
@@ -174,7 +175,7 @@ export default function ProfilePage() {
   const handleEditMember = (member) => { setSelectedMember(member); setShowMemberModal(true) }
   const handleAddMember = () => { setSelectedMember(null); setShowMemberModal(true) }
 
-  const members = family?.members || []
+  const members = Array.isArray(family?.members) ? family.members.filter(Boolean) : []
   const familyName = user?.familyName || family?.name || (user?.email ? user.email.split('@')[0] : 'Healthy')
   const initial = (familyName[0] || 'H').toUpperCase()
   const userEmail = user?.email || 'family@kerala.health'

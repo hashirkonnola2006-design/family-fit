@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Lightbulb, RotateCw, ArrowRight, Sparkles } from 'lucide-react'
 
@@ -6,34 +6,38 @@ const KERALA_TIPS_POOL = [
   {
     id: 1,
     category: 'Ayurvedic Digestion',
-    title: 'Warm Cumin & Dry Ginger Chukku Water',
-    summary: 'Sipping water infused with cumin (Jeera) and dry ginger awakens gastric agni, soothing morning acid reflux and promoting gentle absorption.',
+    title: 'Warm Cumin & Chukku Water',
+    summary: 'Sipping water boiled with cumin seeds (Jeera) and dry ginger awakens gastric enzymes, soothing morning bloating and promoting gentle absorption.',
     recipeId: 1,
     recipeName: 'Steamed Puttu & Kadala',
+    color: '#FF9600',
   },
   {
     id: 2,
     category: 'Heart & Blood Sugar',
-    title: 'Why Palakkadan Red Matta Wins Over Polished Rice',
-    summary: 'Parboiled red matta retains its bran coat rich in magnesium, delivering complex carbohydrates that keep blood sugar stable throughout the afternoon.',
+    title: 'Palakkadan Red Matta Benefits',
+    summary: 'Parboiled red matta preserves its fiber-rich bran coat, releasing complex carbs gradually and preventing afternoon sugar crashes.',
     recipeId: 2,
     recipeName: 'Traditional Avial & Matta',
+    color: '#E08500',
   },
   {
     id: 3,
-    category: 'Immunity & Micronutrients',
-    title: 'Moringa Leaf (Muringayila) Iron Absorption',
-    summary: 'Pair fresh drumstick leaves with a splash of lemon or tomato — the natural vitamin C multiplies non-heme plant iron absorption threefold.',
+    category: 'Immunity & Superfoods',
+    title: 'Moringa Leaf (Muringayila) Power',
+    summary: 'Pair fresh moringa leaves with a splash of fresh lemon or rasam — natural vitamin C multiplies plant iron uptake threefold.',
     recipeId: 3,
     recipeName: 'Muringayila Thoran',
+    color: '#58CC02',
   },
   {
     id: 4,
     category: 'Post-Meal Wellness',
-    title: 'The 100-Step Shatapadi Metabolic Walk',
-    summary: 'Traditional Ayurvedic wisdom advises a gentle 100-pace indoor stroll after heavy Kerala meals to prevent blood pooling in the abdomen.',
+    title: 'The 100-Step Shatapadi Walk',
+    summary: 'Ayurvedic tradition recommends a relaxed 100-step stroll after heavy lunches to prevent post-meal lethargy and aid digestion.',
     recipeId: 1,
     recipeName: 'Mild Vegetable Stew',
+    color: '#CE82FF',
   },
 ]
 
@@ -47,57 +51,59 @@ export default function TipOfTheDay({ selectedMember }) {
   const tip = KERALA_TIPS_POOL[tipIndex]
 
   return (
-    <div className="bg-white rounded-3xl p-6 border border-[#E2DBD0] shadow-sm flex flex-col justify-between transition-all">
+    <div className="duo-card p-5 sm:p-6 flex flex-col justify-between font-['Nunito',sans-serif] h-full">
       <div>
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-[#EDE8DE]">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-[#FAF7F0] border border-[#E2DBD0] text-[#3F5A3A] flex items-center justify-center">
-              <Lightbulb size={15} />
+        <div className="flex items-center justify-between pb-3.5 border-b-2 border-[#F0F0F0]">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-[#FEF3C7] text-[#D97706] flex items-center justify-center font-black">
+              <Lightbulb size={18} />
             </div>
             <div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#3F5A3A]">
-                Daily Kerala Wisdom
+              <span className="text-[11px] font-black uppercase tracking-wider text-[#777777]">
+                Kerala Wisdom
               </span>
-              <h3 className="text-base font-extrabold text-[#1F2A24] font-['Plus_Jakarta_Sans'] leading-tight">
+              <h3 className="text-base font-black text-[#1F2A24] leading-tight">
                 Tip of the Day
               </h3>
             </div>
           </div>
 
           <button
+            type="button"
             onClick={handleShuffle}
-            className="w-7 h-7 rounded-lg bg-[#FAF7F0] hover:bg-[#EDE8DE] text-[#6B7A70] hover:text-[#1F2A24] flex items-center justify-center transition-all cursor-pointer"
+            className="w-8 h-8 rounded-xl bg-white border-2 border-[#E5E5E5] border-b-4 border-b-[#D0D0D0] hover:bg-[#F9F9F9] active:translate-y-[2px] active:border-b-2 text-[#666666] hover:text-[#1F2A24] flex items-center justify-center transition-all cursor-pointer"
             title="Next tip"
+            aria-label="Next tip"
           >
             <RotateCw size={13} />
           </button>
         </div>
 
-        {/* Tip Content */}
-        <div className="pt-4 space-y-2.5">
-          <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#EAF5E4] text-[#2E7D32]">
+        {/* Tip Body */}
+        <div className="pt-3.5 space-y-2">
+          <span className="inline-block text-[11px] font-black px-2.5 py-0.5 rounded-full bg-[#FFFBEB] text-[#B45309] border border-[#FDE68A]">
             {tip.category}
           </span>
 
-          <h4 className="text-sm font-bold text-[#1F2A24] font-['Plus_Jakarta_Sans'] leading-snug">
+          <h4 className="text-sm font-black text-[#1F2A24] leading-snug">
             {tip.title}
           </h4>
 
-          <p className="text-xs text-[#6B7A70] leading-relaxed line-clamp-3">
+          <p className="text-xs font-semibold text-[#666666] leading-relaxed line-clamp-3">
             {tip.summary}
           </p>
         </div>
       </div>
 
-      {/* Action link */}
-      <div className="pt-4 mt-4 border-t border-[#EDE8DE]">
+      {/* Footer Link */}
+      <div className="pt-3.5 mt-4 border-t-2 border-[#F0F0F0]">
         <Link
           to={`/recipes/${tip.recipeId}`}
-          className="text-xs font-bold text-[#3F5A3A] hover:text-[#32492E] flex items-center justify-between group transition-colors"
+          className="text-xs font-black text-[#D97706] hover:text-[#B45309] flex items-center justify-between group"
         >
-          <span className="group-hover:underline">Try with: {tip.recipeName}</span>
-          <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
+          <span className="truncate pr-2">Try with: {tip.recipeName}</span>
+          <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform shrink-0" />
         </Link>
       </div>
     </div>

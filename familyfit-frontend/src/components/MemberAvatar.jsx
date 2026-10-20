@@ -1,74 +1,72 @@
+import React from 'react'
+import { AVATAR_REGISTRY, suggestAvatarKey } from '../config/avatars'
+
 /**
- * MemberAvatar Component
- * Uses the exact demographic profile photos for family members strictly based on AGE:
- * - CHILD (<13 yrs)
- * - TEENAGER (13-19 yrs)
- * - ADULT (20-59 yrs)
- * - ELDER (60+ yrs)
- * and gender (MALE / FEMALE).
+ * Reusable MemberAvatar component
+ * Uses the registry in src/config/avatars.ts
+ * Allows simple swapping of illustrations without modifying component logic.
+ * Fallback: bold initials on a colored circle.
  */
+export default function MemberAvatar({
+  member,
+  size = 48,
+  className = '',
+  style = {},
+  showBorder = false,
+  use3d = false,
+}) {
+  const avatarKey =
+    member?.avatarKey ||
+    suggestAvatarKey(member?.role, member?.gender, member?.age)
 
-export function getDemographicCategory(member) {
-  if (!member) return { ageCategory: 'ADULT', gender: 'FEMALE' }
+  const avatarMeta = AVATAR_REGISTRY[avatarKey] || AVATAR_REGISTRY.other
+  const name = member?.name || 'Member'
+  const initial = (name.trim()[0] || 'M').toUpperCase()
 
-  const gender = (member.gender || 'FEMALE').toUpperCase()
-  const age = Number(member.age)
+  const [hasError, setHasError] = React.useState(false)
+  const imageSrc = (use3d && avatarMeta?.src3d) ? avatarMeta.src3d : (avatarMeta?.src || avatarMeta?.src3d)
 
-  let ageCategory = 'ADULT'
+  // Size styling
+  const sizePx = typeof size === 'number' ? `${size}px` : size
 
-  if (!isNaN(age) && age > 0) {
-    if (age >= 60) {
-      ageCategory = 'ELDER'
-    } else if (age >= 20) {
-      ageCategory = 'ADULT'
-    } else if (age >= 13) {
-      ageCategory = 'TEENAGER'
-    } else {
-      ageCategory = 'CHILD'
-    }
-  } else {
-    // Fallback if age is unassigned or NaN
-    const role = (member.role || '').toUpperCase()
-    if (role.includes('GRAND') || role.includes('ELDER')) ageCategory = 'ELDER'
-    else if (role.includes('CHILD') || role.includes('KID') || role.includes('BABY')) ageCategory = 'CHILD'
-    else ageCategory = 'ADULT'
+  if (hasError || !imageSrc) {
+    return (
+      <div
+        className={`flex items-center justify-center font-black rounded-full select-none ${className}`}
+        style={{
+          width: sizePx,
+          height: sizePx,
+          backgroundColor: avatarMeta?.themeColor || '#E2E8F0',
+          color: avatarMeta?.borderDark || '#1E293B',
+          fontSize: typeof size === 'number' ? Math.max(12, Math.round(size * 0.4)) : 16,
+          border: showBorder ? `3px solid ${avatarMeta?.borderColor || '#CBD5E1'}` : 'none',
+          ...style,
+        }}
+        aria-label={name}
+      >
+        {initial}
+      </div>
+    )
   }
 
-  return { ageCategory, gender }
-}
-
-const AVATAR_MAP = {
-  CHILD_MALE: '/avatars/child_male.png',
-  CHILD_FEMALE: '/avatars/child_female.png',
-  TEENAGER_MALE: '/avatars/teen_male.png',
-  TEENAGER_FEMALE: '/avatars/teen_female.png',
-  ADULT_MALE: '/avatars/adult_male.png',
-  ADULT_FEMALE: '/avatars/adult_female.png',
-  ELDER_MALE: '/avatars/elder_male.png',
-  ELDER_FEMALE: '/avatars/elder_female.png',
-}
-
-export default function MemberAvatar({ member, size = 38, style = {} }) {
-  const { ageCategory, gender } = getDemographicCategory(member)
-  const isMale = gender === 'MALE'
-  const key = `${ageCategory}_${isMale ? 'MALE' : 'FEMALE'}`
-  const imgSrc = AVATAR_MAP[key] || '/avatars/adult_female.png'
-
   return (
-    <img
-      src={imgSrc}
-      alt={member?.name || 'Family Member'}
+    <div
+      className={`relative inline-flex items-center justify-center rounded-full overflow-hidden select-none shrink-0 ${className}`}
       style={{
-        width: size,
-        height: size,
-        borderRadius: '50%',
-        objectFit: 'cover',
-        flexShrink: 0,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-        border: '1.5px solid rgba(0,0,0,0.06)',
-        display: 'block',
+        width: sizePx,
+        height: sizePx,
+        backgroundColor: avatarMeta.themeColor,
+        border: showBorder ? `3px solid ${avatarMeta.borderColor}` : 'none',
         ...style,
       }}
-    />
+    >
+      <img
+        src={imageSrc}
+        alt={name}
+        onError={() => setHasError(true)}
+        className="w-full h-full object-cover pointer-events-none"
+        loading="lazy"
+      />
+    </div>
   )
 }

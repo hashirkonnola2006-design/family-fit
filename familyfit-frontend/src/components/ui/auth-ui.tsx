@@ -1,19 +1,19 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { 
-  Leaf, 
-  Mail, 
-  Lock, 
   Eye, 
   EyeOff, 
+  Mail, 
+  Lock, 
   User, 
-  Users, 
-  Heart, 
-  ArrowLeft,
-  AlertCircle,
-  Loader2
+  ArrowRight, 
+  Bell, 
+  ChevronDown, 
+  AlertCircle, 
+  Loader2, 
+  Check 
 } from 'lucide-react'
-import { Typewriter } from './typewriter-text'
+import { Logo } from '../brand/Logo'
 
 export interface AuthUIProps {
   initialMode?: 'login' | 'signup'
@@ -32,6 +32,83 @@ export interface AuthUIProps {
   backToHomeHref?: string
 }
 
+// ─── BRAND ICONS & DOODLES ──────────────────────────────────────────
+
+// FamilyFit Brand Logo Lockup
+function FamilyFitLogo({ tone = "color", height = 32 }: { tone?: "color" | "white"; height?: number }) {
+  return (
+    <Logo variant="lockup" tone={tone} height={height} asLink />
+  )
+}
+
+// Yellow Radiance Rays (\ | /) for "Happy Kids"
+function DoodleRays({ side = "right" }: { side?: "left" | "right" }) {
+  if (side === "left") {
+    return (
+      <svg width="24" height="28" viewBox="0 0 24 28" fill="none" className="shrink-0 text-[#F5C242] drop-shadow-xs">
+        <line x1="20" y1="5" x2="4" y2="10" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" />
+        <line x1="22" y1="14" x2="2" y2="14" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" />
+        <line x1="20" y1="23" x2="4" y2="18" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" />
+      </svg>
+    )
+  }
+  return (
+    <svg width="24" height="28" viewBox="0 0 24 28" fill="none" className="shrink-0 text-[#F5C242] drop-shadow-xs">
+      <line x1="4" y1="5" x2="20" y2="10" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" />
+      <line x1="2" y1="14" x2="22" y2="14" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" />
+      <line x1="4" y1="23" x2="20" y2="18" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+// Cute Hand-drawn Heart Doodle with Radiance
+function DoodleHeart() {
+  return (
+    <div className="relative inline-flex items-center justify-center">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" className="text-white drop-shadow-xs">
+        {/* Rays above heart */}
+        <line x1="9" y1="3" x2="6" y2="7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        <line x1="14" y1="1" x2="14" y2="5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        <line x1="19" y1="3" x2="22" y2="7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        {/* Heart outline */}
+        <path 
+          d="M14 23C13.5 22.5 7 17.5 5 14C3 10.5 4 7 7.5 6.5C10 6 12.5 8 14 10C15.5 8 18 6 20.5 6.5C24 7 25 10.5 23 14C21 17.5 14.5 22.5 14 23Z" 
+          stroke="currentColor" 
+          strokeWidth="2.2" 
+          strokeLinecap="round" 
+          strokeLinejoin="round" 
+        />
+      </svg>
+    </div>
+  )
+}
+
+// Google "G" Icon
+function GoogleIcon() {
+  return (
+    <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+      <path
+        fill="#4285F4"
+        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+      />
+      <path
+        fill="#EA4335"
+        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+      />
+    </svg>
+  )
+}
+
+// ─── AUTHENTICATION UI COMPONENT ────────────────────────────────────
+
 export function AuthUI({
   initialMode = 'login',
   loading = false,
@@ -46,59 +123,129 @@ export function AuthUI({
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(true)
+  const [showPassword, setShowPassword] = useState(false)
   const [agreeTerms, setAgreeTerms] = useState(false)
-  const [localValidation, setLocalValidation] = useState('')
 
-  React.useEffect(() => {
-    setMode(initialMode)
-  }, [initialMode])
+  // Validation States
+  const [touched, setTouched] = useState<{ [key: string]: boolean }>({})
+  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({})
+  const [submitted, setSubmitted] = useState(false)
+  const [globalError, setGlobalError] = useState(error)
 
-  // Password strength calculation
+  useEffect(() => {
+    setGlobalError(error)
+  }, [error])
+
+  // Password strength score (0-4)
   const passwordStrength = useMemo(() => {
     if (!password) return 0
     let score = 0
-    if (password.length >= 6) score += 1
-    if (password.length >= 10) score += 1
-    if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score += 1
-    if (/\d/.test(password) || /[^A-Za-z0-9]/.test(password)) score += 1
-    return score
+    if (password.length >= 6) score++
+    if (password.length >= 10) score++
+    if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score++
+    if (/[0-9]/.test(password) || /[^A-Za-z0-9]/.test(password)) score++
+    return Math.min(score, 4)
   }, [password])
 
-  const strengthLabels = ['Too weak', 'Fair', 'Good', 'Strong']
-  const strengthColors = ['#D64545', '#EAB308', '#6BBF4E', '#3F5A3A']
+  const strengthLabels = ['Weak', 'Fair', 'Good', 'Strong']
+  const strengthColors = ['#E53E3E', '#DD6B20', '#38A169', '#2F4A2E']
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setLocalValidation('')
+  const validateField = (field: string, value: string, termsChecked = agreeTerms) => {
+    const errors = { ...fieldErrors }
 
-    if (!email.trim() || !email.includes('@')) {
-      setLocalValidation('Please enter a valid email address.')
-      return
+    if (field === 'email') {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!value.trim()) {
+        errors.email = 'Email address is required'
+      } else if (!emailRegex.test(value.trim())) {
+        errors.email = 'Please enter a valid email address'
+      } else {
+        delete errors.email
+      }
     }
 
-    if (password.length < 6) {
-      setLocalValidation('Password must be at least 6 characters.')
-      return
+    if (field === 'password') {
+      if (!value) {
+        errors.password = 'Password is required'
+      } else if (mode === 'signup' && value.length < 6) {
+        errors.password = 'Password must be at least 6 characters'
+      } else {
+        delete errors.password
+      }
+    }
+
+    if (field === 'name' && mode === 'signup') {
+      if (!value.trim()) {
+        errors.name = 'Please enter your name or family name'
+      } else {
+        delete errors.name
+      }
+    }
+
+    if (field === 'terms' && mode === 'signup') {
+      if (!termsChecked) {
+        errors.terms = 'You must agree to the Terms of Service'
+      } else {
+        delete errors.terms
+      }
+    }
+
+    setFieldErrors(errors)
+    return Object.keys(errors).length === 0
+  }
+
+  const validateAll = () => {
+    const errors: { [key: string]: string } = {}
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+    if (!email.trim()) {
+      errors.email = 'Email address is required'
+    } else if (!emailRegex.test(email.trim())) {
+      errors.email = 'Please enter a valid email address'
+    }
+
+    if (!password) {
+      errors.password = 'Password is required'
+    } else if (mode === 'signup' && password.length < 6) {
+      errors.password = 'Password must be at least 6 characters'
     }
 
     if (mode === 'signup') {
       if (!name.trim()) {
-        setLocalValidation('Please enter your full name or family name.')
-        return
+        errors.name = 'Please enter your name or family name'
       }
       if (!agreeTerms) {
-        setLocalValidation('Please accept the Terms of Service and Privacy Policy.')
-        return
+        errors.terms = 'You must agree to the Terms of Service'
       }
+    }
+
+    setFieldErrors(errors)
+    return Object.keys(errors).length === 0
+  }
+
+  const handleModeChange = (newMode: 'login' | 'signup') => {
+    setMode(newMode)
+    setTouched({})
+    setSubmitted(false)
+    setFieldErrors({})
+    setGlobalError('')
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setSubmitted(true)
+    setTouched({ email: true, password: true, name: true, terms: true })
+
+    if (!validateAll()) {
+      return
     }
 
     onSubmit({
       mode,
-      email,
+      email: email.trim(),
       password,
-      name,
+      name: name.trim(),
       rememberMe,
     })
   }
@@ -107,162 +254,333 @@ export function AuthUI({
     setMode('login')
     setEmail('healthyfamily@example.com')
     setPassword('password123')
-    setLocalValidation('')
+    setTouched({})
+    setSubmitted(false)
+    setFieldErrors({})
+    setGlobalError('')
     if (onUseDemo) onUseDemo()
   }
 
+  const isSubmitDisabled = loading || (mode === 'signup' && !agreeTerms)
+
   return (
-    <div className="ff-auth-root">
-      {/* ── LEFT PANEL: AUTH FORM ── */}
-      <div className="ff-auth-left-side">
-        <div className="ff-auth-form-inner">
-          {/* Top Row: Back link & Mobile Logo */}
-          <div className="ff-auth-top-bar">
-            <Link to={backToHomeHref} className="ff-back-link">
-              <ArrowLeft size={14} />
-              <span>Back to home</span>
-            </Link>
+    <div className="min-h-screen min-h-dvh w-full flex flex-col lg:flex-row bg-[#FAF7F0] text-[#1E2E1A] font-['Plus_Jakarta_Sans',sans-serif] selection:bg-[#2F4A2E] selection:text-white overflow-x-hidden">
+      
+      {/* ─── LEFT PANEL (DESKTOP): 52% PHOTO OF SMILING CHILD EATING ON BANANA LEAF ─── */}
+      <div className="w-full lg:w-[52%] h-[360px] sm:h-[420px] lg:h-screen relative overflow-hidden bg-[#576D4C] select-none shrink-0">
+        
+        {/* Clean, Sharp, Ultra High-Resolution Photo (Zero Baked Text, No Artifacts) */}
+        <img
+          src="/images/auth-kid-clean.jpg"
+          alt="Smiling Indian child eating a traditional Kerala meal on a banana leaf"
+          className="w-full h-full object-cover object-[72%_36%] pointer-events-none"
+          loading="eager"
+        />
 
-            <Link to="/" className="ff-mobile-brand">
-              <Leaf size={18} className="text-[#6BBF4E]" />
-              <span>Family<span className="text-[#6BBF4E]">Fit</span></span>
-            </Link>
+        {/* Soft Vignette Overlay for Text Legibility on Green Wall */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/5 to-transparent pointer-events-none" />
+
+        {/* Top-Left Header: FamilyFit Logo over Photo */}
+        <div className="absolute top-6 left-6 lg:top-8 lg:left-8 xl:left-9 z-20">
+          <FamilyFitLogo tone="white" height={34} />
+        </div>
+
+        {/* Mobile Top-Right: Language / EN Pill dropdown */}
+        <div className="lg:hidden absolute top-6 right-6 z-20 flex items-center">
+          <button
+            type="button"
+            className="px-3 py-1 rounded-full bg-black/35 backdrop-blur-md text-white text-xs font-semibold flex items-center gap-1 border border-white/25 shadow-xs"
+          >
+            <span>EN</span>
+            <ChevronDown size={13} />
+          </button>
+        </div>
+
+        {/* Left-Center Typography Overlay (Pure HTML/CSS — Crisp and Legible) */}
+        <div className="absolute top-20 sm:top-24 lg:top-32 left-6 sm:left-8 lg:left-8 xl:left-9 z-20 pointer-events-none max-w-[260px] sm:max-w-sm lg:max-w-[340px]">
+          
+          {/* "Good Food Builds" (handwritten script font Caveat) */}
+          <div className="font-['Caveat',cursive] text-white text-3xl sm:text-4xl lg:text-[42px] leading-tight font-semibold tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.35)]">
+            Good Food Builds
           </div>
 
-          {/* Desktop Logo */}
-          <div className="ff-desktop-brand">
-            <div className="ff-brand-badge">
-              <Leaf size={18} />
+          {/* "Happy Kids" (bold rounded white font with yellow radiance lines and doodle heart) */}
+          <div className="flex items-center gap-2 mt-0.5">
+            <div className="relative inline-flex items-center">
+              <span 
+                className="font-['Plus_Jakarta_Sans',sans-serif] text-white font-black tracking-tight leading-[0.95] drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)]"
+                style={{ fontSize: 'clamp(44px, 4.5vw, 72px)' }}
+              >
+                Happy
+                <br />
+                Kids
+              </span>
+
+              {/* Yellow Radiance Lines to the Right of "Kids" */}
+              <div className="absolute -right-8 bottom-3 flex items-center">
+                <DoodleRays side="right" />
+              </div>
+
+              {/* Doodle Heart with Radiance Floating Above "Kids" */}
+              <div className="absolute right-0 -top-1">
+                <DoodleHeart />
+              </div>
             </div>
-            <span className="ff-brand-title">
-              Family<span className="text-[#6BBF4E]">Fit</span>
+          </div>
+
+          {/* Subtitle */}
+          <p className="text-white/95 text-xs sm:text-sm lg:text-[15px] font-medium mt-3.5 max-w-xs leading-relaxed drop-shadow-[0_2px_4px_rgba(0,0,0,0.35)]">
+            Nutritious meals, healthy habits, brighter tomorrows.
+          </p>
+        </div>
+
+        {/* ── Desktop Smooth Organic S-Curve Divider (Vector SVG filling #FAF7F0 into right panel) ── */}
+        <svg
+          className="hidden lg:block absolute right-0 top-0 h-full w-[90px] xl:w-[130px] 2xl:w-[160px] pointer-events-none z-10 translate-x-[1px]"
+          viewBox="0 0 130 1000"
+          preserveAspectRatio="none"
+          fill="#FAF7F0"
+          aria-hidden="true"
+        >
+          <path d="M60,0 C95,120 125,240 120,360 C115,480 30,550 20,680 C10,780 40,880 90,1000 L130,1000 L130,0 Z" />
+        </svg>
+
+        {/* ── Mobile Organic Wave at Bottom of Photo ── */}
+        <svg
+          className="lg:hidden absolute bottom-0 left-0 w-full h-[32px] sm:h-[44px] pointer-events-none z-10 translate-y-[1px]"
+          viewBox="0 0 1000 100"
+          preserveAspectRatio="none"
+          fill="#FAF7F0"
+          aria-hidden="true"
+        >
+          <path d="M0,45 C250,90 400,10 700,60 C850,85 950,55 1000,40 L1000,100 L0,100 Z" />
+        </svg>
+      </div>
+
+      {/* ─── RIGHT SECTION: 48% WARM CREAM (#FAF7F0) WITH CENTERED FLOATING LOGIN CARD ─── */}
+      <div className="w-full lg:w-[48%] min-h-[calc(100vh-360px)] lg:h-screen overflow-y-auto flex flex-col justify-between items-center px-5 py-6 sm:px-8 sm:py-8 lg:px-10 xl:px-14 bg-[#FAF7F0] relative z-20">
+        
+        {/* Desktop Top Header: Notification Bell, "Healthy Family ⌄" Dropdown, Dark Green Avatar */}
+        <div className="hidden lg:flex w-full items-center justify-end gap-3 mb-2 lg:mb-4 shrink-0">
+          
+          {/* Notification Bell with Orange Dot */}
+          <button
+            type="button"
+            className="w-9 h-9 rounded-full bg-white border border-[#EAE5D9] text-[#2F4A2E] hover:bg-[#F5F2E8] transition-all flex items-center justify-center relative cursor-pointer shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2F4A2E]"
+            aria-label="Notifications"
+            onClick={() => alert('All family nutrition alerts are up to date.')}
+          >
+            <Bell size={16} strokeWidth={2.2} />
+            {/* Orange notification badge dot #F5A623 */}
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#F5A623] ring-2 ring-white" />
+          </button>
+
+          {/* Profile Menu Dropdown Pill ("FamilyFit ⌄") */}
+          <div className="px-3.5 py-1.5 rounded-full bg-white border border-[#EAE5D9] text-xs font-semibold text-[#2F4A2E] flex items-center gap-1.5 hover:bg-[#F5F2E8] transition-all cursor-pointer shadow-xs">
+            <span>FamilyFit</span>
+            <ChevronDown size={14} className="text-[#667085]" />
+          </div>
+
+          {/* Dark Green User Avatar */}
+          <div className="w-9 h-9 rounded-full bg-[#2F4A2E] text-white flex items-center justify-center shadow-xs">
+            <User size={16} strokeWidth={2.2} />
+          </div>
+        </div>
+
+        {/* Centered Rounded Auth Card (~430px wide, radius ~32px, 1px soft border, light shadow) */}
+        <div className="w-full max-w-[430px] my-auto bg-transparent lg:bg-white border-0 lg:border lg:border-[#EAE5D9] rounded-none lg:rounded-[32px] p-0 lg:p-9 shadow-none lg:shadow-[0_10px_35px_-5px_rgba(47,74,46,0.05)] relative z-20">
+          
+          {/* Brand Logo Lockup inside Card */}
+          <div className="mb-3">
+            <FamilyFitLogo tone="color" height={32} />
+          </div>
+
+          {/* "Welcome Back" Heading with Small Green Leaf Icon */}
+          <h1 className="text-2xl sm:text-[28px] font-black text-[#2F4A2E] tracking-tight leading-tight flex items-center gap-2">
+            <span>{mode === 'login' ? 'Welcome Back' : 'Create Account'}</span>
+            <span className="inline-flex text-[#2F4A2E] text-xl" aria-hidden="true">
+              🌿
             </span>
-          </div>
+          </h1>
 
-          {/* Title & Subtitle */}
-          <div className="ff-auth-header-copy">
-            <h1 className="ff-auth-main-title">
-              {mode === 'login' ? 'Welcome back!' : 'Join FamilyFit'}
-            </h1>
-            <p className="ff-auth-sub-title">
-              {mode === 'login'
-                ? 'Sign in to access personalized Kerala meal plans and smart grocery lists.'
-                : 'Start personalizing wholesome recipes and allergen-safe meals for your family.'}
-            </p>
-          </div>
+          {/* Subtitle */}
+          <p className="text-xs sm:text-[13px] text-[#667085] mt-1.5 mb-5 leading-relaxed font-normal">
+            {mode === 'login' 
+              ? 'Good to see you again! Sign in to continue your healthy journey.' 
+              : 'Join FamilyFit for nutritious meals and healthy habits every day.'}
+          </p>
 
-          {/* Pill Tab Switcher */}
-          <div className="ff-tab-switcher">
-            <button
-              type="button"
-              onClick={() => { setMode('login'); setLocalValidation('') }}
-              className={`ff-tab-btn ${mode === 'login' ? 'active' : ''}`}
+          {/* Server / Global Error Alert Banner */}
+          {globalError && (
+            <div 
+              role="alert" 
+              className="p-3 mb-4 rounded-xl bg-[#FEE2E2] border border-[#DC2626]/40 text-[#B91C1C] text-xs font-semibold flex items-start gap-2 animate-in fade-in duration-200"
             >
-              Sign In
-            </button>
-            <button
-              type="button"
-              onClick={() => { setMode('signup'); setLocalValidation('') }}
-              className={`ff-tab-btn ${mode === 'signup' ? 'active' : ''}`}
-            >
-              Create Account
-            </button>
-          </div>
-
-          {/* Error Message */}
-          {(error || localValidation) && (
-            <div className="ff-auth-alert">
-              <AlertCircle size={16} className="shrink-0 mt-0.5" />
-              <span>{localValidation || error}</span>
+              <AlertCircle size={15} className="shrink-0 mt-0.5" />
+              <span>{globalError}</span>
             </div>
           )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="ff-auth-form">
+          <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-3.5 w-full">
+            
+            {/* Full Name / Family Name (Sign Up Only) */}
             {mode === 'signup' && (
-              <div className="ff-field-group">
-                <label className="ff-field-label">Full Name / Family Name</label>
-                <div className="ff-input-box">
-                  <User size={16} className="ff-field-icon" />
+              <div className="flex flex-col gap-1.5">
+                <label 
+                  htmlFor="auth-name" 
+                  className="text-xs font-semibold text-[#344054]"
+                >
+                  Full Name / Family Name
+                </label>
+                <div className={`h-12 w-full rounded-full border bg-[#FAFAF9] focus-within:bg-white px-4 flex items-center gap-3 transition-all focus-within:border-[#2F4A2E] focus-within:ring-2 focus-within:ring-[#2F4A2E]/20 ${
+                  (touched.name || submitted) && fieldErrors.name 
+                    ? 'border-[#DC2626] ring-1 ring-[#DC2626]/30' 
+                    : 'border-[#D0D5DD]'
+                }`}>
+                  <User size={17} className="text-[#98A2B3] shrink-0" />
                   <input
+                    id="auth-name"
+                    name="name"
                     type="text"
+                    autoComplete="name"
                     required
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="e.g. Anjali Nair or The Menons"
-                    className="ff-text-input"
+                    onBlur={() => {
+                      setTouched(prev => ({ ...prev, name: true }))
+                      validateField('name', name)
+                    }}
+                    onChange={(e) => {
+                      setName(e.target.value)
+                      if (touched.name || submitted) {
+                        validateField('name', e.target.value)
+                      }
+                    }}
+                    placeholder="e.g. Priya Menon or FamilyFit"
+                    className="w-full bg-transparent text-sm text-[#1E2E1A] placeholder:text-[#98A2B3] outline-none"
                   />
                 </div>
+                {(touched.name || submitted) && fieldErrors.name && (
+                  <p role="alert" className="text-xs font-semibold text-[#DC2626] flex items-center gap-1 mt-0.5 px-2">
+                    <AlertCircle size={13} className="shrink-0" />
+                    <span>{fieldErrors.name}</span>
+                  </p>
+                )}
               </div>
             )}
 
-            <div className="ff-field-group">
-              <label className="ff-field-label">Email Address</label>
-              <div className="ff-input-box">
-                <Mail size={16} className="ff-field-icon" />
+            {/* Email Address Field (Pill Input with Mail Icon) */}
+            <div className="flex flex-col gap-1.5">
+              <label 
+                htmlFor="auth-email" 
+                className="text-xs font-semibold text-[#344054]"
+              >
+                Email Address
+              </label>
+              <div className={`h-12 w-full rounded-full border bg-[#FAFAF9] focus-within:bg-white px-4 flex items-center gap-3 transition-all focus-within:border-[#2F4A2E] focus-within:ring-2 focus-within:ring-[#2F4A2E]/20 ${
+                (touched.email || submitted) && fieldErrors.email 
+                  ? 'border-[#DC2626] ring-1 ring-[#DC2626]/30' 
+                  : 'border-[#D0D5DD]'
+              }`}>
+                <Mail size={17} className="text-[#98A2B3] shrink-0" />
                 <input
+                  id="auth-email"
+                  name="email"
                   type="email"
+                  autoComplete="email"
                   required
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@example.com"
-                  className="ff-text-input"
+                  onBlur={() => {
+                    setTouched(prev => ({ ...prev, email: true }))
+                    validateField('email', email)
+                  }}
+                  onChange={(e) => {
+                    setEmail(e.target.value)
+                    if (touched.email || submitted) {
+                      validateField('email', e.target.value)
+                    }
+                  }}
+                  placeholder="you@example.com"
+                  className="w-full bg-transparent text-sm text-[#1E2E1A] placeholder:text-[#98A2B3] outline-none"
                 />
               </div>
+              {(touched.email || submitted) && fieldErrors.email && (
+                <p role="alert" className="text-xs font-semibold text-[#DC2626] flex items-center gap-1 mt-0.5 px-2">
+                  <AlertCircle size={13} className="shrink-0" />
+                  <span>{fieldErrors.email}</span>
+                </p>
+              )}
             </div>
 
-            <div className="ff-field-group">
-              <div className="ff-label-split">
-                <label className="ff-field-label">Password</label>
-                {mode === 'login' && (
-                  <button
-                    type="button"
-                    onClick={onForgotPassword || (() => alert('Password reset instructions sent.'))}
-                    className="ff-forgot-link"
-                  >
-                    Forgot password?
-                  </button>
-                )}
-              </div>
-              <div className="ff-input-box">
-                <Lock size={16} className="ff-field-icon" />
+            {/* Password Field (Pill Input with Lock Icon and Eye Toggle) */}
+            <div className="flex flex-col gap-1.5">
+              <label 
+                htmlFor="auth-password" 
+                className="text-xs font-semibold text-[#344054]"
+              >
+                Password
+              </label>
+              <div className={`h-12 w-full rounded-full border bg-[#FAFAF9] focus-within:bg-white px-4 flex items-center gap-3 transition-all focus-within:border-[#2F4A2E] focus-within:ring-2 focus-within:ring-[#2F4A2E]/20 ${
+                (touched.password || submitted) && fieldErrors.password 
+                  ? 'border-[#DC2626] ring-1 ring-[#DC2626]/30' 
+                  : 'border-[#D0D5DD]'
+              }`}>
+                <Lock size={17} className="text-[#98A2B3] shrink-0" />
                 <input
+                  id="auth-password"
+                  name="password"
                   type={showPassword ? 'text' : 'password'}
+                  autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                   required
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="ff-text-input pr-10"
+                  onBlur={() => {
+                    setTouched(prev => ({ ...prev, password: true }))
+                    validateField('password', password)
+                  }}
+                  onChange={(e) => {
+                    setPassword(e.target.value)
+                    if (touched.password || submitted) {
+                      validateField('password', e.target.value)
+                    }
+                  }}
+                  placeholder={mode === 'signup' ? 'At least 6 characters' : 'Enter your password'}
+                  className="w-full bg-transparent text-sm text-[#1E2E1A] placeholder:text-[#98A2B3] outline-none pr-1"
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="ff-eye-btn"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="p-1 text-[#98A2B3] hover:text-[#2F4A2E] rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2F4A2E]"
                 >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
               </div>
+              {(touched.password || submitted) && fieldErrors.password && (
+                <p role="alert" className="text-xs font-semibold text-[#DC2626] flex items-center gap-1 mt-0.5 px-2">
+                  <AlertCircle size={13} className="shrink-0" />
+                  <span>{fieldErrors.password}</span>
+                </p>
+              )}
 
-              {/* Password strength indicator for signup */}
+              {/* Password Strength Indicator for Signup */}
               {mode === 'signup' && password.length > 0 && (
-                <div className="ff-strength-meter">
-                  <div className="ff-strength-bars">
+                <div className="mt-1 space-y-1 px-1">
+                  <div className="flex gap-1 h-1.5">
                     {[0, 1, 2, 3].map((step) => (
                       <div
                         key={step}
-                        className="ff-strength-bar"
+                        className="flex-1 rounded-full transition-colors duration-200"
                         style={{
                           backgroundColor:
                             step < passwordStrength
                               ? strengthColors[passwordStrength - 1]
-                              : '#E2DBD0',
+                              : '#E2DDD0',
                         }}
                       />
                     ))}
                   </div>
-                  <div className="ff-strength-label-row">
-                    <span>Password Strength</span>
+                  <div className="flex justify-between text-[11px] font-semibold text-[#667085]">
+                    <span>Strength</span>
                     <span style={{ color: strengthColors[Math.max(0, passwordStrength - 1)] }}>
                       {strengthLabels[Math.max(0, passwordStrength - 1)]}
                     </span>
@@ -271,707 +589,175 @@ export function AuthUI({
               )}
             </div>
 
-            {/* Checkbox row */}
+            {/* Remember Me Checkbox & Forgot Password Row */}
             {mode === 'login' ? (
-              <div className="ff-remember-row">
-                <label className="ff-checkbox-label">
+              <div className="flex items-center justify-between text-xs sm:text-[13px] pt-1">
+                <label 
+                  htmlFor="auth-remember" 
+                  className="inline-flex items-center gap-2 cursor-pointer text-[#475467] select-none"
+                >
                   <input
+                    id="auth-remember"
+                    name="rememberMe"
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="ff-checkbox"
+                    className="w-4 h-4 rounded-[4px] border border-[#D0D5DD] text-[#2F4A2E] accent-[#2F4A2E] cursor-pointer"
                   />
-                  <span>Remember me</span>
+                  <span className="font-medium">Remember me</span>
                 </label>
+
+                <button
+                  type="button"
+                  onClick={onForgotPassword || (() => alert('Password reset instructions sent to your email.'))}
+                  className="font-medium text-[#475467] hover:text-[#2F4A2E] hover:underline cursor-pointer"
+                >
+                  Forgot password?
+                </button>
               </div>
             ) : (
-              <div className="ff-terms-row">
-                <label className="ff-checkbox-label">
+              <div className="flex flex-col gap-1 pt-1">
+                <label 
+                  htmlFor="auth-terms" 
+                  className="inline-flex items-start gap-2 cursor-pointer text-xs text-[#475467] select-none"
+                >
                   <input
+                    id="auth-terms"
+                    name="agreeTerms"
                     type="checkbox"
                     required
                     checked={agreeTerms}
-                    onChange={(e) => setAgreeTerms(e.target.checked)}
-                    className="ff-checkbox"
+                    onChange={(e) => {
+                      setAgreeTerms(e.target.checked)
+                      if (touched.terms || submitted) {
+                        validateField('terms', '', e.target.checked)
+                      }
+                    }}
+                    className="w-4 h-4 mt-0.5 rounded-[4px] border border-[#D0D5DD] text-[#2F4A2E] accent-[#2F4A2E] cursor-pointer"
                   />
-                  <span>
-                    I agree to FamilyFit's{' '}
-                    <Link to="/terms" className="ff-terms-link">Terms</Link>
+                  <span className="font-normal leading-tight">
+                    I agree to the{' '}
+                    <Link to="/terms" target="_blank" className="font-bold text-[#2F4A2E] hover:underline">
+                      Terms of Service
+                    </Link>
                     {' '}and{' '}
-                    <Link to="/privacy" className="ff-terms-link">Privacy Policy</Link>.
+                    <Link to="/privacy" target="_blank" className="font-bold text-[#2F4A2E] hover:underline">
+                      Privacy Policy
+                    </Link>.
                   </span>
                 </label>
+                {(touched.terms || submitted) && fieldErrors.terms && (
+                  <p role="alert" className="text-xs font-semibold text-[#DC2626] flex items-center gap-1 mt-0.5 px-2">
+                    <AlertCircle size={13} className="shrink-0" />
+                    <span>{fieldErrors.terms}</span>
+                  </p>
+                )}
               </div>
             )}
 
-            {/* Submit Button */}
+            {/* Full-width Dark Green (#2F4A2E) Pill "Sign In →" Button */}
             <button
               type="submit"
-              disabled={loading}
-              className="ff-submit-btn"
+              disabled={isSubmitDisabled}
+              style={{
+                backgroundColor: '#2F4A2E',
+                color: '#FFFFFF',
+                opacity: isSubmitDisabled ? 0.6 : 1,
+              }}
+              className="h-12 w-full mt-2 rounded-full font-bold text-sm sm:text-base text-white transition-all flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed hover:bg-[#243A23] active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2F4A2E] focus-visible:ring-offset-2 shadow-xs"
             >
               {loading ? (
                 <>
-                  <Loader2 size={17} className="animate-spin" />
+                  <Loader2 size={17} className="animate-spin text-white" />
                   <span>Processing...</span>
                 </>
               ) : (
                 <>
-                  <Leaf size={16} />
-                  <span>{mode === 'login' ? 'Sign In to FamilyFit' : 'Create Free Account'}</span>
+                  <span>{mode === 'login' ? 'Sign In' : 'Create Account'}</span>
+                  <ArrowRight size={16} className="text-white" />
                 </>
               )}
             </button>
           </form>
 
-          {/* Demo account helper */}
-          <div className="ff-demo-row">
+          {/* Divider: "Or continue with" */}
+          <div className="flex items-center gap-3 my-4">
+            <span className="flex-1 h-[1px] bg-[#E4E7EC]" />
+            <span className="text-xs font-medium text-[#98A2B3]">
+              {mode === 'login' ? 'Or continue with' : 'OR'}
+            </span>
+            <span className="flex-1 h-[1px] bg-[#E4E7EC]" />
+          </div>
+
+          {/* Outlined Pill "Continue with Google" Button */}
+          <button
+            type="button"
+            onClick={onGoogleSignIn || (() => alert('Google authentication is connected to your family workspace.'))}
+            className="h-12 w-full rounded-full border border-[#D0D5DD] bg-white hover:bg-[#F9FAFB] font-semibold text-sm text-[#344054] flex items-center justify-center gap-2.5 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2F4A2E] focus-visible:ring-offset-2 shadow-xs"
+          >
+            <GoogleIcon />
+            <span>Continue with Google</span>
+          </button>
+
+          {/* "New to FamilyFit? Create an account →" Link */}
+          <div className="text-center text-xs sm:text-[13px] text-[#475467] mt-5">
+            {mode === 'login' ? (
+              <p>
+                New to FamilyFit?{' '}
+                <button
+                  type="button"
+                  onClick={() => handleModeChange('signup')}
+                  className="font-bold text-[#2F4A2E] hover:underline cursor-pointer inline-flex items-center gap-0.5 ml-1"
+                >
+                  <span>Create an account</span>
+                  <ArrowRight size={13} className="inline" />
+                </button>
+              </p>
+            ) : (
+              <p>
+                Already have an account?{' '}
+                <button
+                  type="button"
+                  onClick={() => handleModeChange('login')}
+                  className="font-bold text-[#2F4A2E] hover:underline cursor-pointer inline-flex items-center gap-0.5 ml-1"
+                >
+                  <span>Sign in</span>
+                  <ArrowRight size={13} className="inline" />
+                </button>
+              </p>
+            )}
+          </div>
+
+          {/* "Testing the app? Use demo account" Helper */}
+          <div className="text-center text-[11px] text-[#98A2B3] mt-3">
             <span>Testing the app? </span>
             <button
               type="button"
               onClick={handleDemoClick}
-              className="ff-demo-btn"
+              className="font-semibold text-[#2F4A2E] hover:underline cursor-pointer"
             >
               Use demo account
             </button>
           </div>
-
-          {/* Divider */}
-          <div className="ff-or-divider">
-            <span className="ff-divider-line" />
-            <span className="ff-divider-text">Or continue with</span>
-            <span className="ff-divider-line" />
-          </div>
-
-          {/* Google Sign In */}
-          <button
-            type="button"
-            onClick={onGoogleSignIn || (() => alert('Google authentication is connected to your family workspace.'))}
-            className="ff-google-btn"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24">
-              <path
-                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                fill="#4285F4"
-              />
-              <path
-                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                fill="#34A853"
-              />
-              <path
-                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-                fill="#FBBC05"
-              />
-              <path
-                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
-                fill="#EA4335"
-              />
-            </svg>
-            <span>Continue with Google</span>
-          </button>
         </div>
+
+        {/* Footer Under Card: Small Leaf Icon + "Better Food • Healthier Families • Brighter Futures" */}
+        <div className="w-full flex items-center justify-center gap-2 text-xs text-[#7A8B7B] font-medium py-3 text-center shrink-0">
+          <Logo variant="mark" height={16} />
+          <span>Better Food &bull; Healthier Families &bull; Brighter Futures</span>
+        </div>
+
+        {/* Faint Botanical Leaf Illustration Decoration in Bottom-Right Corner */}
+        <div className="hidden lg:block absolute bottom-0 right-0 pointer-events-none opacity-30 z-0" aria-hidden="true">
+          <svg width="180" height="180" viewBox="0 0 180 180" fill="none">
+            <path d="M180 90 C140 100 120 140 110 180 C125 145 155 120 180 90 Z" fill="#2F4A2E" />
+            <path d="M180 135 C135 140 105 160 80 180 C115 165 150 150 180 135 Z" fill="#576D4C" />
+            <path d="M135 180 C145 145 170 125 180 110 C165 135 150 155 135 180 Z" fill="#7A8B7B" />
+          </svg>
+        </div>
+
       </div>
 
-      {/* ── RIGHT PANEL: KERALA PHOTO & TYPEWRITER GLASS CARD ── */}
-      <div className="ff-auth-right-side">
-        {/* Background photo */}
-        <img
-          src={mode === 'login' ? '/images/kerala_banana_leaf.png' : '/images/family_cooking.png'}
-          alt={mode === 'login' ? 'Kerala banana-leaf nutritious sadya meal' : 'Family cooking wholesome South Indian meals together'}
-          className="ff-auth-hero-img"
-        />
-
-        {/* Gradient overlay */}
-        <div className="ff-auth-hero-overlay" />
-
-        {/* Top badge */}
-        <div className="ff-auth-top-pill">
-          <Leaf size={14} className="text-[#84E164]" />
-          <span>Kerala Culinary Wellness</span>
-        </div>
-
-        {/* Bottom Glass Card with Typewriter */}
-        <div className="ff-auth-glass-card">
-          <div className="ff-glass-tag">
-            <span className="ff-pulse-dot" />
-            <span>FamilyFit Daily Inspiration</span>
-          </div>
-
-          <div className="ff-glass-quote">
-            “
-            <Typewriter
-              texts={
-                mode === 'login'
-                  ? [
-                      "Welcome back! Your family's healthy journey continues.",
-                      "Traditional nutrition for balanced everyday living.",
-                      "Every meal is a step toward vibrant family health.",
-                    ]
-                  : [
-                      "Small changes at the table, big changes in life.",
-                      "Kerala's natural flavors crafted for every generation.",
-                      "Wholesome, allergen-safe meals made simple.",
-                    ]
-              }
-              typingSpeed={50}
-              deletingSpeed={30}
-              delayBetween={2800}
-              cursorClassName="bg-[#7ED362]"
-            />
-            ”
-          </div>
-
-          <div className="ff-glass-author">
-            — FamilyFit Health Architecture
-          </div>
-
-          {/* 3 Mini Badges */}
-          <div className="ff-glass-badges-row">
-            <div className="ff-glass-badge-item">
-              <Leaf size={16} className="text-[#98E282] mb-1" />
-              <span className="ff-badge-label">Healthy</span>
-              <span className="ff-badge-sub">Choices</span>
-            </div>
-            <div className="ff-glass-badge-item">
-              <Users size={16} className="text-[#98E282] mb-1" />
-              <span className="ff-badge-label">Stronger</span>
-              <span className="ff-badge-sub">Together</span>
-            </div>
-            <div className="ff-glass-badge-item">
-              <Heart size={16} className="text-[#98E282] mb-1" />
-              <span className="ff-badge-label">Better</span>
-              <span className="ff-badge-sub">Every Day</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <style>{`
-        .ff-auth-root {
-          min-height: 100vh;
-          width: 100%;
-          display: flex;
-          flex-direction: column;
-          background-color: #F6F2EA;
-          color: #1F2A24;
-          font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-        }
-
-        @media (min-width: 960px) {
-          .ff-auth-root {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            height: 100vh;
-            overflow: hidden;
-          }
-        }
-
-        .ff-auth-left-side {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          padding: 32px 24px;
-          overflow-y: auto;
-          background-color: #F6F2EA;
-        }
-
-        @media (min-width: 960px) {
-          .ff-auth-left-side {
-            padding: 48px 56px;
-            height: 100vh;
-          }
-        }
-
-        .ff-auth-form-inner {
-          width: 100%;
-          max-width: 440px;
-          margin: 0 auto;
-        }
-
-        .ff-auth-top-bar {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 24px;
-        }
-
-        .ff-back-link {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          font-size: 13px;
-          font-weight: 600;
-          color: #6B7A70;
-          text-decoration: none;
-          transition: color 0.15s ease;
-        }
-
-        .ff-back-link:hover {
-          color: #3F5A3A;
-        }
-
-        .ff-mobile-brand {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          text-decoration: none;
-          font-weight: 800;
-          font-size: 16px;
-          color: #3F5A3A;
-        }
-
-        @media (min-width: 960px) {
-          .ff-mobile-brand {
-            display: none;
-          }
-        }
-
-        .ff-desktop-brand {
-          display: none;
-          align-items: center;
-          gap: 8px;
-          margin-bottom: 20px;
-        }
-
-        @media (min-width: 960px) {
-          .ff-desktop-brand {
-            display: flex;
-          }
-        }
-
-        .ff-brand-badge {
-          width: 36px;
-          height: 36px;
-          border-radius: 10px;
-          background: rgba(63, 90, 58, 0.1);
-          color: #3F5A3A;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .ff-brand-title {
-          font-size: 20px;
-          font-weight: 800;
-          letter-spacing: -0.3px;
-          color: #3F5A3A;
-        }
-
-        .ff-auth-header-copy {
-          margin-bottom: 22px;
-        }
-
-        .ff-auth-main-title {
-          font-size: 28px;
-          font-weight: 800;
-          color: #1F2A24;
-          margin: 0 0 6px 0;
-          letter-spacing: -0.5px;
-        }
-
-        .ff-auth-sub-title {
-          font-size: 13.5px;
-          line-height: 1.5;
-          color: #6B7A70;
-          margin: 0;
-        }
-
-        .ff-tab-switcher {
-          display: flex;
-          background: #EDE8DE;
-          padding: 4px;
-          border-radius: 9999px;
-          margin-bottom: 22px;
-        }
-
-        .ff-tab-btn {
-          flex: 1;
-          padding: 8px 12px;
-          border: none;
-          background: transparent;
-          font-size: 13px;
-          font-weight: 600;
-          color: #6B7A70;
-          border-radius: 9999px;
-          cursor: pointer;
-          transition: all 0.15s ease;
-        }
-
-        .ff-tab-btn.active {
-          background: #FFFFFF;
-          color: #1F2A24;
-          box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-        }
-
-        .ff-auth-alert {
-          padding: 10px 14px;
-          background: #FEE2E2;
-          border: 1px solid #FCA5A5;
-          color: #991B1B;
-          border-radius: 10px;
-          font-size: 13px;
-          display: flex;
-          gap: 10px;
-          align-items: flex-start;
-          margin-bottom: 18px;
-        }
-
-        .ff-auth-form {
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-        }
-
-        .ff-field-group {
-          display: flex;
-          flex-direction: column;
-          gap: 6px;
-        }
-
-        .ff-label-split {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-
-        .ff-field-label {
-          font-size: 11px;
-          font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          color: #6B7A70;
-        }
-
-        .ff-forgot-link {
-          background: none;
-          border: none;
-          padding: 0;
-          font-size: 12px;
-          font-weight: 600;
-          color: #3F5A3A;
-          cursor: pointer;
-          text-decoration: underline;
-        }
-
-        .ff-input-box {
-          position: relative;
-          display: flex;
-          align-items: center;
-        }
-
-        .ff-field-icon {
-          position: absolute;
-          left: 14px;
-          color: #8D9B91;
-          pointer-events: none;
-        }
-
-        .ff-text-input {
-          width: 100%;
-          height: 44px;
-          padding: 0 14px 0 42px;
-          border-radius: 12px;
-          border: 1px solid #DCD5C8;
-          background: #FFFFFF;
-          color: #1F2A24;
-          font-size: 14px;
-          outline: none;
-          transition: border-color 0.15s ease, box-shadow 0.15s ease;
-        }
-
-        .ff-text-input:focus {
-          border-color: #3F5A3A;
-          box-shadow: 0 0 0 3px rgba(63, 90, 58, 0.12);
-        }
-
-        .ff-eye-btn {
-          position: absolute;
-          right: 12px;
-          background: none;
-          border: none;
-          color: #8D9B91;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          padding: 4px;
-        }
-
-        .ff-eye-btn:hover {
-          color: #1F2A24;
-        }
-
-        .ff-strength-meter {
-          margin-top: 6px;
-        }
-
-        .ff-strength-bars {
-          display: flex;
-          gap: 6px;
-          height: 5px;
-        }
-
-        .ff-strength-bar {
-          flex: 1;
-          border-radius: 999px;
-          transition: background-color 0.25s ease;
-        }
-
-        .ff-strength-label-row {
-          display: flex;
-          justify-content: space-between;
-          font-size: 11px;
-          color: #6B7A70;
-          margin-top: 4px;
-        }
-
-        .ff-remember-row, .ff-terms-row {
-          display: flex;
-          align-items: center;
-          font-size: 13px;
-          color: #6B7A70;
-        }
-
-        .ff-checkbox-label {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          cursor: pointer;
-        }
-
-        .ff-checkbox {
-          width: 16px;
-          height: 16px;
-          border-radius: 4px;
-          accent-color: #3F5A3A;
-          cursor: pointer;
-        }
-
-        .ff-terms-link {
-          color: #3F5A3A;
-          font-weight: 700;
-          text-decoration: underline;
-        }
-
-        .ff-submit-btn {
-          height: 48px;
-          width: 100%;
-          border-radius: 12px;
-          background: #3F5A3A;
-          color: #FFFFFF;
-          border: none;
-          font-size: 14px;
-          font-weight: 700;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          cursor: pointer;
-          box-shadow: 0 2px 6px rgba(63, 90, 58, 0.2);
-          transition: background 0.15s ease, transform 0.1s ease;
-        }
-
-        .ff-submit-btn:hover {
-          background: #334B2E;
-        }
-
-        .ff-submit-btn:active {
-          transform: scale(0.99);
-        }
-
-        .ff-submit-btn:disabled {
-          opacity: 0.65;
-          cursor: not-allowed;
-        }
-
-        .ff-demo-row {
-          text-align: center;
-          font-size: 12.5px;
-          color: #6B7A70;
-          margin-top: 14px;
-        }
-
-        .ff-demo-btn {
-          background: none;
-          border: none;
-          padding: 0;
-          font-weight: 700;
-          color: #3F5A3A;
-          cursor: pointer;
-          text-decoration: underline;
-        }
-
-        .ff-or-divider {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          margin: 18px 0;
-        }
-
-        .ff-divider-line {
-          flex: 1;
-          height: 1px;
-          background: #E2DBD0;
-        }
-
-        .ff-divider-text {
-          font-size: 11px;
-          font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          color: #8D9B91;
-        }
-
-        .ff-google-btn {
-          height: 44px;
-          width: 100%;
-          border-radius: 12px;
-          border: 1px solid #DCD5C8;
-          background: #FFFFFF;
-          color: #1F2A24;
-          font-size: 13.5px;
-          font-weight: 600;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 10px;
-          cursor: pointer;
-          transition: background 0.15s ease;
-        }
-
-        .ff-google-btn:hover {
-          background: #FAF7F2;
-        }
-
-        /* ── RIGHT PANEL (DESKTOP ONLY) ── */
-        .ff-auth-right-side {
-          display: none;
-        }
-
-        @media (min-width: 960px) {
-          .ff-auth-right-side {
-            display: flex;
-            position: relative;
-            height: 100vh;
-            overflow: hidden;
-            background-color: #243B21;
-            align-items: flex-end;
-            justify-content: center;
-            padding: 48px;
-          }
-        }
-
-        .ff-auth-hero-img {
-          position: absolute;
-          inset: 0;
-          width: 100%;
-          height: 100%;
-          object-cover: cover;
-          object-position: center;
-          transform: scale(1.03);
-          transition: opacity 0.5s ease;
-        }
-
-        .ff-auth-hero-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(to top, rgba(20, 32, 18, 0.92) 0%, rgba(30, 48, 26, 0.45) 50%, rgba(0, 0, 0, 0.25) 100%);
-        }
-
-        .ff-auth-top-pill {
-          position: absolute;
-          top: 32px;
-          right: 32px;
-          z-index: 10;
-          padding: 6px 14px;
-          border-radius: 9999px;
-          background: rgba(255, 255, 255, 0.2);
-          backdrop-filter: blur(12px);
-          border: 1px solid rgba(255, 255, 255, 0.25);
-          color: #FFFFFF;
-          font-size: 12px;
-          font-weight: 600;
-          display: flex;
-          align-items: center;
-          gap: 6px;
-        }
-
-        .ff-auth-glass-card {
-          position: relative;
-          z-index: 10;
-          width: 100%;
-          max-width: 480px;
-          border-radius: 20px;
-          background: rgba(255, 255, 255, 0.16);
-          backdrop-filter: blur(20px);
-          border: 1px solid rgba(255, 255, 255, 0.28);
-          padding: 24px 28px;
-          color: #FFFFFF;
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .ff-glass-tag {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          font-size: 11px;
-          font-weight: 800;
-          text-transform: uppercase;
-          letter-spacing: 0.6px;
-          color: #98E282;
-          margin-bottom: 12px;
-        }
-
-        .ff-pulse-dot {
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          background: #7ED362;
-          box-shadow: 0 0 8px #7ED362;
-        }
-
-        .ff-glass-quote {
-          font-size: 18px;
-          font-weight: 700;
-          line-height: 1.35;
-          min-height: 52px;
-        }
-
-        .ff-glass-author {
-          font-size: 12px;
-          color: rgba(255, 255, 255, 0.8);
-          margin-top: 8px;
-          font-weight: 500;
-        }
-
-        .ff-glass-badges-row {
-          display: grid;
-          grid-template-columns: 1fr 1fr 1fr;
-          gap: 8px;
-          margin-top: 20px;
-          padding-top: 16px;
-          border-top: 1px solid rgba(255, 255, 255, 0.18);
-        }
-
-        .ff-glass-badge-item {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          text-align: center;
-          padding: 8px;
-          border-radius: 12px;
-          background: rgba(255, 255, 255, 0.12);
-        }
-
-        .ff-badge-label {
-          font-size: 11px;
-          font-weight: 700;
-        }
-
-        .ff-badge-sub {
-          font-size: 9.5px;
-          color: rgba(255, 255, 255, 0.7);
-        }
-      `}</style>
     </div>
   )
 }

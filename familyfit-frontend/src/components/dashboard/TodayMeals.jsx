@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { 
   Check, 
@@ -9,7 +9,6 @@ import {
   Flame, 
   ExternalLink, 
   Plus, 
-  Sparkles,
   Calendar
 } from 'lucide-react'
 import { DAYS_OF_WEEK } from '../../services/dashboardService'
@@ -29,7 +28,8 @@ export default function TodayMeals({
   onOpenSwap,
   familyMembers = [],
 }) {
-  const currentDay = DAYS_OF_WEEK.find(d => d.index === selectedDayIndex) || DAYS_OF_WEEK[5]
+  const currentDay = DAYS_OF_WEEK.find((d) => d.index === selectedDayIndex) || DAYS_OF_WEEK[5]
+  const [poppingSlot, setPoppingSlot] = useState(null)
 
   // Helper to test if a meal has conflict with any family member
   const checkConflicts = (dish) => {
@@ -37,14 +37,14 @@ export default function TodayMeals({
       return { isSafe: true, conflicts: [] }
     }
     const conflicts = []
-    familyMembers.forEach(m => {
+    ;(familyMembers || []).forEach((m) => {
       let mAllergies = []
       if (Array.isArray(m.allergies)) mAllergies = m.allergies
-      else if (typeof m.allergies === 'string') mAllergies = m.allergies.split(',').map(s => s.trim())
+      else if (typeof m.allergies === 'string') mAllergies = m.allergies.split(',').map((s) => s.trim())
 
-      mAllergies.forEach(a => {
+      mAllergies.forEach((a) => {
         if (!a || a.toLowerCase() === 'none') return
-        if (dish.allergies.some(da => da.toLowerCase().includes(a.toLowerCase()) || a.toLowerCase().includes(da.toLowerCase()))) {
+        if (dish.allergies.some((da) => da.toLowerCase().includes(a.toLowerCase()) || a.toLowerCase().includes(da.toLowerCase()))) {
           conflicts.push(`${m.name} (${a})`)
         }
       })
@@ -52,28 +52,36 @@ export default function TodayMeals({
     return { isSafe: conflicts.length === 0, conflicts }
   }
 
+  const handleCheckboxClick = (slotKey, newEaten) => {
+    if (newEaten) {
+      setPoppingSlot(slotKey)
+      setTimeout(() => setPoppingSlot(null), 300)
+    }
+    onToggleEaten(slotKey, newEaten)
+  }
+
   return (
-    <div className="bg-white rounded-3xl p-6 sm:p-7 border border-[#E2DBD0] shadow-sm flex flex-col justify-between transition-all">
+    <div className="duo-card p-5 sm:p-7 w-full font-['Nunito',sans-serif]">
       {/* ── Card Header ── */}
       <div>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-[#EDE8DE]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b-2 border-[#F0F0F0]">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#3F5A3A]">
-                Daily Nutrition Architecture
+              <span className="text-xs font-black uppercase tracking-wider text-[#58A700]">
+                Daily Meal Schedule
               </span>
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#EAF5E4] text-[#3F5A3A] font-bold">
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#EAF9DE] text-[#3E7D00] border border-[#D5F0C2] font-black">
                 {currentDay.full}
               </span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-[#1F2A24] font-['Plus_Jakarta_Sans'] mt-1">
-              Today’s Meal Plan
+            <h2 className="text-xl sm:text-2xl font-black text-[#1F2A24] tracking-tight mt-1">
+              Today's Meal Plan
             </h2>
           </div>
 
-          <div className="text-xs text-[#6B7A70] flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#6BBF4E]" />
-            <span>Harmonized for 4 daily eating windows</span>
+          <div className="text-xs font-bold text-[#777777] flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#58CC02] animate-pulse" />
+            <span>4 Kerala Nutritional Windows</span>
           </div>
         </div>
 
@@ -85,16 +93,17 @@ export default function TodayMeals({
               return (
                 <div
                   key={key}
-                  className="rounded-2xl border border-dashed border-[#DCD5C8] p-5 flex flex-col items-center justify-center text-center gap-2 bg-[#FAF7F0]/50 min-h-[170px]"
+                  className="rounded-2xl border-2 border-dashed border-[#D8D8D8] p-5 flex flex-col items-center justify-center text-center gap-2 bg-[#FAFAF8] min-h-[170px]"
                 >
-                  <span className="text-xs font-bold uppercase text-[#8D9B91]">{label}</span>
-                  <p className="text-xs text-[#6B7A70]">No meal scheduled yet</p>
+                  <span className="text-xs font-black uppercase text-[#888888]">{label}</span>
+                  <p className="text-xs font-bold text-[#777777]">No dish scheduled</p>
                   <button
+                    type="button"
                     onClick={() => onOpenSwap(key)}
-                    className="text-xs font-bold text-[#3F5A3A] hover:underline flex items-center gap-1 mt-1 cursor-pointer"
+                    className="duo-btn duo-btn-secondary text-xs py-1.5 px-3 mt-1"
                   >
-                    <Plus size={13} />
-                    <span>+ Add meal</span>
+                    <Plus size={13} strokeWidth={3} />
+                    <span>Choose Meal</span>
                   </button>
                 </div>
               )
@@ -102,31 +111,32 @@ export default function TodayMeals({
 
             const { isSafe, conflicts } = checkConflicts(dish)
             const isEaten = Boolean(dish.eaten)
+            const isPopping = poppingSlot === key
 
             return (
               <div
                 key={key}
-                className={`rounded-2xl border p-4 transition-all duration-200 flex flex-col justify-between ${
+                className={`rounded-2xl border-2 transition-all duration-200 flex flex-col justify-between p-4 ${
                   isEaten
-                    ? 'bg-[#FAF7F0]/60 border-[#E2DBD0] opacity-80'
-                    : 'bg-white border-[#E2DBD0] hover:border-[#3F5A3A]/40 hover:shadow-xs'
-                }`}
+                    ? 'bg-[#FAFAF8] border-[#E5E5E5] border-b-4 border-b-[#D8D8D8] opacity-85'
+                    : 'bg-white border-[#E5E5E5] border-b-4 border-b-[#D0D0D0] hover:border-[#B5E890]'
+                } ${isPopping ? 'animate-duo-pop' : ''}`}
               >
                 <div>
                   {/* Slot Top Meta Bar */}
-                  <div className="flex items-center justify-between text-xs mb-2.5">
+                  <div className="flex items-center justify-between text-xs mb-3">
                     <div className="flex items-center gap-2">
-                      <span className="font-extrabold text-[#3F5A3A] uppercase tracking-wider text-[11px]">
+                      <span className="font-black text-[#58A700] uppercase tracking-wider text-[11px]">
                         {label}
                       </span>
-                      <span className="text-[10px] text-[#8D9B91]">
+                      <span className="text-[11px] font-bold text-[#888888]">
                         {timeRange}
                       </span>
                     </div>
 
-                    {/* Very Healthy Badge */}
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EAF5E4] text-[#2E7D32]">
-                      Very Healthy
+                    {/* Badge */}
+                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-[#EAF9DE] text-[#3E7D00] border border-[#D5F0C2]">
+                      Traditional Healthy
                     </span>
                   </div>
 
@@ -135,25 +145,25 @@ export default function TodayMeals({
                     <img
                       src={dish.imageUrl}
                       alt={dish.name}
-                      className="w-16 h-16 rounded-xl object-cover shrink-0 bg-[#EDE8DE]"
+                      className="w-16 h-16 rounded-2xl object-cover shrink-0 bg-[#F0F0F0] border-2 border-[#E5E5E5]"
                     />
 
                     <div className="flex-1 min-w-0">
                       <h4
-                        className={`text-sm font-bold leading-tight font-['Plus_Jakarta_Sans'] line-clamp-1 ${
-                          isEaten ? 'line-through text-[#6B7A70]' : 'text-[#1F2A24]'
+                        className={`text-sm font-black leading-snug line-clamp-1 ${
+                          isEaten ? 'line-through text-[#888888]' : 'text-[#1F2A24]'
                         }`}
                         title={dish.name}
                       >
                         {dish.name}
                       </h4>
 
-                      <div className="flex items-center gap-3 mt-1.5 text-xs text-[#6B7A70]">
-                        <span className="flex items-center gap-1 font-semibold text-[#1F2A24]">
-                          <Flame size={13} className="text-[#F26B3A]" />
+                      <div className="flex items-center gap-3 mt-1.5 text-xs font-bold text-[#666666]">
+                        <span className="flex items-center gap-1 font-black text-[#FF9600]">
+                          <Flame size={13} className="fill-[#FF9600]" />
                           {dish.kcal} kcal
                         </span>
-                        <span className="flex items-center gap-1 text-[#6B7A70]">
+                        <span className="flex items-center gap-1">
                           <Clock size={13} />
                           {dish.cookTimeMinutes}m
                         </span>
@@ -162,12 +172,12 @@ export default function TodayMeals({
                       {/* Safety & Allergy Strip */}
                       <div className="mt-2">
                         {isSafe ? (
-                          <div className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#2E7D32]">
-                            <ShieldCheck size={14} className="text-[#6BBF4E]" />
-                            <span>Safe for all family</span>
+                          <div className="inline-flex items-center gap-1 text-[11px] font-black text-[#58A700]">
+                            <ShieldCheck size={14} />
+                            <span>Safe for all members</span>
                           </div>
                         ) : (
-                          <div className="inline-flex items-center gap-1 text-[11px] font-bold text-[#D64545] bg-[#FDE8E8] px-2 py-0.5 rounded-md">
+                          <div className="inline-flex items-center gap-1 text-[11px] font-black text-[#FF4B4B] bg-[#FEE2E2] px-2 py-0.5 rounded-lg border border-[#FECACA]">
                             <AlertTriangle size={13} />
                             <span className="truncate">Conflict: {conflicts.join(', ')}</span>
                           </div>
@@ -178,37 +188,45 @@ export default function TodayMeals({
                 </div>
 
                 {/* Slot Actions Bar */}
-                <div className="flex items-center justify-between pt-3 mt-3 border-t border-[#EDE8DE] text-xs">
-                  {/* Mark as Eaten Checkbox */}
-                  <label className="flex items-center gap-2 cursor-pointer select-none">
-                    <input
-                      type="checkbox"
-                      checked={isEaten}
-                      onChange={(e) => onToggleEaten(key, e.target.checked)}
-                      className="w-4 h-4 rounded text-[#3F5A3A] focus:ring-[#3F5A3A] accent-[#3F5A3A] cursor-pointer"
-                    />
-                    <span className={isEaten ? 'text-[#3F5A3A] font-bold' : 'text-[#6B7A70] font-medium'}>
+                <div className="flex items-center justify-between pt-3 mt-3 border-t-2 border-[#F0F0F0] text-xs">
+                  {/* Chunky 3D Mark as Eaten Checkbox */}
+                  <button
+                    type="button"
+                    onClick={() => handleCheckboxClick(key, !isEaten)}
+                    className="flex items-center gap-2 cursor-pointer select-none group text-left"
+                  >
+                    <div
+                      className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${
+                        isEaten
+                          ? 'bg-[#58CC02] border-[#58A700] border-b-3 border-b-[#46A302] text-white scale-105'
+                          : 'border-[#CCCCCC] border-b-3 border-b-[#B0B0B0] bg-white group-hover:border-[#58CC02]'
+                      }`}
+                    >
+                      {isEaten && <Check size={14} strokeWidth={3} />}
+                    </div>
+                    <span className={`text-xs font-black ${isEaten ? 'text-[#58A700]' : 'text-[#666666]'}`}>
                       {isEaten ? 'Eaten' : 'Mark as eaten'}
                     </span>
-                  </label>
+                  </button>
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2.5">
                     <button
+                      type="button"
                       onClick={() => onOpenSwap(key)}
-                      className="text-[#6B7A70] hover:text-[#3F5A3A] font-semibold flex items-center gap-1 cursor-pointer transition-colors"
+                      className="px-2.5 py-1 rounded-xl text-xs font-black text-[#666666] hover:text-[#1F2A24] hover:bg-[#F2F2F2] flex items-center gap-1 transition-all cursor-pointer"
                       title="Swap this dish"
                     >
-                      <RotateCw size={13} />
+                      <RotateCw size={12} />
                       <span>Swap</span>
                     </button>
 
                     <Link
                       to={`/recipes/${dish.id || 1}`}
-                      className="text-[#3F5A3A] hover:text-[#32492E] font-bold flex items-center gap-0.5 cursor-pointer transition-colors"
-                      title="View full recipe and preparation steps"
+                      className="px-2.5 py-1 rounded-xl text-xs font-black text-[#58A700] hover:text-[#46A302] hover:bg-[#EAF9DE] flex items-center gap-0.5 transition-all cursor-pointer"
+                      title="View full recipe"
                     >
                       <span>Recipe</span>
-                      <ExternalLink size={12} />
+                      <ExternalLink size={11} />
                     </Link>
                   </div>
                 </div>
@@ -219,13 +237,13 @@ export default function TodayMeals({
       </div>
 
       {/* ── "Week at a glance" Strip ── */}
-      <div className="pt-6 mt-6 border-t border-[#EDE8DE]">
-        <div className="flex items-center justify-between mb-2.5">
-          <span className="text-xs font-bold text-[#6B7A70] uppercase tracking-wider flex items-center gap-1.5">
-            <Calendar size={13} className="text-[#3F5A3A]" />
+      <div className="pt-6 mt-6 border-t-2 border-[#F0F0F0]">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-xs font-black text-[#777777] uppercase tracking-wider flex items-center gap-1.5">
+            <Calendar size={14} className="text-[#58CC02]" />
             Week at a glance
           </span>
-          <span className="text-xs text-[#8D9B91]">
+          <span className="text-xs font-bold text-[#888888]">
             Tap day to preview meals
           </span>
         </div>
@@ -233,25 +251,21 @@ export default function TodayMeals({
         <div className="grid grid-cols-7 gap-2">
           {DAYS_OF_WEEK.map((day) => {
             const isSelected = day.index === selectedDayIndex
-            const isPlanned = true // We provide balanced Kerala plans all 7 days
             return (
               <button
                 key={day.index}
+                type="button"
                 onClick={() => onSelectDay(day.index)}
-                className={`py-2 rounded-xl text-center border transition-all cursor-pointer ${
+                className={`py-2.5 rounded-2xl text-center border-2 transition-all cursor-pointer ${
                   isSelected
-                    ? 'bg-[#3F5A3A] text-white border-[#3F5A3A] shadow-xs'
-                    : 'bg-[#FAF7F0] hover:bg-white text-[#1F2A24] border-[#E2DBD0]'
+                    ? 'bg-[#58CC02] text-white border-[#58A700] border-b-4 border-b-[#46A302] shadow-sm scale-105'
+                    : 'bg-white hover:bg-[#F7F7F7] text-[#4B4B4B] border-[#E5E5E5] border-b-4 border-b-[#D0D0D0]'
                 }`}
               >
-                <div className="text-[11px] font-bold">{day.short}</div>
+                <div className="text-xs font-black">{day.short}</div>
                 <div
-                  className={`w-1.5 h-1.5 rounded-full mx-auto mt-1 ${
-                    isSelected
-                      ? 'bg-[#A7F3D0]'
-                      : isPlanned
-                      ? 'bg-[#6BBF4E]'
-                      : 'bg-[#CBD5E1]'
+                  className={`w-2 h-2 rounded-full mx-auto mt-1 ${
+                    isSelected ? 'bg-white' : 'bg-[#58CC02]'
                   }`}
                 />
               </button>

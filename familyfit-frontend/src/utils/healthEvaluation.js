@@ -26,37 +26,37 @@ export function evaluateRecipeHealth(recipe, member) {
 
   // 1. Check Allergy Conflict -> RED (Unhealthy)
   const hasAllergyConflict = allergies.some((a) => {
-    if (a === 'None') return false
+    if (!a || typeof a !== 'string' || a === 'None') return false
     const aLower = a.toLowerCase()
     if (aLower.includes('fish') || aLower.includes('seafood')) {
       return (
         recipeAllergies.some(
-          (ra) => ra.toLowerCase().includes('fish') || ra.toLowerCase().includes('seafood')
+          (ra) => ra && typeof ra === 'string' && (ra.toLowerCase().includes('fish') || ra.toLowerCase().includes('seafood'))
         ) ||
         /\b(fish|prawns?|chemmeen|mathi|ayala|neymeen|seafood|karimeen|crab|squid)\b/i.test(nameLower)
       )
     }
     if (aLower.includes('dairy') || aLower.includes('milk')) {
       return (
-        recipeAllergies.some((ra) => ra.toLowerCase().includes('dairy')) ||
+        recipeAllergies.some((ra) => ra && typeof ra === 'string' && ra.toLowerCase().includes('dairy')) ||
         /\b(paneer|milk|curd|ghee|thayir|cheese|yogurt|butter)\b/i.test(nameLower)
       )
     }
     if (aLower.includes('egg')) {
       return (
-        recipeAllergies.some((ra) => ra.toLowerCase().includes('egg')) ||
+        recipeAllergies.some((ra) => ra && typeof ra === 'string' && ra.toLowerCase().includes('egg')) ||
         /\b(eggs?|mutta)\b/i.test(nameLower)
       )
     }
     if (aLower.includes('nut') || aLower.includes('peanut')) {
       return (
-        recipeAllergies.some((ra) => ra.toLowerCase().includes('nut') || ra.toLowerCase().includes('peanut')) ||
+        recipeAllergies.some((ra) => ra && typeof ra === 'string' && (ra.toLowerCase().includes('nut') || ra.toLowerCase().includes('peanut'))) ||
         /\b(peanuts?|tree nuts?|almonds?|cashews?|walnuts?|hazelnuts?|pistachios?)\b/i.test(nameLower)
       )
     }
     if (aLower.includes('wheat') || aLower.includes('gluten')) {
       return (
-        recipeAllergies.some((ra) => ra.toLowerCase().includes('gluten')) ||
+        recipeAllergies.some((ra) => ra && typeof ra === 'string' && ra.toLowerCase().includes('gluten')) ||
         /\b(parotta|wheat|maida)\b/i.test(nameLower)
       )
     }

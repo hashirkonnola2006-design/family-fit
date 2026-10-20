@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { CalendarPlus, ShoppingCart, Activity, Compass } from 'lucide-react'
+import { CalendarPlus, ShoppingCart, Activity, Compass, Zap } from 'lucide-react'
 
 export default function QuickActions({ onPlanMeal, onOpenWeightLog }) {
   const navigate = useNavigate()
@@ -10,8 +10,9 @@ export default function QuickActions({ onPlanMeal, onOpenWeightLog }) {
       label: 'Add to Plan',
       sub: 'Schedule meals',
       icon: CalendarPlus,
-      bg: '#EAF5E4',
-      color: '#2E7D32',
+      bg: '#58CC02',
+      borderDark: '#58A700',
+      textColor: 'text-[#58CC02]',
       onClick: onPlanMeal,
     },
     {
@@ -19,8 +20,9 @@ export default function QuickActions({ onPlanMeal, onOpenWeightLog }) {
       label: 'Grocery List',
       sub: 'Auto ingredients',
       icon: ShoppingCart,
-      bg: '#FAF7F0',
-      color: '#3F5A3A',
+      bg: '#1CB0F6',
+      borderDark: '#1899D6',
+      textColor: 'text-[#1CB0F6]',
       onClick: () => navigate('/grocery'),
     },
     {
@@ -28,8 +30,9 @@ export default function QuickActions({ onPlanMeal, onOpenWeightLog }) {
       label: 'Log Weight',
       sub: 'Track health',
       icon: Activity,
-      bg: '#FFF7ED',
-      color: '#EA580C',
+      bg: '#FF9600',
+      borderDark: '#E08500',
+      textColor: 'text-[#FF9600]',
       onClick: onOpenWeightLog,
     },
     {
@@ -37,46 +40,53 @@ export default function QuickActions({ onPlanMeal, onOpenWeightLog }) {
       label: 'Browse Recipes',
       sub: '500+ dishes',
       icon: Compass,
-      bg: '#EFF6FF',
-      color: '#2563EB',
+      bg: '#CE82FF',
+      borderDark: '#B865F2',
+      textColor: 'text-[#CE82FF]',
       onClick: () => navigate('/recipes'),
     },
   ]
 
   return (
-    <div className="bg-white rounded-3xl p-6 border border-[#E2DBD0] shadow-sm flex flex-col justify-between transition-all">
+    <div className="duo-card p-6 flex flex-col justify-between">
       <div>
         {/* Header */}
-        <div className="pb-3 border-b border-[#EDE8DE]">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#3F5A3A]">
-            Shortcuts
-          </span>
-          <h3 className="text-lg font-extrabold text-[#1F2A24] font-['Plus_Jakarta_Sans'] mt-0.5">
-            Quick Actions
-          </h3>
+        <div className="flex items-center gap-2 pb-3 border-b-2 border-[#E5E5E5]">
+          <div className="w-8 h-8 rounded-xl bg-[#FFC800]/20 text-[#FF9600] flex items-center justify-center font-bold">
+            <Zap size={18} strokeWidth={2.5} />
+          </div>
+          <div>
+            <span className="text-[11px] font-black uppercase tracking-wider text-[#AFAFAF]">
+              Shortcuts
+            </span>
+            <h3 className="text-lg font-black text-[#4B4B4B]">
+              Quick Actions
+            </h3>
+          </div>
         </div>
 
-        {/* 2x2 Grid Buttons */}
-        <div className="grid grid-cols-2 gap-3 pt-4">
+        {/* Action Buttons: 2 cols on mobile, 4 cols on desktop */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 pt-4">
           {ACTIONS.map((action) => {
             const Icon = action.icon
             return (
               <button
                 key={action.id}
                 onClick={action.onClick}
-                className="p-3.5 rounded-2xl border border-[#EDE8DE] hover:border-[#3F5A3A]/40 bg-[#FAF7F0]/40 hover:bg-white text-left transition-all duration-200 cursor-pointer group flex flex-col justify-between hover:shadow-xs"
+                type="button"
+                className="p-4 rounded-2xl border-2 border-[#E5E5E5] border-b-4 border-b-[#D0D0D0] hover:border-[#4B4B4B]/30 hover:bg-[#F7F7F7] active:translate-y-[2px] active:border-b-2 text-left transition-all cursor-pointer group flex flex-col justify-between"
               >
                 <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 mb-2 group-hover:scale-105 transition-transform"
-                  style={{ backgroundColor: action.bg, color: action.color }}
+                  className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 mb-3 text-white shadow-xs group-hover:scale-105 transition-transform"
+                  style={{ backgroundColor: action.bg }}
                 >
-                  <Icon size={18} />
+                  <Icon size={20} strokeWidth={2.5} />
                 </div>
                 <div>
-                  <div className="text-xs font-extrabold text-[#1F2A24] font-['Plus_Jakarta_Sans']">
+                  <div className="text-sm font-black text-[#4B4B4B]">
                     {action.label}
                   </div>
-                  <div className="text-[10px] text-[#6B7A70] mt-0.5">
+                  <div className="text-xs font-bold text-[#AFAFAF] mt-0.5">
                     {action.sub}
                   </div>
                 </div>

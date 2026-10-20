@@ -1,176 +1,124 @@
+import React from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, ShieldCheck, Sparkles, Flame, Check } from 'lucide-react'
-import { Typewriter } from '../ui/typewriter-text'
+import { motion } from 'framer-motion'
 import { useAuth } from '../../context/AuthContext'
 
 export default function LandingHero() {
   const { user } = useAuth()
+  const startHref = user ? '/dashboard' : '/login?mode=signup'
+  const ctaText = user ? "Go to your family's plan" : "Build your family's plan"
+
+  // Subtle entrance animation variants (disabled gracefully if user prefers reduced motion)
+  const fadeUpVariant = (delay = 0) => ({
+    initial: { opacity: 0, y: 16 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.55, delay, ease: [0.25, 1, 0.5, 1] },
+  })
 
   return (
-    <section className="relative overflow-hidden" style={{ paddingTop: '128px', paddingBottom: '70px', backgroundColor: '#F6F2EA' }}>
-      {/* Background soft ambient gradient & leaf watermark */}
-      <div 
-        className="absolute top-0 right-0 -z-10 w-[600px] h-[600px] rounded-full blur-3xl opacity-20 pointer-events-none"
+    <section
+      aria-label="FamilyFit Hero — Good food. Stronger families."
+      className="relative w-full bg-[#F7F5EE] overflow-hidden select-none"
+    >
+      {/* ── UNIFIED HERO: Edge-to-Edge Image with Text Overlaid Directly as Part of the Hero ── */}
+      <div
+        className="relative w-full overflow-hidden"
         style={{
-          background: 'radial-gradient(circle, #6BBF4E 0%, rgba(63,90,58,0) 70%)',
+          height: 'clamp(400px, min(calc(100dvh - 100px), 56.25vw), 760px)',
+          minHeight: '400px',
         }}
-      />
-      <div 
-        className="absolute -bottom-20 -left-20 -z-10 w-[500px] h-[500px] rounded-full blur-3xl opacity-15 pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle, #3F5A3A 0%, rgba(246,242,234,0) 70%)',
-        }}
-      />
+      >
+        {/* Background Layer: Hero Image fills the section edge to edge */}
+        <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
+          <picture className="w-full h-full block">
+            {/* Desktop (1024px and up): 16:9 hero-desktop */}
+            <source
+              media="(min-width: 1024px)"
+              srcSet="/images/hero-desktop.webp 2400w, /images/hero-desktop-1200.webp 1200w"
+              type="image/webp"
+              sizes="100vw"
+            />
+            <source
+              media="(min-width: 1024px)"
+              srcSet="/images/hero-desktop.png 2400w, /images/hero-desktop-1200.png 1200w"
+              type="image/png"
+              sizes="100vw"
+            />
+            {/* Tablet & Medium viewports (640px to 1023px): hero-desktop with right-anchored family */}
+            <source
+              media="(min-width: 640px)"
+              srcSet="/images/hero-desktop-1200.webp 1200w, /images/hero-desktop.webp 2400w"
+              type="image/webp"
+            />
+            <source
+              media="(min-width: 640px)"
+              srcSet="/images/hero-desktop-1200.png 1200w, /images/hero-desktop.png 2400w"
+              type="image/png"
+            />
+            {/* Mobile (below 640px): 4/5 aspect ratio hero-mobile */}
+            <source
+              media="(max-width: 639px)"
+              srcSet="/images/hero-mobile-800.webp 800w, /images/hero-mobile.webp 1200w"
+              type="image/webp"
+            />
+            <source
+              media="(max-width: 639px)"
+              srcSet="/images/hero-mobile-800.png 800w, /images/hero-mobile.png 1200w"
+              type="image/png"
+            />
+            <img
+              src="/images/hero-desktop.png"
+              alt="Smiling Kerala family sharing a healthy meal"
+              width="2400"
+              height="1350"
+              fetchPriority="high"
+              loading="eager"
+              className="w-full h-full object-cover object-[78%_35%] md:object-[68%_40%] lg:object-[50%_40%] max-sm:object-[50%_bottom] select-none"
+            />
+          </picture>
+        </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          {/* ── LEFT: HEADLINE & CTAS ── */}
-          <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-            {/* Top pill badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#3F5A3A]/10 border border-[#3F5A3A]/20 text-[#3F5A3A] text-xs font-bold tracking-wide uppercase">
-              <Sparkles size={13} className="text-[#6BBF4E]" />
-              <span>Ayurvedic Nutrition • Personalized for Every Age</span>
+        {/* Text & Button Column Overlaid Directly INSIDE the Hero over the Cream Area */}
+        <div
+          className="absolute inset-0 z-10 flex flex-col justify-start pointer-events-none"
+          style={{
+            paddingLeft: 'clamp(16px, 3.5vw, 48px)',
+            paddingRight: 'clamp(16px, 3.5vw, 48px)',
+            paddingTop: 'clamp(20px, 3.5vw, 44px)',
+          }}
+        >
+          <div className="w-full sm:w-[50%] md:w-[44%] lg:w-[40%] max-w-[320px] sm:max-w-[380px] md:max-w-[440px] pointer-events-auto flex flex-col items-start text-left">
+            {/* 1. Eyebrow "FAMILYFIT" (Forest Green + Leaf Green matching brand sheet) */}
+            <div className="text-xs sm:text-[13px] lg:text-sm font-bold tracking-[0.25em] uppercase leading-none select-none text-left">
+              <span className="text-[#1F5D3A]">FAMILY</span>
+              <span className="text-[#7CB342]">FIT</span>
             </div>
 
-            {/* Main Title */}
-            <h1 className="text-4xl sm:text-5xl lg:text-[54px] font-extrabold tracking-tight text-[#1F2A24] leading-[1.12] font-['Plus_Jakarta_Sans']">
-              Kerala’s flavors.{' '}
-              <span className="text-[#3F5A3A] block sm:inline">
-                Your family’s strength.
-              </span>
+            {/* 2. H1 Headline (bigger, prominent in white space) */}
+            <h1
+              className="text-[#1F5D3A] font-bold tracking-[-0.025em] leading-[1.08] select-none mt-2.5 sm:mt-3 text-left font-['Plus_Jakarta_Sans',sans-serif] max-w-[195px] sm:max-w-none"
+              style={{
+                fontSize: 'clamp(1.45rem, 3.1vw, 3.15rem)',
+              }}
+            >
+              Good food.
+              <br />
+              Stronger families.
             </h1>
 
-            {/* Typewriter Rotating Line */}
-            <div className="text-xl sm:text-2xl font-bold text-[#6B7A70] flex items-center justify-center lg:justify-start gap-2 h-9">
-              <span className="text-[#1F2A24]">Designed for:</span>
-              <Typewriter
-                texts={[
-                  'Healthier breakfasts.',
-                  'Allergy-safe dinners.',
-                  'Smarter grocery lists.',
-                  'Balanced Kerala Matta meals.',
-                ]}
-                typingSpeed={60}
-                deletingSpeed={35}
-                delayBetween={2200}
-                className="text-[#3F5A3A] underline decoration-[#6BBF4E]/40 underline-offset-4"
-                cursorClassName="bg-[#6BBF4E]"
-              />
-            </div>
-
-            {/* Subtitle */}
-            <p className="text-base sm:text-lg text-[#6B7A70] max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
-              Personalized meal plans, recipes, and smart grocery lists, made for every member of your family—from energetic toddlers to grandparents managing blood sugar.
+            {/* 3. Subtitle */}
+            <p className="text-[#1A2E22] text-xs sm:text-sm lg:text-base font-normal leading-snug select-none mt-1.5 sm:mt-2 max-w-[240px] sm:max-w-[300px] text-left">
+              Simple, balanced meals for every day.
             </p>
 
-            {/* CTA Buttons */}
-            <div className="pt-3 flex flex-wrap items-center justify-center lg:justify-start gap-4">
-              {user ? (
-                <Link
-                  to="/dashboard"
-                  className="ff-btn-primary"
-                >
-                  <span>Go to My Dashboard</span>
-                  <ArrowRight size={18} />
-                </Link>
-              ) : (
-                <>
-                  <Link
-                    to="/login?mode=signup"
-                    className="ff-btn-primary"
-                  >
-                    <span>Get started free</span>
-                    <ArrowRight size={18} />
-                  </Link>
-
-                  <Link
-                    to="/login"
-                    className="ff-btn-secondary"
-                  >
-                    <span>I already have an account</span>
-                  </Link>
-                </>
-              )}
-            </div>
-
-            {/* Social proof guarantee tag */}
-            <div className="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-5 text-xs text-[#6B7A70]">
-              <span className="flex items-center gap-1.5 font-medium">
-                <Check size={15} className="text-[#6BBF4E]" /> Free forever tier
-              </span>
-              <span className="flex items-center gap-1.5 font-medium">
-                <Check size={15} className="text-[#6BBF4E]" /> 100% Allergen-aware
-              </span>
-              <span className="flex items-center gap-1.5 font-medium">
-                <Check size={15} className="text-[#6BBF4E]" /> No credit card needed
-              </span>
-            </div>
-          </div>
-
-          {/* ── RIGHT: HERO IMAGE & FLOATING CARDS ── */}
-          <div className="lg:col-span-5 relative flex justify-center lg:justify-end pt-6 lg:pt-0">
-            {/* Main Visual Container */}
-            <div className="relative w-full max-w-[480px]">
-              <div 
-                className="relative rounded-3xl overflow-hidden border-4 border-white aspect-[4/3] bg-[#2E422C]"
-                style={{
-                  boxShadow: '0 24px 50px -12px rgba(31, 42, 36, 0.22)'
-                }}
+            {/* 4. Action Button inside the White Space */}
+            <div className="mt-4 sm:mt-5 lg:mt-6">
+              <Link
+                to={startHref}
+                className="h-11 sm:h-12 px-6 sm:px-8 rounded-full bg-[#1F5D3A] hover:bg-[#174A2E] active:scale-[0.98] text-white text-xs sm:text-sm font-semibold inline-flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1F5D3A] focus-visible:ring-offset-2 cursor-pointer"
               >
-                <img
-                  src="/hero_sadya.png"
-                  alt="Kerala family dining over wholesome banana leaf meal"
-                  className="w-full h-full object-cover object-center"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
-              </div>
-
-              {/* Floating Card 1: Calorie / Meal Card */}
-              <div 
-                className="absolute bg-white/95 backdrop-blur-md rounded-2xl p-3.5 border border-[#E2DBD0] flex items-center gap-3 z-10 transition-transform hover:scale-105"
-                style={{ 
-                  top: '-16px', 
-                  left: '-16px', 
-                  boxShadow: '0 12px 32px rgba(31, 42, 36, 0.12)' 
-                }}
-              >
-                <div className="w-10 h-10 rounded-xl bg-[#FFF7ED] flex items-center justify-center text-[#F26B3A] shrink-0">
-                  <Flame size={20} />
-                </div>
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-sm font-extrabold text-[#1F2A24]">Steamed Puttu</span>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#EAF5E4] text-[#3F5A3A] font-bold">
-                      Healthy
-                    </span>
-                  </div>
-                  <p className="text-xs text-[#6B7A70] font-medium">
-                    420 kcal • High fiber &amp; gentle digestion
-                  </p>
-                </div>
-              </div>
-
-              {/* Floating Card 2: Safe for Family Shield */}
-              <div 
-                className="absolute bg-white/95 backdrop-blur-md rounded-2xl p-3.5 border border-[#E2DBD0] flex items-center gap-3 z-10 transition-transform hover:scale-105"
-                style={{ 
-                  bottom: '-16px', 
-                  right: '-16px', 
-                  boxShadow: '0 12px 32px rgba(31, 42, 36, 0.12)' 
-                }}
-              >
-                <div className="w-10 h-10 rounded-xl bg-[#EAF5E4] flex items-center justify-center text-[#3F5A3A] shrink-0">
-                  <ShieldCheck size={22} />
-                </div>
-                <div>
-                  <div className="text-sm font-extrabold text-[#1F2A24]">
-                    Safe for the whole family
-                  </div>
-                  <p className="text-xs text-[#6B7A70]">
-                    Automated allergen &amp; sodium filter active
-                  </p>
-                </div>
-              </div>
+                <span className="text-white" style={{ color: '#FFFFFF' }}>{ctaText}</span>
+              </Link>
             </div>
           </div>
         </div>

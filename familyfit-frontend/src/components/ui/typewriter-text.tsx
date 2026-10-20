@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-interface TypewriterProps {
+export interface TypewriterProps {
   texts?: string[]
   text?: string
   typingSpeed?: number
@@ -13,47 +13,67 @@ interface TypewriterProps {
 export function Typewriter({
   texts,
   text,
-  typingSpeed = 70,
-  deletingSpeed = 40,
-  delayBetween = 2000,
+  typingSpeed = 45,
+  deletingSpeed = 25,
+  delayBetween = 3000,
   className = '',
   cursorClassName = '',
 }: TypewriterProps) {
-  const textArray = texts && texts.length > 0 ? texts : [text || '']
-  const [currentTextIndex, setCurrentTextIndex] = useState(0)
-  const [currentText, setCurrentText] = useState('')
-  const [isDeleting, setIsDeleting] = useState(false)
+  const list = texts && texts.length > 0 ? texts : [text || '']
+  const serializedList = list.join('|||')
+
+  const [textIndex, setTextIndex] = useState(0)
+  const [displayText, setDisplayText] = useState('')
+  const [phase, setPhase] = useState<'typing' | 'holding' | 'deleting'>('typing')
+
+  // When texts array content changes (e.g. login <-> signup mode), reset state cleanly
+  useEffect(() => {
+    setTextIndex(0)
+    setDisplayText('')
+    setPhase('typing')
+  }, [serializedList])
 
   useEffect(() => {
-    const fullText = textArray[currentTextIndex] || ''
+    const currentTarget = list[textIndex % list.length] || ''
+    let timeoutId: ReturnType<typeof setTimeout>
 
-    if (!isDeleting && currentText === fullText) {
-      if (textArray.length === 1) return
-      const timeout = setTimeout(() => setIsDeleting(true), delayBetween)
-      return () => clearTimeout(timeout)
+    if (phase === 'typing') {
+      if (displayText.length < currentTarget.length) {
+        timeoutId = setTimeout(() => {
+          setDisplayText(currentTarget.slice(0, displayText.length + 1))
+        }, typingSpeed)
+      } else {
+        // Complete current text, hold for ~3 seconds before deleting
+        setPhase('holding')
+      }
+    } else if (phase === 'holding') {
+      if (list.length > 1) {
+        timeoutId = setTimeout(() => {
+          setPhase('deleting')
+        }, delayBetween)
+      }
+    } else if (phase === 'deleting') {
+      if (displayText.length > 0) {
+        timeoutId = setTimeout(() => {
+          setDisplayText(currentTarget.slice(0, displayText.length - 1))
+        }, deletingSpeed)
+      } else {
+        // Completed deletion, switch to next quote and resume typing
+        setTextIndex((prev) => (prev + 1) % list.length)
+        setPhase('typing')
+      }
     }
 
-    if (isDeleting && currentText === '') {
-      setIsDeleting(false)
-      setCurrentTextIndex((prev) => (prev + 1) % textArray.length)
-      return
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId)
     }
-
-    const speed = isDeleting ? deletingSpeed : typingSpeed
-    const timeout = setTimeout(() => {
-      setCurrentText((prev) =>
-        isDeleting ? fullText.slice(0, prev.length - 1) : fullText.slice(0, prev.length + 1)
-      )
-    }, speed)
-
-    return () => clearTimeout(timeout)
-  }, [currentText, isDeleting, currentTextIndex, textArray, typingSpeed, deletingSpeed, delayBetween])
+  }, [displayText, phase, textIndex, serializedList, typingSpeed, deletingSpeed, delayBetween])
 
   return (
     <span className={`inline-flex items-center ${className}`}>
-      <span>{currentText}</span>
+      <span>{displayText}</span>
       <span
-        className={`inline-block w-[2px] h-[1.1em] ml-1 bg-current animate-pulse ${cursorClassName}`}
+        className={`inline-block w-[2px] h-[1.15em] ml-1 bg-current animate-pulse align-middle ${cursorClassName}`}
         aria-hidden="true"
       />
     </span>

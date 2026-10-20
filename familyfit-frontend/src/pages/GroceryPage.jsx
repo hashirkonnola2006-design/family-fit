@@ -14,7 +14,7 @@ export default function GroceryPage() {
   const { budget, setBudget, budgetPeriod, setBudgetPeriod } = useGrocery()
   const navigate = useNavigate()
 
-  const members = family?.members || []
+  const members = Array.isArray(family?.members) ? family.members.filter(Boolean) : []
 
   const [selectedMemberId, setSelectedMemberId] = useState('ALL')
   const [showBudgetModal, setShowBudgetModal] = useState(false)
@@ -37,7 +37,7 @@ export default function GroceryPage() {
   const selectedMember =
     selectedMemberId === 'ALL'
       ? null
-      : members.find((m) => String(m.id) === String(selectedMemberId)) || null
+      : members.find((m) => m && String(m.id) === String(selectedMemberId)) || null
 
   const rawRecommendations = KERALA_GROCERY_DATASET
 
@@ -69,6 +69,7 @@ export default function GroceryPage() {
 
   return (
     <div
+      className="grocery-page-root"
       style={{
         background: isDark ? '#0A0F1D' : '#FAFAFA',
         fontFamily: "'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif",

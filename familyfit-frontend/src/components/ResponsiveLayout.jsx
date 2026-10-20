@@ -36,7 +36,7 @@ export default function ResponsiveLayout({ children }) {
           @media (min-width: 1024px) {
             .layout-root {
               display: block;
-              background-color: ${isDark ? '#0A0F1D' : '#FAFAF7'};
+              background-color: ${isDark ? '#0A0F1D' : '#F7F7F7'};
             }
 
             .desktop-sidebar {
@@ -50,7 +50,7 @@ export default function ResponsiveLayout({ children }) {
               min-height: 100vh;
               padding: 0 !important;
               box-sizing: border-box;
-              background-color: ${isDark ? '#0A0F1D' : '#FAFAF7'};
+              background-color: ${isDark ? '#0A0F1D' : '#F7F7F7'};
             }
 
             /*

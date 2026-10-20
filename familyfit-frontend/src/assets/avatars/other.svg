@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="48" fill="#F3E8FF" stroke="#E9D5FF" stroke-width="4"/>
+  <!-- Body / Sporty Purple-Green Jacket -->
+  <path d="M22 92 C22 72 35 68 50 68 C65 68 78 72 78 92 Z" fill="#7C3AED"/>
+  <path d="M42 68 L50 82 L58 68 Z" fill="#58CC02"/>
+  <!-- Neck -->
+  <rect x="43" y="58" width="14" height="14" rx="4" fill="#FBBF24"/>
+  <!-- Head / Face -->
+  <circle cx="50" cy="43" r="22" fill="#FCD34D"/>
+  <!-- Sporty Green Bandana / Cap -->
+  <path d="M28 32 C30 20 40 18 50 18 C60 18 70 20 72 32 L74 36 L26 36 Z" fill="#58CC02"/>
+  <path d="M26 34 L74 34" stroke="#46A302" stroke-width="2"/>
+  <!-- Soft Brown Hair Peeking -->
+  <path d="M27 36 C27 42 29 44 32 44 C30 38 29 36 27 36 Z" fill="#78350F"/>
+  <path d="M73 36 C73 42 71 44 68 44 C70 38 71 36 73 36 Z" fill="#78350F"/>
+  <!-- Friendly Eyes -->
+  <circle cx="42" cy="43" r="3" fill="#0F172A"/>
+  <circle cx="43" cy="41.5" r="1.2" fill="#FFFFFF"/>
+  <circle cx="58" cy="43" r="3" fill="#0F172A"/>
+  <circle cx="59" cy="41.5" r="1.2" fill="#FFFFFF"/>
+  <!-- Warm Confident Smile -->
+  <path d="M44 52 Q50 58 56 52" stroke="#9333EA" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+</svg>

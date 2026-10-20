@@ -5,18 +5,134 @@ import { fetchCloudMembers, syncMembersToCloud } from '../utils/cloudSync'
 
 const FamilyContext = createContext(null)
 
+const DEFAULT_SEEDED_MEMBERS = [
+  {
+    id: 1,
+    name: 'Madhavan',
+    role: 'GRANDFATHER',
+    gender: 'MALE',
+    age: 68,
+    height: 168,
+    weight: 65,
+    activityLevel: 'SEDENTARY',
+    healthConditions: ['Diabetes'],
+    allergies: [],
+    goal: 'Low sugar',
+    calorieTarget: 1750,
+    avatarKey: 'grandfather',
+    themeColor: '#58CC02',
+  },
+  {
+    id: 2,
+    name: 'Sarada',
+    role: 'GRANDMOTHER',
+    gender: 'FEMALE',
+    age: 65,
+    height: 155,
+    weight: 60,
+    activityLevel: 'LIGHTLY_ACTIVE',
+    healthConditions: ['High Blood Pressure'],
+    allergies: [],
+    goal: 'Heart care',
+    calorieTarget: 1600,
+    avatarKey: 'grandmother',
+    themeColor: '#FF9600',
+  },
+  {
+    id: 3,
+    name: 'Rajesh',
+    role: 'FATHER',
+    gender: 'MALE',
+    age: 42,
+    height: 175,
+    weight: 78,
+    activityLevel: 'MODERATELY_ACTIVE',
+    healthConditions: [],
+    allergies: [],
+    goal: 'Lose weight',
+    calorieTarget: 2100,
+    avatarKey: 'father',
+    themeColor: '#1CB0F6',
+  },
+  {
+    id: 4,
+    name: 'Deepa',
+    role: 'MOTHER',
+    gender: 'FEMALE',
+    age: 38,
+    height: 162,
+    weight: 58,
+    activityLevel: 'MODERATELY_ACTIVE',
+    healthConditions: [],
+    allergies: ['Peanuts/Tree Nuts'],
+    goal: 'Maintain weight',
+    calorieTarget: 1850,
+    avatarKey: 'mother',
+    themeColor: '#CE82FF',
+  },
+  {
+    id: 5,
+    name: 'Rahul',
+    role: 'SON',
+    gender: 'MALE',
+    age: 12,
+    height: 145,
+    weight: 38,
+    activityLevel: 'VERY_ACTIVE',
+    healthConditions: [],
+    allergies: [],
+    goal: 'Gain muscle',
+    calorieTarget: 2000,
+    avatarKey: 'son',
+    themeColor: '#FFC800',
+  },
+  {
+    id: 6,
+    name: 'Ananya',
+    role: 'DAUGHTER',
+    gender: 'FEMALE',
+    age: 8,
+    height: 125,
+    weight: 24,
+    activityLevel: 'VERY_ACTIVE',
+    healthConditions: [],
+    allergies: ['Milk/Dairy'],
+    goal: 'Grow healthy',
+    calorieTarget: 1650,
+    avatarKey: 'daughter',
+    themeColor: '#FF4B4B',
+  },
+]
+
+function getSafeLocalMembers() {
+  try {
+    const saved = localStorage.getItem('familyfit_members')
+    if (saved) {
+      const parsed = JSON.parse(saved)
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed.filter(Boolean)
+      }
+    }
+  } catch (err) {
+    console.warn('Could not read familyfit_members from localStorage:', err)
+  }
+  return DEFAULT_SEEDED_MEMBERS
+}
+
 // Smart merger function to ensure no added member is ever lost
 function mergeMemberLists(listA = [], listB = []) {
   const map = new Map()
+  const safeA = Array.isArray(listA) ? listA.filter(Boolean) : []
+  const safeB = Array.isArray(listB) ? listB.filter(Boolean) : []
 
-  listA.forEach((m) => {
+  safeA.forEach((m) => {
     if (m && (m.id || m.name)) {
       const key = String(m.id || m.name)
       map.set(key, m)
     }
   })
 
-  listB.forEach((m) => {
+  safeB.forEach((m) => {
     if (m && (m.id || m.name)) {
       const key = String(m.id || m.name)
       if (map.has(key)) {
@@ -34,8 +150,7 @@ export function FamilyProvider({ children }) {
   const { user } = useAuth()
 
   const [family, setFamily] = useState(() => {
-    const saved = localStorage.getItem('familyfit_members')
-    const savedMembers = saved ? JSON.parse(saved) : []
+    const savedMembers = getSafeLocalMembers()
     return {
       id: user?.familyId || 1,
       name: user?.familyName || 'My Family',
@@ -46,8 +161,7 @@ export function FamilyProvider({ children }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [activeMember, setActiveMember] = useState(() => {
-    const saved = localStorage.getItem('familyfit_members')
-    const savedMembers = saved ? JSON.parse(saved) : []
+    const savedMembers = getSafeLocalMembers()
     return savedMembers[0] || null
   })
 
@@ -58,10 +172,10 @@ export function FamilyProvider({ children }) {
       // 1. Try primary backend API first
       const res = await getFamily(id).catch(() => ({ data: null }))
       if (res?.data && Array.isArray(res.data.members) && res.data.members.length > 0) {
-        const localSaved = JSON.parse(localStorage.getItem('familyfit_members') || '[]')
+        const localSaved = getSafeLocalMembers()
         const merged = mergeMemberLists(localSaved, res.data.members)
         setFamily({ ...res.data, members: merged })
-        localStorage.setItem('familyfit_members', JSON.stringify(merged))
+        try { localStorage.setItem('familyfit_members', JSON.stringify(merged)) } catch {}
         if (!activeMember) setActiveMember(merged[0])
         setLoading(false)
         return
@@ -69,12 +183,12 @@ export function FamilyProvider({ children }) {
 
       // 2. Try cross-device Cloud Sync and merge with localStorage
       const cloudMembers = await fetchCloudMembers()
-      const localSaved = JSON.parse(localStorage.getItem('familyfit_members') || '[]')
+      const localSaved = getSafeLocalMembers()
       const merged = mergeMemberLists(localSaved, cloudMembers || [])
 
       if (merged.length > 0) {
         setFamily((prev) => ({ ...prev, members: merged }))
-        localStorage.setItem('familyfit_members', JSON.stringify(merged))
+        try { localStorage.setItem('familyfit_members', JSON.stringify(merged)) } catch {}
         setActiveMember((prev) => prev || merged[0])
         // Also push merged state to cloud sync to keep both devices in harmony
         syncMembersToCloud(merged)

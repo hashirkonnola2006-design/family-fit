@@ -135,9 +135,9 @@ export default function TipsPage() {
   const { isDark } = useTheme()
   const navigate = useNavigate()
 
-  const members = family?.members || []
+  const members = Array.isArray(family?.members) ? family.members.filter(Boolean) : []
   const membersWithAllergies = members.filter(
-    (m) => Array.isArray(m.allergies) && m.allergies.length > 0
+    (m) => m && Array.isArray(m.allergies) && m.allergies.length > 0
   )
 
   const [activeCategory, setActiveCategory] = useState('All Tips')
@@ -238,7 +238,7 @@ export default function TipsPage() {
                     Active Household Allergen Screening
                   </div>
                   <div className="ff-alert-text">
-                    Monitoring allergies for {membersWithAllergies.map((m) => m.name).join(', ')}. All recipe suggestions automatically screen for conflicts.
+                    Monitoring allergies for {membersWithAllergies.map((m) => m?.name || 'Family Member').join(', ')}. All recipe suggestions automatically screen for conflicts.
                   </div>
                 </div>
               </div>
@@ -270,12 +270,12 @@ export default function TipsPage() {
               </button>
               {members.map((m) => (
                 <button
-                  key={m.id}
-                  onClick={() => setSelectedMemberId(m.id)}
-                  className={`ff-member-pill ${String(selectedMemberId) === String(m.id) ? 'active' : ''}`}
+                  key={m?.id || m?.name || Math.random()}
+                  onClick={() => setSelectedMemberId(m?.id || 'ALL')}
+                  className={`ff-member-pill ${String(selectedMemberId) === String(m?.id) ? 'active' : ''}`}
                 >
                   <span className="ff-member-dot" />
-                  <span>{m.name}</span>
+                  <span>{m?.name || 'Member'}</span>
                 </button>
               ))}
             </div>

@@ -7,32 +7,32 @@ export default function DashboardFooter() {
   }
 
   return (
-    <footer className="w-full py-6 mt-12 border-t border-[#E2DBD0] text-xs text-[#6B7A70] flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div className="flex items-center gap-1.5 font-medium">
+    <footer className="w-full py-6 mt-12 border-t-2 border-[#E5E5E5] text-xs text-[#AFAFAF] flex flex-col sm:flex-row items-center justify-between gap-4 font-bold">
+      <div className="flex items-center gap-1.5">
         <span>© {new Date().getFullYear()} FamilyFit. Wholesome Kerala Family Nutrition.</span>
       </div>
 
       <div className="flex items-center gap-6">
         <Link
           to="/privacy"
-          className="text-[#6B7A70] hover:text-[#3F5A3A] hover:underline font-semibold transition-colors"
+          className="text-[#AFAFAF] hover:text-[#58CC02] hover:underline font-bold transition-colors"
         >
           Privacy Policy
         </Link>
-        <span className="text-[#DCD5C8]">•</span>
+        <span className="text-[#E5E5E5]">•</span>
         <Link
           to="/terms"
-          className="text-[#6B7A70] hover:text-[#3F5A3A] hover:underline font-semibold transition-colors"
+          className="text-[#AFAFAF] hover:text-[#58CC02] hover:underline font-bold transition-colors"
         >
           Terms &amp; Conditions
         </Link>
-        <span className="text-[#DCD5C8]">•</span>
+        <span className="text-[#E5E5E5]">•</span>
         <button
           onClick={scrollToTop}
-          className="inline-flex items-center gap-1 text-[#6B7A70] hover:text-[#3F5A3A] font-semibold cursor-pointer transition-colors"
+          className="inline-flex items-center gap-1 text-[#AFAFAF] hover:text-[#58CC02] font-black cursor-pointer transition-colors"
         >
           <span>Back to top</span>
-          <ArrowUp size={12} />
+          <ArrowUp size={14} strokeWidth={3} />
         </button>
       </div>
     </footer>

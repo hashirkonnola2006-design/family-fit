@@ -6,20 +6,21 @@ export default function ProgressChart({ selectedMember, onOpenWeightLog }) {
 
   if (!history || history.length === 0) {
     return (
-      <div className="bg-white rounded-3xl p-6 border border-[#E2DBD0] shadow-sm flex flex-col justify-between text-center transition-all">
+      <div className="duo-card p-6 flex flex-col justify-between text-center">
         <div className="py-8">
-          <div className="w-12 h-12 rounded-full bg-[#FAF7F0] text-[#3F5A3A] flex items-center justify-center mx-auto mb-3">
-            <Activity size={22} />
+          <div className="w-12 h-12 rounded-2xl bg-[#58CC02]/15 text-[#58CC02] flex items-center justify-center mx-auto mb-3 font-bold">
+            <Activity size={22} strokeWidth={2.5} />
           </div>
-          <h4 className="text-sm font-bold text-[#1F2A24]">No weight logged yet</h4>
-          <p className="text-xs text-[#6B7A70] mt-1 mb-4">
+          <h4 className="text-sm font-black text-[#4B4B4B]">No weight logged yet</h4>
+          <p className="text-xs text-[#AFAFAF] font-bold mt-1 mb-4">
             Log your weekly weight to track your family’s wellness trajectory.
           </p>
           <button
             onClick={onOpenWeightLog}
-            className="text-xs font-bold text-[#3F5A3A] hover:underline"
+            className="duo-btn duo-btn-primary text-xs py-2 px-4 inline-flex items-center gap-1.5"
           >
-            + Log your weight to see progress
+            <Plus size={14} strokeWidth={3} />
+            <span>Log weight to see progress</span>
           </button>
         </div>
       </div>
@@ -44,27 +45,31 @@ export default function ProgressChart({ selectedMember, onOpenWeightLog }) {
   }, '')
 
   const areaD = `${pathD} L ${points[points.length - 1].x} ${height} L ${points[0].x} ${height} Z`
-
   const weightChange = (history[0].weight - history[history.length - 1].weight).toFixed(1)
 
   return (
-    <div className="bg-white rounded-3xl p-6 border border-[#E2DBD0] shadow-sm flex flex-col justify-between transition-all">
+    <div className="duo-card p-6 flex flex-col justify-between">
       <div>
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-[#EDE8DE]">
-          <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-[#3F5A3A]">
-              Wellness Trajectory
-            </span>
-            <h3 className="text-lg font-extrabold text-[#1F2A24] font-['Plus_Jakarta_Sans'] mt-0.5">
-              Progress
-            </h3>
+        <div className="flex items-center justify-between pb-3 border-b-2 border-[#E5E5E5]">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-[#58CC02]/15 text-[#58CC02] flex items-center justify-center font-bold">
+              <Activity size={18} strokeWidth={2.5} />
+            </div>
+            <div>
+              <span className="text-[11px] font-black uppercase tracking-wider text-[#AFAFAF]">
+                Wellness Trajectory
+              </span>
+              <h3 className="text-lg font-black text-[#4B4B4B]">
+                Progress
+              </h3>
+            </div>
           </div>
           <button
             onClick={onOpenWeightLog}
-            className="text-xs font-bold text-[#3F5A3A] hover:text-[#32492E] flex items-center gap-1 cursor-pointer"
+            className="duo-btn duo-btn-secondary text-xs py-1 px-3 flex items-center gap-1"
           >
-            <Plus size={13} />
+            <Plus size={13} strokeWidth={3} />
             <span>Log</span>
           </button>
         </div>
@@ -75,8 +80,8 @@ export default function ProgressChart({ selectedMember, onOpenWeightLog }) {
             <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-24 overflow-visible">
               <defs>
                 <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#6BBF4E" stopOpacity="0.3" />
-                  <stop offset="100%" stopColor="#6BBF4E" stopOpacity="0" />
+                  <stop offset="0%" stopColor="#58CC02" stopOpacity="0.35" />
+                  <stop offset="100%" stopColor="#58CC02" stopOpacity="0" />
                 </linearGradient>
               </defs>
 
@@ -87,8 +92,8 @@ export default function ProgressChart({ selectedMember, onOpenWeightLog }) {
               <path
                 d={pathD}
                 fill="none"
-                stroke="#3F5A3A"
-                strokeWidth="2.5"
+                stroke="#58CC02"
+                strokeWidth="3.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
@@ -99,10 +104,10 @@ export default function ProgressChart({ selectedMember, onOpenWeightLog }) {
                   <circle
                     cx={pt.x}
                     cy={pt.y}
-                    r={i === points.length - 1 ? 4.5 : 3}
-                    fill={i === points.length - 1 ? '#3F5A3A' : '#FFFFFF'}
-                    stroke="#3F5A3A"
-                    strokeWidth="2"
+                    r={i === points.length - 1 ? 5 : 3.5}
+                    fill={i === points.length - 1 ? '#58CC02' : '#FFFFFF'}
+                    stroke="#58CC02"
+                    strokeWidth="2.5"
                   />
                 </g>
               ))}
@@ -110,7 +115,7 @@ export default function ProgressChart({ selectedMember, onOpenWeightLog }) {
           </div>
 
           {/* X Axis Labels */}
-          <div className="flex justify-between text-[10px] text-[#8D9B91] px-2 pt-1 font-semibold">
+          <div className="flex justify-between text-[10px] text-[#AFAFAF] px-2 pt-1 font-black">
             {history.map((h, i) => (
               <span key={i}>{h.week}</span>
             ))}
@@ -119,9 +124,9 @@ export default function ProgressChart({ selectedMember, onOpenWeightLog }) {
       </div>
 
       {/* Simple Text Insight */}
-      <div className="pt-4 mt-3 border-t border-[#EDE8DE]">
-        <div className="p-2.5 rounded-xl bg-[#EAF5E4] flex items-center gap-2 text-xs font-bold text-[#2E7D32]">
-          <TrendingDown size={16} className="shrink-0" />
+      <div className="pt-4 mt-3 border-t-2 border-[#E5E5E5]">
+        <div className="p-3 rounded-2xl bg-[#58CC02]/15 border border-[#58CC02]/30 flex items-center gap-2 text-xs font-black text-[#58CC02]">
+          <TrendingDown size={16} strokeWidth={2.5} className="shrink-0" />
           <span className="line-clamp-1">
             You’re on track this week • -{weightChange} kg steady trend
           </span>

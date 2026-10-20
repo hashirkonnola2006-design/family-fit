@@ -1,49 +1,35 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
+import {
+  X,
+  Plus,
+  Minus,
+  Check,
+  Trash2,
+  AlertCircle,
+  Sparkles,
+  Heart,
+  Activity,
+  Flame,
+  Zap,
+  Coffee,
+  Shield,
+  HelpCircle,
+  Apple
+} from 'lucide-react'
 import { updateMember, addMember, deleteMember } from '../api/family'
 import { useFamily } from '../context/FamilyContext'
 import MemberAvatar from './MemberAvatar'
+import { AVATAR_REGISTRY, AVATAR_KEYS, suggestAvatarKey } from '../config/avatars'
 
-const HEALTH_CONDITION_OPTIONS = [
-  'None',
-  'Diabetes',
-  'High Blood Pressure',
-  'High Cholesterol',
-  'Heart Disease',
-  'Kidney Disease',
-  'Thyroid',
-]
-
-const ALLERGY_OPTIONS = [
-  'None',
-  'Milk/Dairy',
-  'Eggs',
-  'Peanuts/Tree Nuts',
-  'Seafood/Fish',
-  'Soy',
-  'Wheat/Gluten',
-]
-
-const DIET_PREFERENCES = [
-  { id: 'NO_PREFERENCE', label: 'No Preference' },
-  { id: 'NON_VEGETARIAN', label: 'Non-Vegetarian' },
-  { id: 'VEGETARIAN', label: 'Vegetarian' },
-  { id: 'EGGETARIAN', label: 'Eggetarian' },
-  { id: 'VEGAN', label: 'Vegan' },
-]
-
-const FITNESS_GOALS = [
-  { id: 'MAINTAIN_WEIGHT', label: 'Maintain Weight' },
-  { id: 'WEIGHT_LOSS', label: 'Weight Loss' },
-  { id: 'WEIGHT_GAIN', label: 'Weight Gain' },
-  { id: 'MUSCLE_GAIN', label: 'Muscle Gain' },
-  { id: 'MANAGE_CONDITION', label: 'Manage a Condition' },
-]
-
-const ACTIVITY_LEVELS = [
-  { id: 'SEDENTARY', label: 'Sedentary (Little or no exercise)' },
-  { id: 'LIGHTLY_ACTIVE', label: 'Lightly Active (1-3 days/week)' },
-  { id: 'MODERATELY_ACTIVE', label: 'Moderately Active (3-5 days/week)' },
-  { id: 'VERY_ACTIVE', label: 'Very Active (6-7 days/week)' },
+const ROLES = [
+  { id: 'FATHER', label: 'Father' },
+  { id: 'MOTHER', label: 'Mother' },
+  { id: 'SON', label: 'Son' },
+  { id: 'DAUGHTER', label: 'Daughter' },
+  { id: 'GRANDFATHER', label: 'Grandfather' },
+  { id: 'GRANDMOTHER', label: 'Grandmother' },
+  { id: 'BABY', label: 'Baby' },
+  { id: 'OTHER', label: 'Other' },
 ]
 
 const GENDERS = [
@@ -52,831 +38,1082 @@ const GENDERS = [
   { id: 'OTHER', label: 'Other' },
 ]
 
-export default function MemberModal({ member, onClose }) {
-  const { family, refresh, addMemberToContext, updateMemberInContext, deleteMemberFromContext } = useFamily()
-  const isEdit = Boolean(member && member.id)
+const ACTIVITY_LEVELS = [
+  {
+    id: 'SEDENTARY',
+    label: 'Sedentary',
+    sub: 'Desk job, little or no exercise',
+    icon: Coffee,
+    factor: 1.2,
+  },
+  {
+    id: 'LIGHTLY_ACTIVE',
+    label: 'Lightly Active',
+    sub: 'Light daily walks or exercise 1-3x/wk',
+    icon: Zap,
+    factor: 1.375,
+  },
+  {
+    id: 'MODERATELY_ACTIVE',
+    label: 'Moderately Active',
+    sub: 'Regular movement or exercise 3-5x/wk',
+    icon: Activity,
+    factor: 1.55,
+  },
+  {
+    id: 'VERY_ACTIVE',
+    label: 'Very Active',
+    sub: 'Intense exercise or athletic training 6-7x/wk',
+    icon: Flame,
+    factor: 1.725,
+  },
+]
 
-  const [form, setForm] = useState({
-    name: '',
-    role: 'PARENT',
-    gender: 'FEMALE',
-    age: 30,
-    heightCm: 165,
-    weightKg: 65,
-    activityLevel: 'MODERATELY_ACTIVE',
-    healthConditions: [],
-    allergies: [],
-    otherAllergy: '',
-    dietPreference: 'NO_PREFERENCE',
-    fitnessGoal: 'MAINTAIN_WEIGHT',
-    likes: '',
-    dislikes: '',
+const HEALTH_CONDITIONS = [
+  { id: 'None', label: 'None', icon: Shield },
+  { id: 'Diabetes', label: 'Diabetes', icon: Activity },
+  { id: 'High Blood Pressure', label: 'High Blood Pressure', icon: Heart },
+  { id: 'High Cholesterol', label: 'High Cholesterol', icon: AlertCircle },
+  { id: 'Heart Disease', label: 'Heart Disease', icon: Heart },
+  { id: 'Kidney Disease', label: 'Kidney Disease', icon: Shield },
+  { id: 'Thyroid', label: 'Thyroid', icon: Sparkles },
+]
 
-    // Demographic specific flags
-    isPregnantOrBreastfeeding: false,
-    hasChewingDifficulty: false,
+const ALLERGIES = [
+  { id: 'None', label: 'None' },
+  { id: 'Milk/Dairy', label: 'Milk / Dairy' },
+  { id: 'Eggs', label: 'Eggs' },
+  { id: 'Peanuts/Tree Nuts', label: 'Peanuts / Nuts' },
+  { id: 'Seafood/Fish', label: 'Seafood / Fish' },
+  { id: 'Soy', label: 'Soy' },
+  { id: 'Wheat/Gluten', label: 'Wheat / Gluten' },
+]
 
-    // Dynamic question state
-    weaningIntolerance: false,
-    weaningNotes: '',
-    pediatricConcerns: false,
-    pediatricNotes: '',
-    ironDeficiency: false,
-    rapidGrowth: false,
-    menopauseSymptoms: false,
-    familyHistoryDisease: false,
-    longTermMedication: false,
-  })
+const GOALS = [
+  { id: 'MAINTAIN_WEIGHT', label: 'Maintain weight', sub: 'Balanced daily nourishment', delta: 0, color: '#58CC02' },
+  { id: 'WEIGHT_LOSS', label: 'Lose weight', sub: 'Gentle caloric deficit', delta: -400, color: '#1CB0F6' },
+  { id: 'MUSCLE_GAIN', label: 'Gain muscle', sub: 'Protein-focused strength', delta: 350, color: '#FF9600' },
+  { id: 'LOW_SUGAR', label: 'Low sugar', sub: 'Low GI Kerala meals', delta: -150, color: '#CE82FF' },
+  { id: 'GROW_HEALTHY', label: 'Grow healthy', sub: 'Optimal growth for kids', delta: 200, color: '#22C55E' },
+  { id: 'HEART_CARE', label: 'Heart care', sub: 'Low sodium, heart-healthy', delta: 0, color: '#FF4B4B' },
+]
 
+const DIET_PREFS = [
+  { id: 'NO_PREFERENCE', label: 'All Foods' },
+  { id: 'NON_VEGETARIAN', label: 'Non-Veg' },
+  { id: 'VEGETARIAN', label: 'Vegetarian' },
+  { id: 'EGGETARIAN', label: 'Eggetarian' },
+]
+
+const STEPS = [
+  { id: 1, title: 'Basics' },
+  { id: 2, title: 'Health' },
+  { id: 3, title: 'Allergies' },
+  { id: 4, title: 'Goals' },
+]
+
+export default function MemberModal({ member, onClose, onSaved }) {
+  const { family, addMemberToContext, updateMemberInContext, deleteMemberFromContext, setActiveMember } = useFamily()
+  const isEdit = Boolean(member && (member.id || member._id))
+
+  const [step, setStep] = useState(1)
+  const [isDirty, setIsDirty] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [errors, setErrors] = useState({})
 
+  // Form state
+  const [name, setName] = useState(member?.name || '')
+  const [role, setRole] = useState(member?.role || 'FATHER')
+  const [gender, setGender] = useState(member?.gender || 'MALE')
+  const [age, setAge] = useState(Number(member?.age) || 32)
+  const [heightCm, setHeightCm] = useState(Number(member?.heightCm) || 168)
+  const [weightKg, setWeightKg] = useState(Number(member?.weightKg) || 68)
+  const [activityLevel, setActivityLevel] = useState(member?.activityLevel || 'MODERATELY_ACTIVE')
+  const [isPregnantOrBreastfeeding, setIsPregnantOrBreastfeeding] = useState(Boolean(member?.isPregnantOrBreastfeeding))
+  
+  // Custom or auto avatar
+  const [avatarKey, setAvatarKey] = useState(() => {
+    return member?.avatarKey || suggestAvatarKey(member?.role || 'FATHER', member?.gender || 'MALE', member?.age || 32)
+  })
+  const [avatarOverridden, setAvatarOverridden] = useState(Boolean(member?.avatarKey))
+
+  // Health and Allergies
+  const [healthConditions, setHealthConditions] = useState(member?.healthConditions || ['None'])
+  const [allergies, setAllergies] = useState(member?.allergies || ['None'])
+  const [otherAllergyText, setOtherAllergyText] = useState('')
+  const [showOtherAllergyInput, setShowOtherAllergyInput] = useState(false)
+
+  // Goal and Preferences
+  const [fitnessGoal, setFitnessGoal] = useState(member?.fitnessGoal || 'MAINTAIN_WEIGHT')
+  const [dietPreference, setDietPreference] = useState(member?.dietPreference || 'NO_PREFERENCE')
+  const [dislikes, setDislikes] = useState(
+    Array.isArray(member?.dislikes) ? member.dislikes.join(', ') : (member?.dislikes || '')
+  )
+
+  // Auto-suggest avatar when role/gender/age change if user hasn't explicitly clicked a custom avatar
   useEffect(() => {
-    if (member) {
-      const existingAllergies = member.allergies || []
-      const knownAllergies = existingAllergies.filter((a) => ALLERGY_OPTIONS.includes(a))
-      const otherAllergies = existingAllergies.filter((a) => !ALLERGY_OPTIONS.includes(a)).join(', ')
-      const flags = member.dietaryFlags || []
-
-      const weaningFlag = flags.find((f) => f.startsWith('Weaning Intolerances'))
-      const pediaFlag = flags.find((f) => f.startsWith('Pediatric Concerns'))
-
-      setForm({
-        name: member.name || '',
-        role: member.role || 'PARENT',
-        gender: member.gender || 'FEMALE',
-        age: member.age ?? 30,
-        heightCm: member.heightCm || 165,
-        weightKg: member.weightKg || 65,
-        activityLevel: member.activityLevel || 'MODERATELY_ACTIVE',
-        healthConditions: member.healthConditions || [],
-        allergies: knownAllergies,
-        otherAllergy: otherAllergies,
-        dietPreference: member.dietPreference || 'NO_PREFERENCE',
-        fitnessGoal: member.fitnessGoal || 'MAINTAIN_WEIGHT',
-        likes: Array.isArray(member.likes) ? member.likes.join(', ') : (member.likes || ''),
-        dislikes: Array.isArray(member.dislikes) ? member.dislikes.join(', ') : (member.dislikes || ''),
-
-        isPregnantOrBreastfeeding: Boolean(member.isPregnantOrBreastfeeding),
-        hasChewingDifficulty: Boolean(member.hasChewingDifficulty),
-
-        weaningIntolerance: Boolean(weaningFlag),
-        weaningNotes: weaningFlag ? weaningFlag.replace('Weaning Intolerances: ', '').trim() : '',
-        pediatricConcerns: Boolean(pediaFlag),
-        pediatricNotes: pediaFlag ? pediaFlag.replace('Pediatric Concerns: ', '').trim() : '',
-        ironDeficiency: flags.includes('Iron-deficiency symptoms'),
-        rapidGrowth: flags.includes('Rapid growth / appetite changes'),
-        menopauseSymptoms: flags.includes('Menopause symptoms'),
-        familyHistoryDisease: flags.includes('Family history: heart/diabetes'),
-        longTermMedication: flags.includes('Diet-affecting long-term medication'),
-      })
+    if (!avatarOverridden) {
+      setAvatarKey(suggestAvatarKey(role, gender, age))
     }
-  }, [member])
+  }, [role, gender, age, avatarOverridden])
 
-  const handleChange = (field, value) => {
-    setForm((f) => ({ ...f, [field]: value }))
+  // Track user edits for unsaved-changes alert
+  const markDirty = () => setIsDirty(true)
+
+  // Computed live Calorie Target (Mifflin-St Jeor Formula)
+  const computedCalories = useMemo(() => {
+    const w = Number(weightKg) || 65
+    const h = Number(heightCm) || 165
+    const a = Number(age) || 30
+    let bmr = 10 * w + 6.25 * h - 5 * a
+    if (gender === 'MALE') bmr += 5
+    else if (gender === 'FEMALE') bmr -= 161
+    else bmr -= 78
+
+    const activity = ACTIVITY_LEVELS.find((al) => al.id === activityLevel) || ACTIVITY_LEVELS[2]
+    const tdee = bmr * activity.factor
+    const goal = GOALS.find((g) => g.id === fitnessGoal) || GOALS[0]
+    let target = Math.round(tdee + goal.delta)
+
+    if (a < 5) target = Math.max(900, target)
+    else target = Math.max(1200, target)
+    return target
+  }, [weightKg, heightCm, age, gender, activityLevel, fitnessGoal])
+
+  // Member object mock for live avatar preview
+  const liveMemberPreview = useMemo(() => ({
+    name: name || 'Preview',
+    role,
+    gender,
+    age,
+    avatarKey,
+  }), [name, role, gender, age, avatarKey])
+
+  // Validation
+  const validateForm = () => {
+    const errs = {}
+    if (!name.trim()) errs.name = 'Full name is required.'
+    else if (name.trim().length < 2) errs.name = 'Name must be at least 2 characters.'
+
+    const numAge = Number(age)
+    if (isNaN(numAge) || numAge < 0 || numAge > 120) {
+      errs.age = 'Age must be between 0 and 120.'
+    }
+
+    const numH = Number(heightCm)
+    if (isNaN(numH) || numH < 30 || numH > 250) {
+      errs.height = 'Height must be between 30 and 250 cm.'
+    }
+
+    const numW = Number(weightKg)
+    if (isNaN(numW) || numW < 2 || numW > 300) {
+      errs.weight = 'Weight must be between 2 and 300 kg.'
+    }
+
+    setErrors(errs)
+    return Object.keys(errs).length === 0
   }
 
-  const toggleCheck = (field, option) => {
-    setForm((f) => {
-      let current = [...(f[field] || [])]
-      if (option === 'None') {
-        current = current.includes('None') ? [] : ['None']
-      } else {
-        current = current.filter((item) => item !== 'None')
-        if (current.includes(option)) {
-          current = current.filter((item) => item !== option)
-        } else {
-          current.push(option)
-        }
+  // Handle Close with dirty check
+  const handleAttemptClose = () => {
+    if (isDirty) {
+      if (window.confirm('You have unsaved changes. Discard and exit?')) {
+        onClose()
       }
-      return { ...f, [field]: current }
+    } else {
+      onClose()
+    }
+  }
+
+  // Keyboard navigation / escape
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        handleAttemptClose()
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [isDirty])
+
+  // Health conditions toggle (Exclusive None logic)
+  const toggleCondition = (condId) => {
+    markDirty()
+    if (condId === 'None') {
+      setHealthConditions(['None'])
+      return
+    }
+    setHealthConditions((prev) => {
+      const withoutNone = prev.filter((c) => c !== 'None')
+      if (withoutNone.includes(condId)) {
+        const next = withoutNone.filter((c) => c !== condId)
+        return next.length === 0 ? ['None'] : next
+      } else {
+        return [...withoutNone, condId]
+      }
     })
   }
 
-  const handleSubmit = async (e) => {
+  // Allergy toggle (Exclusive None logic)
+  const toggleAllergy = (allergyId) => {
+    markDirty()
+    if (allergyId === 'None') {
+      setAllergies(['None'])
+      return
+    }
+    setAllergies((prev) => {
+      const withoutNone = prev.filter((a) => a !== 'None')
+      if (withoutNone.includes(allergyId)) {
+        const next = withoutNone.filter((a) => a !== allergyId)
+        return next.length === 0 ? ['None'] : next
+      } else {
+        return [...withoutNone, allergyId]
+      }
+    })
+  }
+
+  const handleAddOtherAllergy = () => {
+    const trimmed = otherAllergyText.trim()
+    if (!trimmed) return
+    markDirty()
+    setAllergies((prev) => {
+      const withoutNone = prev.filter((a) => a !== 'None')
+      return withoutNone.includes(trimmed) ? withoutNone : [...withoutNone, trimmed]
+    })
+    setOtherAllergyText('')
+    setShowOtherAllergyInput(false)
+  }
+
+  // Save member
+  const handleSave = async (e) => {
     e.preventDefault()
+    if (!validateForm()) {
+      setStep(1)
+      return
+    }
+
     setLoading(true)
-    setError('')
+    const cleanedDislikes = dislikes
+      .split(',')
+      .map((d) => d.trim())
+      .filter(Boolean)
 
-    // Combine standard allergies and free text other allergy
-    const finalAllergies = form.allergies.filter((a) => a !== 'None')
-    if (form.otherAllergy.trim()) {
-      form.otherAllergy
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean)
-        .forEach((a) => {
-          if (!finalAllergies.includes(a)) finalAllergies.push(a)
-        })
-    }
-
-    const finalHealth = form.healthConditions.filter((h) => h !== 'None')
-
-    // Build dynamic dietary flags based on age & gender bracket
-    const age = Number(form.age)
-    const isFemale = form.gender === 'FEMALE'
-    const dietaryFlags = []
-
-    if (age >= 0 && age <= 3 && form.weaningIntolerance) {
-      dietaryFlags.push(
-        form.weaningNotes.trim()
-          ? `Weaning Intolerances: ${form.weaningNotes.trim()}`
-          : 'Weaning Intolerances'
-      )
-    }
-    if (age >= 4 && age <= 12 && form.pediatricConcerns) {
-      dietaryFlags.push(
-        form.pediatricNotes.trim()
-          ? `Pediatric Concerns: ${form.pediatricNotes.trim()}`
-          : 'Pediatric Concerns'
-      )
-    }
-    if (age >= 13 && age <= 19) {
-      if (isFemale && form.ironDeficiency) dietaryFlags.push('Iron-deficiency symptoms')
-      if (form.rapidGrowth) dietaryFlags.push('Rapid growth / appetite changes')
-    }
-    if (age >= 41 && age <= 60) {
-      if (isFemale && form.menopauseSymptoms) dietaryFlags.push('Menopause symptoms')
-      if (form.familyHistoryDisease) dietaryFlags.push('Family history: heart/diabetes')
-    }
-    if (age >= 60 && form.longTermMedication) {
-      dietaryFlags.push('Diet-affecting long-term medication')
-    }
+    const avatarTheme = AVATAR_REGISTRY[avatarKey] || AVATAR_REGISTRY.other
 
     const payload = {
-      name: form.name,
-      role: form.role,
-      gender: form.gender,
-      age,
-      heightCm: Number(form.heightCm),
-      weightKg: Number(form.weightKg),
-      activityLevel: form.activityLevel,
-      healthConditions: finalHealth,
-      allergies: finalAllergies,
-      dietPreference: form.dietPreference,
-      fitnessGoal: form.fitnessGoal,
-      likes: typeof form.likes === 'string' ? form.likes.split(',').map(s => s.trim()).filter(Boolean) : form.likes,
-      dislikes: typeof form.dislikes === 'string' ? form.dislikes.split(',').map(s => s.trim()).filter(Boolean) : form.dislikes,
-
-      // Bracket specific fields
-      isPregnantOrBreastfeeding: age >= 20 && age <= 40 && isFemale ? form.isPregnantOrBreastfeeding : false,
-      hasChewingDifficulty: age >= 60 ? form.hasChewingDifficulty : false,
-      dietaryFlags,
+      ...(member || {}),
+      id: member?.id || member?._id || Date.now(),
+      name: name.trim(),
+      role,
+      gender,
+      age: Number(age),
+      heightCm: Number(heightCm),
+      weightKg: Number(weightKg),
+      activityLevel,
+      isPregnantOrBreastfeeding: gender === 'FEMALE' && Number(age) >= 15 ? isPregnantOrBreastfeeding : false,
+      avatarKey,
+      themeColor: avatarTheme.themeColor,
+      healthConditions: healthConditions.includes('None') && healthConditions.length === 1 ? [] : healthConditions,
+      allergies: allergies.includes('None') && allergies.length === 1 ? [] : allergies,
+      fitnessGoal,
+      dietPreference,
+      dislikes: cleanedDislikes,
+      calorieTarget: computedCalories,
     }
 
     try {
       if (isEdit) {
-        let res = null
-        try {
-          res = await updateMember(member.id, payload)
-        } catch (apiErr) {
-          console.warn('Backend API updateMember unreachable/failed, falling back to local save:', apiErr)
-        }
-        const updated = res?.data && typeof res.data === 'object' ? res.data : { ...payload, id: member.id }
-        updateMemberInContext(updated)
+        updateMemberInContext(payload)
+        setActiveMember(payload)
+        await updateMember(payload.id, payload).catch((err) => {
+          console.warn('Backend update failed, saved locally:', err.message)
+        })
       } else {
-        const familyId = family?.id || Number(localStorage.getItem('familyId')) || 1
-        let res = null
-        try {
-          res = await addMember(familyId, payload)
-        } catch (apiErr) {
-          console.warn('Backend API addMember unreachable/failed, falling back to local save:', apiErr)
-        }
-        const created = res?.data && typeof res.data === 'object' && res.data.id ? res.data : { ...payload, id: Date.now() }
-        addMemberToContext(created)
+        const familyId = family?.id || 1
+        addMemberToContext(payload)
+        setActiveMember(payload)
+        await addMember(familyId, payload).catch((err) => {
+          console.warn('Backend add failed, saved locally:', err.message)
+        })
       }
+
+      if (onSaved) onSaved(payload)
       onClose()
     } catch (err) {
-      console.error('Failed to save family member:', err)
-      const fallbackMember = { ...payload, id: isEdit ? member.id : Date.now() }
-      if (isEdit) updateMemberInContext(fallbackMember)
-      else addMemberToContext(fallbackMember)
+      console.error('Save member error:', err)
       onClose()
     } finally {
       setLoading(false)
     }
   }
 
+  // Delete member
   const handleDelete = async () => {
-    if (!window.confirm(`Are you sure you want to remove ${member.name}?`)) return
+    if (!member?.id) return
     setLoading(true)
     try {
-      await deleteMember(member.id).catch((err) => console.warn('Backend delete unreachable:', err))
       deleteMemberFromContext(member.id)
+      await deleteMember(member.id).catch(() => {})
       onClose()
     } catch (err) {
-      deleteMemberFromContext(member.id)
+      console.error('Delete member error:', err)
       onClose()
     } finally {
       setLoading(false)
     }
   }
 
-  // Render dynamic questions based on current age & gender
-  const ageNum = Number(form.age)
-  const isFemale = form.gender === 'FEMALE'
-
-  const hasDynamicQuestions =
-    (ageNum >= 0 && ageNum <= 3) ||
-    (ageNum >= 4 && ageNum <= 12) ||
-    (ageNum >= 13 && ageNum <= 19) ||
-    (ageNum >= 20 && ageNum <= 40 && isFemale) ||
-    (ageNum >= 41 && ageNum <= 60) ||
-    ageNum >= 60
+  const isFemaleAge15Plus = gender === 'FEMALE' && Number(age) >= 15
 
   return (
     <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        backgroundColor: 'rgba(0,0,0,0.55)',
-        backdropFilter: 'blur(5px)',
-        zIndex: 1000,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '16px',
-      }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="member-modal-title"
+      className="fixed inset-0 z-[3000] flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+      onClick={handleAttemptClose}
     >
       <div
-        className="card animate-scale-in"
-        style={{
-          width: '100%',
-          maxWidth: '460px',
-          padding: '24px',
-          maxHeight: '88vh',
-          overflowY: 'auto',
-        }}
+        className="w-full max-w-3xl max-h-[92vh] sm:max-h-[88vh] bg-white rounded-3xl border-2 border-[#E5E5E5] border-b-6 border-b-[#D8D8D8] shadow-2xl flex flex-col overflow-hidden font-['Nunito',sans-serif] text-[#4B4B4B]"
+        onClick={(e) => e.stopPropagation()}
       >
-        <div className="section-header" style={{ marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <MemberAvatar member={{ age: form.age, gender: form.gender, role: form.role }} size={44} />
-            <h2 className="section-title" style={{ fontSize: 19, margin: 0 }}>
-              {isEdit ? `Edit Profile — ${member.name}` : 'Add Family Member'}
-            </h2>
+        {/* ── STICKY HEADER ── */}
+        <div className="px-6 py-4 bg-[#F8FAFC] border-b-2 border-[#E5E5E5] flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-4">
+            {/* Live Avatar Preview */}
+            <div className="relative group">
+              <MemberAvatar
+                member={liveMemberPreview}
+                size={58}
+                showBorder
+                className="shadow-sm transition-transform duration-200 group-hover:scale-105"
+              />
+              <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#58CC02] border-2 border-white rounded-full flex items-center justify-center text-[10px] text-white font-black">
+                ✓
+              </span>
+            </div>
+
+            <div>
+              <h2 id="member-modal-title" className="text-xl sm:text-2xl font-black text-[#1F2A24] tracking-tight">
+                {isEdit ? `Edit ${member?.name || 'Member'}` : 'Add Family Member'}
+              </h2>
+              <p className="text-xs sm:text-sm font-bold text-[#777777]">
+                {STEPS.find((s) => s.id === step)?.title} &bull; Step {step} of 4
+              </p>
+            </div>
           </div>
-          <button type="button" onClick={onClose} className="btn-ghost" style={{ padding: 4, borderRadius: '50%' }}>
-            ✕
+
+          <button
+            onClick={handleAttemptClose}
+            className="w-10 h-10 rounded-2xl bg-white border-2 border-[#E5E5E5] border-b-4 border-b-[#D0D0D0] hover:bg-[#F7F7F7] active:translate-y-[2px] active:border-b-2 text-[#777777] hover:text-[#1F2A24] flex items-center justify-center font-black transition-all cursor-pointer"
+            aria-label="Close modal"
+          >
+            <X size={20} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          {/* SECTION 1: Basic Info */}
-          <div style={{ background: 'var(--color-surface-2)', padding: 16, borderRadius: 14 }}>
-            <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--color-primary)', marginBottom: 12 }}>
-              1. Basic Info
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Full Name</label>
-              <input
-                className="input"
-                type="text"
-                value={form.name}
-                onChange={(e) => handleChange('name', e.target.value)}
-                placeholder="e.g. Sarah"
-                required
-              />
-            </div>
-
-            <div className="grid-2" style={{ gap: 12 }}>
-              <div className="form-group">
-                <label className="form-label">Role</label>
-                <select
-                  className="input"
-                  value={form.role}
-                  onChange={(e) => handleChange('role', e.target.value)}
-                >
-                  <option value="PARENT">Parent</option>
-                  <option value="CHILD">Child</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Gender</label>
-                <select
-                  className="input"
-                  value={form.gender}
-                  onChange={(e) => handleChange('gender', e.target.value)}
-                >
-                  {GENDERS.map((g) => (
-                    <option key={g.id} value={g.id}>
-                      {g.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div className="grid-2" style={{ gap: 12 }}>
-              <div className="form-group">
-                <label className="form-label">Age (years)</label>
-                <input
-                  className="input"
-                  type="number"
-                  min="0"
-                  max="120"
-                  value={form.age}
-                  onChange={(e) => handleChange('age', e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Height (cm)</label>
-                <input
-                  className="input"
-                  type="number"
-                  min="30"
-                  max="300"
-                  value={form.heightCm}
-                  onChange={(e) => handleChange('heightCm', e.target.value)}
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Weight (kg)</label>
-              <input
-                className="input"
-                type="number"
-                step="0.1"
-                min="1"
-                max="500"
-                value={form.weightKg}
-                onChange={(e) => handleChange('weightKg', e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Activity Level</label>
-              <select
-                className="input"
-                value={form.activityLevel}
-                onChange={(e) => handleChange('activityLevel', e.target.value)}
-              >
-                {ACTIVITY_LEVELS.map((act) => (
-                  <option key={act.id} value={act.id}>
-                    {act.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+        {/* ── PROGRESS STEPPER ── */}
+        <div className="px-6 pt-3 pb-2 bg-[#FAFAF8] border-b border-[#EBEBEB] shrink-0">
+          {/* 16px Chunky Progress Bar with Glossy Highlight */}
+          <div className="duo-progress-track mb-3">
+            <div
+              className="duo-progress-fill bg-[#58CC02]"
+              style={{ width: `${(step / 4) * 100}%` }}
+            />
           </div>
 
-          {/* DYNAMIC DEMOGRAPHIC FOLLOW-UP QUESTIONS (Reactive based on Age + Gender) */}
-          {hasDynamicQuestions && (
-            <div
-              style={{
-                background: 'linear-gradient(135deg, #e8f5e9 0%, #f0ede8 100%)',
-                border: '1.5px solid var(--color-primary-light)',
-                padding: 16,
-                borderRadius: 14,
-              }}
-            >
-              <div
-                style={{
-                  fontWeight: 700,
-                  fontSize: 13,
-                  color: 'var(--color-primary-dark)',
-                  marginBottom: 10,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                }}
-              >
-                <span>💡 Demographic Health Questions</span>
+          {/* Stepper Tabs */}
+          <div className="grid grid-cols-4 gap-2">
+            {STEPS.map((s) => {
+              const isCurrent = step === s.id
+              const isComplete = step > s.id
+              return (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setStep(s.id)}
+                  className={`py-2 px-1 text-center font-extrabold text-xs sm:text-sm rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                    isCurrent
+                      ? 'bg-[#58CC02] text-white shadow-sm'
+                      : isComplete
+                      ? 'bg-[#EAF9DE] text-[#58A700] hover:bg-[#DCF5CA]'
+                      : 'bg-white text-[#8A8A8A] hover:bg-[#F5F5F5] border border-[#E5E5E5]'
+                  }`}
+                >
+                  <span className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-black bg-black/10">
+                    {isComplete ? '✓' : s.id}
+                  </span>
+                  <span className="hidden sm:inline">{s.title}</span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* ── SCROLLABLE MODAL BODY ── */}
+        <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+          {/* ════════ STEP 1: BASICS ════════ */}
+          {step === 1 && (
+            <div className="space-y-6">
+              {/* Avatar Selector Carousel */}
+              <div>
+                <label className="block text-xs font-black uppercase tracking-wider text-[#777777] mb-2.5">
+                  Choose Character Bust
+                </label>
+                <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
+                  {AVATAR_KEYS.map((key) => {
+                    const isSelected = avatarKey === key
+                    const meta = AVATAR_REGISTRY[key]
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => {
+                          setAvatarKey(key)
+                          setAvatarOverridden(true)
+                          markDirty()
+                        }}
+                        className={`flex flex-col items-center p-2 rounded-2xl border-2 transition-all cursor-pointer shrink-0 ${
+                          isSelected
+                            ? 'border-[#58CC02] border-b-4 border-b-[#58A700] bg-[#EAF9DE] scale-105 shadow-sm'
+                            : 'border-[#E5E5E5] border-b-4 border-b-[#D8D8D8] bg-white hover:bg-[#F9F9F9]'
+                        }`}
+                        style={{ width: '84px' }}
+                      >
+                        <div className="w-14 h-14 rounded-full overflow-hidden bg-white mb-1.5 shadow-xs">
+                          <img src={meta.src} alt={meta.label} className="w-full h-full object-cover" />
+                        </div>
+                        <span className={`text-[11px] font-extrabold text-center leading-tight ${isSelected ? 'text-[#3E7D00]' : 'text-[#666666]'}`}>
+                          {meta.label.split('/')[0]}
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
               </div>
 
-              {/* Infants/Toddlers (0-3) */}
-              {ageNum >= 0 && ageNum <= 3 && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  <label className="form-label" style={{ fontSize: 13 }}>
-                    Any known food intolerances during weaning?
+              {/* Full Name Input */}
+              <div>
+                <label htmlFor="member-name-input" className="block text-xs font-black uppercase tracking-wider text-[#777777] mb-1.5">
+                  Full Name <span className="text-[#FF4B4B]">*</span>
+                </label>
+                <input
+                  id="member-name-input"
+                  type="text"
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value)
+                    markDirty()
+                    if (errors.name) setErrors((prev) => ({ ...prev, name: null }))
+                  }}
+                  placeholder="e.g. Anand, Meera, Priya"
+                  className={`w-full h-12 px-4 rounded-xl border-2 text-base font-bold bg-[#FAF9F5] focus:bg-white outline-none transition-all ${
+                    errors.name
+                      ? 'border-[#FF4B4B] ring-2 ring-[#FF4B4B]/20'
+                      : 'border-[#E5E5E5] focus:border-[#58CC02] focus:ring-4 focus:ring-[#58CC02]/20'
+                  }`}
+                />
+                {errors.name && (
+                  <p role="alert" className="mt-1 text-xs font-bold text-[#FF4B4B] flex items-center gap-1">
+                    <AlertCircle size={13} />
+                    <span>{errors.name}</span>
+                  </p>
+                )}
+              </div>
+
+              {/* Role Chip Selector */}
+              <div>
+                <label className="block text-xs font-black uppercase tracking-wider text-[#777777] mb-2">
+                  Family Role
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {ROLES.map((r) => {
+                    const isSelected = role === r.id
+                    return (
+                      <button
+                        key={r.id}
+                        type="button"
+                        onClick={() => {
+                          setRole(r.id)
+                          markDirty()
+                        }}
+                        className={`duo-chip ${
+                          isSelected
+                            ? 'bg-[#58CC02] border-[#58A700] text-white shadow-xs'
+                            : 'bg-white border-[#E5E5E5] border-b-[#D0D0D0] text-[#4B4B4B] hover:bg-[#F7F7F7]'
+                        }`}
+                      >
+                        {r.label}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Gender Segmented Control */}
+              <div>
+                <label className="block text-xs font-black uppercase tracking-wider text-[#777777] mb-2">
+                  Gender
+                </label>
+                <div className="grid grid-cols-3 gap-2 p-1.5 bg-[#F0F0F0] rounded-2xl border-2 border-[#E5E5E5]">
+                  {GENDERS.map((g) => {
+                    const isSelected = gender === g.id
+                    return (
+                      <button
+                        key={g.id}
+                        type="button"
+                        onClick={() => {
+                          setGender(g.id)
+                          markDirty()
+                        }}
+                        className={`py-2 text-center text-sm font-extrabold rounded-xl transition-all cursor-pointer ${
+                          isSelected
+                            ? 'bg-white text-[#1F2A24] shadow-xs border-2 border-[#E5E5E5] border-b-4 border-b-[#CCCCCC]'
+                            : 'text-[#777777] hover:text-[#1F2A24]'
+                        }`}
+                      >
+                        {g.label}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Age, Height, Weight Stepper Inputs */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {/* Age */}
+                <div className="p-3.5 bg-[#FAFAF8] rounded-2xl border-2 border-[#E5E5E5]">
+                  <label htmlFor="member-age-input" className="block text-[11px] font-black uppercase tracking-wider text-[#777777] mb-1">
+                    Age (Years)
                   </label>
-                  <div className="toggle-tabs">
+                  <div className="flex items-center justify-between gap-2 mt-1">
                     <button
                       type="button"
-                      className={`toggle-tab ${form.weaningIntolerance ? 'active' : ''}`}
-                      onClick={() => handleChange('weaningIntolerance', true)}
+                      onClick={() => { setAge((a) => Math.max(0, a - 1)); markDirty() }}
+                      className="w-9 h-9 rounded-xl bg-white border-2 border-[#E5E5E5] border-b-4 border-b-[#D0D0D0] active:translate-y-[1px] active:border-b-2 font-black flex items-center justify-center text-[#58CC02] cursor-pointer"
                     >
-                      Yes
+                      <Minus size={15} />
                     </button>
-                    <button
-                      type="button"
-                      className={`toggle-tab ${!form.weaningIntolerance ? 'active' : ''}`}
-                      onClick={() => handleChange('weaningIntolerance', false)}
-                    >
-                      No
-                    </button>
-                  </div>
-                  {form.weaningIntolerance && (
                     <input
-                      className="input"
-                      type="text"
-                      placeholder="Specify intolerances (e.g. cow's milk, soy)"
-                      value={form.weaningNotes}
-                      onChange={(e) => handleChange('weaningNotes', e.target.value)}
+                      id="member-age-input"
+                      type="number"
+                      value={age}
+                      onChange={(e) => { setAge(Math.max(0, parseInt(e.target.value) || 0)); markDirty() }}
+                      className="w-16 text-center text-lg font-black bg-transparent outline-none"
                     />
-                  )}
-                </div>
-              )}
-
-              {/* Children (4-12) */}
-              {ageNum >= 4 && ageNum <= 12 && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  <label className="form-label" style={{ fontSize: 13 }}>
-                    Any growth or nutrition concerns flagged by a pediatrician?
-                  </label>
-                  <div className="toggle-tabs">
                     <button
                       type="button"
-                      className={`toggle-tab ${form.pediatricConcerns ? 'active' : ''}`}
-                      onClick={() => handleChange('pediatricConcerns', true)}
+                      onClick={() => { setAge((a) => Math.min(120, a + 1)); markDirty() }}
+                      className="w-9 h-9 rounded-xl bg-white border-2 border-[#E5E5E5] border-b-4 border-b-[#D0D0D0] active:translate-y-[1px] active:border-b-2 font-black flex items-center justify-center text-[#58CC02] cursor-pointer"
                     >
-                      Yes
-                    </button>
-                    <button
-                      type="button"
-                      className={`toggle-tab ${!form.pediatricConcerns ? 'active' : ''}`}
-                      onClick={() => handleChange('pediatricConcerns', false)}
-                    >
-                      No
+                      <Plus size={15} />
                     </button>
                   </div>
-                  {form.pediatricConcerns && (
+                  {errors.age && <p className="text-[10px] text-[#FF4B4B] mt-1 font-bold">{errors.age}</p>}
+                </div>
+
+                {/* Height */}
+                <div className="p-3.5 bg-[#FAFAF8] rounded-2xl border-2 border-[#E5E5E5]">
+                  <label htmlFor="member-height-input" className="block text-[11px] font-black uppercase tracking-wider text-[#777777] mb-1">
+                    Height (cm)
+                  </label>
+                  <div className="flex items-center justify-between gap-2 mt-1">
+                    <button
+                      type="button"
+                      onClick={() => { setHeightCm((h) => Math.max(30, h - 1)); markDirty() }}
+                      className="w-9 h-9 rounded-xl bg-white border-2 border-[#E5E5E5] border-b-4 border-b-[#D0D0D0] active:translate-y-[1px] active:border-b-2 font-black flex items-center justify-center text-[#1CB0F6] cursor-pointer"
+                    >
+                      <Minus size={15} />
+                    </button>
                     <input
-                      className="input"
-                      type="text"
-                      placeholder="Specify pediatrician concerns (e.g. low iron, weight pick-up)"
-                      value={form.pediatricNotes}
-                      onChange={(e) => handleChange('pediatricNotes', e.target.value)}
+                      id="member-height-input"
+                      type="number"
+                      value={heightCm}
+                      onChange={(e) => { setHeightCm(parseInt(e.target.value) || 160); markDirty() }}
+                      className="w-16 text-center text-lg font-black bg-transparent outline-none"
                     />
-                  )}
-                </div>
-              )}
-
-              {/* Teens (13-19) */}
-              {ageNum >= 13 && ageNum <= 19 && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                  {isFemale && (
-                    <div>
-                      <label className="form-label" style={{ fontSize: 13, marginBottom: 6 }}>
-                        Do you experience iron-deficiency symptoms (fatigue, dizziness)?
-                      </label>
-                      <div className="toggle-tabs">
-                        <button
-                          type="button"
-                          className={`toggle-tab ${form.ironDeficiency ? 'active' : ''}`}
-                          onClick={() => handleChange('ironDeficiency', true)}
-                        >
-                          Yes
-                        </button>
-                        <button
-                          type="button"
-                          className={`toggle-tab ${!form.ironDeficiency ? 'active' : ''}`}
-                          onClick={() => handleChange('ironDeficiency', false)}
-                        >
-                          No
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  <div>
-                    <label className="form-label" style={{ fontSize: 13, marginBottom: 6 }}>
-                      Any concerns with rapid growth or appetite changes?
-                    </label>
-                    <div className="toggle-tabs">
-                      <button
-                        type="button"
-                        className={`toggle-tab ${form.rapidGrowth ? 'active' : ''}`}
-                        onClick={() => handleChange('rapidGrowth', true)}
-                      >
-                        Yes
-                      </button>
-                      <button
-                        type="button"
-                        className={`toggle-tab ${!form.rapidGrowth ? 'active' : ''}`}
-                        onClick={() => handleChange('rapidGrowth', false)}
-                      >
-                        No
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Adults (20-40, Female) */}
-              {ageNum >= 20 && ageNum <= 40 && isFemale && (
-                <div>
-                  <label className="form-label" style={{ fontSize: 13, marginBottom: 6 }}>
-                    Are you currently pregnant or breastfeeding?
-                  </label>
-                  <div className="toggle-tabs">
                     <button
                       type="button"
-                      className={`toggle-tab ${form.isPregnantOrBreastfeeding ? 'active' : ''}`}
-                      onClick={() => handleChange('isPregnantOrBreastfeeding', true)}
+                      onClick={() => { setHeightCm((h) => Math.min(250, h + 1)); markDirty() }}
+                      className="w-9 h-9 rounded-xl bg-white border-2 border-[#E5E5E5] border-b-4 border-b-[#D0D0D0] active:translate-y-[1px] active:border-b-2 font-black flex items-center justify-center text-[#1CB0F6] cursor-pointer"
+                    >
+                      <Plus size={15} />
+                    </button>
+                  </div>
+                  {errors.height && <p className="text-[10px] text-[#FF4B4B] mt-1 font-bold">{errors.height}</p>}
+                </div>
+
+                {/* Weight */}
+                <div className="p-3.5 bg-[#FAFAF8] rounded-2xl border-2 border-[#E5E5E5]">
+                  <label htmlFor="member-weight-input" className="block text-[11px] font-black uppercase tracking-wider text-[#777777] mb-1">
+                    Weight (kg)
+                  </label>
+                  <div className="flex items-center justify-between gap-2 mt-1">
+                    <button
+                      type="button"
+                      onClick={() => { setWeightKg((w) => Math.max(2, w - 1)); markDirty() }}
+                      className="w-9 h-9 rounded-xl bg-white border-2 border-[#E5E5E5] border-b-4 border-b-[#D0D0D0] active:translate-y-[1px] active:border-b-2 font-black flex items-center justify-center text-[#FF9600] cursor-pointer"
+                    >
+                      <Minus size={15} />
+                    </button>
+                    <input
+                      id="member-weight-input"
+                      type="number"
+                      value={weightKg}
+                      onChange={(e) => { setWeightKg(parseInt(e.target.value) || 60); markDirty() }}
+                      className="w-16 text-center text-lg font-black bg-transparent outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => { setWeightKg((w) => Math.min(300, w + 1)); markDirty() }}
+                      className="w-9 h-9 rounded-xl bg-white border-2 border-[#E5E5E5] border-b-4 border-b-[#D0D0D0] active:translate-y-[1px] active:border-b-2 font-black flex items-center justify-center text-[#FF9600] cursor-pointer"
+                    >
+                      <Plus size={15} />
+                    </button>
+                  </div>
+                  {errors.weight && <p className="text-[10px] text-[#FF4B4B] mt-1 font-bold">{errors.weight}</p>}
+                </div>
+              </div>
+
+              {/* Activity Level Cards */}
+              <div>
+                <label className="block text-xs font-black uppercase tracking-wider text-[#777777] mb-2.5">
+                  Daily Physical Activity Level
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {ACTIVITY_LEVELS.map((lvl) => {
+                    const isSelected = activityLevel === lvl.id
+                    const Icon = lvl.icon
+                    return (
+                      <div
+                        key={lvl.id}
+                        onClick={() => { setActivityLevel(lvl.id); markDirty() }}
+                        className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer flex items-center gap-3.5 ${
+                          isSelected
+                            ? 'border-[#58CC02] border-b-4 border-b-[#58A700] bg-[#EAF9DE]'
+                            : 'border-[#E5E5E5] border-b-4 border-b-[#D8D8D8] bg-white hover:bg-[#FAFAF8]'
+                        }`}
+                      >
+                        <div
+                          className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${
+                            isSelected ? 'bg-[#58CC02] text-white' : 'bg-[#F0F0F0] text-[#777777]'
+                          }`}
+                        >
+                          <Icon size={20} />
+                        </div>
+                        <div>
+                          <div className="text-sm font-extrabold text-[#1F2A24]">{lvl.label}</div>
+                          <div className="text-xs font-semibold text-[#777777]">{lvl.sub}</div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Pregnant/Breastfeeding Toggle (Female 15+ only) */}
+              {isFemaleAge15Plus && (
+                <div className="p-4 bg-[#FDF2F8] rounded-2xl border-2 border-[#FBCFE8] border-b-4 border-b-[#F472B6] flex items-center justify-between">
+                  <div>
+                    <div className="text-sm font-extrabold text-[#9D174D]">Currently Pregnant or Breastfeeding?</div>
+                    <div className="text-xs text-[#BE185D]">Enables Kerala post-partum &amp; lactating nourishment rules.</div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => { setIsPregnantOrBreastfeeding(true); markDirty() }}
+                      className={`px-3.5 py-1.5 rounded-xl font-black text-xs border-2 transition-all cursor-pointer ${
+                        isPregnantOrBreastfeeding
+                          ? 'bg-[#DB2777] text-white border-[#BE185D] border-b-4 border-b-[#9D174D]'
+                          : 'bg-white text-[#9D174D] border-[#FBCFE8]'
+                      }`}
                     >
                       Yes
                     </button>
                     <button
                       type="button"
-                      className={`toggle-tab ${!form.isPregnantOrBreastfeeding ? 'active' : ''}`}
-                      onClick={() => handleChange('isPregnantOrBreastfeeding', false)}
+                      onClick={() => { setIsPregnantOrBreastfeeding(false); markDirty() }}
+                      className={`px-3.5 py-1.5 rounded-xl font-black text-xs border-2 transition-all cursor-pointer ${
+                        !isPregnantOrBreastfeeding
+                          ? 'bg-white text-[#4B4B4B] border-[#D0D0D0] border-b-4 border-b-[#AFAFAF]'
+                          : 'bg-white text-[#9D174D] border-[#FBCFE8]'
+                      }`}
                     >
                       No
                     </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Midlife (41-60) */}
-              {ageNum >= 41 && ageNum <= 60 && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                  {isFemale && (
-                    <div>
-                      <label className="form-label" style={{ fontSize: 13, marginBottom: 6 }}>
-                        Are you experiencing menopause-related symptoms?
-                      </label>
-                      <div className="toggle-tabs">
-                        <button
-                          type="button"
-                          className={`toggle-tab ${form.menopauseSymptoms ? 'active' : ''}`}
-                          onClick={() => handleChange('menopauseSymptoms', true)}
-                        >
-                          Yes
-                        </button>
-                        <button
-                          type="button"
-                          className={`toggle-tab ${!form.menopauseSymptoms ? 'active' : ''}`}
-                          onClick={() => handleChange('menopauseSymptoms', false)}
-                        >
-                          No
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  <div>
-                    <label className="form-label" style={{ fontSize: 13, marginBottom: 6 }}>
-                      Family history of heart disease or diabetes?
-                    </label>
-                    <div className="toggle-tabs">
-                      <button
-                        type="button"
-                        className={`toggle-tab ${form.familyHistoryDisease ? 'active' : ''}`}
-                        onClick={() => handleChange('familyHistoryDisease', true)}
-                      >
-                        Yes
-                      </button>
-                      <button
-                        type="button"
-                        className={`toggle-tab ${!form.familyHistoryDisease ? 'active' : ''}`}
-                        onClick={() => handleChange('familyHistoryDisease', false)}
-                      >
-                        No
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Older Adults (60+) */}
-              {ageNum >= 60 && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                  <div>
-                    <label className="form-label" style={{ fontSize: 13, marginBottom: 6 }}>
-                      Any difficulty chewing or swallowing?
-                    </label>
-                    <div className="toggle-tabs">
-                      <button
-                        type="button"
-                        className={`toggle-tab ${form.hasChewingDifficulty ? 'active' : ''}`}
-                        onClick={() => handleChange('hasChewingDifficulty', true)}
-                      >
-                        Yes
-                      </button>
-                      <button
-                        type="button"
-                        className={`toggle-tab ${!form.hasChewingDifficulty ? 'active' : ''}`}
-                        onClick={() => handleChange('hasChewingDifficulty', false)}
-                      >
-                        No
-                      </button>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="form-label" style={{ fontSize: 13, marginBottom: 6 }}>
-                      Are you on any long-term medication that affects diet (e.g. blood thinners, diuretics)?
-                    </label>
-                    <div className="toggle-tabs">
-                      <button
-                        type="button"
-                        className={`toggle-tab ${form.longTermMedication ? 'active' : ''}`}
-                        onClick={() => handleChange('longTermMedication', true)}
-                      >
-                        Yes
-                      </button>
-                      <button
-                        type="button"
-                        className={`toggle-tab ${!form.longTermMedication ? 'active' : ''}`}
-                        onClick={() => handleChange('longTermMedication', false)}
-                      >
-                        No
-                      </button>
-                    </div>
                   </div>
                 </div>
               )}
             </div>
           )}
 
-          {/* SECTION 2: Health Conditions */}
-          <div style={{ background: 'var(--color-surface-2)', padding: 16, borderRadius: 14 }}>
-            <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--color-primary)', marginBottom: 12 }}>
-              2. Health Conditions
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
-              {HEALTH_CONDITION_OPTIONS.map((opt) => {
-                const checked = form.healthConditions.includes(opt)
-                return (
-                  <label
-                    key={opt}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 8,
-                      fontSize: 13,
-                      cursor: 'pointer',
-                      background: checked ? 'var(--color-accent-light)' : 'white',
-                      padding: '8px 10px',
-                      borderRadius: 8,
-                      border: '1px solid var(--color-border)',
-                      transition: 'all 0.15s ease',
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={checked}
-                      onChange={() => toggleCheck('healthConditions', opt)}
-                      style={{ accentColor: 'var(--color-primary)' }}
-                    />
-                    <span>{opt}</span>
-                  </label>
-                )
-              })}
-            </div>
-          </div>
+          {/* ════════ STEP 2: HEALTH CONDITIONS ════════ */}
+          {step === 2 && (
+            <div className="space-y-4">
+              <div className="bg-[#EFF6FF] border-2 border-[#BFDBFE] border-b-4 border-b-[#93C5FD] p-4 rounded-2xl">
+                <h4 className="text-sm font-extrabold text-[#1E40AF] flex items-center gap-1.5">
+                  <Shield size={16} />
+                  Personalized Health Safeguards
+                </h4>
+                <p className="text-xs text-[#3B82F6] font-semibold mt-0.5">
+                  Select any diagnosed medical conditions. FamilyFit will dynamically adjust sodium, carbs, and cholesterol rules.
+                </p>
+              </div>
 
-          {/* SECTION 3: Allergies */}
-          <div style={{ background: 'var(--color-surface-2)', padding: 16, borderRadius: 14 }}>
-            <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--color-primary)', marginBottom: 12 }}>
-              3. Allergies
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10, marginBottom: 12 }}>
-              {ALLERGY_OPTIONS.map((opt) => {
-                const checked = form.allergies.includes(opt)
-                return (
-                  <label
-                    key={opt}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 8,
-                      fontSize: 13,
-                      cursor: 'pointer',
-                      background: checked ? '#fde8e8' : 'white',
-                      padding: '8px 10px',
-                      borderRadius: 8,
-                      border: '1px solid var(--color-border)',
-                      transition: 'all 0.15s ease',
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={checked}
-                      onChange={() => toggleCheck('allergies', opt)}
-                      style={{ accentColor: 'var(--color-error)' }}
-                    />
-                    <span>{opt}</span>
-                  </label>
-                )
-              })}
-            </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                {HEALTH_CONDITIONS.map((cond) => {
+                  const isSelected = healthConditions.includes(cond.id)
+                  const Icon = cond.icon
+                  const isNone = cond.id === 'None'
 
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label" style={{ fontSize: 12 }}>Other Allergies (comma-separated)</label>
-              <input
-                className="input"
-                type="text"
-                value={form.otherAllergy}
-                onChange={(e) => handleChange('otherAllergy', e.target.value)}
-                placeholder="e.g. Sesame, Mustard, Sulfites"
-              />
-            </div>
-          </div>
-
-          {/* SECTION 4: Diet & Goals */}
-          <div style={{ background: 'var(--color-surface-2)', padding: 16, borderRadius: 14 }}>
-            <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--color-primary)', marginBottom: 12 }}>
-              4. Diet Preference & Fitness Goal
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Diet Preference</label>
-              <select
-                className="input"
-                value={form.dietPreference}
-                onChange={(e) => handleChange('dietPreference', e.target.value)}
-              >
-                {DIET_PREFERENCES.map((d) => (
-                  <option key={d.id} value={d.id}>
-                    {d.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Fitness Goal</label>
-              <select
-                className="input"
-                value={form.fitnessGoal}
-                onChange={(e) => handleChange('fitnessGoal', e.target.value)}
-              >
-                {FITNESS_GOALS.map((g) => (
-                  <option key={g.id} value={g.id}>
-                    {g.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label className="form-label" style={{ fontSize: 12 }}>Food Likes (comma-separated)</label>
-              <input
-                className="input"
-                type="text"
-                value={form.likes}
-                onChange={(e) => handleChange('likes', e.target.value)}
-                placeholder="e.g. Salmon, Quinoa, Avocados, Berries"
-              />
-            </div>
-
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label" style={{ fontSize: 12 }}>Food Dislikes (comma-separated)</label>
-              <input
-                className="input"
-                type="text"
-                value={form.dislikes}
-                onChange={(e) => handleChange('dislikes', e.target.value)}
-                placeholder="e.g. Mushrooms, Red Meat, Tofu"
-              />
-            </div>
-          </div>
-
-          {error && (
-            <div
-              style={{
-                background: '#fde8e8',
-                color: 'var(--color-error)',
-                padding: '10px 14px',
-                borderRadius: 10,
-                fontSize: 13,
-              }}
-            >
-              {error}
+                  return (
+                    <button
+                      key={cond.id}
+                      type="button"
+                      onClick={() => toggleCondition(cond.id)}
+                      className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer flex items-center justify-between text-left ${
+                        isSelected
+                          ? isNone
+                            ? 'bg-[#EAF9DE] border-[#58CC02] border-b-4 border-b-[#58A700] text-[#1F2A24]'
+                            : 'bg-[#FEF3C7] border-[#F59E0B] border-b-4 border-b-[#D97706] text-[#78350F]'
+                          : 'bg-white border-[#E5E5E5] border-b-4 border-b-[#D8D8D8] text-[#4B4B4B] hover:bg-[#FAFAF8]'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                            isSelected
+                              ? isNone
+                                ? 'bg-[#58CC02] text-white'
+                                : 'bg-[#F59E0B] text-white'
+                              : 'bg-[#F0F0F0] text-[#777777]'
+                          }`}
+                        >
+                          <Icon size={18} />
+                        </div>
+                        <span className="text-sm font-extrabold">{cond.label}</span>
+                      </div>
+                      <div
+                        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-black ${
+                          isSelected
+                            ? isNone
+                              ? 'bg-[#58CC02] border-[#58A700] text-white'
+                              : 'bg-[#F59E0B] border-[#D97706] text-white'
+                            : 'border-[#CCCCCC] bg-white'
+                        }`}
+                      >
+                        {isSelected && '✓'}
+                      </div>
+                    </button>
+                  )
+                })}
+              </div>
             </div>
           )}
 
-          <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
-            {isEdit && (
+          {/* ════════ STEP 3: ALLERGIES ════════ */}
+          {step === 3 && (
+            <div className="space-y-4">
+              <div className="bg-[#FEF2F2] border-2 border-[#FECACA] border-b-4 border-b-[#F87171] p-4 rounded-2xl">
+                <h4 className="text-sm font-extrabold text-[#991B1B] flex items-center gap-1.5">
+                  <AlertCircle size={16} />
+                  Household Allergy Screening
+                </h4>
+                <p className="text-xs text-[#DC2626] font-semibold mt-0.5">
+                  Any conflicting ingredients will be prominently marked in red and excluded from daily meal suggestions.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                {ALLERGIES.map((alg) => {
+                  const isSelected = allergies.includes(alg.id)
+                  const isNone = alg.id === 'None'
+
+                  return (
+                    <button
+                      key={alg.id}
+                      type="button"
+                      onClick={() => toggleAllergy(alg.id)}
+                      className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer flex items-center justify-between text-left ${
+                        isSelected
+                          ? isNone
+                            ? 'bg-[#EAF9DE] border-[#58CC02] border-b-4 border-b-[#58A700] text-[#1F2A24]'
+                            : 'bg-[#FEE2E2] border-[#EF4444] border-b-4 border-b-[#DC2626] text-[#991B1B]'
+                          : 'bg-white border-[#E5E5E5] border-b-4 border-b-[#D8D8D8] text-[#4B4B4B] hover:bg-[#FAFAF8]'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                            isSelected
+                              ? isNone
+                                ? 'bg-[#58CC02] text-white'
+                                : 'bg-[#EF4444] text-white'
+                              : 'bg-[#F0F0F0] text-[#777777]'
+                          }`}
+                        >
+                          <AlertCircle size={17} />
+                        </div>
+                        <span className="text-sm font-extrabold">{alg.label}</span>
+                      </div>
+                      <div
+                        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-black ${
+                          isSelected
+                            ? isNone
+                              ? 'bg-[#58CC02] border-[#58A700] text-white'
+                              : 'bg-[#EF4444] border-[#DC2626] text-white'
+                            : 'border-[#CCCCCC] bg-white'
+                        }`}
+                      >
+                        {isSelected && '✓'}
+                      </div>
+                    </button>
+                  )
+                })}
+              </div>
+
+              {/* Custom Other Allergies List & Input */}
+              <div className="pt-2">
+                {allergies.filter((a) => a !== 'None' && !ALLERGIES.some((item) => item.id === a)).length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {allergies
+                      .filter((a) => a !== 'None' && !ALLERGIES.some((item) => item.id === a))
+                      .map((custom) => (
+                        <span
+                          key={custom}
+                          className="px-3 py-1.5 rounded-xl bg-[#FEE2E2] border border-[#EF4444] text-[#991B1B] text-xs font-black flex items-center gap-2"
+                        >
+                          {custom}
+                          <button
+                            type="button"
+                            onClick={() => toggleAllergy(custom)}
+                            className="hover:text-red-900 cursor-pointer font-bold"
+                          >
+                            &times;
+                          </button>
+                        </span>
+                      ))}
+                  </div>
+                )}
+
+                {showOtherAllergyInput ? (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={otherAllergyText}
+                      onChange={(e) => setOtherAllergyText(e.target.value)}
+                      placeholder="e.g. Sesame, Mustard, Brinjal"
+                      className="flex-1 h-11 px-3 rounded-xl border-2 border-[#E5E5E5] focus:border-[#58CC02] outline-none text-sm font-bold"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault()
+                          handleAddOtherAllergy()
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddOtherAllergy}
+                      className="duo-btn duo-btn-primary px-4 py-2 text-xs"
+                    >
+                      Add
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowOtherAllergyInput(false)}
+                      className="duo-btn duo-btn-secondary px-3 py-2 text-xs"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setShowOtherAllergyInput(true)}
+                    className="duo-chip bg-white border-[#E5E5E5] border-b-[#CCCCCC] text-[#58CC02] hover:bg-[#F9F9F9]"
+                  >
+                    <Plus size={14} />
+                    <span>Add other allergy / intolerance</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* ════════ STEP 4: GOAL & PREFERENCES ════════ */}
+          {step === 4 && (
+            <div className="space-y-6">
+              {/* Computed Calorie Target Banner */}
+              <div className="p-4 bg-[#F0FDF4] border-2 border-[#86EFAC] border-b-4 border-b-[#4ADE80] rounded-2xl flex items-center justify-between flex-wrap gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-[#58CC02] text-white flex items-center justify-center font-black text-xl shadow-xs">
+                    🔥
+                  </div>
+                  <div>
+                    <span className="text-xs font-black uppercase tracking-wider text-[#166534]">
+                      Computed Calorie Target
+                    </span>
+                    <div className="text-2xl font-black text-[#14532D]">
+                      {computedCalories} <span className="text-sm font-bold text-[#166534]">kcal / day</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-xs font-bold text-[#166534] bg-white px-3 py-1.5 rounded-xl border border-[#BBF7D0]">
+                  Based on {age} yrs &bull; {heightCm} cm &bull; {weightKg} kg
+                </div>
+              </div>
+
+              {/* Goal Cards */}
+              <div>
+                <label className="block text-xs font-black uppercase tracking-wider text-[#777777] mb-2.5">
+                  Nutritional Goal
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {GOALS.map((g) => {
+                    const isSelected = fitnessGoal === g.id
+                    return (
+                      <div
+                        key={g.id}
+                        onClick={() => { setFitnessGoal(g.id); markDirty() }}
+                        className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer flex items-center justify-between ${
+                          isSelected
+                            ? 'border-[#58CC02] border-b-4 border-b-[#58A700] bg-[#EAF9DE]'
+                            : 'border-[#E5E5E5] border-b-4 border-b-[#D8D8D8] bg-white hover:bg-[#FAFAF8]'
+                        }`}
+                      >
+                        <div>
+                          <div className="text-sm font-extrabold text-[#1F2A24]">{g.label}</div>
+                          <div className="text-xs font-semibold text-[#777777]">{g.sub}</div>
+                        </div>
+                        <div
+                          className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-black ${
+                            isSelected ? 'bg-[#58CC02] border-[#58A700] text-white' : 'border-[#CCCCCC] bg-white'
+                          }`}
+                        >
+                          {isSelected && '✓'}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Dietary Preference Chips */}
+              <div>
+                <label className="block text-xs font-black uppercase tracking-wider text-[#777777] mb-2">
+                  Dietary Category
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {DIET_PREFS.map((dp) => {
+                    const isSelected = dietPreference === dp.id
+                    return (
+                      <button
+                        key={dp.id}
+                        type="button"
+                        onClick={() => { setDietPreference(dp.id); markDirty() }}
+                        className={`duo-chip ${
+                          isSelected
+                            ? 'bg-[#1CB0F6] border-[#1899D6] text-white shadow-xs'
+                            : 'bg-white border-[#E5E5E5] border-b-[#D0D0D0] text-[#4B4B4B] hover:bg-[#F7F7F7]'
+                        }`}
+                      >
+                        {dp.label}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Food Dislikes */}
+              <div>
+                <label htmlFor="member-dislikes-input" className="block text-xs font-black uppercase tracking-wider text-[#777777] mb-1.5">
+                  Food Dislikes (Comma-separated)
+                </label>
+                <input
+                  id="member-dislikes-input"
+                  type="text"
+                  value={dislikes}
+                  onChange={(e) => { setDislikes(e.target.value); markDirty() }}
+                  placeholder="e.g. Bitter gourd (Pavakka), Snake gourd, Okra"
+                  className="w-full h-11 px-3.5 rounded-xl border-2 border-[#E5E5E5] focus:border-[#58CC02] focus:ring-4 focus:ring-[#58CC02]/20 outline-none text-sm font-bold bg-[#FAF9F5] focus:bg-white"
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* ── STICKY FOOTER WITH 3D BUTTONS ── */}
+        <div className="px-6 py-4 bg-[#F8FAFC] border-t-2 border-[#E5E5E5] flex items-center justify-between shrink-0 flex-wrap gap-3">
+          <div>
+            {isEdit && !showDeleteConfirm && (
               <button
                 type="button"
-                className="btn btn-secondary"
-                style={{ color: 'var(--color-error)' }}
-                onClick={handleDelete}
-                disabled={loading}
+                onClick={() => setShowDeleteConfirm(true)}
+                className="duo-btn duo-btn-danger text-xs px-3.5 py-2.5"
               >
-                Delete
+                <Trash2 size={15} />
+                <span>Remove</span>
               </button>
             )}
-            <button
-              type="submit"
-              className="btn btn-primary"
-              style={{ flex: 1, padding: 14 }}
-              disabled={loading}
-            >
-              {loading ? 'Saving...' : isEdit ? 'Save Changes' : 'Add Member'}
-            </button>
+
+            {isEdit && showDeleteConfirm && (
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-extrabold text-[#DC2626]">Sure?</span>
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  disabled={loading}
+                  className="duo-btn duo-btn-danger text-xs px-3 py-1.5"
+                >
+                  Confirm Delete
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteConfirm(false)}
+                  className="duo-btn duo-btn-secondary text-xs px-2.5 py-1.5"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
           </div>
-        </form>
+
+          <div className="flex items-center gap-3 ml-auto">
+            {step > 1 && (
+              <button
+                type="button"
+                onClick={() => setStep((s) => Math.max(1, s - 1))}
+                className="duo-btn duo-btn-secondary text-xs px-4 py-2.5"
+              >
+                Back
+              </button>
+            )}
+
+            {step < 4 ? (
+              <button
+                type="button"
+                onClick={() => {
+                  if (step === 1 && !validateForm()) return
+                  setStep((s) => Math.min(4, s + 1))
+                }}
+                className="duo-btn duo-btn-primary px-6 py-2.5"
+              >
+                Continue &rarr;
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={handleSave}
+                disabled={loading || (name.trim().length === 0)}
+                className="duo-btn duo-btn-primary px-8 py-2.5"
+              >
+                {loading ? 'Saving...' : isEdit ? 'Save Changes' : 'Save Member'}
+              </button>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   )

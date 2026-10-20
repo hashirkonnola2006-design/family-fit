@@ -10,12 +10,10 @@ import MemberModal from '../components/MemberModal'
 import GreetingHeader from '../components/dashboard/GreetingHeader'
 import FamilyStrip from '../components/dashboard/FamilyStrip'
 import TodayMeals from '../components/dashboard/TodayMeals'
-import NutritionSummary from '../components/dashboard/NutritionSummary'
 import HealthAlerts from '../components/dashboard/HealthAlerts'
 import GrocerySnapshot from '../components/dashboard/GrocerySnapshot'
 import TipOfTheDay from '../components/dashboard/TipOfTheDay'
 import QuickActions from '../components/dashboard/QuickActions'
-import ProgressChart from '../components/dashboard/ProgressChart'
 import RecommendedRecipes from '../components/dashboard/RecommendedRecipes'
 import MealSwapModal from '../components/dashboard/MealSwapModal'
 import WeightLogModal from '../components/dashboard/WeightLogModal'
@@ -244,16 +242,6 @@ export default function HomePage() {
             />
           </div>
 
-          {/* 5. NUTRITION TODAY (4 columns desktop, 6 tablet, order-5 mobile) */}
-          <div className="dashboard-card-nutrition">
-            <NutritionSummary
-              mealPlan={mealPlan}
-              selectedMember={selectedMember}
-              waterGlasses={waterGlasses}
-              onUpdateWater={handleUpdateWater}
-            />
-          </div>
-
           {/* 6. GROCERY SNAPSHOT (4 columns desktop, 6 tablet, order-6 mobile) */}
           <div className="dashboard-card-grocery">
             <GrocerySnapshot />
@@ -264,18 +252,10 @@ export default function HomePage() {
             <TipOfTheDay selectedMember={selectedMember} />
           </div>
 
-          {/* 8. QUICK ACTIONS (6 columns desktop, 6 tablet, order-8 mobile) */}
-          <div className="dashboard-card-actions">
+          {/* 8. QUICK ACTIONS (full width, order-8 mobile) */}
+          <div className="dashboard-card-actions col-span-full">
             <QuickActions
               onPlanMeal={handlePlanMealClick}
-              onOpenWeightLog={() => setIsWeightModalOpen(true)}
-            />
-          </div>
-
-          {/* 9. PROGRESS (6 columns desktop, 6 tablet, order-9 mobile) */}
-          <div className="dashboard-card-progress">
-            <ProgressChart
-              selectedMember={selectedMember}
               onOpenWeightLog={() => setIsWeightModalOpen(true)}
             />
           </div>

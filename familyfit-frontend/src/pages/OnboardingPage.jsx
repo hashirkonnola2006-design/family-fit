@@ -226,6 +226,7 @@ export default function OnboardingPage() {
 
   return (
     <div
+      className="familyfit-onboarding"
       style={{
         maxWidth: 480,
         margin: '0 auto',

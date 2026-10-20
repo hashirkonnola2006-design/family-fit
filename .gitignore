@@ -45,3 +45,23 @@ logs/
 *.db
 *.mv.db
 *.trace.db
+
+# ─── Temporary test screenshots & renders ───
+familyfit-frontend/public/images/verify_*
+familyfit-frontend/public/images/check_*
+familyfit-frontend/public/images/test_*
+familyfit-frontend/public/images/crop_*
+familyfit-frontend/public/images/rendered_*
+familyfit-frontend/public/images/temp_*
+familyfit-frontend/public/images/face_*
+familyfit-frontend/public/images/ref_*
+familyfit-frontend/public/images/desktop_cleaned_full.png
+familyfit-frontend/public/images/mobile_cleaned_full.png
+familyfit-frontend/public/images/red_mask_desktop.png
+familyfit-frontend/public/images/btn_area.png
+familyfit-frontend/public/images/btn_zoom.png
+familyfit-frontend/public/images/hero_1440_verified.png
+familyfit-frontend/public/images/hero_390_verified.png
+familyfit-frontend/public/images/hero_627_verified.png
+familyfit-frontend/public/images/verified_login_*
+

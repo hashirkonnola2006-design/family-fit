@@ -24,8 +24,8 @@ function evaluateMemberRecipeSuitability(recipe, member) {
 
   // Collect recipe text & ingredient strings for matching
   const recipeName = (recipe?.name || '').toLowerCase()
-  const recipeTags = (recipe?.tags || []).map((t) => t.toLowerCase())
-  const ingredientNames = (recipe?.ingredients || []).map((i) => (i.name || '').toLowerCase()).join(' ')
+  const recipeTags = (recipe?.tags || []).filter((t) => t && typeof t === 'string').map((t) => t.toLowerCase())
+  const ingredientNames = (recipe?.ingredients || []).map((i) => (i?.name || '').toLowerCase()).join(' ')
   const fullRecipeText = `${recipeName} ${recipeTags.join(' ')} ${ingredientNames} ${(recipe?.whyItsGood || '').toLowerCase()}`
 
   // 1. Check if profile has NO health/goal data set
@@ -77,7 +77,7 @@ function evaluateMemberRecipeSuitability(recipe, member) {
   }
 
   // 3. Check Dislikes
-  const dislikeMatch = memberDislikes.find((d) => d.trim() && fullRecipeText.includes(d.toLowerCase()))
+  const dislikeMatch = memberDislikes.find((d) => d && typeof d === 'string' && d.trim() && fullRecipeText.includes(d.toLowerCase()))
   if (dislikeMatch) {
     return {
       isSuitable: false,
@@ -289,7 +289,7 @@ export default function RecipeDetailPage() {
 
   return (
     <div
-      className="page-responsive-container"
+      className="page-responsive-container familyfit-recipe-detail"
       style={{
         background: isDark ? '#0a0f1d' : '#fcfaf5',
         fontFamily: "'Inter', sans-serif",

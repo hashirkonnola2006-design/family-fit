@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "dev": "npm --prefix familyfit-frontend run dev",
+    "build": "npm --prefix familyfit-frontend run build"
+  },
   "dependencies": {
     "cors": "^2.8.6"
   }

@@ -255,14 +255,14 @@ export default function RecipesPage() {
       list = list.filter(r =>
         (r.name || '').toLowerCase().includes(q) ||
         (r.cuisine || '').toLowerCase().includes(q) ||
-        (r.tags || []).some(t => t.toLowerCase().includes(q))
+        (r.tags || []).some(t => t && typeof t === 'string' && t.toLowerCase().includes(q))
       )
     }
     if (activeTab !== 'All' && activeTab !== 'Saved' && activeTab !== 'Quick') {
       list = list.filter(r =>
         (r.cuisine || '').toLowerCase() === activeTab.toLowerCase() ||
         (r.category || '').toLowerCase() === activeTab.toLowerCase() ||
-        r.tags?.some(t => t.toLowerCase().includes(activeTab.toLowerCase()))
+        (r.tags || []).some(t => t && typeof t === 'string' && t.toLowerCase().includes(activeTab.toLowerCase()))
       )
     }
     if (activeTab === 'Quick') list = list.filter(r => (r.prepTimeMinutes || 20) <= 20)
@@ -277,7 +277,7 @@ export default function RecipesPage() {
   const greenLight = isDark ? '#1A2E1A' : '#F0F5EC'
 
   return (
-    <div style={{ minHeight: '100vh', background: bg, fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif", color: textPrimary }}>
+    <div className="recipes-page" style={{ minHeight: '100vh', background: bg, fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif", color: textPrimary }}>
 
       {/* ── HERO BANNER ── */}
       <div style={{

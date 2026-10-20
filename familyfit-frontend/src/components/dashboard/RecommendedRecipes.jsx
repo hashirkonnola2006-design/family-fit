@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Heart, Clock, Flame, Plus, Check, ArrowRight, Sparkles } from 'lucide-react'
 
 // Curated 6 distinct Kerala recipes with unique imagery
@@ -80,29 +80,29 @@ export default function RecommendedRecipes({ onAddDishToPlan }) {
   }
 
   return (
-    <div className="w-full bg-white rounded-3xl p-6 sm:p-7 border border-[#E2DBD0] shadow-sm transition-all">
+    <div className="w-full duo-card p-6 sm:p-7">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-[#EDE8DE]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b-2 border-[#E5E5E5]">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#3F5A3A]">
-              Personalized Nutrition Recommendations
+            <span className="text-[11px] font-black uppercase tracking-wider text-[#AFAFAF]">
+              Personalized Nutrition
             </span>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#EAF5E4] text-[#3F5A3A] font-bold">
-              Tailored for Your Household
+            <span className="text-xs px-3 py-0.5 rounded-full bg-[#58CC02]/15 text-[#58CC02] font-black border border-[#58CC02]/30">
+              Tailored for You
             </span>
           </div>
-          <h2 className="text-xl sm:text-2xl font-extrabold text-[#1F2A24] font-['Plus_Jakarta_Sans'] mt-1">
+          <h2 className="text-xl sm:text-2xl font-black text-[#4B4B4B] mt-1">
             Recommended For You
           </h2>
         </div>
 
         <button
           onClick={() => navigate('/recipes')}
-          className="text-xs sm:text-sm font-bold text-[#3F5A3A] hover:text-[#32492E] flex items-center gap-1 cursor-pointer transition-colors"
+          className="text-xs sm:text-sm font-black text-[#1CB0F6] hover:text-[#1899D6] flex items-center gap-1.5 cursor-pointer transition-colors"
         >
           <span>Explore all 500+ recipes</span>
-          <ArrowRight size={15} />
+          <ArrowRight size={16} strokeWidth={2.5} />
         </button>
       </div>
 
@@ -116,7 +116,7 @@ export default function RecommendedRecipes({ onAddDishToPlan }) {
             <div
               key={dish.id}
               onClick={() => navigate(`/recipes/${dish.id}`)}
-              className="rounded-2xl border border-[#EDE8DE] hover:border-[#3F5A3A]/40 overflow-hidden flex flex-col justify-between hover:shadow-md transition-all duration-300 group cursor-pointer bg-white"
+              className="rounded-2xl border-2 border-[#E5E5E5] border-b-4 border-b-[#D8D8D8] hover:border-[#1CB0F6] overflow-hidden flex flex-col justify-between hover:shadow-md transition-all duration-200 group cursor-pointer bg-white"
             >
               <div>
                 {/* Image Wrap */}
@@ -130,39 +130,39 @@ export default function RecommendedRecipes({ onAddDishToPlan }) {
                   {/* Favorite Toggle Button */}
                   <button
                     onClick={(e) => toggleFav(dish.id, e)}
-                    className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center transition-transform hover:scale-110 cursor-pointer shadow-xs"
+                    className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center transition-transform hover:scale-110 cursor-pointer shadow-xs border border-[#E5E5E5]"
                     title={isFav ? 'Remove from favorites' : 'Save to favorites'}
                   >
                     <Heart
                       size={15}
-                      className={isFav ? 'text-[#EF4444] fill-[#EF4444]' : 'text-[#6B7A70]'}
+                      className={isFav ? 'text-[#FF4B4B] fill-[#FF4B4B]' : 'text-[#AFAFAF]'}
                     />
                   </button>
 
                   {/* Category Tag */}
-                  <div className="absolute bottom-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-xs text-white text-[10px] font-bold">
+                  <div className="absolute bottom-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-[#4B4B4B]/80 backdrop-blur-xs text-white text-[10px] font-black">
                     {dish.tag}
                   </div>
                 </div>
 
                 {/* Details */}
                 <div className="p-3.5">
-                  <h4 className="text-xs sm:text-sm font-bold text-[#1F2A24] font-['Plus_Jakarta_Sans'] line-clamp-1 group-hover:text-[#3F5A3A] transition-colors">
+                  <h4 className="text-xs sm:text-sm font-black text-[#4B4B4B] line-clamp-1 group-hover:text-[#1CB0F6] transition-colors">
                     {dish.name}
                   </h4>
 
-                  <div className="flex items-center justify-between text-xs text-[#6B7A70] mt-2 pb-2.5 border-b border-[#EDE8DE]">
-                    <span className="flex items-center gap-1 font-bold text-[#1F2A24] text-[11px]">
-                      <Flame size={12} className="text-[#F26B3A]" />
+                  <div className="flex items-center justify-between text-xs text-[#AFAFAF] mt-2 pb-2.5 border-b-2 border-[#E5E5E5]">
+                    <span className="flex items-center gap-1 font-black text-[#FF9600] text-[11px]">
+                      <Flame size={13} strokeWidth={2.5} fill="#FF9600" />
                       {dish.kcal} kcal
                     </span>
-                    <span className="flex items-center gap-1 text-[11px]">
-                      <Clock size={12} />
+                    <span className="flex items-center gap-1 text-[11px] font-bold text-[#AFAFAF]">
+                      <Clock size={12} strokeWidth={2.5} />
                       {dish.cookTimeMinutes}m
                     </span>
                   </div>
 
-                  <p className="text-[11px] text-[#6B7A70] mt-2 line-clamp-2 leading-relaxed">
+                  <p className="text-[11px] text-[#AFAFAF] font-bold mt-2 line-clamp-2 leading-relaxed">
                     {dish.whyRecommended}
                   </p>
                 </div>
@@ -173,20 +173,20 @@ export default function RecommendedRecipes({ onAddDishToPlan }) {
                 <button
                   onClick={(e) => handleAdd(dish, e)}
                   disabled={isAdded}
-                  className={`w-full h-8 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                  className={`w-full h-9 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer border-2 ${
                     isAdded
-                      ? 'bg-[#EAF5E4] text-[#2E7D32]'
-                      : 'border border-[#DCD5C8] hover:border-[#3F5A3A] hover:bg-[#3F5A3A] hover:text-white text-[#1F2A24]'
+                      ? 'bg-[#58CC02] border-[#58A700] text-white'
+                      : 'bg-white border-[#E5E5E5] border-b-4 border-b-[#D8D8D8] text-[#4B4B4B] hover:bg-[#F7F7F7] active:translate-y-[2px] active:border-b-2'
                   }`}
                 >
                   {isAdded ? (
                     <>
-                      <Check size={13} />
+                      <Check size={14} strokeWidth={3} />
                       <span>Added!</span>
                     </>
                   ) : (
                     <>
-                      <Plus size={13} />
+                      <Plus size={14} strokeWidth={3} />
                       <span>+ Add to plan</span>
                     </>
                   )}

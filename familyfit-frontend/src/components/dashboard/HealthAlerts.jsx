@@ -1,25 +1,26 @@
-import { ShieldCheck, AlertTriangle, ArrowRight, CheckCircle2, Sparkles } from 'lucide-react'
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { ShieldCheck, AlertTriangle, ArrowRight, Check } from 'lucide-react'
 
 export default function HealthAlerts({
   familyMembers = [],
   mealPlan = {},
   onFixConflict,
 }) {
-  // Collect all family members with registered allergies
-  const membersWithAllergies = familyMembers.filter((m) => {
-    if (!m.allergies) return false
+  const membersWithAllergies = (familyMembers || []).filter((m) => {
+    if (!m || !m.allergies) return false
     if (Array.isArray(m.allergies) && m.allergies.length > 0 && m.allergies[0] !== 'None') return true
     if (typeof m.allergies === 'string' && m.allergies.trim().length > 0 && m.allergies.toLowerCase() !== 'none') return true
     return false
   })
 
-  // Detect any meal in today's plan that triggers a conflict
+  // Detect conflicts with today's meals
   const detectedConflicts = []
-  const mealsList = Object.entries(mealPlan)
+  const mealsList = Object.entries(mealPlan || {})
 
   mealsList.forEach(([slotKey, dish]) => {
     if (!dish || !dish.allergies || !Array.isArray(dish.allergies)) return
-    familyMembers.forEach((member) => {
+    ;(familyMembers || []).forEach((member) => {
       let mAllergies = []
       if (Array.isArray(member.allergies)) mAllergies = member.allergies
       else if (typeof member.allergies === 'string') mAllergies = member.allergies.split(',').map((s) => s.trim())
@@ -46,112 +47,94 @@ export default function HealthAlerts({
   const hasConflicts = detectedConflicts.length > 0
 
   return (
-    <div
-      className={`rounded-3xl p-6 border transition-all flex flex-col justify-between ${
-        hasConflicts
-          ? 'bg-[#FEF2F2] border-[#FCA5A5] shadow-xs'
-          : 'bg-[#F0FDF4] border-[#BBF7D0] shadow-xs'
-      }`}
-    >
+    <div className="duo-card p-5 sm:p-6 flex flex-col justify-between font-['Nunito',sans-serif] h-full">
       <div>
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-black/5">
-          <div className="flex items-center gap-2">
-            {hasConflicts ? (
-              <div className="w-7 h-7 rounded-lg bg-[#D64545] text-white flex items-center justify-center">
-                <AlertTriangle size={15} />
-              </div>
-            ) : (
-              <div className="w-7 h-7 rounded-lg bg-[#2E7D32] text-white flex items-center justify-center">
-                <ShieldCheck size={16} />
-              </div>
-            )}
+        <div className="flex items-center justify-between pb-3.5 border-b-2 border-[#F0F0F0]">
+          <div className="flex items-center gap-2.5">
+            <div
+              className={`w-9 h-9 rounded-xl flex items-center justify-center font-black ${
+                hasConflicts ? 'bg-[#FEE2E2] text-[#FF4B4B]' : 'bg-[#EAF9DE] text-[#58CC02]'
+              }`}
+            >
+              {hasConflicts ? <AlertTriangle size={18} /> : <ShieldCheck size={20} />}
+            </div>
             <div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#6B7A70]">
-                Allergy &amp; Health Shield
+              <span className="text-[11px] font-black uppercase tracking-wider text-[#777777]">
+                Safety Screen
               </span>
-              <h3 className="text-base font-extrabold text-[#1F2A24] font-['Plus_Jakarta_Sans'] leading-tight">
-                {hasConflicts ? 'Things to Watch Today' : 'All Clear & Safe'}
+              <h3 className="text-base font-black text-[#1F2A24] leading-tight">
+                Allergy Shield
               </h3>
             </div>
           </div>
 
           <span
-            className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+            className={`text-xs font-black px-2.5 py-0.5 rounded-full border ${
               hasConflicts
-                ? 'bg-[#FEE2E2] text-[#B91C1C]'
-                : 'bg-[#DCFCE7] text-[#15803D]'
+                ? 'bg-[#FEE2E2] text-[#DC2626] border-[#FECACA]'
+                : 'bg-[#EAF9DE] text-[#3E7D00] border-[#D5F0C2]'
             }`}
           >
-            {hasConflicts ? `${detectedConflicts.length} Conflict` : 'Zero Conflicts'}
+            {hasConflicts ? `${detectedConflicts.length} Alert` : '100% Safe'}
           </span>
         </div>
 
-        {/* Content Body */}
+        {/* Body */}
         <div className="pt-4 space-y-3">
           {hasConflicts ? (
-            detectedConflicts.map((conf, idx) => (
+            detectedConflicts.slice(0, 2).map((conf, idx) => (
               <div
                 key={idx}
-                className="p-3.5 rounded-2xl bg-white border border-[#FECACA] shadow-2xs space-y-2"
+                className="p-3 rounded-2xl bg-[#FEF2F2] border-2 border-[#FECACA] border-b-4 border-b-[#FCA5A5] space-y-2"
               >
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <div className="text-xs font-extrabold text-[#991B1B]">
-                      {conf.slotKey.toUpperCase()}: {conf.dishName}
-                    </div>
-                    <p className="text-xs text-[#7F1D1D] mt-0.5">
-                      Contains <strong className="font-bold underline">{conf.allergen}</strong> — unsafe for <strong>{conf.memberName}</strong>.
-                    </p>
-                  </div>
+                <div className="text-xs font-black text-[#991B1B]">
+                  {conf.dishName} &bull; {conf.allergen}
                 </div>
-
-                <button
-                  onClick={() => onFixConflict(conf.slotKey)}
-                  className="w-full h-8 rounded-xl bg-[#D64545] hover:bg-[#B91C1C] text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-2xs"
-                >
-                  <Sparkles size={13} />
-                  <span>Fix it with an allergy-safe swap</span>
-                  <ArrowRight size={13} />
-                </button>
+                <div className="text-[11px] font-bold text-[#DC2626]">
+                  Conflict with {conf.memberName}'s profile
+                </div>
+                {onFixConflict && (
+                  <button
+                    type="button"
+                    onClick={() => onFixConflict(conf.slotKey)}
+                    className="duo-btn duo-btn-danger text-xs py-1.5 px-3 w-full"
+                  >
+                    Swap {conf.slotKey}
+                  </button>
+                )}
               </div>
             ))
           ) : (
-            <div className="p-4 rounded-2xl bg-white/80 border border-[#86EFAC] text-left space-y-2">
-              <div className="flex items-center gap-2 text-[#15803D] font-bold text-sm">
-                <CheckCircle2 size={18} />
-                <span>All meals are safe for your family today</span>
+            <div className="space-y-2.5">
+              <div className="p-3 rounded-2xl bg-[#EAF9DE]/60 border-2 border-[#D5F0C2] flex items-center gap-2.5">
+                <div className="w-5 h-5 rounded-full bg-[#58CC02] text-white flex items-center justify-center shrink-0">
+                  <Check size={12} strokeWidth={3} />
+                </div>
+                <span className="text-xs font-black text-[#2E7D32]">
+                  No allergen conflicts in today's menu
+                </span>
               </div>
-              <p className="text-xs text-[#166534] leading-relaxed">
-                Zero conflicting ingredients detected across Breakfast, Lunch, Snack, and Dinner for all {familyMembers.length} family profiles.
+
+              <p className="text-xs font-bold text-[#666666] leading-relaxed">
+                {membersWithAllergies.length > 0
+                  ? `Active screening on for ${membersWithAllergies.map((m) => m.name).join(', ')}.`
+                  : 'All recipes meet safety guidelines for children and seniors.'}
               </p>
             </div>
           )}
-
-          {/* Member Allergy Summary Chips */}
-          {membersWithAllergies.length > 0 && (
-            <div className="pt-1">
-              <div className="text-[11px] font-bold text-[#6B7A70] uppercase tracking-wider mb-1.5">
-                Household Allergies Monitored
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {membersWithAllergies.map((m) => {
-                  const allergyList = Array.isArray(m.allergies)
-                    ? m.allergies.join(', ')
-                    : m.allergies
-                  return (
-                    <span
-                      key={m.id}
-                      className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-white border border-[#E2DBD0] text-[#1F2A24]"
-                    >
-                      <strong>{m.name}:</strong> {allergyList}
-                    </span>
-                  )
-                })}
-              </div>
-            </div>
-          )}
         </div>
+      </div>
+
+      {/* Footer link */}
+      <div className="pt-3.5 mt-4 border-t-2 border-[#F0F0F0]">
+        <Link
+          to="/tips"
+          className="text-xs font-black text-[#58A700] hover:text-[#46A302] flex items-center justify-between group"
+        >
+          <span>View Allergen Safety Advisory</span>
+          <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+        </Link>
       </div>
     </div>
   )
