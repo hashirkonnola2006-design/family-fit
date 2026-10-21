@@ -1,0 +1,22 @@
+name: Render Backend 24/7 Keep-Alive
+
+on:
+  schedule:
+    # Runs every 12 minutes to prevent Render free instance from sleeping (15 min idle timeout)
+    - cron: '*/12 * * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+jobs:
+  ping-render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render Healthz Endpoint
+        run: |
+          echo "Pinging FamilyFit backend on Render to keep instance warm..."
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "https://family-fit.onrender.com/healthz")
+          echo "Render response status: $HTTP_STATUS"
+          if [ "$HTTP_STATUS" -eq 200 ] || [ "$HTTP_STATUS" -eq 204 ]; then
+            echo "Backend is warm and responsive!"
+          else
+            echo "Backend is waking up or returned $HTTP_STATUS"
+          fi
