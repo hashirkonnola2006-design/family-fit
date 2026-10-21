@@ -121,7 +121,11 @@ export function saveStoredAccessToken(token) {
 }
 
 export function clearAllStoredAuth() {
-  ['accessToken', 'refreshToken', 'familyId', 'email', 'familyName'].forEach((k) => {
+  const familyId = localStorage.getItem('familyId') || sessionStorage.getItem('familyId')
+  if (familyId) {
+    localStorage.removeItem(`familyfit_grocery_cart_${familyId}`)
+  }
+  ['accessToken', 'refreshToken', 'familyId', 'email', 'familyName', 'familyfit_grocery_cart'].forEach((k) => {
     localStorage.removeItem(k)
     sessionStorage.removeItem(k)
   })

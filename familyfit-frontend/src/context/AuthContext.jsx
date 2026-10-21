@@ -154,6 +154,9 @@ export function AuthProvider({ children }) {
     }
 
     clearFamilyCache()
+    try {
+      localStorage.removeItem('familyfit_grocery_cart')
+    } catch {}
 
     try {
       const res = await apiRegister({ familyName, email: cleanEmail, password })

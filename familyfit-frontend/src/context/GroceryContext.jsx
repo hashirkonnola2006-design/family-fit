@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
+import { useAuth } from './AuthContext'
 
 const GroceryContext = createContext(null)
 
@@ -510,6 +511,10 @@ export const KERALA_GROCERY_DATASET = [
 ]
 
 export function GroceryProvider({ children }) {
+  const auth = useAuth()
+  const familyId = auth?.user?.familyId
+  const cartKey = familyId ? `familyfit_grocery_cart_${familyId}` : 'familyfit_grocery_cart'
+
   const [budget, setBudgetState] = useState(() => {
     const saved = localStorage.getItem('familyfit_grocery_budget')
     return saved ? Number(saved) : 1500
@@ -519,67 +524,38 @@ export function GroceryProvider({ children }) {
     return localStorage.getItem('familyfit_grocery_period') || '2-Week'
   })
 
-  // ── CART STATE (Items with id, quantity, price, item metadata) ──
+  // ── CART STATE (Empty by default for new accounts, persisted per family) ──
   const [cart, setCart] = useState(() => {
     try {
-      const saved = localStorage.getItem('familyfit_grocery_cart')
-      if (saved) {
-        const parsed = JSON.parse(saved)
-        if (Object.keys(parsed).length > 0) return parsed
+      const saved = localStorage.getItem(cartKey) || localStorage.getItem('familyfit_grocery_cart')
+      if (saved !== null) {
+        return JSON.parse(saved)
       }
     } catch {}
-    // Sensible Kerala staples starter cart for the family
-    return {
-      201: {
-        id: 201,
-        name: 'Ethakka / Nendran Plantain (1 kg)',
-        price: 60,
-        unit: '1 kg',
-        category: 'Produce',
-        quantity: 1,
-      },
-      202: {
-        id: 202,
-        name: 'Tapioca / Kappa (1 kg)',
-        price: 40,
-        unit: '1 kg',
-        category: 'Produce',
-        quantity: 1,
-      },
-      203: {
-        id: 203,
-        name: 'Chena / Elephant Foot Yam (1 kg)',
-        price: 50,
-        unit: '1 kg',
-        category: 'Produce',
-        quantity: 1,
-      },
-      401: {
-        id: 401,
-        name: 'Kerala Matta Rice (5 kg)',
-        price: 320,
-        unit: '5 kg',
-        category: 'Pantry',
-        quantity: 1,
-      },
-      206: {
-        id: 206,
-        name: 'Muringakka / Drumsticks (Pack of 3)',
-        price: 40,
-        unit: 'Pack of 3',
-        category: 'Produce',
-        quantity: 2,
-      },
-    }
+    return {}
   })
+
+  // Synchronize cart when family switches or user signs up/in
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(cartKey)
+      if (saved !== null) {
+        setCart(JSON.parse(saved))
+      } else {
+        setCart({})
+      }
+    } catch {
+      setCart({})
+    }
+  }, [familyId, cartKey])
 
   useEffect(() => {
     try {
-      localStorage.setItem('familyfit_grocery_cart', JSON.stringify(cart))
+      localStorage.setItem(cartKey, JSON.stringify(cart))
     } catch (e) {
       console.warn('Failed to persist cart:', e)
     }
-  }, [cart])
+  }, [cart, cartKey])
 
   const setBudget = (newBudget) => {
     setBudgetState(newBudget)
