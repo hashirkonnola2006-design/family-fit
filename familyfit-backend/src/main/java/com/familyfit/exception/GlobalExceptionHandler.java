@@ -24,6 +24,12 @@ public class GlobalExceptionHandler {
                 .body(buildError(HttpStatus.NOT_FOUND, "Not Found", ex.getMessage(), null));
     }
 
+    @ExceptionHandler({org.springframework.security.authentication.BadCredentialsException.class, org.springframework.security.core.AuthenticationException.class})
+    public ResponseEntity<ErrorResponse> handleBadCredentials(Exception ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(buildError(HttpStatus.UNAUTHORIZED, "Unauthorized", "Invalid email or password", null));
+    }
+
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ErrorResponse> handleUnauthorized(UnauthorizedException ex) {
         // 403 Forbidden: the user IS authenticated but is NOT permitted to access this resource.

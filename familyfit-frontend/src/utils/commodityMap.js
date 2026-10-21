@@ -227,7 +227,7 @@ export function formatArrivalDate(dateStr) {
  * Cleans market name (e.g. "Thrissur Market" -> "Thrissur")
  */
 function cleanMarketName(name) {
-  if (!name) return 'Kerala Mandis';
+  if (!name) return 'Kerala Markets';
   return name.replace(/\s*(Market|APMC|VFPCK)\s*/gi, '').trim() || name;
 }
 

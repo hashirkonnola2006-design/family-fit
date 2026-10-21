@@ -99,6 +99,31 @@ function onRequestFinished(config) {
   }
 }
 
+export function getStoredAuthToken() {
+  return localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken')
+}
+
+export function getStoredRefreshToken() {
+  return localStorage.getItem('refreshToken') || sessionStorage.getItem('refreshToken')
+}
+
+export function saveStoredAccessToken(token) {
+  if (localStorage.getItem('refreshToken')) {
+    localStorage.setItem('accessToken', token)
+  } else if (sessionStorage.getItem('refreshToken')) {
+    sessionStorage.setItem('accessToken', token)
+  } else {
+    localStorage.setItem('accessToken', token)
+  }
+}
+
+export function clearAllStoredAuth() {
+  ['accessToken', 'refreshToken', 'familyId', 'email', 'familyName'].forEach((k) => {
+    localStorage.removeItem(k)
+    sessionStorage.removeItem(k)
+  })
+}
+
 const client = axios.create({
   baseURL: API_BASE_URL ? `${API_BASE_URL}/api` : '/api',
   headers: { 'Content-Type': 'application/json' },
@@ -110,7 +135,7 @@ client.interceptors.request.use(
   (config) => {
     onRequestStarted(config)
 
-    const token = localStorage.getItem('accessToken')
+    const token = getStoredAuthToken()
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -164,14 +189,14 @@ client.interceptors.response.use(
     // 401 / 403 Access Token refresh handler
     if ((status === 401 || status === 403) && config && !config._authRetry) {
       config._authRetry = true
-      const refreshToken = localStorage.getItem('refreshToken')
-      const accessToken = localStorage.getItem('accessToken')
+      const refreshToken = getStoredRefreshToken()
+      const accessToken = getStoredAuthToken()
 
       const isDemo =
         (refreshToken && refreshToken.startsWith('demo-')) ||
         (accessToken && accessToken.startsWith('demo-'))
 
-      // For demo / mock sessions, do NOT clear storage or try to refresh with backend
+      // For offline demo / mock sessions, do NOT clear storage or try to refresh with backend
       if (isDemo) {
         onRequestFinished(config)
         return Promise.reject(error)
@@ -179,9 +204,14 @@ client.interceptors.response.use(
 
       if (refreshToken) {
         try {
-          const { data } = await client.post('/auth/refresh', { refreshToken }, { notifyColdStart: false })
+          const refreshUrl = `${API_BASE_URL ? `${API_BASE_URL}/api` : '/api'}/auth/refresh`
+          const { data } = await axios.post(
+            refreshUrl,
+            { refreshToken },
+            { headers: { 'Content-Type': 'application/json' }, timeout: 15000 }
+          )
           if (data?.accessToken) {
-            localStorage.setItem('accessToken', data.accessToken)
+            saveStoredAccessToken(data.accessToken)
             config.headers.Authorization = `Bearer ${data.accessToken}`
             config._isRetryAttempt = true
             return client(config)
@@ -189,11 +219,7 @@ client.interceptors.response.use(
         } catch (refreshErr) {
           // Only clear session if refresh endpoint explicitly rejected the refresh token (401/403)
           if (refreshErr.response?.status === 401 || refreshErr.response?.status === 403) {
-            localStorage.removeItem('accessToken')
-            localStorage.removeItem('refreshToken')
-            localStorage.removeItem('familyId')
-            localStorage.removeItem('email')
-            localStorage.removeItem('familyName')
+            clearAllStoredAuth()
             window.dispatchEvent(new Event('familyfit:auth-expired'))
           }
         }

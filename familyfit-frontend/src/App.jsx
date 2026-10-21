@@ -20,6 +20,7 @@ import BrandShowcase from './pages/BrandShowcase'
 import ResponsiveLayout from './components/ResponsiveLayout'
 import ErrorBoundary from './components/ErrorBoundary'
 import ServerWakingBanner from './components/common/ServerWakingBanner'
+import ScrollToTop from './components/ScrollToTop'
 import { Logo } from './components/brand/Logo'
 
 function LoadingScreen() {
@@ -62,6 +63,7 @@ function AppRoutes() {
       <Route path="/recipes/:id" element={<PrivateRoute><RecipeDetailPage /></PrivateRoute>} />
       <Route path="/grocery" element={<PrivateRoute><GroceryPage /></PrivateRoute>} />
       <Route path="/tips"     element={<PrivateRoute><TipsPage /></PrivateRoute>} />
+      <Route path="/wellness" element={<Navigate to="/tips" replace />} />
       <Route path="/progress" element={<Navigate to="/tips" replace />} />
       <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
       <Route path="/settings" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
@@ -81,6 +83,7 @@ export default function App() {
   return (
     <ErrorBoundary>
       <BrowserRouter>
+        <ScrollToTop />
         <ThemeProvider>
           <AuthProvider>
             <FamilyProvider>

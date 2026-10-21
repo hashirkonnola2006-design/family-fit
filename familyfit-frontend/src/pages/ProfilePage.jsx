@@ -119,6 +119,9 @@ export default function ProfilePage() {
   const [supportSending, setSupportSending] = useState(false)
 
   useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    if (document.documentElement) document.documentElement.scrollTop = 0
+    if (document.body) document.body.scrollTop = 0
     getNotificationPreferences().then(setNotifPrefs).catch(() => {})
     getAiPreferences().then(setAiPrefs).catch(() => {})
   }, [])
@@ -215,7 +218,9 @@ export default function ProfilePage() {
             </div>
             <div>
               <div className="ff-account-name-row">
-                <h1 className="ff-account-name">{familyName} Family</h1>
+                <h1 className="ff-account-name">
+                  {familyName.toLowerCase().endsWith('family') ? familyName : `${familyName} Family`}
+                </h1>
                 <span className="ff-sync-badge">
                   <span className="ff-sync-dot" />
                   <span>Cloud Active</span>

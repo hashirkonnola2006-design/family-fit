@@ -89,6 +89,15 @@ public class AuthServiceImpl {
                 .build();
     }
 
+    // ─── Logout ──────────────────────────────────────────────────────────
+
+    public void logout(String refreshToken) {
+        if (refreshToken != null && !refreshToken.isBlank()) {
+            refreshTokenRepository.findByToken(refreshToken)
+                    .ifPresent(refreshTokenRepository::delete);
+        }
+    }
+
     // ─── Helpers ─────────────────────────────────────────────────────────
 
     private AuthResponse buildAuthResponse(Family family) {

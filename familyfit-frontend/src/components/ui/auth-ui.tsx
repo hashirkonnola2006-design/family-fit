@@ -85,6 +85,10 @@ export function AuthUI({
   const [rememberMe, setRememberMe] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
   const [agreeTerms, setAgreeTerms] = useState(false)
+  const [showForgotModal, setShowForgotModal] = useState(false)
+  const [forgotEmail, setForgotEmail] = useState('')
+  const [forgotSent, setForgotSent] = useState(false)
+  const [forgotError, setForgotError] = useState('')
 
   // Validation States
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({})
@@ -544,7 +548,12 @@ export function AuthUI({
 
                 <button
                   type="button"
-                  onClick={onForgotPassword || (() => alert('Password reset instructions sent to your email.'))}
+                  onClick={() => {
+                    setForgotEmail(email || '')
+                    setForgotSent(false)
+                    setForgotError('')
+                    setShowForgotModal(true)
+                  }}
                   className="font-medium text-[#475467] hover:text-[#2F4A2E] hover:underline cursor-pointer"
                 >
                   Forgot password?
@@ -604,7 +613,7 @@ export function AuthUI({
               {loading ? (
                 <>
                   <Loader2 size={17} className="animate-spin text-white" />
-                  <span>Processing...</span>
+                  <span>{mode === 'login' ? 'Signing In...' : 'Creating Account...'}</span>
                 </>
               ) : (
                 <>
@@ -624,14 +633,18 @@ export function AuthUI({
             <span className="flex-1 h-[1px] bg-[#E4E7EC]" />
           </div>
 
-          {/* Outlined Pill "Continue with Google" Button */}
+          {/* Outlined Pill "Continue with Google" Button (Disabled with Coming Soon badge) */}
           <button
             type="button"
-            onClick={onGoogleSignIn || (() => alert('Google authentication is connected to your family workspace.'))}
-            className="h-12 w-full rounded-full border border-[#D0D5DD] bg-white hover:bg-[#F9FAFB] font-semibold text-sm text-[#344054] flex items-center justify-center gap-2.5 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2F4A2E] focus-visible:ring-offset-2 shadow-xs"
+            disabled
+            title="Google Sign-In is coming soon. Requires Google Cloud OAuth 2.0 Client ID (VITE_GOOGLE_CLIENT_ID)."
+            className="h-12 w-full rounded-full border border-[#D0D5DD] bg-[#FAFAF9] opacity-80 cursor-not-allowed font-semibold text-sm text-[#344054] flex items-center justify-center gap-2.5 transition-all shadow-xs"
           >
             <GoogleIcon />
             <span>Continue with Google</span>
+            <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[#EAECF0] text-[#667085] ml-1">
+              Coming Soon
+            </span>
           </button>
 
           {/* "New to FamilyFit? Create an account →" Link */}
@@ -692,6 +705,94 @@ export function AuthUI({
         </div>
 
       </div>
+
+      {/* ─── FORGOT PASSWORD MODAL ─── */}
+      {showForgotModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+          <div className="bg-[#FAF7F0] border border-[#E5E0D5] rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative text-[#1E2E1A] animate-in fade-in zoom-in-95 duration-150">
+            <h3 className="text-xl font-black text-[#1E2E1A] mb-2 tracking-tight">
+              Reset Your Password
+            </h3>
+            
+            {forgotSent ? (
+              <div className="space-y-4">
+                <div className="p-4 rounded-2xl bg-[#EAF3EB] border border-[#C5DEC9] text-xs sm:text-sm text-[#25452B] leading-relaxed">
+                  <p className="font-bold mb-1 flex items-center gap-1.5">
+                    <Check size={16} className="text-[#2F4A2E]" />
+                    <span>Reset Link Sent!</span>
+                  </p>
+                  <p>
+                    If an account exists for <strong>{forgotEmail}</strong>, password reset instructions will arrive in your inbox.
+                  </p>
+                  <p className="mt-2 text-[11px] text-[#4F6355]">
+                    Tip: For instant testing, you can sign in with demo account <strong>healthyfamily@example.com</strong> / <strong>password123</strong>.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowForgotModal(false)}
+                  className="w-full py-3 rounded-full bg-[#2F4A2E] text-white font-bold text-sm hover:bg-[#243A23] transition-colors"
+                >
+                  Back to Sign In
+                </button>
+              </div>
+            ) : (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  if (!forgotEmail.trim() || !forgotEmail.includes('@')) {
+                    setForgotError('Please enter a valid email address')
+                    return
+                  }
+                  setForgotError('')
+                  setForgotSent(true)
+                }}
+                className="space-y-4"
+              >
+                <p className="text-xs sm:text-sm text-[#475467] leading-relaxed">
+                  Enter the email address registered to your family account, and we will send you a secure link to reset your password.
+                </p>
+
+                <div className="space-y-1">
+                  <div className="h-12 w-full rounded-full border border-[#D0D5DD] bg-white px-4 flex items-center gap-3">
+                    <Mail size={17} className="text-[#98A2B3]" />
+                    <input
+                      type="email"
+                      required
+                      placeholder="you@example.com"
+                      value={forgotEmail}
+                      onChange={(e) => {
+                        setForgotEmail(e.target.value)
+                        setForgotError('')
+                      }}
+                      className="w-full bg-transparent text-sm text-[#1E2E1A] placeholder:text-[#98A2B3] outline-none"
+                    />
+                  </div>
+                  {forgotError && (
+                    <p className="text-xs text-[#DC2626] font-semibold px-2">{forgotError}</p>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowForgotModal(false)}
+                    className="flex-1 py-3 rounded-full border border-[#D0D5DD] bg-white font-bold text-xs sm:text-sm text-[#344054] hover:bg-[#F2F4F7] transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 py-3 rounded-full bg-[#2F4A2E] font-bold text-xs sm:text-sm text-white hover:bg-[#243A23] transition-colors"
+                  >
+                    Send Reset Link
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
 
     </div>
   )

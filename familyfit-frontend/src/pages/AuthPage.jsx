@@ -20,11 +20,11 @@ export default function AuthPage() {
     }
   }, [user, navigate])
 
-  // Warm up backend on mount
+  // Warm up backend on mount via public unauthenticated healthz endpoint
   useEffect(() => {
     const rawUrl = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '')
     if (rawUrl) {
-      fetch(`${rawUrl}/health`, { method: 'GET', mode: 'cors', credentials: 'omit' }).catch(() => {})
+      fetch(`${rawUrl}/healthz`, { method: 'GET', mode: 'cors', credentials: 'omit' }).catch(() => {})
     }
   }, [])
 
@@ -33,7 +33,7 @@ export default function AuthPage() {
     setLoading(true)
 
     try {
-      await login(email, password)
+      await login(email, password, rememberMe)
       navigate('/dashboard')
     } catch (err) {
       console.error('Authentication failure:', err)
@@ -47,15 +47,15 @@ export default function AuthPage() {
     }
   }
 
-  const handleSignUpSubmit = async ({ email, password, name }) => {
+  const handleSignUpSubmit = async ({ email, password, name, rememberMe = true }) => {
     setError('')
     setLoading(true)
 
     try {
       const familyName = name || 'FamilyFit'
-      await register(familyName, email, password)
+      await register(familyName, email, password, rememberMe)
       clearFamilyCache()
-      navigate('/onboarding')
+      navigate('/dashboard')
     } catch (err) {
       console.error('Registration failure:', err)
       const userMessage =

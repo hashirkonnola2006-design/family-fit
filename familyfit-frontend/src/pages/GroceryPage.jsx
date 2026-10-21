@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import {
   ShoppingCart,
   X,
@@ -15,6 +15,10 @@ import {
   Info,
   CheckCircle2,
   ExternalLink,
+  ShieldCheck,
+  Search,
+  SlidersHorizontal,
+  Users,
 } from 'lucide-react'
 import BottomNav from '../components/BottomNav'
 import MemberAvatar from '../components/MemberAvatar'
@@ -24,7 +28,6 @@ import { useTheme } from '../context/ThemeContext'
 import {
   RETAIL_MARKUP,
   mapApiPricesToGroceryItems,
-  formatArrivalDate,
 } from '../utils/commodityMap'
 
 export default function GroceryPage() {
@@ -42,6 +45,7 @@ export default function GroceryPage() {
   } = useGrocery()
 
   const navigate = useNavigate()
+  const location = useLocation()
   const members = Array.isArray(family?.members) ? family.members.filter(Boolean) : []
 
   // ── States ──
@@ -51,8 +55,35 @@ export default function GroceryPage() {
   const [sortBy, setSortBy] = useState('Recommended')
   const [favorites, setFavorites] = useState([201, 212])
   const [toast, setToast] = useState('')
-  const [isCartOpen, setIsCartOpen] = useState(false)
+  const [isCartOpen, setIsCartOpen] = useState(() => {
+    return (
+      typeof window !== 'undefined' &&
+      (window.location.search.includes('basket') ||
+        window.location.search.includes('cart') ||
+        window.location.hash.includes('basket') ||
+        window.location.hash.includes('cart'))
+    )
+  })
   const [onlyBeneficialFilter, setOnlyBeneficialFilter] = useState(true)
+
+  // Ensure page starts from top on mount and location changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    if (document.documentElement) document.documentElement.scrollTop = 0
+    if (document.body) document.body.scrollTop = 0
+  }, [location.pathname])
+
+  // Auto-open cart if query param or hash changes
+  useEffect(() => {
+    if (
+      location.search.includes('basket') ||
+      location.search.includes('cart') ||
+      location.hash.includes('basket') ||
+      location.hash.includes('cart')
+    ) {
+      setIsCartOpen(true)
+    }
+  }, [location])
 
   // ── Live Mandi Prices State ──
   const [rawApiResponse, setRawApiResponse] = useState(null)
@@ -269,17 +300,17 @@ export default function GroceryPage() {
     }
 
     const lines = [
-      '🛒 FamilyFit Kerala Grocery Shopping List:',
+      'FamilyFit Kerala Grocery Shopping List:',
       ...cartItemsArray.map(
         (it, idx) =>
           `${idx + 1}. ${it.name} - ${it.quantity} × ₹${it.price} = ₹${it.quantity * it.price}`
       ),
       `\nTotal Estimated Cost: ₹${cartSubtotal}`,
-      'Prices verified with Kerala Mandi Agmarknet data.',
+      'Prices verified with Kerala market pricing data.',
     ]
 
     navigator.clipboard.writeText(lines.join('\n')).then(() => {
-      showToastMsg('Shopping list copied to clipboard! 📋')
+      showToastMsg('Shopping list copied to clipboard!')
     })
   }
 
@@ -336,180 +367,224 @@ export default function GroceryPage() {
         </div>
       )}
 
-      {/* ── 100% FULL-WIDTH HERO BANNER SECTION ── */}
+      {/* ── HERO BANNER MATCHING RECIPES PAGE (ORANGE THEME) ── */}
       <div
+        className="ff-grocery-hero"
         style={{
-          width: '100%',
           position: 'relative',
-          background: `${orangeColor} url('/grocery_user_hero.jpg') no-repeat right center / cover`,
-          minHeight: 250,
-          boxSizing: 'border-box',
+          background: isDark
+            ? 'linear-gradient(to right, rgba(30, 15, 6, 0.96) 0%, rgba(42, 20, 6, 0.90) 45%, rgba(42, 20, 6, 0.65) 75%, rgba(42, 20, 6, 0.25) 100%), url(/grocery_orange_hero.png) no-repeat right center / cover'
+            : 'linear-gradient(to right, rgba(234, 88, 12, 0.96) 0%, rgba(234, 88, 12, 0.90) 45%, rgba(234, 88, 12, 0.65) 75%, rgba(234, 88, 12, 0.20) 100%), url(/grocery_orange_hero.png) no-repeat right center / cover',
           overflow: 'hidden',
+          minHeight: 340,
+          display: 'flex',
+          alignItems: 'center',
+          padding: '40px 60px',
+          boxSizing: 'border-box',
         }}
       >
-        <div
-          style={{
-            maxWidth: 1440,
-            margin: '0 auto',
-            padding: '44px 32px 48px 32px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            boxSizing: 'border-box',
-            flexWrap: 'wrap',
-            gap: 20,
-          }}
-        >
-          {/* Hero Left Content */}
-          <div style={{ position: 'relative', zIndex: 2, maxWidth: 640 }}>
-            <span
-              style={{
-                display: 'inline-block',
-                background: 'rgba(255, 255, 255, 0.25)',
-                backdropFilter: 'blur(8px)',
-                color: '#FFFFFF',
-                padding: '4px 12px',
-                borderRadius: 20,
-                fontSize: 12,
-                fontWeight: 900,
-                textTransform: 'uppercase',
-                letterSpacing: '1px',
-                marginBottom: 10,
-              }}
-            >
-              Kerala Smart Grocery Advisory
-            </span>
+        {/* Left content protected by scrim */}
+        <div className="ff-grocery-hero-content" style={{ position: 'relative', zIndex: 2, maxWidth: '50%', flexShrink: 0 }}>
+          <span
+            style={{
+              fontSize: 12,
+              fontWeight: 800,
+              color: '#FFF3E0',
+              letterSpacing: 2,
+              textTransform: 'uppercase',
+              display: 'block',
+              marginBottom: 10,
+            }}
+          >
+            KERALA SMART GROCERY ADVISORY
+          </span>
 
-            <h1
-              style={{
-                fontSize: 44,
-                fontWeight: 900,
-                color: '#FFFFFF',
-                margin: '0 0 10px 0',
-                letterSpacing: '-1px',
-                lineHeight: 1.1,
-              }}
-            >
-              Fresh Groceries &amp; Prices
-            </h1>
+          <h1
+            className="ff-grocery-hero-title"
+            style={{
+              fontSize: 44,
+              fontWeight: 900,
+              color: '#FFFFFF',
+              margin: '0 0 12px 0',
+              lineHeight: 1.1,
+              letterSpacing: '-0.5px',
+              fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+              textShadow: '0 2px 8px rgba(0,0,0,0.18)',
+            }}
+          >
+            Fresh Groceries &amp; Prices
+          </h1>
 
-            <p
-              style={{
-                fontSize: 15.5,
-                color: 'rgba(255, 255, 255, 0.95)',
-                margin: '0 0 20px 0',
-                fontWeight: 600,
-                maxWidth: 520,
-                lineHeight: 1.4,
-              }}
-            >
-              Live Kerala Mandi prices, member-tailored superfoods, and active allergen safety screening.
-            </p>
+          <p
+            style={{
+              fontSize: 15,
+              color: '#FFF7ED',
+              margin: '0 0 24px 0',
+              lineHeight: 1.6,
+              fontWeight: 500,
+              textShadow: '0 1px 4px rgba(0,0,0,0.15)',
+            }}
+          >
+            Fresh Kerala market prices, member-tailored superfoods,<br />and active allergen safety screening.
+          </p>
 
-            {/* 3 Badges */}
-            <div
+          {/* Search Bar matching Recipes page */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+              background: '#FFFFFF',
+              border: '1px solid #FED7AA',
+              borderRadius: 9999,
+              padding: '8px 8px 8px 20px',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+              maxWidth: 420,
+              width: '100%',
+            }}
+          >
+            <Search size={18} color="#9CA3AF" />
+            <input
+              type="text"
+              placeholder="Search groceries, kappa, chena, plantains..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 20,
-                flexWrap: 'wrap',
+                flex: 1,
+                border: 'none',
+                outline: 'none',
+                fontSize: 13.5,
+                color: '#111827',
+                background: 'transparent',
+                fontFamily: 'inherit',
               }}
-            >
-              <div
+            />
+            {searchQuery ? (
+              <button
+                onClick={() => setSearchQuery('')}
                 style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: '50%',
+                  background: '#FFF3E0',
+                  border: 'none',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 6,
-                  fontSize: 13,
-                  fontWeight: 700,
-                  color: '#FFFFFF',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  flexShrink: 0,
                 }}
               >
-                <span>🍃</span> Personalized Health
-              </div>
+                <X size={15} color="#EA580C" />
+              </button>
+            ) : (
               <div
                 style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: '50%',
+                  background: '#FFF3E0',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 6,
-                  fontSize: 13,
-                  fontWeight: 700,
-                  color: '#FFFFFF',
+                  justifyContent: 'center',
+                  flexShrink: 0,
                 }}
               >
-                <span>🛡️</span> Severe Allergy Screening
+                <SlidersHorizontal size={15} color="#EA580C" />
               </div>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  fontSize: 13,
-                  fontWeight: 700,
-                  color: '#FFFFFF',
-                }}
-              >
-                <span>🛒</span> Direct Cart Checkout
-              </div>
-            </div>
+            )}
           </div>
 
-          {/* Quick Cart Status Button in Hero */}
+          {/* Stats row with dividers matching Recipes page */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 20,
+              marginTop: 20,
+              fontSize: 13,
+              color: 'rgba(255, 255, 255, 0.95)',
+              fontWeight: 600,
+              flexWrap: 'wrap',
+            }}
+          >
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Sparkles size={14} color="#FFEDD5" /> Personalized Health
+            </span>
+            <span style={{ color: 'rgba(255, 255, 255, 0.4)' }}>|</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <ShieldCheck size={14} color="#FFEDD5" /> Severe Allergy Screening
+            </span>
+            <span style={{ color: 'rgba(255, 255, 255, 0.4)' }}>|</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <ShoppingCart size={14} color="#FFEDD5" /> Direct Cart Checkout
+            </span>
+          </div>
+        </div>
+
+        {/* Quick Cart Pill in Hero Corner */}
+        {cartCount > 0 && (
           <button
+            className="ff-grocery-cart-pill"
             onClick={() => setIsCartOpen(true)}
             style={{
-              background: '#FFFFFF',
-              color: orangeColor,
-              border: 'none',
-              padding: '16px 24px',
-              borderRadius: 22,
-              fontSize: 15,
-              fontWeight: 900,
+              position: 'absolute',
+              top: 36,
+              right: 60,
+              zIndex: 3,
+              background: 'rgba(255, 255, 255, 0.95)',
+              backdropFilter: 'blur(8px)',
+              border: '1px solid #FED7AA',
+              padding: '10px 18px',
+              borderRadius: 9999,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: 12,
-              boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+              gap: 10,
+              boxShadow: '0 6px 20px rgba(0,0,0,0.12)',
               transition: 'transform 0.15s ease',
-              zIndex: 2,
             }}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = 'translateY(-2px)')}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
           >
             <div
               style={{
-                width: 38,
-                height: 38,
+                width: 28,
+                height: 28,
                 borderRadius: '50%',
-                background: '#FBE9E7',
+                background: '#FFEDD5',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: orangeColor,
+                color: '#EA580C',
               }}
             >
-              <ShoppingCart size={20} strokeWidth={2.5} />
+              <ShoppingCart size={15} />
             </div>
             <div style={{ textAlign: 'left' }}>
-              <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 700, textTransform: 'uppercase' }}>
-                Your Grocery Cart
+              <div
+                style={{
+                  fontSize: 10,
+                  color: '#9A3412',
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                }}
+              >
+                Cart
               </div>
-              <div style={{ fontSize: 16, fontWeight: 900, color: '#1F2937' }}>
+              <div
+                style={{
+                  fontSize: 13,
+                  fontWeight: 900,
+                  color: '#111827',
+                }}
+              >
                 {cartCount} Items • ₹{cartSubtotal}
               </div>
             </div>
-            <span
-              style={{
-                background: orangeColor,
-                color: 'white',
-                padding: '3px 9px',
-                borderRadius: 12,
-                fontSize: 12,
-                fontWeight: 900,
-              }}
-            >
-              View Cart
-            </span>
           </button>
-        </div>
+        )}
       </div>
 
       {/* ── MAIN CONTENT CONTAINER ── */}
@@ -521,7 +596,8 @@ export default function GroceryPage() {
         }}
       >
         {/* ── SECTION 1: FILTER BY FAMILY MEMBER (Click to sort / see foods good for that person) ── */}
-        <div
+        {members.length > 0 && (
+          <div
           style={{
             background: isDark ? '#1E293B' : '#FFFFFF',
             borderRadius: 24,
@@ -634,7 +710,8 @@ export default function GroceryPage() {
                 transition: 'all 0.15s ease',
               }}
             >
-              <span>👥 All Family Members</span>
+              <Users size={16} />
+              <span>All Family Members</span>
             </button>
 
             {/* Individual Member Pills */}
@@ -781,6 +858,7 @@ export default function GroceryPage() {
             </div>
           )}
         </div>
+        )}
 
         {/* ── SECTION 2: CATEGORY TABS, SEARCH, AND MANDI LIVE BADGE ── */}
         <div
@@ -806,22 +884,22 @@ export default function GroceryPage() {
               { id: 'ALL', label: 'All Items', count: KERALA_GROCERY_DATASET.length },
               {
                 id: 'Produce',
-                label: '🥬 Fresh Produce',
+                label: 'Fresh Produce',
                 count: KERALA_GROCERY_DATASET.filter((i) => i.category === 'Produce').length,
               },
               {
                 id: 'Protein',
-                label: '🍗 Protein & Fish',
+                label: 'Protein & Fish',
                 count: KERALA_GROCERY_DATASET.filter((i) => i.category === 'Protein').length,
               },
               {
                 id: 'Dairy',
-                label: '🥛 Dairy',
+                label: 'Dairy',
                 count: KERALA_GROCERY_DATASET.filter((i) => i.category === 'Dairy').length,
               },
               {
                 id: 'Pantry',
-                label: '🌾 Pantry & Grains',
+                label: 'Pantry & Grains',
                 count: KERALA_GROCERY_DATASET.filter((i) => i.category === 'Pantry').length,
               },
             ].map((cat) => {
@@ -861,62 +939,8 @@ export default function GroceryPage() {
             })}
           </div>
 
-          {/* Right Controls: Sort & Live Mandi Badge */}
+          {/* Right Controls: Sort */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-            {/* Live Agmarknet Badge */}
-            {isLoadingPrices ? (
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  background: isDark ? 'rgba(59, 130, 246, 0.15)' : '#EFF6FF',
-                  border: `1px solid ${isDark ? 'rgba(59, 130, 246, 0.3)' : '#BFDBFE'}`,
-                  padding: '5px 12px',
-                  borderRadius: 20,
-                  fontSize: 11.5,
-                  fontWeight: 800,
-                  color: isDark ? '#93C5FD' : '#1D4ED8',
-                }}
-              >
-                <span
-                  style={{
-                    width: 7,
-                    height: 7,
-                    borderRadius: '50%',
-                    background: '#3B82F6',
-                    animation: 'pulse 1.5s infinite',
-                  }}
-                />
-                Fetching Live Kerala Mandi Prices...
-              </div>
-            ) : rawApiResponse?.items?.length > 0 ? (
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  background: isDark ? 'rgba(16, 185, 129, 0.15)' : '#ECFDF5',
-                  border: `1px solid ${isDark ? 'rgba(16, 185, 129, 0.3)' : '#A7F3D0'}`,
-                  padding: '5px 14px',
-                  borderRadius: 20,
-                  fontSize: 11.5,
-                  fontWeight: 800,
-                  color: isDark ? '#6EE7B7' : '#047857',
-                }}
-              >
-                <span
-                  style={{
-                    width: 7,
-                    height: 7,
-                    borderRadius: '50%',
-                    background: '#10B981',
-                    boxShadow: '0 0 8px rgba(16, 185, 129, 0.6)',
-                  }}
-                />
-                Live Kerala Mandi Prices (Agmarknet) • {formatArrivalDate(rawApiResponse.updatedAt)}
-              </div>
-            ) : null}
 
             {/* Sort Selector */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -957,7 +981,9 @@ export default function GroceryPage() {
               border: `1px solid ${isDark ? '#334155' : '#E5E7EB'}`,
             }}
           >
-            <div style={{ fontSize: 48, marginBottom: 16 }}>🥗</div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+              <ShoppingCart size={44} color={isDark ? '#64748B' : '#9CA3AF'} />
+            </div>
             <h3 style={{ fontSize: 20, fontWeight: 900, marginBottom: 8 }}>
               No matching groceries found
             </h3>
@@ -1319,21 +1345,6 @@ export default function GroceryPage() {
                             / {priceInfo.unitText}
                           </span>
                         </div>
-
-                        {priceInfo.isLive && (
-                          <span
-                            style={{
-                              fontSize: 10,
-                              fontWeight: 800,
-                              color: '#10B981',
-                              background: '#ECFDF5',
-                              padding: '2px 6px',
-                              borderRadius: 8,
-                            }}
-                          >
-                            Live Mandi
-                          </span>
-                        )}
                       </div>
 
                       {/* Add to Cart Button or Stepper */}
@@ -1537,12 +1548,14 @@ export default function GroceryPage() {
             >
               {cartItemsArray.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '60px 0', color: '#6B7280' }}>
-                  <div style={{ fontSize: 42, marginBottom: 12 }}>🛒</div>
+                  <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
+                    <ShoppingCart size={40} color="#94A3B8" />
+                  </div>
                   <h4 style={{ fontSize: 16, fontWeight: 800, margin: '0 0 6px 0' }}>
                     Your cart is currently empty
                   </h4>
                   <p style={{ fontSize: 13, margin: 0 }}>
-                    Browse through live Mandi produce and health superfoods to add them to your list.
+                    Browse through fresh produce and health superfoods to add them to your list.
                   </p>
                 </div>
               ) : (
@@ -1809,7 +1822,31 @@ export default function GroceryPage() {
           }
         }
 
+        @media (max-width: 1024px) {
+          .ff-grocery-hero-content {
+            max-width: 70% !important;
+          }
+        }
+
         @media (max-width: 768px) {
+          .ff-grocery-hero {
+            padding: 28px 18px !important;
+            min-height: auto !important;
+            background-position: right center !important;
+          }
+          .ff-grocery-hero-content {
+            max-width: 100% !important;
+          }
+          .ff-grocery-hero-title {
+            font-size: 30px !important;
+            margin-bottom: 8px !important;
+          }
+          .ff-grocery-cart-pill {
+            top: 14px !important;
+            right: 14px !important;
+            padding: 6px 12px !important;
+            font-size: 11px !important;
+          }
           .grocery-5col-grid {
             grid-template-columns: repeat(2, 1fr);
           }

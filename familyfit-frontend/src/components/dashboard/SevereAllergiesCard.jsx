@@ -148,13 +148,13 @@ export default function SevereAllergiesCard({ familyMembers = [] }) {
   }, [allergyEntries])
 
   return (
-    <div className="duo-card p-5 sm:p-6 flex flex-col justify-between font-['Nunito',sans-serif] h-full bg-white border-2 border-[#ECEAE3] shadow-sm">
+    <div className="duo-card p-6 sm:p-7 flex flex-col justify-between font-['Nunito',sans-serif] h-full bg-white border-2 border-[#ECEAE3] rounded-3xl shadow-sm">
       <div>
         {/* Header */}
-        <div className="flex items-center justify-between pb-3.5 border-b-2 border-[#F0F0F0]">
-          <div className="flex items-center gap-2.5">
+        <div className="flex items-center justify-between pb-4 border-b-2 border-[#F0F0F0]">
+          <div className="flex items-center gap-3">
             <div
-              className={`w-9 h-9 rounded-xl flex items-center justify-center font-black ${
+              className={`w-11 h-11 rounded-2xl flex items-center justify-center font-black ${
                 severeCount > 0
                   ? 'bg-[#FEE2E2] text-[#DC2626]'
                   : allergyEntries.length > 0
@@ -163,25 +163,25 @@ export default function SevereAllergiesCard({ familyMembers = [] }) {
               }`}
             >
               {severeCount > 0 ? (
-                <AlertOctagon size={18} />
+                <AlertOctagon size={22} />
               ) : allergyEntries.length > 0 ? (
-                <AlertTriangle size={18} />
+                <AlertTriangle size={22} />
               ) : (
-                <ShieldCheck size={20} />
+                <ShieldCheck size={24} />
               )}
             </div>
             <div>
-              <span className="text-[11px] font-black uppercase tracking-wider text-[#777777]">
+              <span className="text-xs font-black uppercase tracking-wider text-[#777777] block">
                 Critical Health Safety
               </span>
-              <h3 className="text-base font-black text-[#1F2A24] leading-tight">
+              <h3 className="text-xl sm:text-2xl font-black text-[#1F2A24] leading-tight">
                 Important Allergies
               </h3>
             </div>
           </div>
 
           <span
-            className={`text-xs font-black px-2.5 py-0.5 rounded-full border ${
+            className={`text-xs sm:text-sm font-black px-3.5 py-1 rounded-full border shadow-2xs ${
               severeCount > 0
                 ? 'bg-[#FEE2E2] text-[#991B1B] border-[#FECACA]'
                 : allergyEntries.length > 0
@@ -199,46 +199,52 @@ export default function SevereAllergiesCard({ familyMembers = [] }) {
 
         {/* Member Filter Pills (if multiple members have allergies) */}
         {allergicMembers.length > 1 && (
-          <div className="flex items-center gap-1.5 pt-3 overflow-x-auto pb-1">
+          <div className="flex items-center gap-2 pt-3.5 pb-1 overflow-x-auto">
             <button
               type="button"
               onClick={() => setSelectedMemberFilter('ALL')}
-              className={`text-[11px] font-black px-2.5 py-1 rounded-full border transition-all ${
-                selectedMemberFilter === 'ALL'
-                  ? 'bg-[#24402F] text-white border-[#24402F]'
-                  : 'bg-[#F9FAFB] text-[#4B5563] border-[#E5E7EB] hover:bg-[#F3F4F6]'
-              }`}
+              style={{
+                background: selectedMemberFilter === 'ALL' ? '#24402F' : '#F3F4F6',
+                color: selectedMemberFilter === 'ALL' ? '#FFFFFF' : '#374151',
+                border: `1.5px solid ${selectedMemberFilter === 'ALL' ? '#24402F' : '#E5E7EB'}`,
+              }}
+              className="text-xs sm:text-[13px] font-black px-4 py-1.5 rounded-full transition-all cursor-pointer shadow-xs"
             >
               All ({allergyEntries.length})
             </button>
-            {allergicMembers.map((m) => (
-              <button
-                key={m.id || m._id}
-                type="button"
-                onClick={() => setSelectedMemberFilter(String(m.id || m._id))}
-                className={`text-[11px] font-black px-2.5 py-1 rounded-full border flex items-center gap-1.5 transition-all ${
-                  selectedMemberFilter === String(m.id || m._id)
-                    ? 'bg-[#24402F] text-white border-[#24402F]'
-                    : 'bg-[#F9FAFB] text-[#4B5563] border-[#E5E7EB] hover:bg-[#F3F4F6]'
-                }`}
-              >
-                <span>{m.name}</span>
-              </button>
-            ))}
+            {allergicMembers.map((m) => {
+              const active = selectedMemberFilter === String(m.id || m._id)
+              return (
+                <button
+                  key={m.id || m._id}
+                  type="button"
+                  onClick={() => setSelectedMemberFilter(String(m.id || m._id))}
+                  style={{
+                    background: active ? '#24402F' : '#F3F4F6',
+                    color: active ? '#FFFFFF' : '#374151',
+                    border: `1.5px solid ${active ? '#24402F' : '#E5E7EB'}`,
+                  }}
+                  className="text-xs sm:text-[13px] font-black px-3.5 py-1.5 rounded-full flex items-center gap-2 transition-all cursor-pointer shadow-xs"
+                >
+                  <MemberAvatar member={m} size={20} />
+                  <span>{m.name}</span>
+                </button>
+              )
+            })}
           </div>
         )}
 
         {/* List of Important Allergies */}
-        <div className="pt-3.5 space-y-3">
+        <div className="pt-4 space-y-4">
           {filteredEntries.length === 0 ? (
-            <div className="p-4 rounded-2xl bg-[#F0FDF4] border border-[#BBF7D0] text-center space-y-1.5">
-              <div className="w-8 h-8 rounded-full bg-[#DCFCE7] text-[#16A34A] flex items-center justify-center mx-auto">
-                <ShieldCheck size={18} />
+            <div className="p-5 rounded-2xl bg-[#F0FDF4] border border-[#BBF7D0] text-center space-y-2">
+              <div className="w-10 h-10 rounded-full bg-[#DCFCE7] text-[#16A34A] flex items-center justify-center mx-auto">
+                <ShieldCheck size={22} />
               </div>
-              <div className="text-xs font-black text-[#15803D]">
+              <div className="text-sm font-black text-[#15803D]">
                 No Severe Allergies Flagged
               </div>
-              <p className="text-[11px] font-bold text-[#166534]">
+              <p className="text-xs font-bold text-[#166534]">
                 All family profiles are currently screened with no high-risk allergen warnings.
               </p>
             </div>
@@ -250,16 +256,16 @@ export default function SevereAllergiesCard({ familyMembers = [] }) {
                   backgroundColor: item.meta.bg,
                   borderColor: item.meta.border,
                 }}
-                className="p-3.5 rounded-2xl border-2 space-y-2.5 transition-all hover:shadow-xs"
+                className="p-4 sm:p-5 rounded-2xl border-2 space-y-3 transition-all hover:shadow-xs"
               >
                 {/* Member & Severity Tag */}
                 <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <MemberAvatar member={item.member} size={24} />
-                    <span className="text-xs font-black text-[#1F2A24]">
+                  <div className="flex items-center gap-2.5">
+                    <MemberAvatar member={item.member} size={32} />
+                    <span className="text-sm sm:text-base font-black text-[#1F2A24]">
                       {item.memberName}
                     </span>
-                    <span className="text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-white/80 text-[#6B7280] border border-[#E5E7EB]">
+                    <span className="text-xs font-extrabold uppercase px-2 py-0.5 rounded-md bg-white/90 text-[#6B7280] border border-[#E5E7EB]">
                       {item.memberRole}
                     </span>
                   </div>
@@ -269,30 +275,34 @@ export default function SevereAllergiesCard({ familyMembers = [] }) {
                       backgroundColor: item.meta.badgeBg,
                       color: item.meta.badgeText,
                     }}
-                    className="text-[10.5px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1"
+                    className="text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5 shadow-2xs"
                   >
-                    <Ban size={11} />
+                    <Ban size={13} />
                     {item.meta.severityLabel}
                   </span>
                 </div>
 
                 {/* Allergen & Actionable Avoidance */}
-                <div className="bg-white/90 p-2.5 rounded-xl border border-black/5 space-y-1">
-                  <div className="flex items-baseline justify-between">
-                    <span className="text-xs font-black text-[#111827]">
+                <div className="bg-white/95 p-4 rounded-xl border border-black/5 space-y-2.5 shadow-2xs">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <span className="text-base sm:text-lg font-black text-[#111827]">
                       {item.allergyName}
                     </span>
-                    <span className="text-[10px] font-bold text-[#DC2626]">
+                    <span className="text-xs font-black px-2.5 py-0.5 rounded-md bg-red-100 text-[#DC2626]">
                       Strict Avoidance
                     </span>
                   </div>
-                  <div className="text-[11px] text-[#4B5563] leading-relaxed">
-                    <span className="font-bold text-[#991B1B]">Avoid: </span>
+
+                  {/* Avoid Details */}
+                  <div className="p-2.5 rounded-lg bg-red-50/70 border border-red-100/80 text-[13.5px] sm:text-sm text-[#374151] font-semibold leading-relaxed">
+                    <span className="font-black text-[#DC2626] text-sm sm:text-[14.5px]">Avoid: </span>
                     {item.meta.strictlyAvoid}
                   </div>
+
+                  {/* Safe Alternatives */}
                   {item.meta.safeAlternatives && (
-                    <div className="text-[10.5px] text-[#065F46] font-medium pt-0.5">
-                      <span className="font-bold text-[#047857]">Safe: </span>
+                    <div className="p-2.5 rounded-lg bg-emerald-50/70 border border-emerald-100/80 text-[13.5px] sm:text-sm text-[#065F46] font-semibold leading-relaxed">
+                      <span className="font-black text-[#059669] text-sm sm:text-[14.5px]">Safe: </span>
                       {item.meta.safeAlternatives}
                     </div>
                   )}
@@ -304,13 +314,13 @@ export default function SevereAllergiesCard({ familyMembers = [] }) {
       </div>
 
       {/* Footer Link */}
-      <div className="pt-4 mt-2 border-t border-[#F0F0F0]">
+      <div className="pt-4 mt-3 border-t border-[#F0F0F0]">
         <Link
           to="/profile"
-          className="flex items-center justify-between text-xs font-black text-[#24402F] hover:text-[#58CC02] transition-colors"
+          className="flex items-center justify-between text-sm font-black text-[#24402F] hover:text-[#58CC02] transition-colors"
         >
           <span>Update Family Allergen Profiles</span>
-          <ArrowRight size={14} />
+          <ArrowRight size={16} />
         </Link>
       </div>
     </div>

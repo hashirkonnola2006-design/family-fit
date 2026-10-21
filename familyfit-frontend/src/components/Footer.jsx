@@ -49,7 +49,7 @@ export default function Footer() {
   return (
     <footer
       aria-label="Footer"
-      className="text-[#F8F6EF] pt-8 sm:pt-10 pb-12 select-none relative z-10"
+      className="text-[#F8F6EF] pt-8 sm:pt-10 pb-28 sm:pb-12 select-none relative z-10"
       style={{
         background: 'linear-gradient(180deg, #2F4A32 0%, #24402F 100%)',
       }}
@@ -57,7 +57,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* ── BRAND TAGLINE UNDER WAVE: LIME LEAF + CAVEAT HANDWRITTEN + LIME BRUSH WAVY UNDERLINE ── */}
-        <div className="pb-10 sm:pb-12 mb-10 border-b border-white/10 flex flex-col items-center justify-center text-center">
+        <div className="pb-6 sm:pb-12 mb-6 sm:mb-10 border-b border-white/10 flex flex-col items-center justify-center text-center">
           
           {/* Lime leaf icon flanked by two thin horizontal lines */}
           <div className="flex items-center gap-3 sm:gap-4 mb-2">
@@ -95,23 +95,23 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* ── 4 COLUMNS GRID (Existing content unchanged) ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-white/15">
-          {/* Column 1: Brand & Tagline */}
-          <div className="space-y-4">
-            <Logo variant="full" tone="white" height={44} showTagline asLink />
+        {/* ── RESPONSIVE COLUMNS GRID: 2-Cols on Mobile, 2 on Tablet, 4 on Desktop ── */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 pb-8 sm:pb-12 border-b border-white/15">
+          {/* Column 1: Brand & Tagline (Full width on mobile) */}
+          <div className="col-span-2 lg:col-span-1 space-y-3 sm:space-y-4">
+            <Logo variant="full" tone="white" height={42} showTagline asLink />
 
-            <p className="text-xs sm:text-sm font-body font-bold text-[#F8F6EF]/80 leading-relaxed max-w-xs">
+            <p className="text-xs sm:text-sm font-body font-bold text-[#F8F6EF]/80 leading-relaxed max-w-sm">
               Wholesome food wisdom and personalized Kerala family nutrition for toddlers to seniors.
             </p>
 
-            <div className="flex items-center gap-2.5 pt-2">
+            <div className="flex items-center gap-2 pt-1 sm:pt-2 flex-wrap">
               <a
                 href="https://instagram.com"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Instagram"
-                className="w-9 h-9 rounded-xl bg-white/10 hover:bg-[#8DB445] hover:text-white text-[#F8F6EF] flex items-center justify-center transition-all"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/10 hover:bg-[#8DB445] hover:text-white text-[#F8F6EF] flex items-center justify-center transition-all"
               >
                 <InstagramIcon />
               </a>
@@ -120,7 +120,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="YouTube"
-                className="w-9 h-9 rounded-xl bg-white/10 hover:bg-[#8DB445] hover:text-white text-[#F8F6EF] flex items-center justify-center transition-all"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/10 hover:bg-[#8DB445] hover:text-white text-[#F8F6EF] flex items-center justify-center transition-all"
               >
                 <YoutubeIcon />
               </a>
@@ -129,7 +129,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Facebook"
-                className="w-9 h-9 rounded-xl bg-white/10 hover:bg-[#8DB445] hover:text-white text-[#F8F6EF] flex items-center justify-center transition-all"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/10 hover:bg-[#8DB445] hover:text-white text-[#F8F6EF] flex items-center justify-center transition-all"
               >
                 <FacebookIcon />
               </a>
@@ -138,7 +138,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Twitter"
-                className="w-9 h-9 rounded-xl bg-white/10 hover:bg-[#8DB445] hover:text-white text-[#F8F6EF] flex items-center justify-center transition-all"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/10 hover:bg-[#8DB445] hover:text-white text-[#F8F6EF] flex items-center justify-center transition-all"
               >
                 <TwitterIcon />
               </a>
@@ -147,23 +147,23 @@ export default function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Website"
-                className="w-9 h-9 rounded-xl bg-white/10 hover:bg-[#8DB445] hover:text-white text-[#F8F6EF] flex items-center justify-center transition-all"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/10 hover:bg-[#8DB445] hover:text-white text-[#F8F6EF] flex items-center justify-center transition-all"
               >
                 <Globe size={16} />
               </a>
             </div>
           </div>
 
-          {/* Column 2: Product */}
-          <div>
-            <h4 className="font-poster text-base text-[#F8F6EF] tracking-wider uppercase mb-4">
+          {/* Column 2: Product (Left column on mobile) */}
+          <div className="col-span-1">
+            <h4 className="font-poster text-xs sm:text-base text-[#F8F6EF] tracking-wider uppercase mb-3 sm:mb-4">
               Product
             </h4>
-            <ul className="space-y-2.5 text-xs sm:text-sm font-body font-bold text-[#F8F6EF]/80">
+            <ul className="space-y-2 sm:space-y-2.5 text-xs sm:text-sm font-body font-bold text-[#F8F6EF]/80">
               <li>
                 <button
                   onClick={() => scrollToSection('features')}
-                  className="hover:text-[#8DB445] transition-colors cursor-pointer"
+                  className="hover:text-[#8DB445] transition-colors cursor-pointer text-left"
                 >
                   Features &amp; Allergy Shield
                 </button>
@@ -171,7 +171,7 @@ export default function Footer() {
               <li>
                 <button
                   onClick={() => scrollToSection('plans')}
-                  className="hover:text-[#8DB445] transition-colors cursor-pointer"
+                  className="hover:text-[#8DB445] transition-colors cursor-pointer text-left"
                 >
                   Curated Health Plans
                 </button>
@@ -194,12 +194,12 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 3: Company */}
-          <div>
-            <h4 className="font-poster text-base text-[#F8F6EF] tracking-wider uppercase mb-4">
+          {/* Column 3: Company (Right column on mobile) */}
+          <div className="col-span-1">
+            <h4 className="font-poster text-xs sm:text-base text-[#F8F6EF] tracking-wider uppercase mb-3 sm:mb-4">
               Company
             </h4>
-            <ul className="space-y-2.5 text-xs sm:text-sm font-body font-bold text-[#F8F6EF]/80">
+            <ul className="space-y-2 sm:space-y-2.5 text-xs sm:text-sm font-body font-bold text-[#F8F6EF]/80">
               <li>
                 <Link to="/about" className="hover:text-[#8DB445] transition-colors">
                   About FamilyFit
@@ -208,7 +208,7 @@ export default function Footer() {
               <li>
                 <button
                   onClick={() => scrollToSection('reviews')}
-                  className="hover:text-[#8DB445] transition-colors cursor-pointer"
+                  className="hover:text-[#8DB445] transition-colors cursor-pointer text-left"
                 >
                   Stories From Kitchens
                 </button>
@@ -220,44 +220,41 @@ export default function Footer() {
               </li>
               <li>
                 <span className="text-[#F8F6EF]/50 cursor-default">
-                  Careers (Hiring Dietitians)
+                  Careers (Hiring)
                 </span>
               </li>
             </ul>
           </div>
 
-          {/* Column 4: Legal & Trust */}
-          <div>
-            <h4 className="font-poster text-base text-[#F8F6EF] tracking-wider uppercase mb-4">
+          {/* Column 4: Legal & Trust (Span 2 on mobile with clean border) */}
+          <div className="col-span-2 lg:col-span-1 pt-3 sm:pt-0 border-t border-white/10 sm:border-t-0">
+            <h4 className="font-poster text-xs sm:text-base text-[#F8F6EF] tracking-wider uppercase mb-2 sm:mb-4">
               Legal &amp; Trust
             </h4>
-            <ul className="space-y-2.5 text-xs sm:text-sm font-body font-bold text-[#F8F6EF]/80">
-              <li>
+            <div className="space-y-2 sm:space-y-2.5 text-xs sm:text-sm font-body font-bold text-[#F8F6EF]/80">
+              <div className="flex items-center gap-3 sm:block sm:space-y-2.5 flex-wrap">
                 <Link to="/privacy" className="hover:text-[#8DB445] transition-colors">
                   Privacy Policy
                 </Link>
-              </li>
-              <li>
+                <span className="sm:hidden text-white/30">•</span>
                 <Link to="/terms" className="hover:text-[#8DB445] transition-colors">
                   Terms &amp; Conditions
                 </Link>
-              </li>
-              <li>
-                <span className="text-[#F8F6EF]/60 block leading-relaxed text-xs">
-                  Allergen screening assists meal preparation but does not replace professional medical diagnosis.
-                </span>
-              </li>
-            </ul>
+              </div>
+              <p className="text-[#F8F6EF]/60 block leading-relaxed text-[11px] sm:text-xs pt-1 sm:pt-0 max-w-sm">
+                Allergen screening assists meal preparation but does not replace professional medical diagnosis.
+              </p>
+            </div>
           </div>
         </div>
 
         {/* ── BOTTOM BAR ── */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-bold text-[#F8F6EF]/70">
-          <p>© 2026 FamilyFit. Wholesome Kerala Family Nutrition.</p>
+        <div className="pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-xs font-bold text-[#F8F6EF]/70 text-center sm:text-left">
+          <p>© {new Date().getFullYear()} FamilyFit. Wholesome Kerala Family Nutrition.</p>
 
           <button
             onClick={scrollToTop}
-            className="inline-flex items-center gap-1.5 text-[#F8F6EF] hover:text-[#8DB445] font-black cursor-pointer transition-colors"
+            className="inline-flex items-center gap-1.5 text-[#F8F6EF] hover:text-[#8DB445] font-black cursor-pointer transition-colors py-1.5 px-3 rounded-full bg-white/5 sm:bg-transparent"
           >
             <span>Back to top</span>
             <ArrowUp size={14} strokeWidth={2.5} />

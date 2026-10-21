@@ -1,5 +1,16 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import {
+  Sparkles,
+  Heart,
+  Utensils,
+  Layers,
+  Zap,
+  Dumbbell,
+  Salad,
+  Coffee,
+  Palmtree,
+} from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useFamily } from '../context/FamilyContext'
 import { useTheme } from '../context/ThemeContext'
@@ -10,13 +21,13 @@ import BottomNav from '../components/BottomNav'
 
 // ── FILTER TABS ──
 const FILTER_TABS = [
-  { id: 'All',          label: 'All Recipes (500)', icon: '▦' },
-  { id: 'Saved',        label: 'Saved Recipes',     icon: '♡' },
-  { id: 'Kerala',       label: 'Kerala Specials',   icon: '🌴' },
-  { id: 'Quick',        label: 'Quick Meals',        icon: '⚡' },
-  { id: 'High-Protein', label: 'High-Protein',       icon: '💪' },
-  { id: 'Vegetarian',   label: 'Vegetarian',         icon: '🥗' },
-  { id: 'Breakfast',    label: 'Breakfast',           icon: '☕' },
+  { id: 'All',          label: 'All Recipes (500)', icon: Layers },
+  { id: 'Saved',        label: 'Saved Recipes',     icon: Heart },
+  { id: 'Kerala',       label: 'Kerala Specials',   icon: Palmtree },
+  { id: 'Quick',        label: 'Quick Meals',        icon: Zap },
+  { id: 'High-Protein', label: 'High-Protein',       icon: Dumbbell },
+  { id: 'Vegetarian',   label: 'Vegetarian',         icon: Salad },
+  { id: 'Breakfast',    label: 'Breakfast',           icon: Coffee },
 ]
 
 // Category tag colors matching the reference
@@ -227,6 +238,12 @@ export default function RecipesPage() {
   const [sortBy, setSortBy] = useState('Popular')
 
   useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    if (document.documentElement) document.documentElement.scrollTop = 0
+    if (document.body) document.body.scrollTop = 0
+  }, [])
+
+  useEffect(() => {
     async function load() {
       try {
         const res = await getAllRecipes({ search: search || undefined, tag: activeTab !== 'All' && activeTab !== 'Saved' ? activeTab : undefined }).catch(() => ({ data: null }))
@@ -280,26 +297,30 @@ export default function RecipesPage() {
     <div className="recipes-page" style={{ minHeight: '100vh', background: bg, fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif", color: textPrimary }}>
 
       {/* ── HERO BANNER ── */}
-      <div style={{
-        position: 'relative',
-        background: isDark
-          ? '#0F1A0A url(/kerala_recipes_hero.png) no-repeat center right / cover'
-          : '#EDE8DE url(/kerala_recipes_hero.png) no-repeat center right / cover',
-        overflow: 'hidden',
-        minHeight: 340,
-        display: 'flex',
-        alignItems: 'center',
-        padding: '40px 60px',
-      }}>
-        {/* Left content positioned over blank area */}
-        <div style={{ position: 'relative', zIndex: 2, maxWidth: '50%', flexShrink: 0 }}>
+      <div
+        className="ff-recipes-hero"
+        style={{
+          position: 'relative',
+          background: isDark
+            ? 'linear-gradient(to right, rgba(10, 15, 29, 0.96) 0%, rgba(10, 15, 29, 0.90) 45%, rgba(10, 15, 29, 0.65) 75%, rgba(10, 15, 29, 0.25) 100%), url(/kerala_recipes_hero.png) no-repeat right center / cover'
+            : 'linear-gradient(to right, rgba(248, 246, 241, 0.97) 0%, rgba(248, 246, 241, 0.92) 45%, rgba(248, 246, 241, 0.68) 75%, rgba(248, 246, 241, 0.25) 100%), url(/kerala_recipes_hero.png) no-repeat right center / cover',
+          overflow: 'hidden',
+          minHeight: 340,
+          display: 'flex',
+          alignItems: 'center',
+          padding: '40px 60px',
+          boxSizing: 'border-box',
+        }}
+      >
+        {/* Left content protected by scrim */}
+        <div className="ff-recipes-hero-content" style={{ position: 'relative', zIndex: 2, maxWidth: '50%', flexShrink: 0 }}>
           <span style={{ fontSize: 12, fontWeight: 800, color: green, letterSpacing: 2, textTransform: 'uppercase', display: 'block', marginBottom: 10 }}>
             DISCOVER
           </span>
-          <h1 style={{ fontSize: 44, fontWeight: 900, color: isDark ? '#FFFFFF' : '#111827', margin: '0 0 12px 0', lineHeight: 1.1, letterSpacing: '-0.5px', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+          <h1 className="ff-recipes-hero-title" style={{ fontSize: 44, fontWeight: 900, color: isDark ? '#FFFFFF' : '#111827', margin: '0 0 12px 0', lineHeight: 1.1, letterSpacing: '-0.5px', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
             Kerala Recipes
           </h1>
-          <p style={{ fontSize: 15, color: textMuted, margin: '0 0 28px 0', lineHeight: 1.6, fontWeight: 500 }}>
+          <p style={{ fontSize: 15, color: isDark ? '#CBD5E1' : '#4B5563', margin: '0 0 24px 0', lineHeight: 1.6, fontWeight: 500 }}>
             Authentic South Indian & Malabar meal plans,<br />made simple and wholesome.
           </p>
 
@@ -307,10 +328,11 @@ export default function RecipesPage() {
           <div style={{
             display: 'flex', alignItems: 'center', gap: 10,
             background: isDark ? '#1E293B' : '#FFFFFF',
-            border: `1px solid ${isDark ? '#334155' : '#E5E7EB'}`,
+            border: `1px solid ${isDark ? '#334155' : '#D1D5DB'}`,
             borderRadius: 9999, padding: '8px 8px 8px 20px',
             boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
             maxWidth: 420,
+            width: '100%',
           }}>
             <SearchIcon />
             <input
@@ -329,18 +351,18 @@ export default function RecipesPage() {
             </button>
           </div>
 
-          {/* Stats row */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginTop: 20, fontSize: 13, color: textMuted, fontWeight: 600, flexWrap: 'wrap' }}>
+          {/* Stats row with clear high contrast */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginTop: 20, fontSize: 13, color: isDark ? '#E2E8F0' : '#2D3A20', fontWeight: 650, flexWrap: 'wrap' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ color: green }}>🌿</span> 500+ Recipes
+              <Utensils size={14} color={green} /> 500+ Recipes
             </span>
-            <span style={{ color: '#D1D5DB' }}>|</span>
+            <span style={{ color: isDark ? '#475569' : '#D1D5DB' }}>|</span>
             <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span>🍱</span> Healthy & Wholesome
+              <Sparkles size={14} color={green} /> Healthy & Wholesome
             </span>
-            <span style={{ color: '#D1D5DB' }}>|</span>
+            <span style={{ color: isDark ? '#475569' : '#D1D5DB' }}>|</span>
             <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span>♡</span> Made for Families
+              <Heart size={14} color={green} /> Made for Families
             </span>
           </div>
         </div>
@@ -352,6 +374,7 @@ export default function RecipesPage() {
         <div style={{ display: 'flex', gap: 4, overflowX: 'auto', scrollbarWidth: 'none', padding: '12px 0' }}>
           {FILTER_TABS.map((tab) => {
             const active = activeTab === tab.id
+            const TabIcon = tab.icon
             return (
               <button
                 key={tab.id}
@@ -368,7 +391,7 @@ export default function RecipesPage() {
                   transition: 'all 0.15s ease',
                 }}
               >
-                <span style={{ fontSize: 14 }}>{tab.icon}</span>
+                <TabIcon size={14} color={active ? '#FFFFFF' : textMuted} />
                 <span>{tab.label}</span>
               </button>
             )
@@ -406,7 +429,13 @@ export default function RecipesPage() {
         {/* Recipe Grid */}
         {filtered.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '60px 20px', background: card, borderRadius: 20 }}>
-            <div style={{ fontSize: 40, marginBottom: 12 }}>{activeTab === 'Saved' ? '♡' : '🥗'}</div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
+              {activeTab === 'Saved' ? (
+                <Heart size={36} color={textMuted} />
+              ) : (
+                <Utensils size={36} color={textMuted} />
+              )}
+            </div>
             <div style={{ fontWeight: 800, fontSize: 16, color: textPrimary, marginBottom: 6 }}>
               {activeTab === 'Saved' ? 'No saved recipes yet' : `No recipes found`}
             </div>
@@ -452,20 +481,31 @@ export default function RecipesPage() {
       {/* Responsive CSS */}
       <style dangerouslySetInnerHTML={{ __html: `
         @media (max-width: 1024px) {
+          .ff-recipes-hero-content {
+            max-width: 70% !important;
+          }
           div[style*="grid-template-columns: repeat(4, 1fr)"] {
             grid-template-columns: repeat(2, 1fr) !important;
-          }
-          div[style*="max-width: 50%"] {
-            max-width: 100% !important;
-          }
-          div[style*="padding: 40px 60px"] {
-            padding: 32px 20px !important;
           }
           div[style*="padding: 0 60px"] {
             padding: 0 16px !important;
           }
           div[style*="padding: 32px 60px 60px 60px"] {
             padding: 24px 16px 40px 16px !important;
+          }
+        }
+        @media (max-width: 768px) {
+          .ff-recipes-hero {
+            padding: 28px 18px !important;
+            min-height: auto !important;
+            background-position: right center !important;
+          }
+          .ff-recipes-hero-content {
+            max-width: 100% !important;
+          }
+          .ff-recipes-hero-title {
+            font-size: 30px !important;
+            margin-bottom: 8px !important;
           }
         }
         @media (max-width: 640px) {

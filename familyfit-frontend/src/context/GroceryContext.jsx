@@ -523,9 +523,53 @@ export function GroceryProvider({ children }) {
   const [cart, setCart] = useState(() => {
     try {
       const saved = localStorage.getItem('familyfit_grocery_cart')
-      return saved ? JSON.parse(saved) : {}
-    } catch {
-      return {}
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        if (Object.keys(parsed).length > 0) return parsed
+      }
+    } catch {}
+    // Sensible Kerala staples starter cart for the family
+    return {
+      201: {
+        id: 201,
+        name: 'Ethakka / Nendran Plantain (1 kg)',
+        price: 60,
+        unit: '1 kg',
+        category: 'Produce',
+        quantity: 1,
+      },
+      202: {
+        id: 202,
+        name: 'Tapioca / Kappa (1 kg)',
+        price: 40,
+        unit: '1 kg',
+        category: 'Produce',
+        quantity: 1,
+      },
+      203: {
+        id: 203,
+        name: 'Chena / Elephant Foot Yam (1 kg)',
+        price: 50,
+        unit: '1 kg',
+        category: 'Produce',
+        quantity: 1,
+      },
+      401: {
+        id: 401,
+        name: 'Kerala Matta Rice (5 kg)',
+        price: 320,
+        unit: '5 kg',
+        category: 'Pantry',
+        quantity: 1,
+      },
+      206: {
+        id: 206,
+        name: 'Muringakka / Drumsticks (Pack of 3)',
+        price: 40,
+        unit: 'Pack of 3',
+        category: 'Produce',
+        quantity: 2,
+      },
     }
   })
 

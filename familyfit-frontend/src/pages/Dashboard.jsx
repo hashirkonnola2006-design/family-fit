@@ -8,7 +8,6 @@ import MemberModal from '../components/MemberModal'
 // ── Dashboard Duolingo Components ──
 import GreetingHeader from '../components/dashboard/GreetingHeader'
 import FamilyStrip from '../components/dashboard/FamilyStrip'
-import TodayMeals from '../components/dashboard/TodayMeals'
 import SevereAllergiesCard from '../components/dashboard/SevereAllergiesCard'
 import MemberConditionFoodsCard from '../components/dashboard/MemberConditionFoodsCard'
 import GrocerySnapshot from '../components/dashboard/GrocerySnapshot'
@@ -55,6 +54,13 @@ export default function Dashboard() {
 
   // ── Meal Plan State ──
   const [mealPlan, setMealPlan] = useState(() => getStoredMealPlan(currentDayIndex))
+
+  // Ensure Dashboard starts from top on mount
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    if (document.documentElement) document.documentElement.scrollTop = 0
+    if (document.body) document.body.scrollTop = 0
+  }, [])
 
   // Sync meal plan when switching days
   useEffect(() => {
@@ -142,12 +148,7 @@ export default function Dashboard() {
   }, [selectedDayIndex, showToast])
 
   const handlePlanMealClick = useCallback(() => {
-    const el = document.getElementById('today-meals-card')
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    } else {
-      navigate('/recipes')
-    }
+    navigate('/recipes')
   }, [navigate])
 
   const handleSaveWeight = useCallback((newWeight) => {
@@ -239,22 +240,10 @@ export default function Dashboard() {
         {/* 4. ROW OF PANTRY & DAILY WISDOM CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <GrocerySnapshot />
-          <TipOfTheDay selectedMember={selectedMember} />
+          <TipOfTheDay selectedMember={selectedMember} familyMembers={members} />
         </div>
 
-        {/* 5. TODAY'S MEAL PLAN */}
-        <div id="today-meals-card" className="w-full">
-          <TodayMeals
-            mealPlan={mealPlan}
-            selectedDayIndex={selectedDayIndex}
-            onSelectDay={setSelectedDayIndex}
-            onToggleEaten={handleToggleEaten}
-            onOpenSwap={handleOpenSwap}
-            familyMembers={members}
-          />
-        </div>
-
-        {/* 6. DASHBOARD FOOTER */}
+        {/* 5. DASHBOARD FOOTER */}
         <DashboardFooter />
       </main>
 

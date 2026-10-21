@@ -24,14 +24,7 @@ import { useTheme } from '../context/ThemeContext'
 import MemberAvatar from '../components/MemberAvatar'
 import { RECIPE_DATABASE } from '../data/recipeDatabase'
 
-const CANONICAL_MEMBERS = [
-  { id: 1, name: 'Madhavan', role: 'GRANDFATHER', gender: 'MALE', age: 68, healthConditions: [], allergies: [], avatarKey: 'grandfather' },
-  { id: 2, name: 'Sarada', role: 'GRANDMOTHER', gender: 'FEMALE', age: 65, healthConditions: [], allergies: [], avatarKey: 'grandmother' },
-  { id: 3, name: 'Rajesh', role: 'FATHER', gender: 'MALE', age: 42, healthConditions: [], allergies: [], avatarKey: 'father' },
-  { id: 4, name: 'Deepa', role: 'MOTHER', gender: 'FEMALE', age: 39, healthConditions: [], allergies: [], avatarKey: 'mother', goal: 'HEALTHY' },
-  { id: 5, name: 'Rahul', role: 'SON', gender: 'MALE', age: 14, healthConditions: [], allergies: [], avatarKey: 'son' },
-  { id: 6, name: 'Ananya', role: 'DAUGHTER', gender: 'FEMALE', age: 9, healthConditions: [], allergies: [], avatarKey: 'daughter', role_type: 'CHILD', goal: 'GROWTH' },
-]
+
 
 /**
  * Dynamically evaluates a recipe's suitability for a specific family member using their actual profile data:
@@ -122,20 +115,19 @@ function evaluateMemberRecipeSuitability(recipe, member) {
     }
   }
 
-  // Specific profile check matching Image 1:
-  // If member has no allergy test records on file or is general family:
-  if (['Madhavan', 'Sarada', 'Rajesh', 'Rahul'].includes(member.name)) {
+  // If member has no allergy or condition records on file:
+  if (!member.healthConditions?.length && !member.allergies?.length && !member.fitnessGoal && !member.goal) {
     return {
       isSuitable: true,
       isNeutral: true,
-      statusIcon: 'ℹ',
+      statusIcon: 'i',
       statusBg: '#f3f4f6',
       statusColor: '#6b7280',
       reason: `Not enough health data to assess conflicts yet.`,
     }
   }
 
-  // Safe fallback (e.g. Deepa, Ananya)
+  // Safe fallback
   return {
     isSuitable: true,
     isNeutral: false,
@@ -156,9 +148,14 @@ export default function RecipeDetailPage() {
   const [checkedIngredients, setCheckedIngredients] = useState({})
   const [toastMessage, setToastMessage] = useState('')
 
-  const rawMembers = family?.members || []
-  // Ensure all 6 canonical family members are presented nicely as in Image 1
-  const displayMembers = rawMembers.length >= 6 ? rawMembers : CANONICAL_MEMBERS
+  const displayMembers = family?.members || []
+
+  // Ensure page immediately starts from the top when opening a recipe
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    if (document.documentElement) document.documentElement.scrollTop = 0
+    if (document.body) document.body.scrollTop = 0
+  }, [id])
 
   useEffect(() => {
     async function load() {
@@ -288,8 +285,25 @@ export default function RecipeDetailPage() {
       </div>
 
       {/* ── MAIN CONTENT CANVAS (Max 1440px) ── */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10 relative z-10">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 relative z-10">
         
+        {/* ── BREADCRUMB / BACK TO RECIPES BAR ── */}
+        <div className="mb-4 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => navigate('/recipes')}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-bold text-[#1E3A20] hover:text-[#174A2E] shadow-xs border border-[#E4DEC9] transition-all cursor-pointer group"
+            style={{ backgroundColor: '#FFFFFF' }}
+          >
+            <ChevronLeft size={16} strokeWidth={2.8} className="transition-transform group-hover:-translate-x-0.5 text-[#1E3A20]" />
+            <span>Back to Recipes</span>
+          </button>
+          <span className="text-xs text-[#8A9B8D]">•</span>
+          <span className="text-xs text-[#526656] font-semibold truncate max-w-[200px] sm:max-w-md">
+            {recipe.name}
+          </span>
+        </div>
+
         {/* ── 1. TOP HERO SECTION (Split 2-Column on Desktop) ── */}
         <section
           aria-label="Recipe Overview"
@@ -310,15 +324,29 @@ export default function RecipeDetailPage() {
                 <div className="flex items-center gap-2.5">
                   {/* Back button */}
                   <button
-                    onClick={() => navigate(-1)}
+                    type="button"
+                    onClick={() => navigate('/recipes')}
                     aria-label="Back to recipes"
-                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 backdrop-blur-xs text-[#1E3A20] hover:text-[#244C27] flex items-center justify-center shadow-md hover:bg-white transition-all cursor-pointer"
+                    title="Back to Recipes"
+                    className="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition-all cursor-pointer hover:scale-105 active:scale-95 shrink-0"
+                    style={{
+                      backgroundColor: '#FFFFFF',
+                      color: '#1E3A20',
+                      boxShadow: '0 4px 16px rgba(0, 0, 0, 0.22)',
+                      border: '1.5px solid rgba(255, 255, 255, 0.95)',
+                    }}
                   >
-                    <ChevronLeft size={20} strokeWidth={2.6} />
+                    <ChevronLeft size={22} strokeWidth={2.8} color="#1E3A20" />
                   </button>
 
                   {/* Badge */}
-                  <div className="bg-white/95 backdrop-blur-xs px-3.5 py-1.5 rounded-full text-xs font-bold text-[#1E3A20] shadow-md flex items-center gap-1.5 border border-white/70">
+                  <div
+                    className="px-3.5 py-1.5 rounded-full text-xs font-bold text-[#1E3A20] shadow-md flex items-center gap-1.5 border border-white/80"
+                    style={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                      backdropFilter: 'blur(8px)',
+                    }}
+                  >
                     <Leaf size={14} className="text-[#2F5233]" strokeWidth={2.4} />
                     <span>{recipe.matchBadgeText || 'High Protein Breakfast'}</span>
                   </div>
@@ -326,13 +354,20 @@ export default function RecipeDetailPage() {
 
                 {/* Favorite Heart Button */}
                 <button
+                  type="button"
                   onClick={handleToggleSaved}
                   aria-label={isFavorited ? 'Remove from saved' : 'Save recipe'}
-                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 backdrop-blur-xs flex items-center justify-center shadow-md hover:bg-white transition-all cursor-pointer"
+                  title={isFavorited ? 'Remove from saved' : 'Save recipe'}
+                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition-all cursor-pointer hover:scale-105 active:scale-95 shrink-0"
+                  style={{
+                    backgroundColor: '#FFFFFF',
+                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.22)',
+                    border: '1.5px solid rgba(255, 255, 255, 0.95)',
+                  }}
                 >
                   <Heart
-                    size={18}
-                    strokeWidth={2.2}
+                    size={20}
+                    strokeWidth={2.4}
                     className={isFavorited ? 'fill-[#EF4444] text-[#EF4444]' : 'text-[#1E3A20]'}
                   />
                 </button>
@@ -531,62 +566,75 @@ export default function RecipeDetailPage() {
               </div>
 
               {/* Members List */}
-              <div className="space-y-1.5 sm:space-y-2">
-                {displayMembers.map((member) => {
-                  const evalResult = evaluateMemberRecipeSuitability(recipe, member)
-                  return (
-                    <div
-                      key={member.id}
-                      onClick={() => navigate('/profile')}
-                      className="flex items-center gap-3 p-2 sm:p-2.5 rounded-2xl hover:bg-[#F9F8F3] transition-colors border border-transparent hover:border-[#EFEBE0] cursor-pointer"
-                    >
-                      {/* Avatar with authentic illustrated SVG portrait matching Image 1 */}
-                      <MemberAvatar member={member} size={38} use3d={false} />
+              {displayMembers.length === 0 ? (
+                <div className="py-6 px-4 text-center space-y-2 bg-[#F9F8F3] rounded-2xl border border-dashed border-[#DFDACB]">
+                  <Users size={22} className="text-[#8FA393] mx-auto" />
+                  <p className="text-xs font-semibold text-[#5B7060]">No family members added yet.</p>
+                  <button
+                    onClick={() => navigate('/profile')}
+                    className="text-xs font-bold text-[#1E3A20] hover:underline cursor-pointer"
+                  >
+                    Add Members in Profile &rarr;
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-1.5 sm:space-y-2">
+                  {displayMembers.map((member) => {
+                    const evalResult = evaluateMemberRecipeSuitability(recipe, member)
+                    return (
+                      <div
+                        key={member.id}
+                        onClick={() => navigate('/profile')}
+                        className="flex items-center gap-3 p-2 sm:p-2.5 rounded-2xl hover:bg-[#F9F8F3] transition-colors border border-transparent hover:border-[#EFEBE0] cursor-pointer"
+                      >
+                        {/* Avatar with authentic illustrated SVG portrait matching Image 1 */}
+                        <MemberAvatar member={member} size={38} use3d={false} />
 
-                      {/* Middle Details */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-baseline gap-1.5">
-                          <span className="font-bold text-xs sm:text-sm text-[#1E3A20] truncate">
-                            {member.name}
-                          </span>
-                          <span className="text-[11px] font-medium text-[#738575] capitalize">
-                            ({member.role?.toLowerCase() || 'member'})
-                          </span>
+                        {/* Middle Details */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-baseline gap-1.5">
+                            <span className="font-bold text-xs sm:text-sm text-[#1E3A20] truncate">
+                              {member.name}
+                            </span>
+                            <span className="text-[11px] font-medium text-[#738575] capitalize">
+                              ({member.role?.toLowerCase() || 'member'})
+                            </span>
+                          </div>
+
+                          {/* Status Line */}
+                          <div className="flex items-center gap-1.5 mt-0.5">
+                            {evalResult.isNeutral ? (
+                              <>
+                                <Info size={13} className="text-[#9CA3AF] shrink-0" />
+                                <span className="text-[11px] sm:text-xs text-[#6B7280] truncate">
+                                  Not enough health data to assess conflicts yet.
+                                </span>
+                              </>
+                            ) : evalResult.isSuitable ? (
+                              <>
+                                <CheckCircle2 size={13} className="text-[#16A34A] shrink-0" />
+                                <span className="text-[11px] sm:text-xs text-[#2E7D32] truncate">
+                                  Safe for {member.name} — no allergen or diet conflicts found.
+                                </span>
+                              </>
+                            ) : (
+                              <>
+                                <AlertTriangle size={13} className="text-[#DC2626] shrink-0" />
+                                <span className="text-[11px] sm:text-xs text-[#DC2626] truncate">
+                                  {evalResult.reason}
+                                </span>
+                              </>
+                            )}
+                          </div>
                         </div>
 
-                        {/* Status Line */}
-                        <div className="flex items-center gap-1.5 mt-0.5">
-                          {evalResult.isNeutral ? (
-                            <>
-                              <Info size={13} className="text-[#9CA3AF] shrink-0" />
-                              <span className="text-[11px] sm:text-xs text-[#6B7280] truncate">
-                                Not enough health data to assess conflicts yet.
-                              </span>
-                            </>
-                          ) : evalResult.isSuitable ? (
-                            <>
-                              <CheckCircle2 size={13} className="text-[#16A34A] shrink-0" />
-                              <span className="text-[11px] sm:text-xs text-[#2E7D32] truncate">
-                                Safe for {member.name} — no allergen or diet conflicts found.
-                              </span>
-                            </>
-                          ) : (
-                            <>
-                              <AlertTriangle size={13} className="text-[#DC2626] shrink-0" />
-                              <span className="text-[11px] sm:text-xs text-[#DC2626] truncate">
-                                {evalResult.reason}
-                              </span>
-                            </>
-                          )}
-                        </div>
+                        {/* Right Chevron */}
+                        <ChevronRight size={16} className="text-[#B5C2B7] shrink-0" />
                       </div>
-
-                      {/* Right Chevron */}
-                      <ChevronRight size={16} className="text-[#B5C2B7] shrink-0" />
-                    </div>
-                  )
-                })}
-              </div>
+                    )
+                  })}
+                </div>
+              )}
             </div>
           </div>
 

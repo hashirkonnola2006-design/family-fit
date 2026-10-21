@@ -5,111 +5,27 @@ import { fetchCloudMembers, syncMembersToCloud } from '../utils/cloudSync'
 
 const FamilyContext = createContext(null)
 
-const DEFAULT_SEEDED_MEMBERS = [
-  {
-    id: 1,
-    name: 'Madhavan',
-    role: 'GRANDFATHER',
-    gender: 'MALE',
-    age: 68,
-    height: 168,
-    weight: 65,
-    activityLevel: 'SEDENTARY',
-    healthConditions: ['Diabetes'],
-    allergies: [],
-    goal: 'Low sugar',
-    calorieTarget: 1750,
-    avatarKey: 'grandfather',
-    themeColor: '#58CC02',
-  },
-  {
-    id: 2,
-    name: 'Sarada',
-    role: 'GRANDMOTHER',
-    gender: 'FEMALE',
-    age: 65,
-    height: 155,
-    weight: 60,
-    activityLevel: 'LIGHTLY_ACTIVE',
-    healthConditions: ['High Blood Pressure'],
-    allergies: [],
-    goal: 'Heart care',
-    calorieTarget: 1600,
-    avatarKey: 'grandmother',
-    themeColor: '#FF9600',
-  },
-  {
-    id: 3,
-    name: 'Rajesh',
-    role: 'FATHER',
-    gender: 'MALE',
-    age: 42,
-    height: 175,
-    weight: 78,
-    activityLevel: 'MODERATELY_ACTIVE',
-    healthConditions: [],
-    allergies: [],
-    goal: 'Lose weight',
-    calorieTarget: 2100,
-    avatarKey: 'father',
-    themeColor: '#1CB0F6',
-  },
-  {
-    id: 4,
-    name: 'Deepa',
-    role: 'MOTHER',
-    gender: 'FEMALE',
-    age: 38,
-    height: 162,
-    weight: 58,
-    activityLevel: 'MODERATELY_ACTIVE',
-    healthConditions: [],
-    allergies: ['Peanuts/Tree Nuts'],
-    goal: 'Maintain weight',
-    calorieTarget: 1850,
-    avatarKey: 'mother',
-    themeColor: '#CE82FF',
-  },
-  {
-    id: 5,
-    name: 'Rahul',
-    role: 'SON',
-    gender: 'MALE',
-    age: 12,
-    height: 145,
-    weight: 38,
-    activityLevel: 'VERY_ACTIVE',
-    healthConditions: [],
-    allergies: [],
-    goal: 'Gain muscle',
-    calorieTarget: 2000,
-    avatarKey: 'son',
-    themeColor: '#FFC800',
-  },
-  {
-    id: 6,
-    name: 'Ananya',
-    role: 'DAUGHTER',
-    gender: 'FEMALE',
-    age: 8,
-    height: 125,
-    weight: 24,
-    activityLevel: 'VERY_ACTIVE',
-    healthConditions: [],
-    allergies: ['Milk/Dairy'],
-    goal: 'Grow healthy',
-    calorieTarget: 1650,
-    avatarKey: 'daughter',
-    themeColor: '#FF4B4B',
-  },
-]
+const SAMPLE_MEMBER_NAMES = ['madhavan', 'sarada', 'rajesh', 'deepa', 'rahul', 'ananya']
+
+export function isSampleMember(m) {
+  if (!m) return false
+  const name = String(m.name || '').trim().toLowerCase()
+  return SAMPLE_MEMBER_NAMES.includes(name)
+}
+
+const DEFAULT_SEEDED_MEMBERS = []
 
 export function getDeletedMemberIds() {
   try {
     const raw = localStorage.getItem('familyfit_deleted_member_ids')
-    return raw ? JSON.parse(raw) : []
+    const ids = raw ? JSON.parse(raw) : []
+    // Ensure sample members are permanently registered as deleted
+    SAMPLE_MEMBER_NAMES.forEach((name) => {
+      if (!ids.includes(name)) ids.push(name)
+    })
+    return ids
   } catch {
-    return []
+    return [...SAMPLE_MEMBER_NAMES]
   }
 }
 
@@ -126,6 +42,7 @@ export function addDeletedMemberId(id) {
 
 function isMemberDeleted(m, deletedIds) {
   if (!m) return true
+  if (isSampleMember(m)) return true
   const idStr = String(m.id || '').toLowerCase()
   const nameStr = String(m.name || '').toLowerCase()
   return deletedIds.includes(idStr) || deletedIds.includes(nameStr)
@@ -138,21 +55,26 @@ function getSafeLocalMembers() {
     if (saved) {
       const parsed = JSON.parse(saved)
       if (Array.isArray(parsed)) {
-        return parsed.filter((m) => !isMemberDeleted(m, deletedIds))
+        const cleaned = parsed.filter((m) => !isMemberDeleted(m, deletedIds) && !isSampleMember(m))
+        if (cleaned.length !== parsed.length) {
+          localStorage.setItem('familyfit_members', JSON.stringify(cleaned))
+          syncMembersToCloud(cleaned)
+        }
+        return cleaned
       }
     }
   } catch (err) {
     console.warn('Could not read familyfit_members from localStorage:', err)
   }
-  return DEFAULT_SEEDED_MEMBERS.filter((m) => !isMemberDeleted(m, deletedIds))
+  return []
 }
 
 // Smart merger function to ensure no added member is ever lost, while respecting deleted members
 function mergeMemberLists(listA = [], listB = []) {
   const deletedIds = getDeletedMemberIds()
   const map = new Map()
-  const safeA = (Array.isArray(listA) ? listA : []).filter((m) => !isMemberDeleted(m, deletedIds))
-  const safeB = (Array.isArray(listB) ? listB : []).filter((m) => !isMemberDeleted(m, deletedIds))
+  const safeA = (Array.isArray(listA) ? listA : []).filter((m) => !isMemberDeleted(m, deletedIds) && !isSampleMember(m))
+  const safeB = (Array.isArray(listB) ? listB : []).filter((m) => !isMemberDeleted(m, deletedIds) && !isSampleMember(m))
 
   safeA.forEach((m) => {
     if (m && (m.id || m.name)) {
@@ -221,6 +143,11 @@ export function FamilyProvider({ children }) {
         setActiveMember((prev) => prev || merged[0])
         // Also push merged state to cloud sync to keep both devices in harmony
         syncMembersToCloud(merged)
+      } else {
+        setFamily((prev) => ({ ...prev, members: [] }))
+        try { localStorage.setItem('familyfit_members', JSON.stringify([])) } catch {}
+        setActiveMember(null)
+        syncMembersToCloud([])
       }
     } catch (e) {
       setError(e.message)
@@ -235,11 +162,14 @@ export function FamilyProvider({ children }) {
     // Window focus / poll listener that MERGES instead of overwriting
     const onSyncCheck = () => {
       fetchCloudMembers().then((cloudMembers) => {
-        if (cloudMembers && Array.isArray(cloudMembers) && cloudMembers.length > 0) {
+        if (cloudMembers && Array.isArray(cloudMembers)) {
           setFamily((prev) => {
             const currentMembers = prev?.members || []
             const merged = mergeMemberLists(currentMembers, cloudMembers)
             localStorage.setItem('familyfit_members', JSON.stringify(merged))
+            if (merged.length === 0 && cloudMembers.length > 0) {
+              syncMembersToCloud([])
+            }
             return { ...prev, members: merged }
           })
         }
