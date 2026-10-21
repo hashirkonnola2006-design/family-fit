@@ -7,7 +7,7 @@ import './index.css'
 const rawApiUrl = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '')
 if (typeof window !== 'undefined') {
   try {
-    const healthUrl = rawApiUrl ? `${rawApiUrl}/health` : '/health'
+    const healthUrl = rawApiUrl ? `${rawApiUrl}/healthz` : '/healthz'
     fetch(healthUrl, { method: 'GET', mode: 'cors', credentials: 'omit' }).catch(() => {})
   } catch (_) {
     // Silently ignore ping errors

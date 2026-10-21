@@ -1,416 +1,16 @@
 {
-  "updatedAt": "2026-10-20T18:51:35.882Z",
+  "updatedAt": "2026-10-21T05:33:44.684Z",
   "source": "data.gov.in Agmarknet Kerala Mandis",
   "items": [
     {
-      "commodity": "Cowpea(Veg)",
-      "market": "Mananthavady Market",
-      "district": "Wayanad",
-      "variety": "Cowpea (Veg)",
-      "minPerKg": 38,
-      "maxPerKg": 40,
-      "modalPerKg": 39,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Amaranthus",
-      "market": "Cherthala Market",
-      "district": "Alappuzha",
-      "variety": "Amaranthus",
-      "minPerKg": 80,
-      "maxPerKg": 82,
-      "modalPerKg": 81,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ashgourd",
-      "market": "Cherthala Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 28,
-      "maxPerKg": 30,
-      "modalPerKg": 29,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Cherthala Market",
-      "district": "Alappuzha",
-      "variety": "Bhindi",
-      "minPerKg": 40,
-      "maxPerKg": 42,
-      "modalPerKg": 41,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Brinjal",
-      "market": "Cherthala Market",
-      "district": "Alappuzha",
-      "variety": "Brinjal",
-      "minPerKg": 32,
-      "maxPerKg": 37,
-      "modalPerKg": 34,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Carrot",
-      "market": "Cherthala Market",
-      "district": "Alappuzha",
-      "variety": "Carrot",
-      "minPerKg": 52,
-      "maxPerKg": 56,
-      "modalPerKg": 54,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Cherthala Market",
-      "district": "Alappuzha",
-      "variety": "Onion",
-      "minPerKg": 40,
-      "maxPerKg": 42,
-      "modalPerKg": 41,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pumpkin",
-      "market": "Cherthala Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 20,
-      "maxPerKg": 22,
-      "modalPerKg": 21,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Coconut Oil",
-      "market": "Thalasserry Market",
-      "district": "Kannur",
-      "variety": "Other",
-      "minPerKg": 255,
-      "maxPerKg": 265,
-      "modalPerKg": 260,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Carrot",
-      "market": "Thalasserry Market",
-      "district": "Kannur",
-      "variety": "Carrot",
-      "minPerKg": 35,
-      "maxPerKg": 45,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Thalasserry Market",
-      "district": "Kannur",
-      "variety": "Other",
-      "minPerKg": 72,
-      "maxPerKg": 83,
-      "modalPerKg": 76,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Palayamthodan",
-      "minPerKg": 23,
-      "maxPerKg": 25,
-      "modalPerKg": 24,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ashgourd",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 30,
-      "maxPerKg": 35,
-      "modalPerKg": 32,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana - Green",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 53,
-      "maxPerKg": 58,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 30,
-      "maxPerKg": 35,
-      "modalPerKg": 32,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "French Beans(Frasbean)",
-      "market": "Kattappana Market",
-      "district": "Idukki",
+      "commodity": "Orange",
+      "market": "Mukkom Market",
+      "district": "Kozhikode(Calicut)",
       "variety": "Other",
       "minPerKg": 65,
       "maxPerKg": 75,
       "modalPerKg": 70,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cucumbar(Kheera)",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 30,
-      "maxPerKg": 34,
-      "modalPerKg": 32,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Brinjal",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 38,
-      "maxPerKg": 45,
-      "modalPerKg": 42,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Carrot",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 52,
-      "maxPerKg": 58,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Potato",
-      "market": "Punalur Market",
-      "district": "Kollam",
-      "variety": "Potato",
-      "minPerKg": 30,
-      "maxPerKg": 35,
-      "modalPerKg": 32,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Red Banana",
-      "minPerKg": 76,
-      "maxPerKg": 76,
-      "modalPerKg": 76,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cauliflower",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Cauliflower",
-      "minPerKg": 70,
-      "maxPerKg": 70,
-      "modalPerKg": 70,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tapioca",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 38,
-      "maxPerKg": 38,
-      "modalPerKg": 38,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Green Chilli",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Green Chilly",
-      "minPerKg": 55,
-      "maxPerKg": 57,
-      "modalPerKg": 56,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana - Green",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Banana - Green",
-      "minPerKg": 69,
-      "maxPerKg": 71,
-      "modalPerKg": 70,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Garlic",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Garlic",
-      "minPerKg": 194,
-      "maxPerKg": 196,
-      "modalPerKg": 195,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bottle gourd",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Bottle Gourd",
-      "minPerKg": 30,
-      "maxPerKg": 32,
-      "modalPerKg": 31,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cabbage",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Cabbage",
-      "minPerKg": 28,
-      "maxPerKg": 30,
-      "modalPerKg": 29,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Small",
-      "minPerKg": 90,
-      "maxPerKg": 98,
-      "modalPerKg": 94,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Coconut",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Other",
-      "minPerKg": 61,
-      "maxPerKg": 63,
-      "modalPerKg": 62,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Bhindi",
-      "minPerKg": 32,
-      "maxPerKg": 36,
-      "modalPerKg": 34,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tomato",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Other",
-      "minPerKg": 32,
-      "maxPerKg": 36,
-      "modalPerKg": 34,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tomato",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Tomato",
-      "minPerKg": 42,
-      "maxPerKg": 46,
-      "modalPerKg": 44,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Carrot",
-      "market": "Pala Market",
-      "district": "Kottayam",
-      "variety": "Carrot",
-      "minPerKg": 40,
-      "maxPerKg": 50,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cucumbar(Kheera)",
-      "market": "Pala Market",
-      "district": "Kottayam",
-      "variety": "Cucumbar",
-      "minPerKg": 60,
-      "maxPerKg": 70,
-      "modalPerKg": 65,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tomato",
-      "market": "Sasthamkotta Market",
-      "district": "Kollam",
-      "variety": "Tomato",
-      "minPerKg": 30,
-      "maxPerKg": 30,
-      "modalPerKg": 30,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Yam(Ratalu)",
-      "market": "Sasthamkotta Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 50,
-      "maxPerKg": 50,
-      "modalPerKg": 50,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Sweet Potato",
-      "market": "Sasthamkotta Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 40,
-      "maxPerKg": 40,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Kallachi Market",
-      "district": "Kozhikode(Calicut)",
-      "variety": "Bitter Gourd",
-      "minPerKg": 66,
-      "maxPerKg": 70,
-      "modalPerKg": 68,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bottle gourd",
-      "market": "Kallachi Market",
-      "district": "Kozhikode(Calicut)",
-      "variety": "Bottle Gourd",
-      "minPerKg": 33,
-      "maxPerKg": 37,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Carrot",
-      "market": "Kallachi Market",
-      "district": "Kozhikode(Calicut)",
-      "variety": "Carrot",
-      "minPerKg": 43,
-      "maxPerKg": 47,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
+      "arrivalDate": "21/10/2026"
     },
     {
       "commodity": "Banana - Green",
@@ -420,7 +20,7 @@
       "minPerKg": 60,
       "maxPerKg": 65,
       "modalPerKg": 60,
-      "arrivalDate": "20/10/2026"
+      "arrivalDate": "21/10/2026"
     },
     {
       "commodity": "Bottle gourd",
@@ -430,6157 +30,817 @@
       "minPerKg": 25,
       "maxPerKg": 30,
       "modalPerKg": 25,
-      "arrivalDate": "20/10/2026"
+      "arrivalDate": "21/10/2026"
     },
     {
       "commodity": "Beetroot",
-      "market": "Neyyatinkara Market",
-      "district": "Thiruvananthapuram",
+      "market": "Harippad Market",
+      "district": "Alappuzha",
       "variety": "Beetroot",
-      "minPerKg": 54,
-      "maxPerKg": 60,
-      "modalPerKg": 56,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Neyyatinkara Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Bhindi",
-      "minPerKg": 34,
-      "maxPerKg": 40,
-      "modalPerKg": 37,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Green Chilli",
-      "market": "Neyyatinkara Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Green Chilly",
-      "minPerKg": 75,
-      "maxPerKg": 80,
-      "modalPerKg": 77,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cabbage",
-      "market": "Neyyatinkara Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Other",
-      "minPerKg": 34,
-      "maxPerKg": 40,
-      "modalPerKg": 37,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cucumbar(Kheera)",
-      "market": "Neyyatinkara Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Cucumbar",
-      "minPerKg": 34,
-      "maxPerKg": 40,
-      "modalPerKg": 37,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Duster Beans",
-      "market": "Neyyatinkara Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Other",
-      "minPerKg": 54,
-      "maxPerKg": 60,
-      "modalPerKg": 56,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pumpkin",
-      "market": "Neyyatinkara Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Other",
-      "minPerKg": 23,
-      "maxPerKg": 30,
-      "modalPerKg": 26,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana - Green",
-      "market": "Vamanapuram Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Other",
-      "minPerKg": 65,
-      "maxPerKg": 70,
-      "modalPerKg": 65,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cucumbar(Kheera)",
-      "market": "Vamanapuram Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Other",
-      "minPerKg": 25,
-      "maxPerKg": 30,
-      "modalPerKg": 25,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Snakeguard",
-      "market": "Vamanapuram Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Other",
-      "minPerKg": 40,
-      "maxPerKg": 45,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana - Green",
-      "market": "Ettumanoor Market",
-      "district": "Kottayam",
-      "variety": "Banana - Green",
-      "minPerKg": 50,
-      "maxPerKg": 60,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Green Chilli",
-      "market": "Ettumanoor Market",
-      "district": "Kottayam",
-      "variety": "Green Chilly",
-      "minPerKg": 50,
-      "maxPerKg": 54,
-      "modalPerKg": 52,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Potato",
-      "market": "Ettumanoor Market",
-      "district": "Kottayam",
-      "variety": "Potato",
-      "minPerKg": 28,
-      "maxPerKg": 30,
-      "modalPerKg": 29,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Kodikulam  VFPCK Market",
-      "district": "Idukki",
-      "variety": "Nendra Bale",
-      "minPerKg": 50,
-      "maxPerKg": 52,
-      "modalPerKg": 51,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Brinjal",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Other",
-      "minPerKg": 33,
-      "maxPerKg": 35,
-      "modalPerKg": 34,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Green Chilli",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Other",
-      "minPerKg": 52,
-      "maxPerKg": 54,
-      "modalPerKg": 53,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Elephant Yam(Suran)/Amorphophallus",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Elephant Yam (Suran)",
-      "minPerKg": 38,
-      "maxPerKg": 40,
-      "modalPerKg": 39,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tomato",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Other",
-      "minPerKg": 28,
-      "maxPerKg": 28.5,
-      "modalPerKg": 28.5,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Poovan",
-      "minPerKg": 50,
-      "maxPerKg": 55,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Brinjal",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Brinjal",
       "minPerKg": 55,
       "maxPerKg": 60,
       "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
+      "arrivalDate": "21/10/2026"
     },
     {
-      "commodity": "Cucumbar(Kheera)",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Cucumbar",
-      "minPerKg": 55,
-      "maxPerKg": 70,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Elephant Yam(Suran)/Amorphophallus",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Other",
-      "minPerKg": 35,
-      "maxPerKg": 40,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ginger(Green)",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Green Ginger",
-      "minPerKg": 250,
-      "maxPerKg": 260,
-      "modalPerKg": 260,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pumpkin",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Pumpkin",
-      "minPerKg": 25,
-      "maxPerKg": 30,
-      "modalPerKg": 30,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Kadakkal  VFPCK Market",
-      "district": "Kollam",
-      "variety": "Red Banana",
-      "minPerKg": 70,
-      "maxPerKg": 70,
-      "modalPerKg": 70,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Kadakkal  VFPCK Market",
-      "district": "Kollam",
-      "variety": "Banana - Ripe",
-      "minPerKg": 75,
-      "maxPerKg": 75,
-      "modalPerKg": 75,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Vayala  VFPCK Market",
-      "district": "Kottayam",
-      "variety": "Nendra Bale",
-      "minPerKg": 68,
-      "maxPerKg": 68,
-      "modalPerKg": 68,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Kanjoor VFPCK Market",
+      "commodity": "Beetroot",
+      "market": "Perumbavoor Market",
       "district": "Ernakulam",
-      "variety": "Palayamthodan",
-      "minPerKg": 23,
-      "maxPerKg": 26,
-      "modalPerKg": 25,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ashgourd",
-      "market": "Ranniangadi Market",
-      "district": "Pathanamthitta",
-      "variety": "Ashgourd",
-      "minPerKg": 20,
-      "maxPerKg": 22,
-      "modalPerKg": 20,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Chelakkara Market",
-      "district": "Thirssur",
-      "variety": "Bhindi",
-      "minPerKg": 58,
-      "maxPerKg": 60,
-      "modalPerKg": 59,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Chelakkara Market",
-      "district": "Thirssur",
-      "variety": "Big",
-      "minPerKg": 55,
-      "maxPerKg": 58,
-      "modalPerKg": 56,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Potato",
-      "market": "Chelakkara Market",
-      "district": "Thirssur",
-      "variety": "Potato",
-      "minPerKg": 30,
-      "maxPerKg": 35,
-      "modalPerKg": 32,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ashgourd",
-      "market": "Irinjalakkuda Market",
-      "district": "Thirssur",
-      "variety": "Ashgourd",
-      "minPerKg": 25,
-      "maxPerKg": 26,
-      "modalPerKg": 25,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Carrot",
-      "market": "Thrissur Market",
-      "district": "Thirssur",
-      "variety": "Carrot",
-      "minPerKg": 45,
-      "maxPerKg": 45,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cauliflower",
-      "market": "Thrissur Market",
-      "district": "Thirssur",
-      "variety": "Cauliflower",
-      "minPerKg": 50,
-      "maxPerKg": 50,
-      "modalPerKg": 50,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Snakeguard",
-      "market": "Thrissur Market",
-      "district": "Thirssur",
-      "variety": "Snakeguard",
-      "minPerKg": 45,
-      "maxPerKg": 45,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bottle gourd",
-      "market": "Kattakada Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Other",
-      "minPerKg": 60,
-      "maxPerKg": 65,
-      "modalPerKg": 60,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tapioca",
-      "market": "Kattakada Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Other",
-      "minPerKg": 35,
-      "maxPerKg": 35,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Coconut Oil",
-      "market": "Kannur Market",
-      "district": "Kannur",
-      "variety": "Other",
-      "minPerKg": 275,
-      "maxPerKg": 285,
-      "modalPerKg": 280,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Black pepper",
-      "market": "Kannur Market",
-      "district": "Kannur",
-      "variety": "Other",
-      "minPerKg": 670,
-      "maxPerKg": 690,
-      "modalPerKg": 680,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cowpea(Veg)",
-      "market": "Kannur Market",
-      "district": "Kannur",
-      "variety": "Cowpea (Veg)",
-      "minPerKg": 38,
-      "maxPerKg": 41,
-      "modalPerKg": 39,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Kannur Market",
-      "district": "Kannur",
-      "variety": "Onion",
-      "minPerKg": 56,
-      "maxPerKg": 58,
-      "modalPerKg": 57,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Coconut Seed",
-      "market": "Aymanam VFPCK Market",
-      "district": "Kottayam",
-      "variety": "Coconut Seed",
-      "minPerKg": 50,
-      "maxPerKg": 53,
-      "modalPerKg": 52,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Vempally  VFPCK Market",
-      "district": "Kottayam",
-      "variety": "Palayamthodan",
-      "minPerKg": 25,
-      "maxPerKg": 27,
-      "modalPerKg": 26,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Brinjal",
-      "market": "Kollengode VFPCK Market",
-      "district": "Palakad",
-      "variety": "Brinjal",
-      "minPerKg": 40,
-      "maxPerKg": 40,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bottle gourd",
-      "market": "Kollengode VFPCK Market",
-      "district": "Palakad",
-      "variety": "Bottle Gourd",
-      "minPerKg": 20,
-      "maxPerKg": 20,
-      "modalPerKg": 20,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ashgourd",
-      "market": "Puthupariyaram  VFPCK Market",
-      "district": "Palakad",
-      "variety": "Ashgourd",
-      "minPerKg": 15,
-      "maxPerKg": 15,
-      "modalPerKg": 15,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Enadimangalam VFPCK Market",
-      "district": "Pathanamthitta",
-      "variety": "Nendra Bale",
-      "minPerKg": 60,
-      "maxPerKg": 65,
-      "modalPerKg": 62,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Thrikkodithanam  VFPCK Market",
-      "district": "Kottayam",
-      "variety": "Nendra Bale",
-      "minPerKg": 70,
-      "maxPerKg": 75,
-      "modalPerKg": 75,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Balaramapuram  VFPCK Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Nendra Bale",
-      "minPerKg": 65,
-      "maxPerKg": 71,
-      "modalPerKg": 68,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cowpea(Veg)",
-      "market": "Chelakkara VFPCK Market",
-      "district": "Thirssur",
-      "variety": "Other",
-      "minPerKg": 45,
-      "maxPerKg": 50,
-      "modalPerKg": 50,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Indian Beans(Seam)",
-      "market": "Pampady Market",
-      "district": "Kottayam",
-      "variety": "Other",
-      "minPerKg": 50,
-      "maxPerKg": 60,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Little gourd(Kundru)",
-      "market": "Pampady Market",
-      "district": "Kottayam",
-      "variety": "Other",
+      "variety": "Beetroot",
       "minPerKg": 40,
       "maxPerKg": 50,
       "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Amaranthus",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Amaranthus",
+      "minPerKg": 20,
+      "maxPerKg": 30,
+      "modalPerKg": 25,
+      "arrivalDate": "21/10/2026"
     },
     {
       "commodity": "Mango(Raw-Ripe)",
-      "market": "Pampady Market",
-      "district": "Kottayam",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
       "variety": "Mango - Raw-Ripe",
+      "minPerKg": 90,
+      "maxPerKg": 100,
+      "modalPerKg": 95,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Tomato",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Tomato",
+      "minPerKg": 30,
+      "maxPerKg": 40,
+      "modalPerKg": 35,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Tapioca",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Tapioca",
+      "minPerKg": 25,
+      "maxPerKg": 35,
+      "modalPerKg": 30,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Indian Beans(Seam)",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Indian Beans (Seam)",
+      "minPerKg": 75,
+      "maxPerKg": 85,
+      "modalPerKg": 80,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Pineapple",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Pine Apple",
       "minPerKg": 50,
       "maxPerKg": 60,
       "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
+      "arrivalDate": "21/10/2026"
     },
     {
-      "commodity": "Bitter gourd",
-      "market": "Pampady Market",
-      "district": "Kottayam",
-      "variety": "Bitter Gourd",
-      "minPerKg": 60,
-      "maxPerKg": 70,
-      "modalPerKg": 65,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ginger(Green)",
-      "market": "Pampady Market",
-      "district": "Kottayam",
-      "variety": "Green Ginger",
-      "minPerKg": 170,
-      "maxPerKg": 225,
-      "modalPerKg": 200,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Kalluvathukkal VFPCK Market",
-      "district": "Kollam",
-      "variety": "Nendra Bale",
-      "minPerKg": 65,
-      "maxPerKg": 65,
-      "modalPerKg": 65,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Garlic",
-      "market": "Aroor Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 190,
-      "maxPerKg": 192,
-      "modalPerKg": 191,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Elephant Yam(Suran)/Amorphophallus",
-      "market": "Keralapuram VFPCK Market",
-      "district": "Kollam",
-      "variety": "Amorphophallus",
-      "minPerKg": 50,
-      "maxPerKg": 50,
-      "modalPerKg": 50,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
+      "commodity": "Cabbage",
       "market": "Chengannur Market",
       "district": "Alappuzha",
       "variety": "Other",
-      "minPerKg": 35,
-      "maxPerKg": 38,
+      "minPerKg": 28,
+      "maxPerKg": 31,
+      "modalPerKg": 30,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Brinjal",
+      "market": "Chengannur Market",
+      "district": "Alappuzha",
+      "variety": "Brinjal",
+      "minPerKg": 39,
+      "maxPerKg": 42,
+      "modalPerKg": 40,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Bhindi(Ladies Finger)",
+      "market": "Mukkom Market",
+      "district": "Kozhikode(Calicut)",
+      "variety": "Bhindi",
+      "minPerKg": 34,
+      "maxPerKg": 37,
       "modalPerKg": 36,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "French Beans(Frasbean)",
-      "market": "Kayamkulam Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 84,
-      "maxPerKg": 86,
-      "modalPerKg": 85,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ginger(Green)",
-      "market": "Kayamkulam Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 79,
-      "maxPerKg": 81,
-      "modalPerKg": 80,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Kayamkulam Market",
-      "district": "Alappuzha",
-      "variety": "Palayamthodan",
-      "minPerKg": 32,
-      "maxPerKg": 34,
-      "modalPerKg": 33,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Carrot",
-      "market": "Kayamkulam Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 50,
-      "maxPerKg": 52,
-      "modalPerKg": 51,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Potato",
-      "market": "Kayamkulam Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 27,
-      "maxPerKg": 29,
-      "modalPerKg": 28,
-      "arrivalDate": "20/10/2026"
+      "arrivalDate": "21/10/2026"
     },
     {
       "commodity": "Cabbage",
-      "market": "Kayamkulam Market",
-      "district": "Alappuzha",
-      "variety": "Other",
+      "market": "Mukkom Market",
+      "district": "Kozhikode(Calicut)",
+      "variety": "Cabbage",
       "minPerKg": 24,
       "maxPerKg": 26,
       "modalPerKg": 25,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ashgourd",
-      "market": "Kayamkulam Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 19,
-      "maxPerKg": 21,
-      "modalPerKg": 20,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Brinjal",
-      "market": "Kayamkulam Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 32,
-      "maxPerKg": 34,
-      "modalPerKg": 33,
-      "arrivalDate": "20/10/2026"
+      "arrivalDate": "21/10/2026"
     },
     {
       "commodity": "Onion",
-      "market": "Kayamkulam Market",
-      "district": "Alappuzha",
-      "variety": "Big",
-      "minPerKg": 51,
-      "maxPerKg": 53,
-      "modalPerKg": 52,
-      "arrivalDate": "20/10/2026"
+      "market": "Mukkom Market",
+      "district": "Kozhikode(Calicut)",
+      "variety": "Onion",
+      "minPerKg": 52,
+      "maxPerKg": 55,
+      "modalPerKg": 54,
+      "arrivalDate": "21/10/2026"
     },
     {
-      "commodity": "Tapioca",
-      "market": "Nooranad VFPCK Market",
-      "district": "Alappuzha",
-      "variety": "Tapioca",
-      "minPerKg": 31,
-      "maxPerKg": 35,
-      "modalPerKg": 33,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Potato",
-      "market": "Thodupuzha Market",
-      "district": "Idukki",
+      "commodity": "Grapes",
+      "market": "Mukkom Market",
+      "district": "Kozhikode(Calicut)",
       "variety": "Other",
-      "minPerKg": 36,
-      "maxPerKg": 38,
-      "modalPerKg": 38,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pumpkin",
-      "market": "Thodupuzha Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 31,
-      "maxPerKg": 33,
-      "modalPerKg": 33,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Snakeguard",
-      "market": "Thodupuzha Market",
-      "district": "Idukki",
-      "variety": "Snakeguard",
-      "minPerKg": 48,
-      "maxPerKg": 50,
-      "modalPerKg": 50,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "White Pumpkin",
-      "market": "Thodupuzha Market",
-      "district": "Idukki",
-      "variety": "White Pumpkin",
-      "minPerKg": 9,
-      "maxPerKg": 11,
-      "modalPerKg": 11,
-      "arrivalDate": "20/10/2026"
+      "minPerKg": 90,
+      "maxPerKg": 98,
+      "modalPerKg": 95,
+      "arrivalDate": "21/10/2026"
     },
     {
       "commodity": "Amaranthus",
-      "market": "Omalloor Market",
-      "district": "Pathanamthitta",
-      "variety": "Amaranthus",
-      "minPerKg": 0.35,
-      "maxPerKg": 0.44,
-      "modalPerKg": 0.4,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ashgourd",
-      "market": "Omalloor Market",
-      "district": "Pathanamthitta",
-      "variety": "Ashgourd",
-      "minPerKg": 0.3,
-      "maxPerKg": 0.4,
-      "modalPerKg": 0.35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Chathanoor Market",
-      "district": "Kollam",
-      "variety": "Poovan",
-      "minPerKg": 45,
+      "market": "Harippad Market",
+      "district": "Alappuzha",
+      "variety": "Other",
+      "minPerKg": 50,
       "maxPerKg": 55,
       "modalPerKg": 50,
-      "arrivalDate": "20/10/2026"
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Bhindi(Ladies Finger)",
+      "market": "Harippad Market",
+      "district": "Alappuzha",
+      "variety": "Other",
+      "minPerKg": 45,
+      "maxPerKg": 50,
+      "modalPerKg": 45,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Bitter gourd",
+      "market": "Harippad Market",
+      "district": "Alappuzha",
+      "variety": "Other",
+      "minPerKg": 65,
+      "maxPerKg": 70,
+      "modalPerKg": 65,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Bhindi(Ladies Finger)",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Bhindi",
+      "minPerKg": 28,
+      "maxPerKg": 36,
+      "modalPerKg": 32,
+      "arrivalDate": "21/10/2026"
     },
     {
       "commodity": "Brinjal",
-      "market": "Chathanoor Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 55,
-      "maxPerKg": 65,
-      "modalPerKg": 60,
-      "arrivalDate": "20/10/2026"
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Brinjal",
+      "minPerKg": 40,
+      "maxPerKg": 50,
+      "modalPerKg": 45,
+      "arrivalDate": "21/10/2026"
     },
     {
-      "commodity": "Onion",
-      "market": "Chathanoor Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 50,
-      "maxPerKg": 60,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
+      "commodity": "Cauliflower",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Cauliflower",
+      "minPerKg": 60,
+      "maxPerKg": 70,
+      "modalPerKg": 65,
+      "arrivalDate": "21/10/2026"
     },
     {
-      "commodity": "Cowpea(Veg)",
-      "market": "Chathanoor Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 55,
-      "maxPerKg": 65,
-      "modalPerKg": 60,
-      "arrivalDate": "20/10/2026"
+      "commodity": "Field Pea",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Field Pea",
+      "minPerKg": 60,
+      "maxPerKg": 70,
+      "modalPerKg": 65,
+      "arrivalDate": "21/10/2026"
     },
     {
       "commodity": "Black pepper",
-      "market": "Mananthavady Market",
-      "district": "Wayanad",
-      "variety": "Ungrabled",
-      "minPerKg": 692,
-      "maxPerKg": 693,
-      "modalPerKg": 693,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Mananthavady Market",
-      "district": "Wayanad",
-      "variety": "Bitter Gourd",
-      "minPerKg": 40,
-      "maxPerKg": 40,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Snakeguard",
-      "market": "Mananthavady Market",
-      "district": "Wayanad",
-      "variety": "Snakeguard",
-      "minPerKg": 19,
-      "maxPerKg": 20.5,
-      "modalPerKg": 20,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tapioca",
-      "market": "Mananthavady Market",
-      "district": "Wayanad",
-      "variety": "Tapioca",
-      "minPerKg": 29,
-      "maxPerKg": 30,
-      "modalPerKg": 30,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana - Green",
-      "market": "Cherthala Market",
-      "district": "Alappuzha",
-      "variety": "Banana - Green",
-      "minPerKg": 30,
-      "maxPerKg": 33,
-      "modalPerKg": 32,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Potato",
-      "market": "Cherthala Market",
-      "district": "Alappuzha",
-      "variety": "Potato",
-      "minPerKg": 32,
-      "maxPerKg": 36,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cauliflower",
-      "market": "Cherthala Market",
-      "district": "Alappuzha",
-      "variety": "Cauliflower",
-      "minPerKg": 40,
-      "maxPerKg": 43,
-      "modalPerKg": 41,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cowpea(Veg)",
-      "market": "Cherthala Market",
-      "district": "Alappuzha",
-      "variety": "Cowpea (Veg)",
-      "minPerKg": 45,
-      "maxPerKg": 50,
-      "modalPerKg": 48,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Capsicum",
-      "market": "Nedumkandam Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 70,
-      "maxPerKg": 80,
-      "modalPerKg": 80,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Thalasserry Market",
-      "district": "Kannur",
-      "variety": "Other",
-      "minPerKg": 30,
-      "maxPerKg": 40,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Snakeguard",
-      "market": "Thalasserry Market",
-      "district": "Kannur",
-      "variety": "Other",
-      "minPerKg": 35,
-      "maxPerKg": 45,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Thalasserry Market",
-      "district": "Kannur",
-      "variety": "1st Sort",
-      "minPerKg": 48,
-      "maxPerKg": 56,
-      "modalPerKg": 52,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Robusta",
-      "minPerKg": 21,
-      "maxPerKg": 23,
-      "modalPerKg": 23,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Potato",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 32,
-      "maxPerKg": 35,
-      "modalPerKg": 34,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pineapple",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 48,
-      "maxPerKg": 55,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Capsicum",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 70,
-      "maxPerKg": 78,
-      "modalPerKg": 75,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Copra",
-      "market": "Irityy Market",
-      "district": "Kannur",
-      "variety": "Other",
-      "minPerKg": 140,
-      "maxPerKg": 142,
-      "modalPerKg": 141,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Nendra Bale",
-      "minPerKg": 78,
-      "maxPerKg": 78,
-      "modalPerKg": 78,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Robusta",
-      "minPerKg": 48,
-      "maxPerKg": 48,
-      "modalPerKg": 48,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cucumbar(Kheera)",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Cucumbar",
-      "minPerKg": 25,
-      "maxPerKg": 25,
-      "modalPerKg": 25,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Bhindi",
-      "minPerKg": 45,
-      "maxPerKg": 45,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Small",
-      "minPerKg": 75,
-      "maxPerKg": 75,
-      "modalPerKg": 75,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Colacasia",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Colacasia",
-      "minPerKg": 62,
-      "maxPerKg": 62,
-      "modalPerKg": 62,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ashgourd",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Ashgourd",
-      "minPerKg": 26,
-      "maxPerKg": 28,
-      "modalPerKg": 27,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Potato",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Potato",
-      "minPerKg": 32,
-      "maxPerKg": 34,
-      "modalPerKg": 33,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tomato",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Tomato",
-      "minPerKg": 36,
-      "maxPerKg": 38,
-      "modalPerKg": 37,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Bitter Gourd",
-      "minPerKg": 80,
-      "maxPerKg": 82,
-      "modalPerKg": 81,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Brinjal",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Brinjal",
-      "minPerKg": 35,
-      "maxPerKg": 37,
-      "modalPerKg": 36,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Big",
-      "minPerKg": 54,
-      "maxPerKg": 56,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Carrot",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Carrot",
-      "minPerKg": 47,
-      "maxPerKg": 51,
-      "modalPerKg": 49,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cucumbar(Kheera)",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Cucumbar",
-      "minPerKg": 35,
-      "maxPerKg": 39,
-      "modalPerKg": 37,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Little gourd(Kundru)",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Other",
-      "minPerKg": 38,
-      "maxPerKg": 42,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Snakeguard",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Snakeguard",
-      "minPerKg": 45,
-      "maxPerKg": 49,
-      "modalPerKg": 47,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pineapple",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Pine Apple",
-      "minPerKg": 53,
-      "maxPerKg": 57,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Pala Market",
-      "district": "Kottayam",
-      "variety": "Bitter Gourd",
-      "minPerKg": 73,
-      "maxPerKg": 80,
-      "modalPerKg": 75,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cabbage",
-      "market": "Pala Market",
-      "district": "Kottayam",
-      "variety": "Cabbage",
-      "minPerKg": 32,
-      "maxPerKg": 44,
-      "modalPerKg": 36,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana - Green",
-      "market": "Pala Market",
-      "district": "Kottayam",
-      "variety": "Banana - Green",
-      "minPerKg": 48,
-      "maxPerKg": 58,
-      "modalPerKg": 54,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Green Chilli",
-      "market": "Pala Market",
-      "district": "Kottayam",
-      "variety": "Green Chilly",
-      "minPerKg": 65,
-      "maxPerKg": 100,
-      "modalPerKg": 75,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Pala Market",
-      "district": "Kottayam",
-      "variety": "Big",
-      "minPerKg": 55,
-      "maxPerKg": 60,
-      "modalPerKg": 57,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tapioca",
-      "market": "Sasthamkotta Market",
-      "district": "Kollam",
-      "variety": "Tapioca",
-      "minPerKg": 60,
-      "maxPerKg": 60,
-      "modalPerKg": 60,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Mushroom",
-      "market": "Sasthamkotta Market",
-      "district": "Kollam",
-      "variety": "Mushroom",
-      "minPerKg": 80,
-      "maxPerKg": 80,
-      "modalPerKg": 80,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Brinjal",
-      "market": "Sasthamkotta Market",
-      "district": "Kollam",
-      "variety": "Brinjal",
-      "minPerKg": 45,
-      "maxPerKg": 45,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cowpea(Veg)",
-      "market": "Sasthamkotta Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 60,
-      "maxPerKg": 60,
-      "modalPerKg": 60,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cowpea(Veg)",
-      "market": "Vakathanam VFPCK Market",
-      "district": "Kottayam",
-      "variety": "Cowpea (Veg)",
-      "minPerKg": 60,
-      "maxPerKg": 65,
-      "modalPerKg": 62,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Brinjal",
-      "market": "Kallachi Market",
-      "district": "Kozhikode(Calicut)",
-      "variety": "Brinjal",
-      "minPerKg": 38,
-      "maxPerKg": 42,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Beetroot",
-      "market": "Kallachi Market",
-      "district": "Kozhikode(Calicut)",
-      "variety": "Beetroot",
-      "minPerKg": 43,
-      "maxPerKg": 47,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cucumbar(Kheera)",
-      "market": "Kallachi Market",
-      "district": "Kozhikode(Calicut)",
-      "variety": "Cucumbar",
-      "minPerKg": 38,
-      "maxPerKg": 42,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Drumstick",
-      "market": "Kallachi Market",
-      "district": "Kozhikode(Calicut)",
-      "variety": "Drumstick",
-      "minPerKg": 83,
-      "maxPerKg": 87,
-      "modalPerKg": 85,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ashgourd",
-      "market": "Harippad Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 35,
-      "maxPerKg": 40,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Brinjal",
-      "market": "Neyyatinkara Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Brinjal",
-      "minPerKg": 34,
-      "maxPerKg": 40,
-      "modalPerKg": 37,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Elephant Yam(Suran)/Amorphophallus",
-      "market": "Neyyatinkara Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Amorphophallus",
-      "minPerKg": 34,
-      "maxPerKg": 40,
-      "modalPerKg": 37,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ginger(Green)",
-      "market": "Neyyatinkara Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Green Ginger",
-      "minPerKg": 70,
-      "maxPerKg": 120,
-      "modalPerKg": 100,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Colacasia",
-      "market": "Neyyatinkara Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Colacasia",
-      "minPerKg": 54,
-      "maxPerKg": 60,
-      "modalPerKg": 56,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cabbage",
-      "market": "Vamanapuram Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Cabbage",
-      "minPerKg": 35,
-      "maxPerKg": 40,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Carrot",
-      "market": "Vamanapuram Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Other",
-      "minPerKg": 50,
-      "maxPerKg": 55,
-      "modalPerKg": 50,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Koovapadi VFPCK Market",
+      "market": "Perumbavoor Market",
       "district": "Ernakulam",
-      "variety": "Palayamthodan",
-      "minPerKg": 20,
-      "maxPerKg": 24,
-      "modalPerKg": 22,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Koovapadi VFPCK Market",
-      "district": "Ernakulam",
-      "variety": "Poovan",
-      "minPerKg": 42,
-      "maxPerKg": 46,
-      "modalPerKg": 44,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ashgourd",
-      "market": "Ettumanoor Market",
-      "district": "Kottayam",
-      "variety": "Ashgourd",
-      "minPerKg": 18,
-      "maxPerKg": 20,
-      "modalPerKg": 19,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Beetroot",
-      "market": "Ettumanoor Market",
-      "district": "Kottayam",
-      "variety": "Beetroot",
-      "minPerKg": 43,
-      "maxPerKg": 47,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cabbage",
-      "market": "Ettumanoor Market",
-      "district": "Kottayam",
-      "variety": "Cabbage",
-      "minPerKg": 30,
-      "maxPerKg": 34,
-      "modalPerKg": 32,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Capsicum",
-      "market": "Ettumanoor Market",
-      "district": "Kottayam",
-      "variety": "Other",
-      "minPerKg": 53,
-      "maxPerKg": 57,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Udumbannoor  VFPCK Market",
-      "district": "Idukki",
-      "variety": "Nendra Bale",
-      "minPerKg": 63,
-      "maxPerKg": 67,
-      "modalPerKg": 65,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Lemon",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Lemon",
-      "minPerKg": 120,
-      "maxPerKg": 122,
-      "modalPerKg": 121,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cabbage",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Other",
-      "minPerKg": 14,
-      "maxPerKg": 16,
-      "modalPerKg": 15,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cucumbar(Kheera)",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Cucumbar",
-      "minPerKg": 39,
-      "maxPerKg": 41,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana - Green",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Banana - Green",
-      "minPerKg": 53,
-      "maxPerKg": 55,
-      "modalPerKg": 54,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Beetroot",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Other",
-      "minPerKg": 33,
-      "maxPerKg": 35,
-      "modalPerKg": 34,
-      "arrivalDate": "20/10/2026"
+      "variety": "Garbled",
+      "minPerKg": 800,
+      "maxPerKg": 900,
+      "modalPerKg": 850,
+      "arrivalDate": "21/10/2026"
     },
     {
       "commodity": "Bitter gourd",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
+      "market": "Chengannur Market",
+      "district": "Alappuzha",
       "variety": "Other",
-      "minPerKg": 58,
-      "maxPerKg": 60,
-      "modalPerKg": 59,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Small",
-      "minPerKg": 112,
-      "maxPerKg": 114,
-      "modalPerKg": 113,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Drumstick",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Drumstick",
-      "minPerKg": 85,
-      "maxPerKg": 87,
-      "modalPerKg": 86,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pumpkin",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Pumpkin",
-      "minPerKg": 16,
-      "maxPerKg": 18,
-      "modalPerKg": 17,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Snakeguard",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Snakeguard",
-      "minPerKg": 35,
-      "maxPerKg": 37,
-      "modalPerKg": 36,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Palayamthodan",
-      "minPerKg": 35,
-      "maxPerKg": 37,
-      "modalPerKg": 36,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Robusta",
-      "minPerKg": 25,
-      "maxPerKg": 27,
-      "modalPerKg": 26,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Alacode  VFPCK Market",
-      "district": "Idukki",
-      "variety": "Banana - Ripe",
-      "minPerKg": 63,
-      "maxPerKg": 67,
-      "modalPerKg": 65,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cowpea(Veg)",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Cowpea (Veg)",
-      "minPerKg": 75,
-      "maxPerKg": 80,
-      "modalPerKg": 80,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cauliflower",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Cauliflower",
-      "minPerKg": 55,
-      "maxPerKg": 60,
-      "modalPerKg": 60,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "French Beans(Frasbean)",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Other",
-      "minPerKg": 120,
-      "maxPerKg": 125,
-      "modalPerKg": 125,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Green Avare(W)",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Green Avare (W)",
-      "minPerKg": 100,
-      "maxPerKg": 110,
-      "modalPerKg": 110,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Green Chilli",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Green Chilly",
-      "minPerKg": 75,
-      "maxPerKg": 80,
-      "modalPerKg": 80,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Small",
-      "minPerKg": 120,
-      "maxPerKg": 130,
-      "modalPerKg": 130,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Potato",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Potato",
-      "minPerKg": 55,
-      "maxPerKg": 60,
-      "modalPerKg": 60,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tapioca",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Tapioca",
-      "minPerKg": 25,
-      "maxPerKg": 30,
-      "modalPerKg": 30,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Kadakkal  VFPCK Market",
-      "district": "Kollam",
-      "variety": "Poovan",
-      "minPerKg": 54,
-      "maxPerKg": 54,
-      "modalPerKg": 54,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Snakeguard",
-      "market": "Kurichy VFPCK Market",
-      "district": "Kottayam",
-      "variety": "Snakeguard",
-      "minPerKg": 35,
-      "maxPerKg": 40,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Kurichy VFPCK Market",
-      "district": "Kottayam",
-      "variety": "Bitter Gourd",
       "minPerKg": 65,
-      "maxPerKg": 70,
-      "modalPerKg": 70,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Elephant Yam(Suran)/Amorphophallus",
-      "market": "Mannackanad  VFPCK Market",
-      "district": "Kottayam",
-      "variety": "Elephant Yam (Suran)",
-      "minPerKg": 30,
-      "maxPerKg": 30,
-      "modalPerKg": 30,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Elamkur  VFPCK Market",
-      "district": "Malappuram",
-      "variety": "Nendra Bale",
-      "minPerKg": 62,
-      "maxPerKg": 62,
-      "modalPerKg": 62,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Ranniangadi Market",
-      "district": "Pathanamthitta",
-      "variety": "Bhindi",
-      "minPerKg": 50,
-      "maxPerKg": 52,
-      "modalPerKg": 52,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cauliflower",
-      "market": "Chelakkara Market",
-      "district": "Thirssur",
-      "variety": "Cauliflower",
-      "minPerKg": 40,
-      "maxPerKg": 45,
-      "modalPerKg": 42,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ginger(Green)",
-      "market": "Chelakkara Market",
-      "district": "Thirssur",
-      "variety": "Green Ginger",
-      "minPerKg": 80,
-      "maxPerKg": 85,
-      "modalPerKg": 82,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Beetroot",
-      "market": "Thrissur Market",
-      "district": "Thirssur",
-      "variety": "Beetroot",
-      "minPerKg": 45,
-      "maxPerKg": 45,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cowpea(Veg)",
-      "market": "Thrissur Market",
-      "district": "Thirssur",
-      "variety": "Cowpea (Veg)",
-      "minPerKg": 35,
-      "maxPerKg": 35,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Green Chilli",
-      "market": "Thrissur Market",
-      "district": "Thirssur",
-      "variety": "Green Chilly",
-      "minPerKg": 55,
-      "maxPerKg": 60,
-      "modalPerKg": 56,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tapioca",
-      "market": "Thrissur Market",
-      "district": "Thirssur",
-      "variety": "Tapioca",
-      "minPerKg": 25,
-      "maxPerKg": 28,
-      "modalPerKg": 26,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Kannur Market",
-      "district": "Kannur",
-      "variety": "Bitter Gourd",
-      "minPerKg": 74,
-      "maxPerKg": 78,
-      "modalPerKg": 76,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cucumbar(Kheera)",
-      "market": "Kannur Market",
-      "district": "Kannur",
-      "variety": "Cucumbar",
-      "minPerKg": 28,
-      "maxPerKg": 33,
-      "modalPerKg": 30,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Copra",
-      "market": "Payyannur Market",
-      "district": "Kannur",
-      "variety": "Other",
-      "minPerKg": 131,
-      "maxPerKg": 133,
-      "modalPerKg": 132,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cowpea(Veg)",
-      "market": "Kattampak  VFPCK Market",
-      "district": "Kottayam",
-      "variety": "Cowpea (Veg)",
-      "minPerKg": 58,
-      "maxPerKg": 65,
-      "modalPerKg": 60,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cowpea(Veg)",
-      "market": "Kollengode VFPCK Market",
-      "district": "Palakad",
-      "variety": "Cowpea (Veg)",
-      "minPerKg": 40,
-      "maxPerKg": 40,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Kollengode VFPCK Market",
-      "district": "Palakad",
-      "variety": "Bhindi",
-      "minPerKg": 45,
-      "maxPerKg": 45,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana - Green",
-      "market": "Malampuzha VFPCK Market",
-      "district": "Palakad",
-      "variety": "Banana - Green",
-      "minPerKg": 58,
-      "maxPerKg": 58,
-      "modalPerKg": 58,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Amballur  VFPCK Market",
-      "district": "Thirssur",
-      "variety": "Nendra Bale",
-      "minPerKg": 68,
-      "maxPerKg": 68,
-      "modalPerKg": 68,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Elephant Yam(Suran)/Amorphophallus",
-      "market": "Ezhamkulam VFPCK Market",
-      "district": "Pathanamthitta",
-      "variety": "Elephant Yam (Suran)",
-      "minPerKg": 34,
-      "maxPerKg": 40,
-      "modalPerKg": 38,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cowpea(Veg)",
-      "market": "Thrikkodithanam  VFPCK Market",
-      "district": "Kottayam",
-      "variety": "Cowpea (Veg)",
-      "minPerKg": 65,
-      "maxPerKg": 70,
-      "modalPerKg": 70,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Vaniyamkulam  VFPCK Market",
-      "district": "Palakad",
-      "variety": "Palayamthodan",
-      "minPerKg": 25,
-      "maxPerKg": 27,
-      "modalPerKg": 26,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Muriyad  VFPCK Market",
-      "district": "Thirssur",
-      "variety": "Nendra Bale",
-      "minPerKg": 55,
-      "maxPerKg": 65,
-      "modalPerKg": 62,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Chazhur VFPCK Market",
-      "district": "Thirssur",
-      "variety": "Nendra Bale",
-      "minPerKg": 58,
-      "maxPerKg": 68,
-      "modalPerKg": 63,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Kattakkada  VFPCK Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Nendra Bale",
-      "minPerKg": 65,
-      "maxPerKg": 70,
-      "modalPerKg": 68,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Maranelloor VFPCK Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Rasakathai",
-      "minPerKg": 75,
-      "maxPerKg": 79,
-      "modalPerKg": 77.88,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Pampady Market",
-      "district": "Kottayam",
-      "variety": "Big",
-      "minPerKg": 45,
-      "maxPerKg": 60,
-      "modalPerKg": 50,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Pampady Market",
-      "district": "Kottayam",
-      "variety": "Bhindi",
-      "minPerKg": 40,
-      "maxPerKg": 50,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Brinjal",
-      "market": "Pampady Market",
-      "district": "Kottayam",
-      "variety": "Brinjal",
-      "minPerKg": 35,
-      "maxPerKg": 45,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Amranthas Red",
-      "market": "Pappanchani VFPCK Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Chawli Lal",
-      "minPerKg": 40,
-      "maxPerKg": 40,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pumpkin",
-      "market": "Aroor Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 19,
-      "maxPerKg": 21,
-      "modalPerKg": 20,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Green Chilli",
-      "market": "Kayamkulam Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 54,
-      "maxPerKg": 56,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana - Green",
-      "market": "Kayamkulam Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 38,
-      "maxPerKg": 40,
-      "modalPerKg": 39,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cauliflower",
-      "market": "Kayamkulam Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 54,
-      "maxPerKg": 56,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Sweet Potato",
-      "market": "Thodupuzha Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 56,
-      "maxPerKg": 58,
-      "modalPerKg": 58,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Long Melon(Kakri)",
-      "market": "Thodupuzha Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 43,
-      "maxPerKg": 45,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tomato",
-      "market": "Thodupuzha Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 42,
-      "maxPerKg": 44,
-      "modalPerKg": 44,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Chathanoor Market",
-      "district": "Kollam",
-      "variety": "Robusta",
-      "minPerKg": 30,
-      "maxPerKg": 40,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Chathanoor Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 45,
-      "maxPerKg": 55,
-      "modalPerKg": 50,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Mala VFPCK Market",
-      "district": "Thirssur",
-      "variety": "Nendra Bale",
-      "minPerKg": 40,
-      "maxPerKg": 67.5,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Rubber",
-      "market": "Mananthavady Market",
-      "district": "Wayanad",
-      "variety": "Other",
-      "minPerKg": 263,
-      "maxPerKg": 265,
-      "modalPerKg": 264,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Kuttoor Market",
-      "district": "Pathanamthitta",
-      "variety": "Nendra Bale",
-      "minPerKg": 76,
-      "maxPerKg": 80,
-      "modalPerKg": 78,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Drumstick",
-      "market": "Cherthala Market",
-      "district": "Alappuzha",
-      "variety": "Drumstick",
-      "minPerKg": 70,
-      "maxPerKg": 74,
-      "modalPerKg": 72,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ridgeguard(Tori)",
-      "market": "Cherthala Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 72,
-      "maxPerKg": 75,
-      "modalPerKg": 73,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tapioca",
-      "market": "Nedumkandam Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 35,
-      "maxPerKg": 35,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Potato",
-      "market": "Thalasserry Market",
-      "district": "Kannur",
-      "variety": "Other",
-      "minPerKg": 18,
-      "maxPerKg": 25,
-      "modalPerKg": 20,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tomato",
-      "market": "Thalasserry Market",
-      "district": "Kannur",
-      "variety": "Other",
-      "minPerKg": 25,
-      "maxPerKg": 35,
-      "modalPerKg": 30,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Thompramkudi VFPCK Market",
-      "district": "Idukki",
-      "variety": "Nendra Bale",
-      "minPerKg": 45,
-      "maxPerKg": 50,
-      "modalPerKg": 47,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Amla(Nelli Kai)",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 40,
-      "maxPerKg": 45,
-      "modalPerKg": 43,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Apple",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 330,
-      "maxPerKg": 345,
-      "modalPerKg": 340,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tapioca",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 40,
-      "maxPerKg": 40,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Beetroot",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 38,
-      "maxPerKg": 43,
-      "modalPerKg": 42,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pumpkin",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 21,
-      "maxPerKg": 23,
-      "modalPerKg": 21,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Punalur Market",
-      "district": "Kollam",
-      "variety": "Onion",
-      "minPerKg": 40,
-      "maxPerKg": 45,
-      "modalPerKg": 42,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Punalur Market",
-      "district": "Kollam",
-      "variety": "Nendra Bale",
-      "minPerKg": 68,
-      "maxPerKg": 75,
-      "modalPerKg": 73,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Poovan",
-      "minPerKg": 85,
-      "maxPerKg": 85,
-      "modalPerKg": 85,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Beetroot",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Beetroot",
-      "minPerKg": 42,
-      "maxPerKg": 42,
-      "modalPerKg": 42,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cabbage",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Cabbage",
-      "minPerKg": 63,
-      "maxPerKg": 63,
-      "modalPerKg": 63,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Snakeguard",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Snakeguard",
-      "minPerKg": 46,
-      "maxPerKg": 46,
-      "modalPerKg": 46,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Carrot",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Carrot",
-      "minPerKg": 48,
-      "maxPerKg": 48,
-      "modalPerKg": 48,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ginger(Green)",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Green Ginger",
-      "minPerKg": 84,
-      "maxPerKg": 86,
-      "modalPerKg": 85,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Beetroot",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Beetroot",
-      "minPerKg": 56,
-      "maxPerKg": 58,
-      "modalPerKg": 57,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cauliflower",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Cauliflower",
-      "minPerKg": 60,
-      "maxPerKg": 62,
-      "modalPerKg": 61,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pumpkin",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Pumpkin",
-      "minPerKg": 16,
-      "maxPerKg": 18,
-      "modalPerKg": 17,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Little gourd(Kundru)",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Other",
-      "minPerKg": 34,
-      "maxPerKg": 36,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cucumbar(Kheera)",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Cucumbar",
-      "minPerKg": 40,
-      "maxPerKg": 42,
-      "modalPerKg": 41,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Rice",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Other",
-      "minPerKg": 47,
-      "maxPerKg": 57,
-      "modalPerKg": 52,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bengal Gram(Gram)(Whole)",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Bengal Gram (Split)",
-      "minPerKg": 80,
-      "maxPerKg": 90,
-      "modalPerKg": 86,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Black Gram(Urd Beans)(Whole)",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Black Gram (Whole)",
-      "minPerKg": 100,
-      "maxPerKg": 128,
-      "modalPerKg": 114,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Nendra Bale",
-      "minPerKg": 70,
-      "maxPerKg": 74,
-      "modalPerKg": 72,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Poovan",
-      "minPerKg": 48,
-      "maxPerKg": 52,
-      "modalPerKg": 50,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cluster beans",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Cluster Beans",
-      "minPerKg": 52,
-      "maxPerKg": 56,
-      "modalPerKg": 54,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Big",
-      "minPerKg": 55,
-      "maxPerKg": 59,
-      "modalPerKg": 57,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Onion",
-      "minPerKg": 82,
-      "maxPerKg": 86,
-      "modalPerKg": 84,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Beetroot",
-      "market": "Pala Market",
-      "district": "Kottayam",
-      "variety": "Beetroot",
-      "minPerKg": 55,
-      "maxPerKg": 76,
-      "modalPerKg": 65,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cluster beans",
-      "market": "Pala Market",
-      "district": "Kottayam",
-      "variety": "Cluster Beans",
-      "minPerKg": 88,
-      "maxPerKg": 100,
-      "modalPerKg": 94,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Pala Market",
-      "district": "Kottayam",
-      "variety": "Banana - Ripe",
-      "minPerKg": 70,
-      "maxPerKg": 78,
-      "modalPerKg": 74,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Brinjal",
-      "market": "Pala Market",
-      "district": "Kottayam",
-      "variety": "Brinjal",
-      "minPerKg": 50,
-      "maxPerKg": 60,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Pala Market",
-      "district": "Kottayam",
-      "variety": "Bhindi",
-      "minPerKg": 32,
-      "maxPerKg": 50,
-      "modalPerKg": 42,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Pala Market",
-      "district": "Kottayam",
-      "variety": "Onion",
-      "minPerKg": 105,
-      "maxPerKg": 120,
-      "modalPerKg": 112,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Snakeguard",
-      "market": "Pala Market",
-      "district": "Kottayam",
-      "variety": "Other",
-      "minPerKg": 52,
-      "maxPerKg": 66,
-      "modalPerKg": 58,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Sasthamkotta Market",
-      "district": "Kollam",
-      "variety": "Palayamthodan",
-      "minPerKg": 23,
-      "maxPerKg": 23,
-      "modalPerKg": 23,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Colacasia",
-      "market": "Sasthamkotta Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 55,
-      "maxPerKg": 55,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pumpkin",
-      "market": "Sasthamkotta Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 25,
-      "maxPerKg": 25,
-      "modalPerKg": 25,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Thalayolaparambu Market",
-      "district": "Kottayam",
-      "variety": "Banana - Ripe",
-      "minPerKg": 66,
-      "maxPerKg": 70,
-      "modalPerKg": 68,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Kallachi Market",
-      "district": "Kozhikode(Calicut)",
-      "variety": "Other",
-      "minPerKg": 33,
-      "maxPerKg": 37,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana - Green",
-      "market": "Kallachi Market",
-      "district": "Kozhikode(Calicut)",
-      "variety": "Banana - Green",
-      "minPerKg": 68,
       "maxPerKg": 72,
       "modalPerKg": 70,
-      "arrivalDate": "20/10/2026"
+      "arrivalDate": "21/10/2026"
     },
     {
       "commodity": "Cauliflower",
-      "market": "Kallachi Market",
-      "district": "Kozhikode(Calicut)",
+      "market": "Chengannur Market",
+      "district": "Alappuzha",
       "variety": "Other",
-      "minPerKg": 48,
+      "minPerKg": 49,
       "maxPerKg": 52,
       "modalPerKg": 50,
-      "arrivalDate": "20/10/2026"
+      "arrivalDate": "21/10/2026"
     },
     {
-      "commodity": "Elephant Yam(Suran)/Amorphophallus",
-      "market": "Kallachi Market",
-      "district": "Kozhikode(Calicut)",
-      "variety": "Amorphophallus",
-      "minPerKg": 38,
-      "maxPerKg": 42,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Potato",
-      "market": "Kallachi Market",
+      "commodity": "Ashgourd",
+      "market": "Mukkom Market",
       "district": "Kozhikode(Calicut)",
       "variety": "Other",
-      "minPerKg": 22,
-      "maxPerKg": 26,
-      "modalPerKg": 24,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Snakeguard",
-      "market": "Kallachi Market",
-      "district": "Kozhikode(Calicut)",
-      "variety": "Snakeguard",
-      "minPerKg": 38,
-      "maxPerKg": 42,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ginger(Green)",
-      "market": "Kallachi Market",
-      "district": "Kozhikode(Calicut)",
-      "variety": "Green Ginger",
-      "minPerKg": 148,
-      "maxPerKg": 152,
-      "modalPerKg": 150,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Amaranthus",
-      "market": "Harippad Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 50,
-      "maxPerKg": 55,
-      "modalPerKg": 50,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Harippad Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 45,
-      "maxPerKg": 50,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tapioca",
-      "market": "Neyyatinkara Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Tapioca",
-      "minPerKg": 45,
-      "maxPerKg": 50,
-      "modalPerKg": 47,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Amaranthus",
-      "market": "Neyyatinkara Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Amaranthus",
-      "minPerKg": 34,
-      "maxPerKg": 40,
-      "modalPerKg": 37,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Snakeguard",
-      "market": "Neyyatinkara Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Other",
-      "minPerKg": 35,
-      "maxPerKg": 40,
-      "modalPerKg": 37,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Carrot",
-      "market": "Neyyatinkara Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Other",
-      "minPerKg": 54,
-      "maxPerKg": 60,
-      "modalPerKg": 56,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cowpea(Veg)",
-      "market": "Vamanapuram Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Other",
-      "minPerKg": 80,
-      "maxPerKg": 85,
-      "modalPerKg": 85,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Vamanapuram Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Other",
-      "minPerKg": 50,
-      "maxPerKg": 55,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Vamanapuram Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Big",
-      "minPerKg": 60,
-      "maxPerKg": 65,
-      "modalPerKg": 65,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tapioca",
-      "market": "Vamanapuram Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Other",
-      "minPerKg": 45,
-      "maxPerKg": 50,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Koovapadi VFPCK Market",
-      "district": "Ernakulam",
-      "variety": "Nendra Bale",
-      "minPerKg": 60,
-      "maxPerKg": 64,
-      "modalPerKg": 62,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cauliflower",
-      "market": "Ettumanoor Market",
-      "district": "Kottayam",
-      "variety": "Cauliflower",
-      "minPerKg": 35,
-      "maxPerKg": 40,
-      "modalPerKg": 38,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Ettumanoor Market",
-      "district": "Kottayam",
-      "variety": "Bitter Gourd",
-      "minPerKg": 60,
-      "maxPerKg": 64,
-      "modalPerKg": 62,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cucumbar(Kheera)",
-      "market": "Ettumanoor Market",
-      "district": "Kottayam",
-      "variety": "Cucumbar",
-      "minPerKg": 40,
-      "maxPerKg": 47,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Little gourd(Kundru)",
-      "market": "Ettumanoor Market",
-      "district": "Kottayam",
-      "variety": "Other",
-      "minPerKg": 34,
-      "maxPerKg": 38,
-      "modalPerKg": 36,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tomato",
-      "market": "Ettumanoor Market",
-      "district": "Kottayam",
-      "variety": "Tomato",
-      "minPerKg": 34,
-      "maxPerKg": 38,
-      "modalPerKg": 36,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Karuvannur VFPCK Market",
-      "district": "Thirssur",
-      "variety": "Nendra Bale",
-      "minPerKg": 55,
-      "maxPerKg": 65,
-      "modalPerKg": 62,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Marottichal  VFPCK Market",
-      "district": "Thirssur",
-      "variety": "Nendra Bale",
-      "minPerKg": 55,
-      "maxPerKg": 65,
-      "modalPerKg": 63,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Amranthas Red",
-      "market": "Kottakkal Market",
-      "district": "Malappuram",
-      "variety": "Chawli Lal",
       "minPerKg": 24,
       "maxPerKg": 26,
       "modalPerKg": 25,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Garlic",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Average",
-      "minPerKg": 180,
-      "maxPerKg": 182,
-      "modalPerKg": 181,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Potato",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Other",
-      "minPerKg": 21.5,
-      "maxPerKg": 23.5,
-      "modalPerKg": 22.5,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Little gourd(Kundru)",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Little gourd (Kundru)",
-      "minPerKg": 38,
-      "maxPerKg": 40,
-      "modalPerKg": 39,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cucumbar(Kheera)",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Other",
-      "minPerKg": 21,
-      "maxPerKg": 23,
-      "modalPerKg": 22,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Sweet Potato",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Hosur Green",
-      "minPerKg": 42,
-      "maxPerKg": 44,
-      "modalPerKg": 43,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Nendra Bale",
-      "minPerKg": 66,
-      "maxPerKg": 68,
-      "modalPerKg": 67,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bottle gourd",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Bottle Gourd",
-      "minPerKg": 50,
-      "maxPerKg": 55,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cabbage",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Cabbage",
-      "minPerKg": 35,
-      "maxPerKg": 40,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cluster beans",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Cluster Beans",
-      "minPerKg": 60,
-      "maxPerKg": 65,
-      "modalPerKg": 65,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Snakeguard",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Snakeguard",
-      "minPerKg": 60,
-      "maxPerKg": 65,
-      "modalPerKg": 65,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Nedumpaikulam  VFPCK Market",
-      "district": "Kollam",
-      "variety": "Banana - Ripe",
-      "minPerKg": 84,
-      "maxPerKg": 84,
-      "modalPerKg": 84,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Little gourd(Kundru)",
-      "market": "Thazhakkara  VFPCK Market",
-      "district": "Alappuzha",
-      "variety": "Little gourd (Kundru)",
-      "minPerKg": 51,
-      "maxPerKg": 55,
-      "modalPerKg": 53,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Kanjoor VFPCK Market",
-      "district": "Ernakulam",
-      "variety": "Robusta",
-      "minPerKg": 28,
-      "maxPerKg": 32,
-      "modalPerKg": 30,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Beetroot",
-      "market": "Chelakkara Market",
-      "district": "Thirssur",
-      "variety": "Beetroot",
-      "minPerKg": 40,
-      "maxPerKg": 45,
-      "modalPerKg": 42,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cucumbar(Kheera)",
-      "market": "Chelakkara Market",
-      "district": "Thirssur",
-      "variety": "Cucumbar",
-      "minPerKg": 32,
-      "maxPerKg": 35,
-      "modalPerKg": 34,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Carrot",
-      "market": "Chelakkara Market",
-      "district": "Thirssur",
-      "variety": "Carrot",
-      "minPerKg": 75,
-      "maxPerKg": 78,
-      "modalPerKg": 76,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cowpea(Veg)",
-      "market": "Chelakkara Market",
-      "district": "Thirssur",
-      "variety": "Cowpea (Veg)",
-      "minPerKg": 42,
-      "maxPerKg": 45,
-      "modalPerKg": 44,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Snakeguard",
-      "market": "Chelakkara Market",
-      "district": "Thirssur",
-      "variety": "Snakeguard",
-      "minPerKg": 38,
-      "maxPerKg": 40,
-      "modalPerKg": 39,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana - Green",
-      "market": "Thrissur Market",
-      "district": "Thirssur",
-      "variety": "Banana - Green",
-      "minPerKg": 50,
-      "maxPerKg": 50,
-      "modalPerKg": 50,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Amaranthus",
-      "market": "Thrissur Market",
-      "district": "Thirssur",
-      "variety": "Amaranthus",
-      "minPerKg": 18,
-      "maxPerKg": 18,
-      "modalPerKg": 18,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ashgourd",
-      "market": "Thrissur Market",
-      "district": "Thirssur",
-      "variety": "Ashgourd",
-      "minPerKg": 30,
-      "maxPerKg": 30,
-      "modalPerKg": 30,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Drumstick",
-      "market": "Thrissur Market",
-      "district": "Thirssur",
-      "variety": "Drumstick",
-      "minPerKg": 35,
-      "maxPerKg": 35,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ginger(Green)",
-      "market": "Thrissur Market",
-      "district": "Thirssur",
-      "variety": "Green Ginger",
-      "minPerKg": 200,
-      "maxPerKg": 200,
-      "modalPerKg": 200,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Little gourd(Kundru)",
-      "market": "Thrissur Market",
-      "district": "Thirssur",
-      "variety": "Other",
-      "minPerKg": 45,
-      "maxPerKg": 45,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tomato",
-      "market": "Thrissur Market",
-      "district": "Thirssur",
-      "variety": "Tomato",
-      "minPerKg": 27,
-      "maxPerKg": 27,
-      "modalPerKg": 27,
-      "arrivalDate": "20/10/2026"
+      "arrivalDate": "21/10/2026"
     },
     {
       "commodity": "Brinjal",
-      "market": "Kannur Market",
-      "district": "Kannur",
-      "variety": "Other",
+      "market": "Mukkom Market",
+      "district": "Kozhikode(Calicut)",
+      "variety": "Brinjal",
       "minPerKg": 36,
       "maxPerKg": 40,
       "modalPerKg": 38,
-      "arrivalDate": "20/10/2026"
+      "arrivalDate": "21/10/2026"
     },
     {
-      "commodity": "Tapioca",
-      "market": "Payyannur Market",
-      "district": "Kannur",
-      "variety": "Other",
-      "minPerKg": 42,
-      "maxPerKg": 44,
-      "modalPerKg": 43,
-      "arrivalDate": "20/10/2026"
+      "commodity": "Ginger(Green)",
+      "market": "Mukkom Market",
+      "district": "Kozhikode(Calicut)",
+      "variety": "Green Ginger",
+      "minPerKg": 135,
+      "maxPerKg": 145,
+      "modalPerKg": 140,
+      "arrivalDate": "21/10/2026"
     },
     {
-      "commodity": "Ashgourd",
-      "market": "Payyannur Market",
-      "district": "Kannur",
-      "variety": "Other",
-      "minPerKg": 29,
-      "maxPerKg": 31,
-      "modalPerKg": 30,
-      "arrivalDate": "20/10/2026"
+      "commodity": "Carrot",
+      "market": "Mukkom Market",
+      "district": "Kozhikode(Calicut)",
+      "variety": "Carrot",
+      "minPerKg": 52,
+      "maxPerKg": 56,
+      "modalPerKg": 54,
+      "arrivalDate": "21/10/2026"
     },
     {
-      "commodity": "Coconut Seed",
-      "market": "Payyannur Market",
-      "district": "Kannur",
-      "variety": "Other",
-      "minPerKg": 42,
-      "maxPerKg": 44,
-      "modalPerKg": 43,
-      "arrivalDate": "20/10/2026"
+      "commodity": "Potato",
+      "market": "Mukkom Market",
+      "district": "Kozhikode(Calicut)",
+      "variety": "Potato",
+      "minPerKg": 24,
+      "maxPerKg": 26,
+      "modalPerKg": 25,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Capsicum",
+      "market": "Harippad Market",
+      "district": "Alappuzha",
+      "variety": "Capsicum",
+      "minPerKg": 90,
+      "maxPerKg": 95,
+      "modalPerKg": 90,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Cabbage",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Cabbage",
+      "minPerKg": 30,
+      "maxPerKg": 46,
+      "modalPerKg": 38,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Green Chilli",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Green Chilly",
+      "minPerKg": 45,
+      "maxPerKg": 55,
+      "modalPerKg": 50,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Bottle gourd",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Bottle Gourd",
+      "minPerKg": 20,
+      "maxPerKg": 30,
+      "modalPerKg": 25,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Lemon",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Lemon",
+      "minPerKg": 140,
+      "maxPerKg": 160,
+      "modalPerKg": 150,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Pumpkin",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Pumpkin",
+      "minPerKg": 15,
+      "maxPerKg": 25,
+      "modalPerKg": 20,
+      "arrivalDate": "21/10/2026"
     },
     {
       "commodity": "Snakeguard",
-      "market": "Aymanam VFPCK Market",
-      "district": "Kottayam",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
       "variety": "Snakeguard",
       "minPerKg": 35,
-      "maxPerKg": 38,
-      "modalPerKg": 36,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Little gourd(Kundru)",
-      "market": "Athirampuzha VFPCK Market",
-      "district": "Kottayam",
-      "variety": "Little gourd (Kundru)",
-      "minPerKg": 28,
-      "maxPerKg": 28,
-      "modalPerKg": 28,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Beetroot",
-      "market": "Madhavapuram Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 34,
-      "maxPerKg": 38,
-      "modalPerKg": 36,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Kaithepalam VFPCK Market",
-      "district": "Kottayam",
-      "variety": "Nendra Bale",
-      "minPerKg": 60,
-      "maxPerKg": 63,
-      "modalPerKg": 62,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Elephant Yam(Suran)/Amorphophallus",
-      "market": "Mutholy  VFPCK Market",
-      "district": "Kottayam",
-      "variety": "Amorphophallus",
-      "minPerKg": 38,
-      "maxPerKg": 42,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
+      "maxPerKg": 46,
+      "modalPerKg": 38,
+      "arrivalDate": "21/10/2026"
     },
     {
       "commodity": "Banana",
       "market": "Kadukutty VFPCK Market",
       "district": "Thirssur",
-      "variety": "Palayamthodan",
-      "minPerKg": 21,
-      "maxPerKg": 25,
-      "modalPerKg": 23,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Kuzhur  VFPCK Market",
-      "district": "Thirssur",
-      "variety": "Poovan",
-      "minPerKg": 35,
-      "maxPerKg": 65,
-      "modalPerKg": 56,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cowpea(Veg)",
-      "market": "Kovilnada  VFPCK Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Cowpea (Veg)",
-      "minPerKg": 60,
-      "maxPerKg": 60,
-      "modalPerKg": 60,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cucumbar(Kheera)",
-      "market": "Kovilnada  VFPCK Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Cucumbar",
-      "minPerKg": 25,
-      "maxPerKg": 25,
-      "modalPerKg": 25,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Vellanad VFPCK Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Nendra Bale",
-      "minPerKg": 68,
-      "maxPerKg": 72,
-      "modalPerKg": 70,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Vellarada  VFPCK Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Red Banana",
-      "minPerKg": 40,
-      "maxPerKg": 40,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Vellarada  VFPCK Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Palayamthodan",
-      "minPerKg": 22,
-      "maxPerKg": 22,
-      "modalPerKg": 22,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Vellarada  VFPCK Market",
-      "district": "Thiruvananthapuram",
       "variety": "Robusta",
-      "minPerKg": 20,
-      "maxPerKg": 20,
-      "modalPerKg": 20,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Amaranthus",
-      "market": "Pampady Market",
-      "district": "Kottayam",
-      "variety": "Amaranthus",
-      "minPerKg": 30,
-      "maxPerKg": 45,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cabbage",
-      "market": "Pampady Market",
-      "district": "Kottayam",
-      "variety": "Cabbage",
-      "minPerKg": 45,
-      "maxPerKg": 55,
-      "modalPerKg": 50,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ashgourd",
-      "market": "Pampady Market",
-      "district": "Kottayam",
-      "variety": "Ashgourd",
-      "minPerKg": 25,
-      "maxPerKg": 35,
-      "modalPerKg": 30,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pumpkin",
-      "market": "Pampady Market",
-      "district": "Kottayam",
-      "variety": "Pumpkin",
-      "minPerKg": 25,
-      "maxPerKg": 35,
-      "modalPerKg": 30,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Drumstick",
-      "market": "Aroor Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 60,
-      "maxPerKg": 62,
-      "modalPerKg": 61,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cabbage",
-      "market": "Aroor Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 38,
-      "maxPerKg": 40,
-      "modalPerKg": 39,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Capsicum",
-      "market": "Aroor Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 80,
-      "maxPerKg": 82,
-      "modalPerKg": 81,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ginger(Green)",
-      "market": "Aroor Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 180,
-      "maxPerKg": 182,
-      "modalPerKg": 181,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana - Green",
-      "market": "Channapetta VFPCK Market",
-      "district": "Kollam",
-      "variety": "Banana - Green",
-      "minPerKg": 68,
-      "maxPerKg": 72,
-      "modalPerKg": 70,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ashgourd",
-      "market": "Chengannur Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 25,
-      "maxPerKg": 28,
-      "modalPerKg": 27,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Beetroot",
-      "market": "Chengannur Market",
-      "district": "Alappuzha",
-      "variety": "Beetroot",
-      "minPerKg": 38,
-      "maxPerKg": 41,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Kayamkulam Market",
-      "district": "Alappuzha",
-      "variety": "Nendra Bale",
-      "minPerKg": 69,
-      "maxPerKg": 71,
-      "modalPerKg": 70,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bottle gourd",
-      "market": "Vithinasserri VFPCK Market",
-      "district": "Palakad",
-      "variety": "Bottle Gourd",
-      "minPerKg": 25,
-      "maxPerKg": 25,
-      "modalPerKg": 25,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Thodupuzha Market",
-      "district": "Idukki",
-      "variety": "Small",
-      "minPerKg": 79,
-      "maxPerKg": 81,
-      "modalPerKg": 81,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tapioca",
-      "market": "Thodupuzha Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 33,
-      "maxPerKg": 35,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Yam(Ratalu)",
-      "market": "Thodupuzha Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 49,
-      "maxPerKg": 51,
-      "modalPerKg": 51,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Chathanoor Market",
-      "district": "Kollam",
-      "variety": "Banana - Ripe",
-      "minPerKg": 70,
-      "maxPerKg": 80,
-      "modalPerKg": 75,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Chathanoor Market",
-      "district": "Kollam",
-      "variety": "Palayamthodan",
-      "minPerKg": 30,
-      "maxPerKg": 38,
-      "modalPerKg": 34,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ginger(Green)",
-      "market": "Chathanoor Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 90,
-      "maxPerKg": 115,
-      "modalPerKg": 107,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cucumbar(Kheera)",
-      "market": "Chathanoor Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 35,
-      "maxPerKg": 45,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pumpkin",
-      "market": "Chathanoor Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 20,
-      "maxPerKg": 26,
-      "modalPerKg": 23,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Coffee",
-      "market": "Mananthavady Market",
-      "district": "Wayanad",
-      "variety": "Other",
-      "minPerKg": 212,
-      "maxPerKg": 213,
-      "modalPerKg": 213,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Amaranthus",
-      "market": "Mananthavady Market",
-      "district": "Wayanad",
-      "variety": "Other",
-      "minPerKg": 20,
-      "maxPerKg": 22,
-      "modalPerKg": 21,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ashgourd",
-      "market": "Mananthavady Market",
-      "district": "Wayanad",
-      "variety": "Ashgourd",
-      "minPerKg": 10,
-      "maxPerKg": 12,
-      "modalPerKg": 11,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pumpkin",
-      "market": "Mananthavady Market",
-      "district": "Wayanad",
-      "variety": "Pumpkin",
-      "minPerKg": 10,
-      "maxPerKg": 11,
-      "modalPerKg": 10.5,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana - Green",
-      "market": "Mananthavady Market",
-      "district": "Wayanad",
-      "variety": "Other",
-      "minPerKg": 45,
-      "maxPerKg": 47,
-      "modalPerKg": 46,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cabbage",
-      "market": "Cherthala Market",
-      "district": "Alappuzha",
-      "variety": "Cabbage",
-      "minPerKg": 31,
-      "maxPerKg": 33,
-      "modalPerKg": 32,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Snakeguard",
-      "market": "Cherthala Market",
-      "district": "Alappuzha",
-      "variety": "Snakeguard",
-      "minPerKg": 60,
-      "maxPerKg": 62,
-      "modalPerKg": 61,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Poovan",
-      "minPerKg": 45,
-      "maxPerKg": 48,
-      "modalPerKg": 48,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cabbage",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 30,
-      "maxPerKg": 34,
-      "modalPerKg": 32,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cowpea(Veg)",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 52,
-      "maxPerKg": 58,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Amaranthus",
-      "market": "Punalur Market",
-      "district": "Kollam",
-      "variety": "Amaranthus",
-      "minPerKg": 38,
-      "maxPerKg": 40,
-      "modalPerKg": 39,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Papaya",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 45,
-      "maxPerKg": 45,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pineapple",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 76,
-      "maxPerKg": 76,
-      "modalPerKg": 76,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Amaranthus",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Amaranthus",
-      "minPerKg": 38,
-      "maxPerKg": 38,
-      "modalPerKg": 38,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ashgourd",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Ashgourd",
-      "minPerKg": 67,
-      "maxPerKg": 67,
-      "modalPerKg": 67,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bottle gourd",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Bottle Gourd",
-      "minPerKg": 32,
-      "maxPerKg": 32,
-      "modalPerKg": 32,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Big",
-      "minPerKg": 65,
-      "maxPerKg": 65,
-      "modalPerKg": 65,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Brinjal",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Brinjal",
-      "minPerKg": 46,
-      "maxPerKg": 46,
-      "modalPerKg": 46,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Bitter Gourd",
-      "minPerKg": 80,
-      "maxPerKg": 80,
-      "modalPerKg": 80,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Elephant Yam(Suran)/Amorphophallus",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Elephant Yam (Suran)",
-      "minPerKg": 48,
-      "maxPerKg": 48,
-      "modalPerKg": 48,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Lemon",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Lemon",
-      "minPerKg": 68,
-      "maxPerKg": 68,
-      "modalPerKg": 68,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Capsicum",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Capsicum",
-      "minPerKg": 62,
-      "maxPerKg": 62,
-      "modalPerKg": 62,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pumpkin",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Pumpkin",
-      "minPerKg": 36,
-      "maxPerKg": 36,
-      "modalPerKg": 36,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tomato",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Tomato",
-      "minPerKg": 48,
-      "maxPerKg": 48,
-      "modalPerKg": 48,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Colacasia",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Other",
-      "minPerKg": 60,
-      "maxPerKg": 62,
-      "modalPerKg": 61,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Snakeguard",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Snakeguard",
-      "minPerKg": 35,
-      "maxPerKg": 37,
-      "modalPerKg": 36,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "French Beans(Frasbean)",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "French Beans (Frasbean)",
-      "minPerKg": 65,
-      "maxPerKg": 67,
-      "modalPerKg": 66,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Green Gram(Moong)(Whole)",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Green (Whole)",
-      "minPerKg": 92,
-      "maxPerKg": 122,
-      "modalPerKg": 107,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Palayamthodan",
       "minPerKg": 26,
       "maxPerKg": 30,
       "modalPerKg": 28,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Beetroot",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Beetroot",
-      "minPerKg": 42,
-      "maxPerKg": 46,
-      "modalPerKg": 44,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Bitter Gourd",
-      "minPerKg": 77,
-      "maxPerKg": 81,
-      "modalPerKg": 79,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Potato",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Potato",
-      "minPerKg": 32,
-      "maxPerKg": 36,
-      "modalPerKg": 34,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Green Chilli",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Green Chilly",
-      "minPerKg": 52,
-      "maxPerKg": 56,
-      "modalPerKg": 54,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Potato",
-      "market": "Pala Market",
-      "district": "Kottayam",
-      "variety": "Other",
-      "minPerKg": 38,
-      "maxPerKg": 42,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tomato",
-      "market": "Pala Market",
-      "district": "Kottayam",
-      "variety": "Other",
-      "minPerKg": 30,
-      "maxPerKg": 46,
-      "modalPerKg": 38,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Sasthamkotta Market",
-      "district": "Kollam",
-      "variety": "Red Banana",
-      "minPerKg": 55,
-      "maxPerKg": 55,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Amaranthus",
-      "market": "Sasthamkotta Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 50,
-      "maxPerKg": 50,
-      "modalPerKg": 50,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cucumbar(Kheera)",
-      "market": "Sasthamkotta Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 45,
-      "maxPerKg": 45,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Snakeguard",
-      "market": "Sasthamkotta Market",
-      "district": "Kollam",
-      "variety": "Snakeguard",
-      "minPerKg": 22,
-      "maxPerKg": 24,
-      "modalPerKg": 23,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Sasthamkotta Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 35,
-      "maxPerKg": 35,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Mango(Raw-Ripe)",
-      "market": "Sasthamkotta Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 50,
-      "maxPerKg": 50,
-      "modalPerKg": 50,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ashgourd",
-      "market": "Kallachi Market",
-      "district": "Kozhikode(Calicut)",
-      "variety": "Ashgourd",
-      "minPerKg": 28,
-      "maxPerKg": 32,
-      "modalPerKg": 30,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Amaranthus",
-      "market": "Kallachi Market",
-      "district": "Kozhikode(Calicut)",
-      "variety": "Amaranthus",
-      "minPerKg": 33,
-      "maxPerKg": 37,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cabbage",
-      "market": "Kallachi Market",
-      "district": "Kozhikode(Calicut)",
-      "variety": "Cabbage",
-      "minPerKg": 18,
-      "maxPerKg": 22,
-      "modalPerKg": 20,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cluster beans",
-      "market": "Kallachi Market",
-      "district": "Kozhikode(Calicut)",
-      "variety": "Cluster Beans",
-      "minPerKg": 68,
-      "maxPerKg": 72,
-      "modalPerKg": 70,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pumpkin",
-      "market": "Kallachi Market",
-      "district": "Kozhikode(Calicut)",
-      "variety": "Pumpkin",
-      "minPerKg": 20,
-      "maxPerKg": 24,
-      "modalPerKg": 22,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Green Chilli",
-      "market": "Kallachi Market",
-      "district": "Kozhikode(Calicut)",
-      "variety": "Green Chilly",
-      "minPerKg": 53,
-      "maxPerKg": 57,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana - Green",
-      "market": "Cheriyanadu  VFPCK Market",
-      "district": "Alappuzha",
-      "variety": "Banana - Green",
-      "minPerKg": 95,
-      "maxPerKg": 95,
-      "modalPerKg": 95,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tomato",
-      "market": "Neyyatinkara Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Tomato",
-      "minPerKg": 34,
-      "maxPerKg": 40,
-      "modalPerKg": 37,
-      "arrivalDate": "20/10/2026"
+      "arrivalDate": "21/10/2026"
     },
     {
       "commodity": "Elephant Yam(Suran)/Amorphophallus",
-      "market": "Vamanapuram Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Other",
-      "minPerKg": 45,
-      "maxPerKg": 50,
+      "market": "Chengannur Market",
+      "district": "Alappuzha",
+      "variety": "Amorphophallus",
+      "minPerKg": 44,
+      "maxPerKg": 48,
       "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Potato",
-      "market": "Vamanapuram Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Other",
-      "minPerKg": 35,
-      "maxPerKg": 40,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pineapple",
-      "market": "Koovapadi VFPCK Market",
-      "district": "Ernakulam",
-      "variety": "Other",
-      "minPerKg": 50,
-      "maxPerKg": 58,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Koovapadi VFPCK Market",
-      "district": "Ernakulam",
-      "variety": "Robusta",
-      "minPerKg": 21,
-      "maxPerKg": 24,
-      "modalPerKg": 22,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Brinjal",
-      "market": "Ettumanoor Market",
-      "district": "Kottayam",
-      "variety": "Brinjal",
-      "minPerKg": 30,
-      "maxPerKg": 34,
-      "modalPerKg": 33,
-      "arrivalDate": "20/10/2026"
+      "arrivalDate": "21/10/2026"
     },
     {
       "commodity": "Carrot",
-      "market": "Ettumanoor Market",
-      "district": "Kottayam",
-      "variety": "Carrot",
-      "minPerKg": 40,
-      "maxPerKg": 44,
-      "modalPerKg": 42,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Colacasia",
-      "market": "Ettumanoor Market",
-      "district": "Kottayam",
+      "market": "Chengannur Market",
+      "district": "Alappuzha",
       "variety": "Other",
-      "minPerKg": 56,
-      "maxPerKg": 60,
-      "modalPerKg": 57,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Drumstick",
-      "market": "Ettumanoor Market",
-      "district": "Kottayam",
-      "variety": "Drumstick",
-      "minPerKg": 33,
-      "maxPerKg": 37,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Adimali VFPCK Market",
-      "district": "Idukki",
-      "variety": "Nendra Bale",
-      "minPerKg": 45,
-      "maxPerKg": 50,
-      "modalPerKg": 47,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana - Green",
-      "market": "Kottakkal Market",
-      "district": "Malappuram",
-      "variety": "Other",
-      "minPerKg": 42,
-      "maxPerKg": 44,
-      "modalPerKg": 43,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bottle gourd",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Bottle Gourd",
-      "minPerKg": 28,
-      "maxPerKg": 30,
-      "modalPerKg": 29,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Amaranthus",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Amaranth Greens-Organic",
-      "minPerKg": 31,
-      "maxPerKg": 33,
-      "modalPerKg": 32,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ashgourd",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Ashgourd",
-      "minPerKg": 28,
-      "maxPerKg": 30,
-      "modalPerKg": 29,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Bhindi",
-      "minPerKg": 30,
-      "maxPerKg": 32,
-      "modalPerKg": 31,
-      "arrivalDate": "20/10/2026"
+      "minPerKg": 48,
+      "maxPerKg": 51,
+      "modalPerKg": 50,
+      "arrivalDate": "21/10/2026"
     },
     {
       "commodity": "Capsicum",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Capsicum",
-      "minPerKg": 71,
-      "maxPerKg": 73,
-      "modalPerKg": 72,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cauliflower",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
+      "market": "Chengannur Market",
+      "district": "Alappuzha",
       "variety": "Other",
-      "minPerKg": 46,
-      "maxPerKg": 48,
-      "modalPerKg": 47,
-      "arrivalDate": "20/10/2026"
+      "minPerKg": 78,
+      "maxPerKg": 83,
+      "modalPerKg": 80,
+      "arrivalDate": "21/10/2026"
     },
     {
-      "commodity": "Coriander(Leaves)",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Coriander",
-      "minPerKg": 93,
-      "maxPerKg": 95,
-      "modalPerKg": 94,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Carrot",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Other",
-      "minPerKg": 40,
+      "commodity": "Cucumbar(Kheera)",
+      "market": "Mukkom Market",
+      "district": "Kozhikode(Calicut)",
+      "variety": "Cucumbar",
+      "minPerKg": 38,
       "maxPerKg": 42,
-      "modalPerKg": 41,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Colacasia",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Colacasia",
-      "minPerKg": 43,
-      "maxPerKg": 45,
-      "modalPerKg": 44,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "French Beans(Frasbean)",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Other",
-      "minPerKg": 52,
-      "maxPerKg": 54,
-      "modalPerKg": 53,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ginger(Green)",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Green Ginger",
-      "minPerKg": 120,
-      "maxPerKg": 122,
-      "modalPerKg": 121,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Mango(Raw-Ripe)",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Mango - Raw-Ripe",
-      "minPerKg": 90,
-      "maxPerKg": 92,
-      "modalPerKg": 91,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tapioca",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Tapioca",
-      "minPerKg": 23,
-      "maxPerKg": 25,
-      "modalPerKg": 24,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Pazhayarikandam  VFPCK Market",
-      "district": "Idukki",
-      "variety": "Nendra Bale",
-      "minPerKg": 40,
-      "maxPerKg": 45,
-      "modalPerKg": 42,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Beetroot",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Beetroot",
-      "minPerKg": 65,
-      "maxPerKg": 95,
-      "modalPerKg": 65,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Bhindi",
-      "minPerKg": 65,
-      "maxPerKg": 70,
-      "modalPerKg": 65,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Carrot",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Carrot",
-      "minPerKg": 60,
-      "maxPerKg": 65,
-      "modalPerKg": 65,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Drumstick",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Drumstick",
-      "minPerKg": 80,
-      "maxPerKg": 85,
-      "modalPerKg": 85,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Little gourd(Kundru)",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Other",
-      "minPerKg": 60,
-      "maxPerKg": 65,
-      "modalPerKg": 65,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Lemon",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Other",
-      "minPerKg": 170,
-      "maxPerKg": 200,
-      "modalPerKg": 200,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Big",
-      "minPerKg": 60,
-      "maxPerKg": 65,
-      "modalPerKg": 65,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tomato",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Tomato",
-      "minPerKg": 45,
-      "maxPerKg": 50,
-      "modalPerKg": 50,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Elamad  VFPCK Market",
-      "district": "Kollam",
-      "variety": "Nendra Bale",
-      "minPerKg": 68,
-      "maxPerKg": 72,
-      "modalPerKg": 70,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Kadakkal  VFPCK Market",
-      "district": "Kollam",
-      "variety": "Palayamthodan",
-      "minPerKg": 53,
-      "maxPerKg": 53,
-      "modalPerKg": 53,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Nedumpaikulam  VFPCK Market",
-      "district": "Kollam",
-      "variety": "Palayamthodan",
-      "minPerKg": 35,
-      "maxPerKg": 35,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Punalur VFPCK Market",
-      "district": "Kollam",
-      "variety": "Palayamthodan",
-      "minPerKg": 36,
-      "maxPerKg": 36,
-      "modalPerKg": 36,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Veliyam  VFPCK Market",
-      "district": "Kollam",
-      "variety": "Bitter Gourd",
-      "minPerKg": 52,
-      "maxPerKg": 52,
-      "modalPerKg": 52,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Snakeguard",
-      "market": "Mannackanad  VFPCK Market",
-      "district": "Kottayam",
-      "variety": "Other",
-      "minPerKg": 35,
-      "maxPerKg": 40,
       "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
+      "arrivalDate": "21/10/2026"
     },
     {
-      "commodity": "Ginger(Green)",
-      "market": "Mannackanad  VFPCK Market",
-      "district": "Kottayam",
-      "variety": "Green Ginger",
-      "minPerKg": 155,
-      "maxPerKg": 160,
-      "modalPerKg": 160,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pumpkin",
-      "market": "Thottuva  VFPCK Market",
-      "district": "Kottayam",
-      "variety": "Pumpkin",
-      "minPerKg": 18,
-      "maxPerKg": 20,
-      "modalPerKg": 19,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Amaranthus",
-      "market": "Ranniangadi Market",
-      "district": "Pathanamthitta",
-      "variety": "Amaranthus",
-      "minPerKg": 35,
-      "maxPerKg": 38,
-      "modalPerKg": 36,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cowpea(Veg)",
-      "market": "Ranniangadi Market",
-      "district": "Pathanamthitta",
-      "variety": "Cowpea (Veg)",
-      "minPerKg": 70,
-      "maxPerKg": 74,
-      "modalPerKg": 72,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tapioca",
-      "market": "Ranniangadi Market",
-      "district": "Pathanamthitta",
-      "variety": "Tapioca",
-      "minPerKg": 30,
-      "maxPerKg": 34,
-      "modalPerKg": 32,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Pariyaram VFPCK Market",
-      "district": "Thirssur",
-      "variety": "Nendra Bale",
-      "minPerKg": 55,
-      "maxPerKg": 65,
-      "modalPerKg": 62,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ashgourd",
-      "market": "Chelakkara Market",
-      "district": "Thirssur",
-      "variety": "Ashgourd",
-      "minPerKg": 20,
-      "maxPerKg": 22,
-      "modalPerKg": 21,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana - Green",
-      "market": "Chelakkara Market",
-      "district": "Thirssur",
-      "variety": "Banana - Green",
-      "minPerKg": 60,
-      "maxPerKg": 65,
-      "modalPerKg": 62,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Drumstick",
-      "market": "Chelakkara Market",
-      "district": "Thirssur",
-      "variety": "Drumstick",
-      "minPerKg": 75,
-      "maxPerKg": 78,
-      "modalPerKg": 76,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Green Chilli",
-      "market": "Chelakkara Market",
-      "district": "Thirssur",
-      "variety": "Green Chilly",
-      "minPerKg": 62,
-      "maxPerKg": 65,
-      "modalPerKg": 64,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pumpkin",
-      "market": "Chelakkara Market",
-      "district": "Thirssur",
-      "variety": "Pumpkin",
-      "minPerKg": 28,
-      "maxPerKg": 30,
-      "modalPerKg": 29,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cucumbar(Kheera)",
-      "market": "Thrissur Market",
-      "district": "Thirssur",
-      "variety": "Cucumbar",
-      "minPerKg": 40,
-      "maxPerKg": 40,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Potato",
-      "market": "Thrissur Market",
-      "district": "Thirssur",
-      "variety": "Potato",
-      "minPerKg": 35,
-      "maxPerKg": 40,
-      "modalPerKg": 38,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Kattakada Market",
-      "district": "Thiruvananthapuram",
+      "commodity": "Pineapple",
+      "market": "Mukkom Market",
+      "district": "Kozhikode(Calicut)",
       "variety": "Other",
-      "minPerKg": 76,
-      "maxPerKg": 78,
-      "modalPerKg": 76,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana - Green",
-      "market": "Kannur Market",
-      "district": "Kannur",
-      "variety": "Other",
-      "minPerKg": 70,
-      "maxPerKg": 75,
-      "modalPerKg": 72,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Arecanut(Betelnut/Supari)",
-      "market": "Payyannur Market",
-      "district": "Kannur",
-      "variety": "Other",
-      "minPerKg": 350,
-      "maxPerKg": 370,
-      "modalPerKg": 360,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Madhavapuram Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 34,
-      "maxPerKg": 38,
-      "modalPerKg": 36,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Madhavapuram Market",
-      "district": "Alappuzha",
-      "variety": "Bitter Gourd",
-      "minPerKg": 88,
-      "maxPerKg": 92,
-      "modalPerKg": 90,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Mankada VFPCK Market",
-      "district": "Malappuram",
-      "variety": "Nendra Bale",
-      "minPerKg": 56.5,
-      "maxPerKg": 58.5,
-      "modalPerKg": 57.5,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Othayi  VFPCK Market",
-      "district": "Malappuram",
-      "variety": "Nendra Bale",
-      "minPerKg": 62,
-      "maxPerKg": 62,
-      "modalPerKg": 62,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pumpkin",
-      "market": "Kollengode VFPCK Market",
-      "district": "Palakad",
-      "variety": "Pumpkin",
-      "minPerKg": 20,
-      "maxPerKg": 20,
-      "modalPerKg": 20,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cucumbar(Kheera)",
-      "market": "Kollengode VFPCK Market",
-      "district": "Palakad",
-      "variety": "Cucumbar",
-      "minPerKg": 35,
-      "maxPerKg": 35,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Coconut",
-      "market": "Perumatty VFPCK Market",
-      "district": "Palakad",
-      "variety": "Coconut",
-      "minPerKg": 50,
-      "maxPerKg": 50,
-      "modalPerKg": 50,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cowpea(Veg)",
-      "market": "Vadakarapathy VFPCK Market",
-      "district": "Palakad",
-      "variety": "Cowpea (Veg)",
-      "minPerKg": 55,
-      "maxPerKg": 55,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Chittar  VFPCK Market",
-      "district": "Pathanamthitta",
-      "variety": "Palayamthodan",
-      "minPerKg": 12,
-      "maxPerKg": 20,
-      "modalPerKg": 16,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Ezhamkulam VFPCK Market",
-      "district": "Pathanamthitta",
-      "variety": "Nendra Bale",
       "minPerKg": 75,
       "maxPerKg": 80,
       "modalPerKg": 78,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Pandalam VFPCK Market",
-      "district": "Pathanamthitta",
-      "variety": "Bitter Gourd",
-      "minPerKg": 32,
-      "maxPerKg": 40,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
+      "arrivalDate": "21/10/2026"
     },
     {
       "commodity": "Banana",
-      "market": "Karimpuzha VFPCK Market",
-      "district": "Palakad",
-      "variety": "Nendra Bale",
-      "minPerKg": 57,
-      "maxPerKg": 63,
-      "modalPerKg": 60,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Vellarada  VFPCK Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Rasakathai",
-      "minPerKg": 55,
-      "maxPerKg": 55,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Elephant Yam(Suran)/Amorphophallus",
-      "market": "Pampady Market",
-      "district": "Kottayam",
+      "market": "Mukkom Market",
+      "district": "Kozhikode(Calicut)",
       "variety": "Other",
-      "minPerKg": 40,
-      "maxPerKg": 50,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
+      "minPerKg": 65,
+      "maxPerKg": 69,
+      "modalPerKg": 67,
+      "arrivalDate": "21/10/2026"
     },
     {
-      "commodity": "Onion",
-      "market": "Aroor Market",
-      "district": "Alappuzha",
-      "variety": "Small",
-      "minPerKg": 88,
-      "maxPerKg": 90,
-      "modalPerKg": 89,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Elephant Yam(Suran)/Amorphophallus",
-      "market": "Aroor Market",
-      "district": "Alappuzha",
+      "commodity": "Coconut",
+      "market": "Mukkom Market",
+      "district": "Kozhikode(Calicut)",
       "variety": "Other",
-      "minPerKg": 48,
-      "maxPerKg": 50,
-      "modalPerKg": 49,
-      "arrivalDate": "20/10/2026"
+      "minPerKg": 58,
+      "maxPerKg": 60,
+      "modalPerKg": 59,
+      "arrivalDate": "21/10/2026"
     },
     {
-      "commodity": "Ridgeguard(Tori)",
-      "market": "Aroor Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 70,
-      "maxPerKg": 72,
-      "modalPerKg": 71,
-      "arrivalDate": "20/10/2026"
+      "commodity": "Banana - Green",
+      "market": "Puthenvelikkara  VFPCK Market",
+      "district": "Ernakulam",
+      "variety": "Banana - Green",
+      "minPerKg": 71,
+      "maxPerKg": 73,
+      "modalPerKg": 72,
+      "arrivalDate": "21/10/2026"
     },
     {
       "commodity": "Ashgourd",
-      "market": "Aroor Market",
+      "market": "Harippad Market",
       "district": "Alappuzha",
       "variety": "Other",
-      "minPerKg": 29,
+      "minPerKg": 35,
+      "maxPerKg": 40,
+      "modalPerKg": 35,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Cabbage",
+      "market": "Harippad Market",
+      "district": "Alappuzha",
+      "variety": "Cabbage",
+      "minPerKg": 45,
+      "maxPerKg": 50,
+      "modalPerKg": 45,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Banana - Green",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Banana - Green",
+      "minPerKg": 60,
+      "maxPerKg": 72,
+      "modalPerKg": 66,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Elephant Yam(Suran)/Amorphophallus",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Other",
+      "minPerKg": 35,
+      "maxPerKg": 45,
+      "modalPerKg": 40,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Ginger(Green)",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Green Ginger",
+      "minPerKg": 80,
+      "maxPerKg": 90,
+      "modalPerKg": 85,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Little gourd(Kundru)",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Other",
+      "minPerKg": 50,
+      "maxPerKg": 60,
+      "modalPerKg": 55,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Bitter gourd",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Bitter Gourd",
+      "minPerKg": 60,
+      "maxPerKg": 70,
+      "modalPerKg": 65,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Colacasia",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Other",
+      "minPerKg": 35,
+      "maxPerKg": 45,
+      "modalPerKg": 40,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Drumstick",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Drumstick",
+      "minPerKg": 70,
+      "maxPerKg": 80,
+      "modalPerKg": 75,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Onion",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Onion",
+      "minPerKg": 45,
+      "maxPerKg": 55,
+      "modalPerKg": 50,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Bhindi(Ladies Finger)",
+      "market": "Chengannur Market",
+      "district": "Alappuzha",
+      "variety": "Other",
+      "minPerKg": 30,
+      "maxPerKg": 35,
+      "modalPerKg": 32,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Beetroot",
+      "market": "Chengannur Market",
+      "district": "Alappuzha",
+      "variety": "Other",
+      "minPerKg": 49,
+      "maxPerKg": 52,
+      "modalPerKg": 50,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Ashgourd",
+      "market": "Chengannur Market",
+      "district": "Alappuzha",
+      "variety": "Other",
+      "minPerKg": 28,
       "maxPerKg": 31,
       "modalPerKg": 30,
-      "arrivalDate": "20/10/2026"
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Cowpea(Veg)",
+      "market": "Mukkom Market",
+      "district": "Kozhikode(Calicut)",
+      "variety": "Cowpea (Veg)",
+      "minPerKg": 50,
+      "maxPerKg": 54,
+      "modalPerKg": 52,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Tomato",
+      "market": "Mukkom Market",
+      "district": "Kozhikode(Calicut)",
+      "variety": "Tomato",
+      "minPerKg": 44,
+      "maxPerKg": 48,
+      "modalPerKg": 46,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Amaranthus",
+      "market": "Mukkom Market",
+      "district": "Kozhikode(Calicut)",
+      "variety": "Amaranthus",
+      "minPerKg": 34,
+      "maxPerKg": 36,
+      "modalPerKg": 35,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Green Chilli",
+      "market": "Mukkom Market",
+      "district": "Kozhikode(Calicut)",
+      "variety": "Green Chilly",
+      "minPerKg": 58,
+      "maxPerKg": 62,
+      "modalPerKg": 60,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Banana - Green",
+      "market": "Mukkom Market",
+      "district": "Kozhikode(Calicut)",
+      "variety": "Banana - Green",
+      "minPerKg": 50,
+      "maxPerKg": 55,
+      "modalPerKg": 52,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Beetroot",
+      "market": "Mukkom Market",
+      "district": "Kozhikode(Calicut)",
+      "variety": "Beetroot",
+      "minPerKg": 36,
+      "maxPerKg": 38,
+      "modalPerKg": 37,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Bottle gourd",
+      "market": "Mukkom Market",
+      "district": "Kozhikode(Calicut)",
+      "variety": "Bottle Gourd",
+      "minPerKg": 24,
+      "maxPerKg": 26,
+      "modalPerKg": 25,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Drumstick",
+      "market": "Mukkom Market",
+      "district": "Kozhikode(Calicut)",
+      "variety": "Drumstick",
+      "minPerKg": 50,
+      "maxPerKg": 54,
+      "modalPerKg": 52,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Pumpkin",
+      "market": "Mukkom Market",
+      "district": "Kozhikode(Calicut)",
+      "variety": "Pumpkin",
+      "minPerKg": 17,
+      "maxPerKg": 19,
+      "modalPerKg": 18,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Snakeguard",
+      "market": "Mukkom Market",
+      "district": "Kozhikode(Calicut)",
+      "variety": "Snakeguard",
+      "minPerKg": 36,
+      "maxPerKg": 40,
+      "modalPerKg": 38,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Apple",
+      "market": "Mukkom Market",
+      "district": "Kozhikode(Calicut)",
+      "variety": "Other",
+      "minPerKg": 140,
+      "maxPerKg": 150,
+      "modalPerKg": 145,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Brinjal",
+      "market": "Harippad Market",
+      "district": "Alappuzha",
+      "variety": "Brinjal",
+      "minPerKg": 45,
+      "maxPerKg": 50,
+      "modalPerKg": 45,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Banana",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Palayamthodan",
+      "minPerKg": 25,
+      "maxPerKg": 35,
+      "modalPerKg": 30,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Ashgourd",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Ashgourd",
+      "minPerKg": 30,
+      "maxPerKg": 45,
+      "modalPerKg": 38,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Cucumbar(Kheera)",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Cucumbar",
+      "minPerKg": 45,
+      "maxPerKg": 52,
+      "modalPerKg": 48,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Carrot",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Carrot",
+      "minPerKg": 35,
+      "maxPerKg": 45,
+      "modalPerKg": 40,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Cowpea(Veg)",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Cowpea (Veg)",
+      "minPerKg": 30,
+      "maxPerKg": 46,
+      "modalPerKg": 38,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Potato",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Potato",
+      "minPerKg": 25,
+      "maxPerKg": 35,
+      "modalPerKg": 30,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Banana",
+      "market": "Perumbavoor Market",
+      "district": "Ernakulam",
+      "variety": "Poovan",
+      "minPerKg": 50,
+      "maxPerKg": 60,
+      "modalPerKg": 55,
+      "arrivalDate": "21/10/2026"
     },
     {
       "commodity": "Coconut",
       "market": "Chengannur Market",
       "district": "Alappuzha",
       "variety": "Big",
-      "minPerKg": 57,
-      "maxPerKg": 60,
-      "modalPerKg": 58,
-      "arrivalDate": "20/10/2026"
+      "minPerKg": 55,
+      "maxPerKg": 58,
+      "modalPerKg": 57,
+      "arrivalDate": "21/10/2026"
+    },
+    {
+      "commodity": "Beetroot",
+      "market": "Chengannur Market",
+      "district": "Alappuzha",
+      "variety": "Beetroot",
+      "minPerKg": 38,
+      "maxPerKg": 41,
+      "modalPerKg": 40,
+      "arrivalDate": "21/10/2026"
     },
     {
       "commodity": "Banana - Green",
       "market": "Chengannur Market",
       "district": "Alappuzha",
       "variety": "Banana - Green",
-      "minPerKg": 63,
-      "maxPerKg": 66,
-      "modalPerKg": 65,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Drumstick",
-      "market": "Kayamkulam Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 54,
-      "maxPerKg": 56,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cucumbar(Kheera)",
-      "market": "Kayamkulam Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 29,
-      "maxPerKg": 31,
-      "modalPerKg": 30,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Kayamkulam Market",
-      "district": "Alappuzha",
-      "variety": "Small",
-      "minPerKg": 87,
-      "maxPerKg": 89,
-      "modalPerKg": 88,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tomato",
-      "market": "Kayamkulam Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 27,
-      "maxPerKg": 29,
-      "modalPerKg": 28,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Kayamkulam Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 69,
-      "maxPerKg": 71,
-      "modalPerKg": 70,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Kayamkulam Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 29,
-      "maxPerKg": 31,
-      "modalPerKg": 30,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pumpkin",
-      "market": "Kayamkulam Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 15,
-      "maxPerKg": 17,
-      "modalPerKg": 16,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Snakeguard",
-      "market": "Kayamkulam Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 43,
-      "maxPerKg": 45,
-      "modalPerKg": 44,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana - Green",
-      "market": "Nooranad VFPCK Market",
-      "district": "Alappuzha",
-      "variety": "Banana - Green",
-      "minPerKg": 89,
-      "maxPerKg": 93,
-      "modalPerKg": 91,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Lemon",
-      "market": "Thodupuzha Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 223,
-      "maxPerKg": 225,
-      "modalPerKg": 225,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ridgeguard(Tori)",
-      "market": "Thodupuzha Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 61,
-      "maxPerKg": 63,
-      "modalPerKg": 63,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Thodupuzha Market",
-      "district": "Idukki",
-      "variety": "Big",
-      "minPerKg": 59,
-      "maxPerKg": 61,
-      "modalPerKg": 61,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Omalloor Market",
-      "district": "Pathanamthitta",
-      "variety": "Palayamthodan",
-      "minPerKg": 0.1,
-      "maxPerKg": 0.13,
-      "modalPerKg": 0.12,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Drumstick",
-      "market": "Chathanoor Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 70,
-      "maxPerKg": 77,
-      "modalPerKg": 73,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tomato",
-      "market": "Chathanoor Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 35,
-      "maxPerKg": 45,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Snakeguard",
-      "market": "Chathanoor Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 50,
-      "maxPerKg": 60,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ginger(Green)",
-      "market": "Mananthavady Market",
-      "district": "Wayanad",
-      "variety": "Green Ginger",
-      "minPerKg": 99,
-      "maxPerKg": 100.5,
-      "modalPerKg": 100,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Green Chilli",
-      "market": "Mananthavady Market",
-      "district": "Wayanad",
-      "variety": "Green Chilly",
-      "minPerKg": 39,
-      "maxPerKg": 41,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cucumbar(Kheera)",
-      "market": "Mananthavady Market",
-      "district": "Wayanad",
-      "variety": "Cucumbar",
-      "minPerKg": 16,
-      "maxPerKg": 17.5,
-      "modalPerKg": 17,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Beetroot",
-      "market": "Cherthala Market",
-      "district": "Alappuzha",
-      "variety": "Beetroot",
-      "minPerKg": 45,
-      "maxPerKg": 47,
-      "modalPerKg": 46,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Cherthala Market",
-      "district": "Alappuzha",
-      "variety": "Other",
       "minPerKg": 64,
       "maxPerKg": 68,
-      "modalPerKg": 66,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cucumbar(Kheera)",
-      "market": "Cherthala Market",
-      "district": "Alappuzha",
-      "variety": "Cucumbar",
-      "minPerKg": 36,
-      "maxPerKg": 40,
-      "modalPerKg": 37,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Green Chilli",
-      "market": "Cherthala Market",
-      "district": "Alappuzha",
-      "variety": "Green Chilly",
-      "minPerKg": 42,
-      "maxPerKg": 46,
-      "modalPerKg": 44,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Little gourd(Kundru)",
-      "market": "Cherthala Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 44,
-      "maxPerKg": 48,
-      "modalPerKg": 46,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana - Green",
-      "market": "Nedumkandam Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 65,
-      "maxPerKg": 70,
-      "modalPerKg": 70,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Nendra Bale",
-      "minPerKg": 55,
-      "maxPerKg": 58,
-      "modalPerKg": 58,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Water Melon",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 18,
-      "maxPerKg": 23,
-      "modalPerKg": 21,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 46,
-      "maxPerKg": 50,
-      "modalPerKg": 48,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Drumstick",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 48,
-      "maxPerKg": 55,
-      "modalPerKg": 52,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Amaranthus",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 28,
-      "maxPerKg": 32,
-      "modalPerKg": 29,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cauliflower",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 45,
-      "maxPerKg": 48,
-      "modalPerKg": 48,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Colacasia",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 48,
-      "maxPerKg": 58,
-      "modalPerKg": 54,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Little gourd(Kundru)",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 39,
-      "maxPerKg": 45,
-      "modalPerKg": 43,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tomato",
-      "market": "Kattappana Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 38,
-      "maxPerKg": 45,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cowpea(Veg)",
-      "market": "Punalur Market",
-      "district": "Kollam",
-      "variety": "Cowpea (Veg)",
-      "minPerKg": 53,
-      "maxPerKg": 57,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Punalur Market",
-      "district": "Kollam",
-      "variety": "Bitter Gourd",
-      "minPerKg": 65,
-      "maxPerKg": 68,
-      "modalPerKg": 67,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tapioca",
-      "market": "Punalur Market",
-      "district": "Kollam",
-      "variety": "Tapioca",
-      "minPerKg": 40,
-      "maxPerKg": 45,
-      "modalPerKg": 42,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Palayamthodan",
-      "minPerKg": 38,
-      "maxPerKg": 38,
-      "modalPerKg": 38,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Rasakathai",
-      "minPerKg": 83,
-      "maxPerKg": 83,
-      "modalPerKg": 83,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Potato",
-      "market": "Anchal Market",
-      "district": "Kollam",
-      "variety": "Potato",
-      "minPerKg": 46,
-      "maxPerKg": 46,
-      "modalPerKg": 46,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Drumstick",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Drumstick",
-      "minPerKg": 60,
-      "maxPerKg": 62,
-      "modalPerKg": 61,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Mango(Raw-Ripe)",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Mango - Raw-Ripe",
-      "minPerKg": 80,
-      "maxPerKg": 82,
-      "modalPerKg": 81,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Carrot",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Carrot",
-      "minPerKg": 38,
-      "maxPerKg": 40,
-      "modalPerKg": 39,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Bhindi",
-      "minPerKg": 30,
-      "maxPerKg": 32,
-      "modalPerKg": 31,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cowpea(Veg)",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Cowpea (Veg)",
-      "minPerKg": 40,
-      "maxPerKg": 42,
-      "modalPerKg": 41,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Galgal(Lemon)",
-      "market": "Athirampuzha Market",
-      "district": "Kottayam",
-      "variety": "Galgal(Lemon)",
-      "minPerKg": 160,
-      "maxPerKg": 170,
-      "modalPerKg": 165,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Brinjal",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Brinjal",
-      "minPerKg": 37,
-      "maxPerKg": 41,
-      "modalPerKg": 39,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cabbage",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Cabbage",
-      "minPerKg": 32,
-      "maxPerKg": 36,
-      "modalPerKg": 34,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cowpea(Veg)",
-      "market": "Kottayam Market",
-      "district": "Kottayam",
-      "variety": "Cowpea (Veg)",
-      "minPerKg": 60,
-      "maxPerKg": 64,
-      "modalPerKg": 62,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cowpea(Veg)",
-      "market": "Pala Market",
-      "district": "Kottayam",
-      "variety": "Cowpea (Veg)",
-      "minPerKg": 57,
-      "maxPerKg": 70,
-      "modalPerKg": 64,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Little gourd(Kundru)",
-      "market": "Pala Market",
-      "district": "Kottayam",
-      "variety": "Other",
-      "minPerKg": 40,
-      "maxPerKg": 59,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Sasthamkotta Market",
-      "district": "Kollam",
-      "variety": "Nendra Bale",
-      "minPerKg": 70,
-      "maxPerKg": 70,
-      "modalPerKg": 70,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Sasthamkotta Market",
-      "district": "Kollam",
-      "variety": "Poovan",
-      "minPerKg": 40,
-      "maxPerKg": 40,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Sasthamkotta Market",
-      "district": "Kollam",
-      "variety": "Robusta",
-      "minPerKg": 17,
-      "maxPerKg": 17,
-      "modalPerKg": 17,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ashgourd",
-      "market": "Sasthamkotta Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 25,
-      "maxPerKg": 25,
-      "modalPerKg": 25,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Sasthamkotta Market",
-      "district": "Kollam",
-      "variety": "Bitter Gourd",
-      "minPerKg": 50,
-      "maxPerKg": 50,
-      "modalPerKg": 50,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Elephant Yam(Suran)/Amorphophallus",
-      "market": "Vakathanam VFPCK Market",
-      "district": "Kottayam",
-      "variety": "Amorphophallus",
-      "minPerKg": 38,
-      "maxPerKg": 42,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tomato",
-      "market": "Kallachi Market",
-      "district": "Kozhikode(Calicut)",
-      "variety": "Tomato",
-      "minPerKg": 28,
-      "maxPerKg": 32,
-      "modalPerKg": 30,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cowpea(Veg)",
-      "market": "Kallachi Market",
-      "district": "Kozhikode(Calicut)",
-      "variety": "Cowpea (Veg)",
-      "minPerKg": 38,
-      "maxPerKg": 42,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Kallachi Market",
-      "district": "Kozhikode(Calicut)",
-      "variety": "Big",
-      "minPerKg": 50,
-      "maxPerKg": 54,
-      "modalPerKg": 52,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Beetroot",
-      "market": "Harippad Market",
-      "district": "Alappuzha",
-      "variety": "Beetroot",
-      "minPerKg": 60,
-      "maxPerKg": 65,
-      "modalPerKg": 60,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Harippad Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 65,
-      "maxPerKg": 70,
       "modalPerKg": 65,
-      "arrivalDate": "20/10/2026"
+      "arrivalDate": "21/10/2026"
     },
     {
-      "commodity": "Banana - Green",
-      "market": "Neyyatinkara Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Banana - Green",
-      "minPerKg": 60,
-      "maxPerKg": 65,
-      "modalPerKg": 62,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cluster beans",
-      "market": "Neyyatinkara Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Other",
-      "minPerKg": 100,
-      "maxPerKg": 140,
-      "modalPerKg": 120,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Neyyatinkara Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Bitter Gourd",
-      "minPerKg": 60,
-      "maxPerKg": 65,
-      "modalPerKg": 62,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tomato",
-      "market": "Vamanapuram Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Other",
-      "minPerKg": 35,
-      "maxPerKg": 40,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Vamanapuram Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Other",
-      "minPerKg": 50,
-      "maxPerKg": 55,
-      "modalPerKg": 50,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Brinjal",
-      "market": "Vamanapuram Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Other",
-      "minPerKg": 45,
-      "maxPerKg": 50,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Beetroot",
-      "market": "Vamanapuram Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Other",
-      "minPerKg": 35,
-      "maxPerKg": 40,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Ettumanoor Market",
-      "district": "Kottayam",
-      "variety": "Bhindi",
-      "minPerKg": 33,
-      "maxPerKg": 37,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Ettumanoor Market",
-      "district": "Kottayam",
-      "variety": "Big",
-      "minPerKg": 54,
-      "maxPerKg": 58,
-      "modalPerKg": 56,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Snakeguard",
-      "market": "Ettumanoor Market",
-      "district": "Kottayam",
-      "variety": "Snakeguard",
-      "minPerKg": 33,
-      "maxPerKg": 36,
-      "modalPerKg": 34,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Amaranthus",
-      "market": "Parakkodu Market",
-      "district": "Pathanamthitta",
-      "variety": "Amaranthus",
-      "minPerKg": 35,
-      "maxPerKg": 45,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Kadungallur  VFPCK Market",
-      "district": "Ernakulam",
-      "variety": "Nendra Bale",
-      "minPerKg": 68,
-      "maxPerKg": 69,
-      "modalPerKg": 68.5,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Amaranthus",
-      "market": "Kottakkal Market",
-      "district": "Malappuram",
-      "variety": "Other",
-      "minPerKg": 20,
-      "maxPerKg": 22,
-      "modalPerKg": 21,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Mint(Pudina)",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Mint(Pudina)",
-      "minPerKg": 92,
-      "maxPerKg": 94,
-      "modalPerKg": 93,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cluster beans",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Cluster Beans",
-      "minPerKg": 52,
-      "maxPerKg": 54,
-      "modalPerKg": 53,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cowpea(Veg)",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Cowpea (Veg)",
-      "minPerKg": 35,
-      "maxPerKg": 37,
-      "modalPerKg": 36,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Other",
-      "minPerKg": 52,
-      "maxPerKg": 54,
-      "modalPerKg": 53,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Amla(Nelli Kai)",
-      "market": "Parappanangadi Market",
-      "district": "Malappuram",
-      "variety": "Other",
-      "minPerKg": 90,
-      "maxPerKg": 92,
-      "modalPerKg": 91,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Rajakkad  VFPCK Market",
-      "district": "Idukki",
-      "variety": "Nendra Bale",
-      "minPerKg": 45,
-      "maxPerKg": 50,
-      "modalPerKg": 47,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Seethathode  VFPCK Market",
-      "district": "Pathanamthitta",
-      "variety": "Nendra Bale",
-      "minPerKg": 78,
-      "maxPerKg": 84,
-      "modalPerKg": 80,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Nendra Bale",
-      "minPerKg": 70,
-      "maxPerKg": 75,
-      "modalPerKg": 75,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Palayamthodan",
-      "minPerKg": 35,
-      "maxPerKg": 40,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Bitter Gourd",
-      "minPerKg": 85,
-      "maxPerKg": 90,
-      "modalPerKg": 90,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Ashgourd",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Ashgourd",
-      "minPerKg": 30,
-      "maxPerKg": 35,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Colacasia",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Other",
-      "minPerKg": 80,
-      "maxPerKg": 85,
-      "modalPerKg": 85,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Garlic",
-      "market": "Vadakkenchery Market",
-      "district": "Palakad",
-      "variety": "Garlic",
-      "minPerKg": 240,
-      "maxPerKg": 280,
-      "modalPerKg": 240,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Punalur VFPCK Market",
-      "district": "Kollam",
-      "variety": "Banana - Ripe",
-      "minPerKg": 80,
-      "maxPerKg": 80,
-      "modalPerKg": 80,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pumpkin",
-      "market": "Kuriem  VFPCK Market",
-      "district": "Kottayam",
-      "variety": "Pumpkin",
-      "minPerKg": 16,
-      "maxPerKg": 18,
-      "modalPerKg": 17,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tapioca",
-      "market": "Thazhakkara  VFPCK Market",
-      "district": "Alappuzha",
-      "variety": "Tapioca",
-      "minPerKg": 33,
-      "maxPerKg": 37,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Kanjoor VFPCK Market",
-      "district": "Ernakulam",
-      "variety": "Nendra Bale",
-      "minPerKg": 62,
-      "maxPerKg": 68,
-      "modalPerKg": 64,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Athanikkal VFPCK Market",
-      "district": "Malappuram",
-      "variety": "Nendra Bale",
-      "minPerKg": 62,
-      "maxPerKg": 62,
-      "modalPerKg": 62,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Ranniangadi Market",
-      "district": "Pathanamthitta",
-      "variety": "Bitter Gourd",
-      "minPerKg": 58,
-      "maxPerKg": 62,
-      "modalPerKg": 60,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cabbage",
-      "market": "Chelakkara Market",
-      "district": "Thirssur",
-      "variety": "Cabbage",
-      "minPerKg": 22,
-      "maxPerKg": 25,
-      "modalPerKg": 24,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Chelakkara Market",
-      "district": "Thirssur",
-      "variety": "Bitter Gourd",
-      "minPerKg": 50,
-      "maxPerKg": 55,
-      "modalPerKg": 52,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Amaranthus",
-      "market": "Chelakkara Market",
-      "district": "Thirssur",
-      "variety": "Other",
-      "minPerKg": 20,
-      "maxPerKg": 22,
-      "modalPerKg": 21,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Brinjal",
-      "market": "Chelakkara Market",
-      "district": "Thirssur",
-      "variety": "Brinjal",
-      "minPerKg": 38,
-      "maxPerKg": 40,
-      "modalPerKg": 39,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Duster Beans",
-      "market": "Chelakkara Market",
-      "district": "Thirssur",
-      "variety": "Other",
-      "minPerKg": 75,
-      "maxPerKg": 78,
-      "modalPerKg": 76,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Elephant Yam(Suran)/Amorphophallus",
-      "market": "Chelakkara Market",
-      "district": "Thirssur",
-      "variety": "Other",
-      "minPerKg": 50,
-      "maxPerKg": 55,
-      "modalPerKg": 52,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tapioca",
-      "market": "Chelakkara Market",
-      "district": "Thirssur",
-      "variety": "Tapioca",
-      "minPerKg": 30,
-      "maxPerKg": 35,
-      "modalPerKg": 32,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cabbage",
-      "market": "Thrissur Market",
-      "district": "Thirssur",
-      "variety": "Cabbage",
-      "minPerKg": 25,
-      "maxPerKg": 28,
-      "modalPerKg": 28,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Thrissur Market",
-      "district": "Thirssur",
-      "variety": "Bhindi",
-      "minPerKg": 35,
-      "maxPerKg": 36,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Thrissur Market",
-      "district": "Thirssur",
-      "variety": "Bitter Gourd",
-      "minPerKg": 65,
-      "maxPerKg": 70,
-      "modalPerKg": 65,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Elephant Yam(Suran)/Amorphophallus",
-      "market": "Thrissur Market",
-      "district": "Thirssur",
-      "variety": "Other",
-      "minPerKg": 32,
-      "maxPerKg": 32,
-      "modalPerKg": 32,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Brinjal",
-      "market": "Thrissur Market",
-      "district": "Thirssur",
-      "variety": "Brinjal",
-      "minPerKg": 25,
-      "maxPerKg": 25,
-      "modalPerKg": 25,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cluster beans",
-      "market": "Thrissur Market",
-      "district": "Thirssur",
-      "variety": "Cluster Beans",
-      "minPerKg": 75,
-      "maxPerKg": 75,
-      "modalPerKg": 75,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Thrissur Market",
-      "district": "Thirssur",
-      "variety": "Onion",
-      "minPerKg": 55,
-      "maxPerKg": 55,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pumpkin",
-      "market": "Thrissur Market",
-      "district": "Thirssur",
-      "variety": "Pumpkin",
-      "minPerKg": 20,
-      "maxPerKg": 20,
-      "modalPerKg": 20,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Colacasia",
-      "market": "Kattakada Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Other",
-      "minPerKg": 80,
-      "maxPerKg": 80,
-      "modalPerKg": 80,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Kannur Market",
-      "district": "Kannur",
-      "variety": "Bhindi",
-      "minPerKg": 38,
-      "maxPerKg": 42,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Amaranthus",
-      "market": "Payyannur Market",
-      "district": "Kannur",
-      "variety": "Other",
-      "minPerKg": 38,
-      "maxPerKg": 40,
-      "modalPerKg": 39,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana - Green",
-      "market": "Payyannur Market",
-      "district": "Kannur",
-      "variety": "Other",
-      "minPerKg": 62,
-      "maxPerKg": 64,
-      "modalPerKg": 63,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cucumbar(Kheera)",
-      "market": "Payyannur Market",
-      "district": "Kannur",
-      "variety": "Other",
-      "minPerKg": 42,
-      "maxPerKg": 44,
-      "modalPerKg": 43,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Pumpkin",
-      "market": "Payyannur Market",
-      "district": "Kannur",
-      "variety": "Other",
-      "minPerKg": 25,
-      "maxPerKg": 27,
-      "modalPerKg": 26,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Black pepper",
-      "market": "Payyannur Market",
-      "district": "Kannur",
-      "variety": "Other",
-      "minPerKg": 350,
-      "maxPerKg": 370,
-      "modalPerKg": 360,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Kattampak  VFPCK Market",
-      "district": "Kottayam",
-      "variety": "Bitter Gourd",
-      "minPerKg": 40,
-      "maxPerKg": 50,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Little gourd(Kundru)",
-      "market": "Kizhakkancheri VFPCK Market",
-      "district": "Palakad",
-      "variety": "Little gourd (Kundru)",
-      "minPerKg": 35,
-      "maxPerKg": 35,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Avarma  VFPCK Market",
-      "district": "Kottayam",
-      "variety": "Bhindi",
-      "minPerKg": 55,
-      "maxPerKg": 60,
-      "modalPerKg": 56,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Enadimangalam VFPCK Market",
-      "district": "Pathanamthitta",
-      "variety": "Palayamthodan",
-      "minPerKg": 12,
-      "maxPerKg": 18,
-      "modalPerKg": 15,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Mutholy  VFPCK Market",
-      "district": "Kottayam",
-      "variety": "Nendra Bale",
-      "minPerKg": 60,
-      "maxPerKg": 64,
-      "modalPerKg": 62,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Colacasia",
-      "market": "Thrikkodithanam  VFPCK Market",
-      "district": "Kottayam",
-      "variety": "Other",
-      "minPerKg": 58,
-      "maxPerKg": 60,
-      "modalPerKg": 60,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Elephant Yam(Suran)/Amorphophallus",
-      "market": "Pandalam VFPCK Market",
-      "district": "Pathanamthitta",
-      "variety": "Elephant Yam (Suran)",
-      "minPerKg": 35,
-      "maxPerKg": 42,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Tapioca",
-      "market": "Vaniyamkulam  VFPCK Market",
-      "district": "Palakad",
-      "variety": "Other",
-      "minPerKg": 25,
-      "maxPerKg": 27,
-      "modalPerKg": 26,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Nooluvally  VFPCK Market",
-      "district": "Thirssur",
-      "variety": "Nendra Bale",
-      "minPerKg": 55,
-      "maxPerKg": 65,
-      "modalPerKg": 62,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Vellarada  VFPCK Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Nendra Bale",
-      "minPerKg": 25,
-      "maxPerKg": 35,
-      "modalPerKg": 30,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Vengannore  VFPCK Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Nendra Bale",
-      "minPerKg": 65,
-      "maxPerKg": 70,
-      "modalPerKg": 68,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Maranelloor VFPCK Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Robusta",
-      "minPerKg": 30,
-      "maxPerKg": 35,
-      "modalPerKg": 33.52,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Maranelloor VFPCK Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Palayamthodan",
-      "minPerKg": 30,
-      "maxPerKg": 42,
-      "modalPerKg": 36.4,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Green Chilli",
-      "market": "Pampady Market",
-      "district": "Kottayam",
-      "variety": "Green Chilly",
-      "minPerKg": 40,
-      "maxPerKg": 50,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Drumstick",
-      "market": "Pampady Market",
-      "district": "Kottayam",
-      "variety": "Drumstick",
-      "minPerKg": 50,
-      "maxPerKg": 60,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana - Green",
-      "market": "Pampady Market",
-      "district": "Kottayam",
-      "variety": "Banana - Green",
-      "minPerKg": 65,
-      "maxPerKg": 75,
-      "modalPerKg": 70,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Beetroot",
-      "market": "Pampady Market",
-      "district": "Kottayam",
-      "variety": "Beetroot",
-      "minPerKg": 30,
-      "maxPerKg": 40,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cauliflower",
-      "market": "Pampady Market",
-      "district": "Kottayam",
-      "variety": "Cauliflower",
-      "minPerKg": 50,
-      "maxPerKg": 60,
-      "modalPerKg": 55,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Potato",
-      "market": "Pampady Market",
-      "district": "Kottayam",
-      "variety": "Big",
-      "minPerKg": 35,
-      "maxPerKg": 45,
-      "modalPerKg": 40,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Cowpea(Veg)",
-      "market": "Pappanchani VFPCK Market",
-      "district": "Thiruvananthapuram",
-      "variety": "Bean Barbati",
-      "minPerKg": 80,
-      "maxPerKg": 80,
-      "modalPerKg": 80,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Aroor Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 88,
-      "maxPerKg": 90,
-      "modalPerKg": 89,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bhindi(Ladies Finger)",
-      "market": "Aroor Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 42,
-      "maxPerKg": 44,
-      "modalPerKg": 43,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Brinjal",
-      "market": "Aroor Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 58,
-      "maxPerKg": 60,
-      "modalPerKg": 59,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Green Chilli",
-      "market": "Aroor Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 58,
-      "maxPerKg": 60,
-      "modalPerKg": 59,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "French Beans(Frasbean)",
-      "market": "Aroor Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 88,
-      "maxPerKg": 90,
-      "modalPerKg": 89,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Onion",
-      "market": "Aroor Market",
-      "district": "Alappuzha",
-      "variety": "Big",
-      "minPerKg": 50,
-      "maxPerKg": 52,
-      "modalPerKg": 51,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Potato",
-      "market": "Aroor Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 36,
-      "maxPerKg": 38,
-      "modalPerKg": 37,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana - Green",
-      "market": "Chathannoore VFPCK Market",
-      "district": "Kollam",
-      "variety": "Banana - Green",
-      "minPerKg": 68,
-      "maxPerKg": 72,
-      "modalPerKg": 70,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Elephant Yam(Suran)/Amorphophallus",
+      "commodity": "Bottle gourd",
       "market": "Chengannur Market",
       "district": "Alappuzha",
-      "variety": "Amorphophallus",
-      "minPerKg": 47,
-      "maxPerKg": 50,
-      "modalPerKg": 48,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Amaranthus",
-      "market": "Kayamkulam Market",
-      "district": "Alappuzha",
       "variety": "Other",
-      "minPerKg": 41,
-      "maxPerKg": 43,
-      "modalPerKg": 42,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Beetroot",
-      "market": "Kayamkulam Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 37,
-      "maxPerKg": 39,
-      "modalPerKg": 38,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Indian Beans(Seam)",
-      "market": "Kayamkulam Market",
-      "district": "Alappuzha",
-      "variety": "Other",
-      "minPerKg": 35,
-      "maxPerKg": 37,
-      "modalPerKg": 36,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Little gourd(Kundru)",
-      "market": "Thodupuzha Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 43,
-      "maxPerKg": 45,
-      "modalPerKg": 45,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Mango(Raw-Ripe)",
-      "market": "Thodupuzha Market",
-      "district": "Idukki",
-      "variety": "Other",
-      "minPerKg": 59,
-      "maxPerKg": 61,
-      "modalPerKg": 61,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Banana",
-      "market": "Chathanoor Market",
-      "district": "Kollam",
-      "variety": "Red Banana",
-      "minPerKg": 70,
-      "maxPerKg": 80,
-      "modalPerKg": 75,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Bitter gourd",
-      "market": "Chathanoor Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 80,
-      "maxPerKg": 95,
-      "modalPerKg": 87,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Little gourd(Kundru)",
-      "market": "Chathanoor Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 55,
-      "maxPerKg": 65,
-      "modalPerKg": 60,
-      "arrivalDate": "20/10/2026"
-    },
-    {
-      "commodity": "Potato",
-      "market": "Chathanoor Market",
-      "district": "Kollam",
-      "variety": "Other",
-      "minPerKg": 30,
-      "maxPerKg": 40,
-      "modalPerKg": 35,
-      "arrivalDate": "20/10/2026"
+      "minPerKg": 20,
+      "maxPerKg": 23,
+      "modalPerKg": 21,
+      "arrivalDate": "21/10/2026"
     }
   ],
   "stale": false
