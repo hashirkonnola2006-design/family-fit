@@ -1,7 +1,10 @@
 import axios from 'axios'
 
-// Read backend URL from environment variable (VITE_API_URL), defaulting to empty string in local dev
-const API_BASE_URL = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '')
+// Read backend URL from environment variable (VITE_API_URL), defaulting to Render URL in production
+const API_BASE_URL = (
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD ? 'https://family-fit.onrender.com' : '')
+).replace(/\/+$/, '')
 
 // Active request tracking & 3-second cold-start timer
 // ONLY tracked for actions where the user is actively waiting on the server (auth, mutations, or explicit requests)

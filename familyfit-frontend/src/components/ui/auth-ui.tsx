@@ -236,7 +236,7 @@ export function AuthUI({
         <img
           src="/images/auth-kid-clean.jpg"
           alt="Smiling Indian child eating a traditional Kerala meal on a banana leaf"
-          className="w-full h-full object-cover object-[72%_36%] pointer-events-none"
+          className="w-full h-full object-cover object-[80%_36%] pointer-events-none"
           loading="eager"
         />
 
@@ -695,12 +695,77 @@ export function AuthUI({
           <span>Better Food &bull; Healthier Families &bull; Brighter Futures</span>
         </div>
 
-        {/* Faint Botanical Leaf Illustration Decoration in Bottom-Right Corner */}
-        <div className="hidden lg:block absolute bottom-0 right-0 pointer-events-none opacity-30 z-0" aria-hidden="true">
-          <svg width="180" height="180" viewBox="0 0 180 180" fill="none">
-            <path d="M180 90 C140 100 120 140 110 180 C125 145 155 120 180 90 Z" fill="#2F4A2E" />
-            <path d="M180 135 C135 140 105 160 80 180 C115 165 150 150 180 135 Z" fill="#576D4C" />
-            <path d="M135 180 C145 145 170 125 180 110 C165 135 150 155 135 180 Z" fill="#7A8B7B" />
+        {/* Botanical Leaf Accents in Bottom Corners */}
+        {/* Bottom-Right Botanical Leaf Branch */}
+        <div className="hidden lg:block absolute bottom-0 right-0 pointer-events-none z-0 select-none" aria-hidden="true">
+          <svg width="220" height="220" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="leafGradMain" x1="100%" y1="100%" x2="0%" y2="0%">
+                <stop offset="0%" stopColor="#2F4A2E" stopOpacity="0.30" />
+                <stop offset="100%" stopColor="#4A7049" stopOpacity="0.18" />
+              </linearGradient>
+              <linearGradient id="leafGradSub" x1="100%" y1="100%" x2="0%" y2="0%">
+                <stop offset="0%" stopColor="#385B36" stopOpacity="0.25" />
+                <stop offset="100%" stopColor="#6C936A" stopOpacity="0.14" />
+              </linearGradient>
+            </defs>
+
+            {/* Secondary gracefully arching branch */}
+            <path d="M220 220 C175 195 125 155 75 90" stroke="#385B36" strokeWidth="2" strokeLinecap="round" opacity="0.35" />
+
+            {/* Main sweeping branch */}
+            <path d="M220 220 C185 170 145 105 105 25" stroke="#2F4A2E" strokeWidth="2.5" strokeLinecap="round" opacity="0.4" />
+
+            {/* Leaf 1 (Top Tip) */}
+            <path d="M105 25 C92 40 90 62 102 75 C115 65 120 45 105 25 Z" fill="url(#leafGradMain)" />
+            <path d="M105 25 C100 45 102 65 102 75" stroke="#2F4A2E" strokeWidth="1" opacity="0.35" />
+
+            {/* Leaf 2 (Left Upper) */}
+            <path d="M120 65 C95 62 75 78 82 98 C102 96 115 85 120 65 Z" fill="url(#leafGradSub)" />
+            <path d="M120 65 C105 75 92 88 82 98" stroke="#385B36" strokeWidth="1" opacity="0.3" />
+
+            {/* Leaf 3 (Right Upper) */}
+            <path d="M132 82 C155 75 172 90 168 112 C148 112 135 100 132 82 Z" fill="url(#leafGradMain)" />
+            <path d="M132 82 C145 92 158 102 168 112" stroke="#2F4A2E" strokeWidth="1" opacity="0.35" />
+
+            {/* Leaf 4 (Left Mid) */}
+            <path d="M146 110 C118 115 102 135 110 155 C132 150 145 132 146 110 Z" fill="url(#leafGradSub)" />
+            <path d="M146 110 C130 125 118 140 110 155" stroke="#385B36" strokeWidth="1" opacity="0.3" />
+
+            {/* Leaf 5 (Right Mid) */}
+            <path d="M162 130 C190 128 202 148 195 168 C175 168 162 152 162 130 Z" fill="url(#leafGradMain)" />
+            <path d="M162 130 C175 142 188 155 195 168" stroke="#2F4A2E" strokeWidth="1" opacity="0.35" />
+
+            {/* Leaf 6 (Left Lower) */}
+            <path d="M176 158 C150 168 140 190 150 208 C168 200 176 182 176 158 Z" fill="url(#leafGradSub)" />
+
+            {/* Secondary Branch Leaflets */}
+            <path d="M75 90 C62 98 58 115 68 126 C78 120 82 105 75 90 Z" fill="url(#leafGradSub)" />
+            <path d="M100 120 C80 125 72 142 82 155 C98 150 105 138 100 120 Z" fill="url(#leafGradMain)" />
+            <path d="M125 145 C145 138 158 152 152 168 C138 168 128 158 125 145 Z" fill="url(#leafGradSub)" />
+            <path d="M145 168 C125 178 120 196 130 208 C145 202 150 188 145 168 Z" fill="url(#leafGradMain)" />
+
+            {/* Soft organic dewdrop/berry accent */}
+            <circle cx="106" cy="88" r="3.5" fill="#385B36" opacity="0.25" />
+            <circle cx="138" cy="122" r="3" fill="#2F4A2E" opacity="0.25" />
+          </svg>
+        </div>
+
+        {/* Bottom-Left Botanical Leaf Sprig */}
+        <div className="hidden lg:block absolute bottom-0 left-0 pointer-events-none z-0 select-none" aria-hidden="true">
+          <svg width="150" height="150" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="leafGradLeft" x1="0%" y1="100%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#2F4A2E" stopOpacity="0.26" />
+                <stop offset="100%" stopColor="#52794F" stopOpacity="0.14" />
+              </linearGradient>
+            </defs>
+            <path d="M0 150 C38 118 80 80 102 22" stroke="#2F4A2E" strokeWidth="2" strokeLinecap="round" opacity="0.34" />
+            <path d="M102 22 C112 35 110 52 98 60 C86 54 88 36 102 22 Z" fill="url(#leafGradLeft)" />
+            <path d="M86 54 C65 56 54 71 62 84 C77 81 84 69 86 54 Z" fill="url(#leafGradLeft)" />
+            <path d="M70 77 C86 73 98 84 94 99 C79 99 73 88 70 77 Z" fill="url(#leafGradLeft)" />
+            <path d="M52 102 C32 110 26 125 34 138 C48 134 54 120 52 102 Z" fill="url(#leafGradLeft)" />
+            <circle cx="94" cy="74" r="3" fill="#2F4A2E" opacity="0.22" />
           </svg>
         </div>
 

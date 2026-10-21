@@ -168,7 +168,11 @@ export function AuthProvider({ children }) {
       console.error('Backend API registration error:', apiErr)
 
       const status = apiErr.response?.status
-      const serverMsg = apiErr.response?.data?.message || apiErr.message || ''
+      const fieldErrors = apiErr.response?.data?.fieldErrors
+      const fieldErrorMsg = fieldErrors && typeof fieldErrors === 'object'
+        ? Object.values(fieldErrors).join('. ')
+        : ''
+      const serverMsg = fieldErrorMsg || apiErr.response?.data?.message || apiErr.message || ''
 
       if (status === 400 && serverMsg.toLowerCase().includes('already registered')) {
         throw new Error('This email is already registered. Please sign in instead.')
