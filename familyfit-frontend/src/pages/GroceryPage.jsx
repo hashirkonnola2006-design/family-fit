@@ -91,11 +91,37 @@ export default function GroceryPage() {
   const [isLoadingPrices, setIsLoadingPrices] = useState(true)
   const [priceError, setPriceError] = useState(null)
 
-  // Fetch /api/prices on load from backend proxy
+  // Fetch /api/prices on load with fallback to /data/prices.json for static production
   useEffect(() => {
     let isMounted = true
     setIsLoadingPrices(true)
     setPriceError(null)
+
+    const processPriceData = (data) => {
+      if (!isMounted || !data) return
+      let items = []
+      if (Array.isArray(data.items)) {
+        items = data.items
+      } else if (data.items && typeof data.items === 'object') {
+        items = Object.entries(data.items).map(([name, val]) => ({
+          commodity: val.commodity || name,
+          market: 'Kerala Mandis',
+          district: 'Kerala',
+          minPerKg: val.wholesale_median_per_kg || 0,
+          maxPerKg: val.wholesale_median_per_kg || 0,
+          modalPerKg: val.wholesale_median_per_kg || 0,
+          arrivalDate: val.last_arrival_date || '',
+        }))
+      }
+
+      if (items.length > 0) {
+        setRawApiResponse({ ...data, items })
+        const mapped = mapApiPricesToGroceryItems(items, RETAIL_MARKUP)
+        setMappedPrices(mapped)
+      } else {
+        setPriceError('No mandi records available')
+      }
+    }
 
     fetch('/api/prices')
       .then((res) => {
@@ -103,22 +129,23 @@ export default function GroceryPage() {
         return res.json()
       })
       .then((data) => {
-        if (!isMounted) return
-        if (data && Array.isArray(data.items)) {
-          setRawApiResponse(data)
-          const mapped = mapApiPricesToGroceryItems(data.items, RETAIL_MARKUP)
-          setMappedPrices(mapped)
-          if (data.stale) {
-            console.info('[PRICES] Serving cached Kerala mandi data')
-          }
-        } else {
-          setPriceError(data?.error || 'No mandi records returned')
-        }
+        processPriceData(data)
       })
-      .catch((err) => {
-        if (!isMounted) return
-        console.warn('[PRICES] Proxy fetch failed:', err.message)
-        setPriceError('Could not connect to live prices server')
+      .catch(() => {
+        // Fallback to static bundled prices.json
+        return fetch('/data/prices.json')
+          .then((res) => {
+            if (!res.ok) throw new Error(`HTTP ${res.status}`)
+            return res.json()
+          })
+          .then((data) => {
+            processPriceData(data)
+          })
+          .catch((fallbackErr) => {
+            if (isMounted) {
+              setPriceError('Could not load price data')
+            }
+          })
       })
       .finally(() => {
         if (isMounted) setIsLoadingPrices(false)
