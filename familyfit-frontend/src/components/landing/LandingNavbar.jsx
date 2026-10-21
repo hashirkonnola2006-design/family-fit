@@ -2,8 +2,10 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { ArrowRight, Menu, X, FileText, Shield, Info, Sparkles, HelpCircle, HeartHandshake, Compass } from 'lucide-react'
 import { Logo } from '../brand/Logo'
+import { useAuth } from '../../context/AuthContext'
 
 export default function LandingNavbar() {
+  const { user, logout } = useAuth()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('')
@@ -160,23 +162,47 @@ export default function LandingNavbar() {
 
           {/* ── Right Actions: Log in, Sign Up, & 3-line Nav Menu Button ── */}
           <div className="flex items-center gap-3 sm:gap-4">
-            <Link
-              to="/login"
-              style={{ fontFamily: 'var(--font-body)' }}
-              className="hidden sm:inline-flex h-11 items-center text-[16px] sm:text-[17px] font-semibold text-[#1A2E22] hover:text-[#1F5D3A] transition-colors rounded-lg px-2"
-            >
-              Log in
-            </Link>
+            {user ? (
+              <>
+                <Link
+                  to="/dashboard"
+                  style={{ fontFamily: 'var(--font-body)' }}
+                  className="h-11 px-5 sm:px-6 rounded-full bg-[#1F5D3A] hover:bg-[#174A2E] active:scale-[0.98] text-white font-semibold text-[15px] sm:text-[17px] inline-flex items-center gap-2 shadow-xs transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1F5D3A] focus-visible:ring-offset-2"
+                >
+                  <span className="text-white" style={{ color: '#FFFFFF' }}>Open dashboard</span>
+                  <ArrowRight size={17} className="text-white" />
+                </Link>
 
-            {/* Primary "Sign up" button */}
-            <Link
-              to="/login?mode=signup"
-              style={{ fontFamily: 'var(--font-body)' }}
-              className="h-11 px-5 sm:px-6 rounded-full bg-[#1F5D3A] hover:bg-[#174A2E] active:scale-[0.98] text-white font-semibold text-[15px] sm:text-[17px] inline-flex items-center gap-2 shadow-xs transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1F5D3A] focus-visible:ring-offset-2"
-            >
-              <span className="text-white" style={{ color: '#FFFFFF' }}>Sign up</span>
-              <ArrowRight size={17} className="text-white" />
-            </Link>
+                <button
+                  type="button"
+                  onClick={logout}
+                  style={{ fontFamily: 'var(--font-body)' }}
+                  className="hidden sm:inline-flex h-11 items-center text-[15px] sm:text-[16px] font-semibold text-[#5E6B5A] hover:text-[#B91C1C] transition-colors rounded-lg px-2 cursor-pointer"
+                >
+                  Log out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  style={{ fontFamily: 'var(--font-body)' }}
+                  className="hidden sm:inline-flex h-11 items-center text-[16px] sm:text-[17px] font-semibold text-[#1A2E22] hover:text-[#1F5D3A] transition-colors rounded-lg px-2"
+                >
+                  Log in
+                </Link>
+
+                {/* Primary "Sign up" button */}
+                <Link
+                  to="/login?mode=signup"
+                  style={{ fontFamily: 'var(--font-body)' }}
+                  className="h-11 px-5 sm:px-6 rounded-full bg-[#1F5D3A] hover:bg-[#174A2E] active:scale-[0.98] text-white font-semibold text-[15px] sm:text-[17px] inline-flex items-center gap-2 shadow-xs transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1F5D3A] focus-visible:ring-offset-2"
+                >
+                  <span className="text-white" style={{ color: '#FFFFFF' }}>Sign up</span>
+                  <ArrowRight size={17} className="text-white" />
+                </Link>
+              </>
+            )}
 
             {/* 3-line Nav Menu Button (Always visible on all screens) */}
             <button
@@ -335,26 +361,57 @@ export default function LandingNavbar() {
               </div>
             </div>
 
-            {/* Bottom Actions: Sign Up & Log In */}
+            {/* Bottom Actions: Sign Up & Log In OR Dashboard & Log Out */}
             <div className="pt-6 border-t border-[rgba(31,93,58,0.12)] flex flex-col gap-3">
-              <Link
-                to="/login?mode=signup"
-                onClick={() => setMenuOpen(false)}
-                style={{ fontFamily: 'var(--font-body)' }}
-                className="w-full h-12 rounded-full bg-[#1F5D3A] hover:bg-[#174A2E] text-white font-bold text-[16px] flex items-center justify-center gap-2 shadow-md transition-colors"
-              >
-                <span className="text-white" style={{ color: '#FFFFFF' }}>Create Free Account</span>
-                <ArrowRight size={17} className="text-white" />
-              </Link>
+              {user ? (
+                <>
+                  <div className="px-2 py-1 text-xs text-[#5E6B5A]">
+                    Signed in as <span className="font-semibold text-[#1F3A28]">{user.email}</span>
+                  </div>
+                  <Link
+                    to="/dashboard"
+                    onClick={() => setMenuOpen(false)}
+                    style={{ fontFamily: 'var(--font-body)' }}
+                    className="w-full h-12 rounded-full bg-[#1F5D3A] hover:bg-[#174A2E] text-white font-bold text-[16px] flex items-center justify-center gap-2 shadow-md transition-colors"
+                  >
+                    <span className="text-white" style={{ color: '#FFFFFF' }}>Open dashboard</span>
+                    <ArrowRight size={17} className="text-white" />
+                  </Link>
 
-              <Link
-                to="/login"
-                onClick={() => setMenuOpen(false)}
-                style={{ fontFamily: 'var(--font-body)' }}
-                className="w-full h-12 rounded-full border border-[rgba(31,93,58,0.25)] bg-white text-[#1F3A28] font-bold text-[16px] flex items-center justify-center hover:bg-[#FAF8F2] transition-colors"
-              >
-                Log in to your account
-              </Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMenuOpen(false)
+                      logout()
+                    }}
+                    style={{ fontFamily: 'var(--font-body)' }}
+                    className="w-full h-12 rounded-full border border-[rgba(31,93,58,0.25)] bg-white text-[#B91C1C] hover:bg-[#FDF2F2] font-bold text-[16px] flex items-center justify-center transition-colors cursor-pointer"
+                  >
+                    Log out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login?mode=signup"
+                    onClick={() => setMenuOpen(false)}
+                    style={{ fontFamily: 'var(--font-body)' }}
+                    className="w-full h-12 rounded-full bg-[#1F5D3A] hover:bg-[#174A2E] text-white font-bold text-[16px] flex items-center justify-center gap-2 shadow-md transition-colors"
+                  >
+                    <span className="text-white" style={{ color: '#FFFFFF' }}>Create Free Account</span>
+                    <ArrowRight size={17} className="text-white" />
+                  </Link>
+
+                  <Link
+                    to="/login"
+                    onClick={() => setMenuOpen(false)}
+                    style={{ fontFamily: 'var(--font-body)' }}
+                    className="w-full h-12 rounded-full border border-[rgba(31,93,58,0.25)] bg-white text-[#1F3A28] font-bold text-[16px] flex items-center justify-center hover:bg-[#FAF8F2] transition-colors"
+                  >
+                    Log in to your account
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
